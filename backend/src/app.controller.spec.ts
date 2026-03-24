@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -14,9 +15,13 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
-    });
+  it('returns a health payload', () => {
+    const response = appController.getHealth();
+
+    expect(response.status).toBe('ok');
+    expect(response.service).toBe(
+      'behavior-based-habit-formation-system-backend',
+    );
+    expect(response.timestamp).toEqual(expect.any(String));
   });
 });
