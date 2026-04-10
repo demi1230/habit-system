@@ -1,18 +1,42 @@
 import { Module } from '@nestjs/common';
 import { AnalyticsModule } from '../analytics/analytics.module';
 import { HabitsModule } from '../habits/habits.module';
-import { PrismaModule } from '../prisma/prisma.module';
+import { HABIT_LOG_REPOSITORY } from '../domain/repositories/habit-log.repository';
+import { DIFFICULTY_FEEDBACK_REPOSITORY } from '../domain/repositories/difficulty-feedback.repository';
+import { REFLECTION_REPOSITORY } from '../domain/repositories/reflection.repository';
+import { REMINDER_POLICY_REPOSITORY } from '../domain/repositories/reminder-policy.repository';
+import { HabitLogPrismaRepository } from '../infrastructure/persistence/habit-log.prisma-repository';
+import { DifficultyFeedbackPrismaRepository } from '../infrastructure/persistence/difficulty-feedback.prisma-repository';
+import { ReflectionPrismaRepository } from '../infrastructure/persistence/reflection.prisma-repository';
+import { ReminderPolicyPrismaRepository } from '../infrastructure/persistence/reminder-policy.prisma-repository';
 import { ProgressController } from './progress.controller';
 import { ProgressService } from './progress.service';
+import { FeedbackService } from './feedback.service';
 
 /**
- * Thesis mapping:
- * progress owns low-friction completion logging, progress summary reads,
- * and future habit-strength input signals in Phase 1.
+ * Application module — Progress
+ * Manages completion logging, progress summary, habit-strength signals,
+ * difficulty feedback, reflection, and adaptation recommendation.
  */
 @Module({
-  imports: [PrismaModule, HabitsModule, AnalyticsModule],
+  imports: [HabitsModule, AnalyticsModule],
   controllers: [ProgressController],
-  providers: [ProgressService],
+  providers: [
+    ProgressService,
+    FeedbackService,
+    { provide: HABIT_LOG_REPOSITORY, useClass: HabitLogPrismaRepository },
+    {
+      provide: DIFFICULTY_FEEDBACK_REPOSITORY,
+      useClass: DifficultyFeedbackPrismaRepository,
+    },
+    {
+      provide: REFLECTION_REPOSITORY,
+      useClass: ReflectionPrismaRepository,
+    },
+    {
+      provide: REMINDER_POLICY_REPOSITORY,
+      useClass: ReminderPolicyPrismaRepository,
+    },
+  ],
 })
 export class ProgressModule {}

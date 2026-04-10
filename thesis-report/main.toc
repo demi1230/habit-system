@@ -1,0 +1,74 @@
+\contentsline {chapter}{\numberline {1.}\uppercase {УДИРТГАЛ}}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Судалгааны зорилго}{3}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Судалгааны зорилтууд}{3}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Судалгааны асуулт}{4}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Судалгааны шинэлэг тал ба хувь нэмэр}{4}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Судалгааны ач холбогдол}{5}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Судалгааны арга зүй}{5}{section.1.6}%
+\contentsline {chapter}{\numberline {2.}\uppercase {СУДЛАГДСАН БАЙДЛЫН ТОЙМ}}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Дадал үүсэх механизмын талаарх судалгаа}{7}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Дадлын хүчний ойлголт ба хэмжилтийн талаарх судалгаа}{8}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Дадал төлөвшлийн мөчлөг ба зан үйлийн загваруудын талаарх судалгаа}{9}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Дижитал дадал хянах системүүдийн талаарх судалгаа}{9}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Тоглоомжуулалт ба урамшууллын системийн талаарх судалгаа}{10}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Итгүүлэн нөлөөлөх технологи ба яг цаг тухайд нь дасан зохицсон оролцооны талаарх судалгаа}{10}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Судалгааны дүгнэлт ба судалгааны цоорхой}{11}{section.2.7}%
+\contentsline {chapter}{\numberline {3.}\uppercase {ОНОЛЫН ХҮРЭЭ БА СИСТЕМИЙН КОНЦЕПЦ ЗАГВАР}}{13}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Судалгаанд ашиглах онолын хандлагын сонголт}{13}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Дадал төлөвшлийн мөчлөгийг системийн түвшинд хөрвүүлсэн нь}{14}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Өдөөгч дохионы давхарга}{14}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Хүсэл тэмүүллийн давхарга}{14}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Хариу үйлдлийн давхарга}{14}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Урамшууллын давхарга}{15}{subsection.3.2.4}%
+\contentsline {section}{\numberline {3.3}Фоггийн зан үйлийн загварыг системийн зохиомжид ашигласан нь}{15}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Итгүүлэн нөлөөлөх технологийн зарчмыг системд тусгасан нь}{16}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Дадлын хүчийг тооцоолох нь}{16}{section.3.5}%
+\contentsline {chapter}{\numberline {4.}\uppercase {СИСТЕМИЙН ШИНЖИЛГЭЭ БА ЗОХИОМЖ}}{18}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Зорилтот хэрэглэгчийн бүлэг, хэрэглэгчийн үүрэг ба системийн хамрах хүрээ}{18}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Зорилтот хэрэглэгчийн бүлэг}{18}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Хэрэглэгчийн үүрэг}{20}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}Системийн хамрах хүрээ}{20}{subsection.4.1.3}%
+\contentsline {section}{\numberline {4.2}Системийн шаардлагын шинжилгээ}{22}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Функциональ шаардлага}{22}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Дадлын хүчний үнэлгээтэй холбоотой шаардлагын тайлбар}{23}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Сануулгын цаг сонголттой холбоотой шаардлагын тайлбар}{24}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}Функциональ бус шаардлага}{24}{subsection.4.2.4}%
+\contentsline {section}{\numberline {4.3}Системийн оролцогчид ба хэрэглээний тохиолдол}{25}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Үндсэн хэрэглээний тохиолдлууд}{25}{subsection.4.3.1}%
+\contentsline {section}{\numberline {4.4}Системийн архитектурын зохиомж}{26}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Ерөнхий архитектур}{26}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Архитектурын давхаргууд}{27}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}Хэрэглээний логикийн үндсэн модулиуд}{29}{subsection.4.4.3}%
+\contentsline {subsection}{\numberline {4.4.4}Мэдэгдэл хүргэх механизм}{29}{subsection.4.4.4}%
+\contentsline {section}{\numberline {4.5}Өгөгдлийн загварын зохиомж}{29}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Хэрэглэгчийн интерфэйс ба хэрэглээний туршлагын зохиомж}{31}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}UI/UX зохиомжийн зорилго ба зарчим}{32}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}Хэрэглэгчийн үндсэн урсгалууд}{32}{subsection.4.6.2}%
+\contentsline {subsection}{\numberline {4.6.3}Гол дэлгэцүүдийн зохиомж}{32}{subsection.4.6.3}%
+\contentsline {subsection}{\numberline {4.6.4}Сануулга ба мэдэгдлийн зохиомж}{32}{subsection.4.6.4}%
+\contentsline {section}{\numberline {4.7}Системийн ажиллагааны үндсэн логик}{33}{section.4.7}%
+\contentsline {subsection}{\numberline {4.7.1}Үндсэн урсгал}{33}{subsection.4.7.1}%
+\contentsline {subsection}{\numberline {4.7.2}Дадал төлөвшлийн мөчлөг ба системийн хэрэгжилтийн уялдаа}{34}{subsection.4.7.2}%
+\contentsline {subsection}{\numberline {4.7.3}Сануулгаас хараат бус байдлыг хянах логик}{34}{subsection.4.7.3}%
+\contentsline {subsection}{\numberline {4.7.4}Сануулгыг аажмаар бууруулах ба дасан зохицох логик}{36}{subsection.4.7.4}%
+\contentsline {section}{\numberline {4.8}Амжилтын шалгуур ба хэмжигдэх үзүүлэлт}{37}{section.4.8}%
+\contentsline {subsection}{\numberline {4.8.1}Амжилтын шалгуур}{37}{subsection.4.8.1}%
+\contentsline {subsection}{\numberline {4.8.2}Хэмжигдэх үндсэн үзүүлэлтүүд}{37}{subsection.4.8.2}%
+\contentsline {section}{\numberline {4.9}Системийн хязгаарлалт}{39}{section.4.9}%
+\contentsline {section}{\numberline {4.10}Бүлгийн дүгнэлт}{39}{section.4.10}%
+\contentsline {chapter}{\numberline {5.}\uppercase {ТУРШИЛТ БА ҮНЭЛГЭЭНИЙ АРГА ЗҮЙ}}{41}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Үнэлгээний зорилго}{41}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Судалгааны зохиомж}{41}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Оролцогчид}{41}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Оролцогч сонголт, зөвшөөрөл ба ёс зүй}{42}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Туршилтын хугацаа ба үе шат}{42}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Цуглуулах өгөгдөл}{43}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Үнэлгээний үндсэн үзүүлэлтүүд}{43}{section.5.7}%
+\contentsline {section}{\numberline {5.8}Өгөгдөл боловсруулах арга}{44}{section.5.8}%
+\contentsline {section}{\numberline {5.9}Үнэлгээний хязгаарлалт}{44}{section.5.9}%
+\contentsline {chapter}{\numberline {A.}\uppercase {Системийн дэлгэрэнгүй материал}}{45}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Функциональ шаардлагын дэлгэрэнгүй хүснэгт}{45}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Функциональ бус шаардлагын дэлгэрэнгүй хүснэгт}{47}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Хэрэглээний тохиолдол ба системийн урсгалын нэмэлт диаграммууд}{49}{section.A.3}%
+\contentsline {section}{\numberline {A.4}Туршилтын дэлгэрэнгүй хэмжигдэх үзүүлэлтүүд}{55}{section.A.4}%
+\contentsline {part}{ЭХ СУРВАЛЖУУД}{57}{table.caption.28}%

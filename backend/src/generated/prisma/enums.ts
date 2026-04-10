@@ -55,12 +55,3 @@ export const Weekday = {
 } as const
 
 export type Weekday = (typeof Weekday)[keyof typeof Weekday]
-
-
-export const CueDayType = {
-  ANY: 'ANY',
-  WEEKDAY: 'WEEKDAY',
-  WEEKEND: 'WEEKEND'
-} as const
-
-export type CueDayType = (typeof CueDayType)[keyof typeof CueDayType]

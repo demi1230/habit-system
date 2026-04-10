@@ -50,12 +50,32 @@ enum Weekday {
   @@map("weekday")
 }
 
-enum CueDayType {
-  ANY
-  WEEKDAY
-  WEEKEND
+// ─── Phase 4A enums ───────────────────────────────────────────────────────────
 
-  @@map("cue_day_type")
+enum ReminderStatus {
+  PENDING
+  SENT
+  ACTED
+  EXPIRED
+  CANCELLED
+
+  @@map("reminder_status")
+}
+
+enum ReminderDecisionReason {
+  REMINDER_DISABLED
+  NOT_SCHEDULED_TODAY
+  NO_ACTIVE_CUES
+  SHOULD_REMIND
+
+  @@map("reminder_decision_reason")
+}
+
+enum ReminderActionType {
+  DONE
+  SNOOZE
+
+  @@map("reminder_action_type")
 }
 
 model User {
@@ -65,33 +85,42 @@ model User {
   displayName  String?           @map("display_name")
   createdAt    DateTime          @default(now()) @map("created_at")
   updatedAt    DateTime          @updatedAt @map("updated_at")
-  habits       Habit[]
-  activityLogs UserActivityLog[]
+  habits             Habit[]
+  activityLogs       UserActivityLog[]
+  reminders          Reminder[]
+  reminderActions    ReminderAction[]
+  difficultyFeedback DifficultyFeedback[]
+  reflections        Reflection[]
 
   @@map("users")
 }
 
 model Habit {
-  id                     String                 @id @default(uuid()) @db.Uuid
-  userId                 String                 @map("user_id") @db.Uuid
+  id                     String                  @id @default(uuid()) @db.Uuid
+  userId                 String                  @map("user_id") @db.Uuid
   title                  String
   description            String?
-  trackingType           HabitTrackingType      @map("tracking_type")
-  allowPartialCompletion Boolean                @default(false) @map("allow_partial_completion")
-  measurementUnit        String?                @map("measurement_unit")
-  targetValue            Float?                 @map("target_value")
-  minimumSuccessValue    Float?                 @map("minimum_success_value")
-  startDate              DateTime               @map("start_date") @db.Date
-  status                 HabitLifecycleStatus   @default(ACTIVE)
-  reminderEnabled        Boolean                @default(false) @map("reminder_enabled")
-  archivedAt             DateTime?              @map("archived_at")
-  createdAt              DateTime               @default(now()) @map("created_at")
-  updatedAt              DateTime               @updatedAt @map("updated_at")
-  user                   User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackingType           HabitTrackingType       @map("tracking_type")
+  allowPartialCompletion Boolean                 @default(false) @map("allow_partial_completion")
+  measurementUnit        String?                 @map("measurement_unit")
+  targetValue            Float?                  @map("target_value")
+  minimumSuccessValue    Float?                  @map("minimum_success_value")
+  startDate              DateTime                @map("start_date") @db.Date
+  status                 HabitLifecycleStatus    @default(ACTIVE)
+  reminderEnabled        Boolean                 @default(false) @map("reminder_enabled")
+  archivedAt             DateTime?               @map("archived_at")
+  createdAt              DateTime                @default(now()) @map("created_at")
+  updatedAt              DateTime                @updatedAt @map("updated_at")
+  user                   User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
   scheduleDays           HabitScheduleDay[]
   cues                   HabitCue[]
   motivationProfile      HabitMotivationProfile?
   logs                   HabitLog[]
+  reminders              Reminder[]
+  srbaiAssessments       SrbaiAssessment[]
+  reminderPolicy         ReminderPolicy?
+  difficultyFeedback     DifficultyFeedback[]
+  reflections            Reflection[]
 
   @@index([userId])
   @@index([status])
@@ -111,16 +140,16 @@ model HabitScheduleDay {
 }
 
 model HabitCue {
-  id               String     @id @default(uuid()) @db.Uuid
-  habitId          String     @map("habit_id") @db.Uuid
-  timeWindow       String?    @map("time_window")
-  dayType          CueDayType @default(ANY) @map("day_type")
-  coarseLocation   String?    @map("coarse_location")
-  precedingRoutine String?    @map("preceding_routine")
-  isActive         Boolean    @default(true) @map("is_active")
-  createdAt        DateTime   @default(now()) @map("created_at")
-  updatedAt        DateTime   @updatedAt @map("updated_at")
-  habit            Habit      @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  id               String   @id @default(uuid()) @db.Uuid
+  habitId          String   @map("habit_id") @db.Uuid
+  startTime        String?  @map("start_time")
+  endTime          String?  @map("end_time")
+  coarseLocation   String?  @map("coarse_location")
+  precedingRoutine String?  @map("preceding_routine")
+  isActive         Boolean  @default(true) @map("is_active")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  habit            Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
 
   @@index([habitId])
   @@map("habit_cues")
@@ -140,19 +169,74 @@ model HabitMotivationProfile {
 }
 
 model HabitLog {
-  id            String                   @id @default(uuid()) @db.Uuid
-  habitId       String                   @map("habit_id") @db.Uuid
-  status        HabitLogStatus
-  actualValue   Float?                   @map("actual_value")
-  completedAt   DateTime                 @map("completed_at")
-  loggedAt      DateTime                 @default(now()) @map("logged_at")
-  triggerSource CompletionTriggerSource? @map("trigger_source")
-  habit         Habit                    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  id                String                   @id @default(uuid()) @db.Uuid
+  habitId           String                   @map("habit_id") @db.Uuid
+  status            HabitLogStatus
+  actualValue       Float?                   @map("actual_value")
+  completedAt       DateTime                 @map("completed_at")
+  loggedAt          DateTime                 @default(now()) @map("logged_at")
+  triggerSource     CompletionTriggerSource? @map("trigger_source")
+  linkedReminderId  String?                  @map("linked_reminder_id") @db.Uuid
+  sourceConfidence  Float?                   @map("source_confidence")
+  // Context snapshot captured at completion time — used for context-stability scoring
+  completionHour    Int?                     @map("completion_hour")      // 0–23 extracted from completedAt
+  coarseLocation    String?                  @map("coarse_location")      // free text, e.g. "home"
+  precedingRoutine  String?                  @map("preceding_routine")    // e.g. "after_breakfast"
+  habit             Habit                    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  linkedReminder    Reminder?                @relation(fields: [linkedReminderId], references: [id], onDelete: SetNull)
+  difficultyFeedback DifficultyFeedback[]
+  reflections        Reflection[]
 
   @@index([habitId, completedAt])
   @@index([habitId, loggedAt])
   @@index([triggerSource])
   @@map("habit_logs")
+}
+
+// ─── Phase 4C: Post-completion feedback ──────────────────────────────────────
+
+enum DifficultyRating {
+  VERY_EASY
+  EASY
+  MODERATE
+  HARD
+  VERY_HARD
+
+  @@map("difficulty_rating")
+}
+
+model DifficultyFeedback {
+  id         String          @id @default(uuid()) @db.Uuid
+  userId     String          @map("user_id") @db.Uuid
+  habitId    String          @map("habit_id") @db.Uuid
+  logId      String          @map("log_id") @db.Uuid
+  rating     DifficultyRating
+  note       String?
+  occurredAt DateTime        @map("occurred_at")
+  createdAt  DateTime        @default(now()) @map("created_at")
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habit      Habit           @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  log        HabitLog        @relation(fields: [logId], references: [id], onDelete: Cascade)
+
+  @@index([habitId, occurredAt])
+  @@index([userId, occurredAt])
+  @@map("difficulty_feedbacks")
+}
+
+model Reflection {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  habitId    String   @map("habit_id") @db.Uuid
+  logId      String   @map("log_id") @db.Uuid
+  text       String
+  occurredAt DateTime @map("occurred_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habit      Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  log        HabitLog @relation(fields: [logId], references: [id], onDelete: Cascade)
+
+  @@index([habitId, occurredAt])
+  @@map("reflections")
 }
 
 model UserActivityLog {
@@ -164,4 +248,98 @@ model UserActivityLog {
 
   @@index([userId, occurredAt])
   @@map("user_activity_logs")
+}
+
+// ─── Phase 4B enums ───────────────────────────────────────────────────────────
+
+enum ReminderPolicyMode {
+  FULL_SUPPORT
+  MODERATE_SUPPORT
+  FADE_OUT
+  MINIMAL
+
+  @@map("reminder_policy_mode")
+}
+
+
+model Reminder {
+  id               String                 @id @default(uuid()) @db.Uuid
+  userId           String                 @map("user_id") @db.Uuid
+  habitId          String                 @map("habit_id") @db.Uuid
+  linkedCueId      String?                @map("linked_cue_id") @db.Uuid
+  decisionReason   ReminderDecisionReason @map("decision_reason")
+  status           ReminderStatus         @default(PENDING)
+  scheduledFor     DateTime               @map("scheduled_for")
+  evaluatedAt      DateTime               @map("evaluated_at")
+  sentAt           DateTime?              @map("sent_at")
+  deliveredAt      DateTime?              @map("delivered_at")
+  // effectiveUntil replaces the old coarse expiresAt field.
+  // It is set to scheduledFor + cooldownMinutes (from ReminderPolicy, default 60).
+  // The dedup check queries PENDING/SENT reminders where scheduledFor <= now <= effectiveUntil.
+  effectiveUntil   DateTime?              @map("effective_until")
+  cooldownKey      String?                @map("cooldown_key")  // habitId:YYYY-MM-DDTHH (hourly bucket)
+  explanation      Json?
+  createdAt        DateTime               @default(now()) @map("created_at")
+  user             User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habit            Habit                  @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  actions          ReminderAction[]
+  habitLogs        HabitLog[]
+
+  @@index([userId, scheduledFor])
+  @@index([habitId, status])
+  @@index([cooldownKey])
+  @@map("reminders")
+}
+
+model ReminderAction {
+  id              String             @id @default(uuid()) @db.Uuid
+  reminderId      String             @map("reminder_id") @db.Uuid
+  userId          String             @map("user_id") @db.Uuid
+  actionType      ReminderActionType @map("action_type")
+  actedAt         DateTime           @map("acted_at")
+  snoozedUntil    DateTime?          @map("snoozed_until")
+  metadata        Json?
+  createdAt       DateTime           @default(now()) @map("created_at")
+  reminder        Reminder           @relation(fields: [reminderId], references: [id], onDelete: Cascade)
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([reminderId])
+  @@index([userId, actedAt])
+  @@map("reminder_actions")
+}
+
+// ─── Phase 4B: SRBAI assessment + reminder tapering ──────────────────────────
+
+model SrbaiAssessment {
+  id                 String   @id @default(uuid()) @db.Uuid
+  userId             String   @map("user_id") @db.Uuid
+  habitId            String   @map("habit_id") @db.Uuid
+  item1              Int
+  item2              Int
+  item3              Int
+  item4              Int
+  rawAverage         Float    @map("raw_average")
+  normalizedScore100 Float    @map("normalized_score_100")
+  assessedAt         DateTime @map("assessed_at")
+  createdAt          DateTime @default(now()) @map("created_at")
+  habit              Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@index([habitId, assessedAt])
+  @@index([userId, assessedAt])
+  @@map("srbai_assessments")
+}
+
+model ReminderPolicy {
+  id              String             @id @default(uuid()) @db.Uuid
+  habitId         String             @unique @map("habit_id") @db.Uuid
+  mode            ReminderPolicyMode @default(FULL_SUPPORT)
+  cooldownMinutes Int                @default(60) @map("cooldown_minutes")
+  maxPerDay       Int                @default(3) @map("max_per_day")
+  narrowingLevel  Int                @default(0) @map("narrowing_level")
+  effectiveFrom   DateTime           @map("effective_from")
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @updatedAt @map("updated_at")
+  habit           Habit              @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@map("reminder_policies")
 }

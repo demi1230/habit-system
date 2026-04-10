@@ -1,25 +1,21 @@
-import 'reflect-metadata';
-jest.mock('../prisma/prisma.service', () => ({
-  PrismaService: class PrismaService {},
-}));
+﻿import 'reflect-metadata';
 
 import { BadRequestException } from '@nestjs/common';
 import {
   CompletionTriggerSource,
   HabitLogStatus,
   HabitTrackingType,
-} from '../common/enums/domain.enums';
+} from '../domain/enums/domain.enums';
 import { ProgressService } from './progress.service';
 
 describe('ProgressService', () => {
   const userId = '8e42d9f7-36f5-4d1c-8f3d-90ddf1fb878f';
   const habitId = '4d2b5e07-3209-4d94-8d7b-1db0b8a64152';
 
-  const prisma = {
-    habitLog: {
-      create: jest.fn(),
-      findMany: jest.fn(),
-    },
+  const habitLogRepo = {
+    create: jest.fn(),
+    findAllByHabitId: jest.fn(),
+    findSummaryByHabitId: jest.fn(),
   };
 
   const habitsService = {
@@ -35,13 +31,15 @@ describe('ProgressService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    prisma.habitLog.create.mockImplementation(({ data }) => ({
+    habitLogRepo.create.mockImplementation(({ habitId: hid, ...rest }) => ({
       id: 'log-1',
-      ...data,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      habitId: hid,
+      ...rest,
     }));
 
     progressService = new ProgressService(
-      prisma as never,
+      habitLogRepo as never,
       habitsService as never,
       analyticsService as never,
     );
@@ -116,7 +114,7 @@ describe('ProgressService', () => {
       scheduleDays: [{ weekday: 'MONDAY' }],
       cues: [{ id: 'cue-1' }],
     });
-    prisma.habitLog.findMany.mockResolvedValue([
+    habitLogRepo.findSummaryByHabitId.mockResolvedValue([
       {
         status: HabitLogStatus.DONE,
         triggerSource: CompletionTriggerSource.SELF_INITIATED,
@@ -151,6 +149,12 @@ describe('ProgressService', () => {
         [CompletionTriggerSource.REMINDER_TRIGGERED]: 1,
         [CompletionTriggerSource.MANUAL_ENTRY]: 0,
       },
+      selfInitiatedCount: 1,
+      reminderTriggeredCount: 0,
+      unknownSourceCount: 0,
+      selfInitiatedRate: 1,
+      reminderDependenceRate: 0,
+      completionWithoutReminderRate: 1,
     });
   });
 });

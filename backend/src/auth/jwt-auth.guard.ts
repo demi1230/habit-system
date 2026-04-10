@@ -18,7 +18,9 @@ import { JwtPayload } from './jwt-payload.interface';
 export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // Run Passport JWT verification first
-    const authenticated = await (super.canActivate(context) as Promise<boolean>);
+    const authenticated = await (super.canActivate(
+      context,
+    ) as Promise<boolean>);
     if (!authenticated) {
       return false;
     }

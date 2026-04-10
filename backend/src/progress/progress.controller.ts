@@ -7,17 +7,23 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateHabitLogDto } from './dto/create-habit-log.dto';
+import { SubmitDifficultyDto } from './dto/submit-difficulty.dto';
+import { SubmitReflectionDto } from './dto/submit-reflection.dto';
 import { ProgressService } from './progress.service';
+import { FeedbackService } from './feedback.service';
 
 @ApiTags('progress')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('users/:userId/habits/:habitId')
 export class ProgressController {
-  constructor(private readonly progressService: ProgressService) {}
+  constructor(
+    private readonly progressService: ProgressService,
+    private readonly feedbackService: FeedbackService,
+  ) {}
 
   @Post('logs')
   createHabitLog(
@@ -46,5 +52,69 @@ export class ProgressController {
     @Param('habitId', new ParseUUIDPipe()) habitId: string,
   ) {
     return this.progressService.getProgressSummary(userId, habitId);
+  }
+
+  /**
+   * Phase 3: habit-strength foundation.
+   * Returns raw input signals derived from log history — no final score.
+   */
+  @Get('habit-strength')
+  @ApiOperation({
+    summary:
+      'Get habit-strength input signals (foundation — no final score yet)',
+  })
+  getHabitStrengthSignals(
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Param('habitId', new ParseUUIDPipe()) habitId: string,
+  ) {
+    return this.progressService.getHabitStrengthSignals(userId, habitId);
+  }
+
+  // ── Phase 4C: Difficulty feedback ─────────────────────────────────────────
+
+  @Post('logs/:logId/difficulty')
+  @ApiOperation({ summary: 'Submit a difficulty rating after a habit completion' })
+  submitDifficulty(
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Param('habitId', new ParseUUIDPipe()) habitId: string,
+    @Param('logId', new ParseUUIDPipe()) logId: string,
+    @Body() dto: SubmitDifficultyDto,
+  ) {
+    return this.feedbackService.submitDifficulty(userId, habitId, logId, dto);
+  }
+
+  @Get('difficulty-ratings')
+  @ApiOperation({ summary: 'List all difficulty ratings for a habit' })
+  listDifficultyRatings(
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Param('habitId', new ParseUUIDPipe()) habitId: string,
+  ) {
+    return this.feedbackService.listDifficultyRatings(userId, habitId);
+  }
+
+  // ── Phase 4C: Reflection ───────────────────────────────────────────────────
+
+  @Post('logs/:logId/reflection')
+  @ApiOperation({ summary: 'Submit a post-completion reflection' })
+  submitReflection(
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Param('habitId', new ParseUUIDPipe()) habitId: string,
+    @Param('logId', new ParseUUIDPipe()) logId: string,
+    @Body() dto: SubmitReflectionDto,
+  ) {
+    return this.feedbackService.submitReflection(userId, habitId, logId, dto);
+  }
+
+  // ── Phase 4C: Adaptation recommendation ───────────────────────────────────
+
+  @Get('adaptation-recommendation')
+  @ApiOperation({
+    summary: 'Get an adaptation recommendation computed fully server-side',
+  })
+  getAdaptationRecommendation(
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Param('habitId', new ParseUUIDPipe()) habitId: string,
+  ) {
+    return this.feedbackService.getAdaptationRecommendation(userId, habitId);
   }
 }

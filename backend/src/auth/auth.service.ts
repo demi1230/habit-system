@@ -1,12 +1,14 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from '../prisma/prisma.service';
+import type { IUserRepository } from '../domain/repositories/user.repository';
+import { USER_REPOSITORY } from '../domain/repositories/user.repository';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './jwt-payload.interface';
@@ -14,14 +16,12 @@ import { JwtPayload } from './jwt-payload.interface';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly prisma: PrismaService,
+    @Inject(USER_REPOSITORY) private readonly userRepo: IUserRepository,
     private readonly jwtService: JwtService,
   ) {}
 
   async register(dto: RegisterDto) {
-    const existing = await this.prisma.user.findUnique({
-      where: { email: dto.email },
-    });
+    const existing = await this.userRepo.findByEmail(dto.email);
 
     if (existing) {
       throw new ConflictException('Email is already registered.');
@@ -29,22 +29,15 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
 
-    const user = await this.prisma.user.create({
-      data: {
-        email: dto.email,
-        passwordHash,
-        displayName: dto.displayName ?? null,
-      },
-      select: { id: true, email: true, displayName: true, createdAt: true },
+    return this.userRepo.create({
+      email: dto.email,
+      passwordHash,
+      displayName: dto.displayName ?? null,
     });
-
-    return user;
   }
 
   async login(dto: LoginDto) {
-    const user = await this.prisma.user.findUnique({
-      where: { email: dto.email },
-    });
+    const user = await this.userRepo.findByEmail(dto.email);
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials.');
@@ -63,9 +56,7 @@ export class AuthService {
   }
 
   async ensureUserExists(userId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
+    const user = await this.userRepo.findById(userId);
 
     if (!user) {
       throw new NotFoundException(`User ${userId} was not found.`);

@@ -1,14 +1,21 @@
-import {
+﻿import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { AnalyticsService } from '../analytics/analytics.service';
 import {
-  CueDayType,
   HabitLifecycleStatus,
   HabitTrackingType,
-} from '../common/enums/domain.enums';
+} from '../domain/enums/domain.enums';
+import type { IHabitRepository } from '../domain/repositories/habit.repository';
+import { HABIT_REPOSITORY } from '../domain/repositories/habit.repository';
+import { CueScheduleRules } from '../domain/rules/cue-schedule.rules';
+import {
+  ReminderDecisionRules,
+  ReminderDecisionResult,
+} from '../domain/rules/reminder-decision.rules';
 import { CreateHabitDto } from './dto/create-habit.dto';
 import { HabitQueryDto } from './dto/habit-query.dto';
 import { UpdateHabitDto } from './dto/update-habit.dto';
@@ -16,18 +23,11 @@ import { CreateHabitCueDto } from './cues/dto/create-habit-cue.dto';
 import { CreateHabitMotivationProfileDto } from './motivation/dto/create-habit-motivation-profile.dto';
 import { CreateHabitScheduleDayDto } from './schedule/dto/create-habit-schedule-day.dto';
 import { AuthService } from '../auth/auth.service';
-import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class HabitsService {
-  private readonly habitInclude = {
-    scheduleDays: true,
-    cues: true,
-    motivationProfile: true,
-  } as const;
-
   constructor(
-    private readonly prisma: PrismaService,
+    @Inject(HABIT_REPOSITORY) private readonly habitRepo: IHabitRepository,
     private readonly authService: AuthService,
     private readonly analyticsService: AnalyticsService,
   ) {}
@@ -36,69 +36,52 @@ export class HabitsService {
     await this.authService.ensureUserExists(userId);
     this.validateHabitConfiguration(createHabitDto);
 
-    const habit = await this.prisma.habit.create({
-      data: {
-        userId,
-        title: createHabitDto.title,
-        description: createHabitDto.description,
-        trackingType: createHabitDto.trackingType,
-        allowPartialCompletion: createHabitDto.allowPartialCompletion ?? false,
-        measurementUnit:
-          createHabitDto.trackingType === HabitTrackingType.QUANTITATIVE
-            ? createHabitDto.measurementUnit
-            : null,
-        targetValue:
-          createHabitDto.trackingType === HabitTrackingType.QUANTITATIVE
-            ? createHabitDto.targetValue
-            : null,
-        minimumSuccessValue:
-          createHabitDto.trackingType === HabitTrackingType.QUANTITATIVE
-            ? createHabitDto.minimumSuccessValue
-            : null,
-        startDate: new Date(createHabitDto.startDate),
-        status: createHabitDto.status ?? HabitLifecycleStatus.ACTIVE,
-        reminderEnabled: createHabitDto.reminderEnabled ?? false,
-        scheduleDays: this.buildScheduleDaysCreate(createHabitDto.scheduleDays),
-        cues: this.buildCuesCreate(createHabitDto.cues),
-        motivationProfile: createHabitDto.motivationProfile
-          ? {
-              create: this.buildMotivationProfilePayload(
-                createHabitDto.motivationProfile,
-              ),
-            }
-          : undefined,
-      },
-      include: this.habitInclude,
+    const habit = await this.habitRepo.create({
+      userId,
+      title: createHabitDto.title,
+      description: createHabitDto.description,
+      trackingType: createHabitDto.trackingType,
+      allowPartialCompletion: createHabitDto.allowPartialCompletion ?? false,
+      measurementUnit:
+        createHabitDto.trackingType === HabitTrackingType.QUANTITATIVE
+          ? createHabitDto.measurementUnit
+          : null,
+      targetValue:
+        createHabitDto.trackingType === HabitTrackingType.QUANTITATIVE
+          ? createHabitDto.targetValue
+          : null,
+      minimumSuccessValue:
+        createHabitDto.trackingType === HabitTrackingType.QUANTITATIVE
+          ? createHabitDto.minimumSuccessValue
+          : null,
+      startDate: new Date(createHabitDto.startDate),
+      status: createHabitDto.status ?? HabitLifecycleStatus.ACTIVE,
+      reminderEnabled: createHabitDto.reminderEnabled ?? false,
+      scheduleDays: createHabitDto.scheduleDays?.map((d) => ({
+        weekday: d.weekday,
+      })),
+      cues: createHabitDto.cues?.map((c) => this.buildCuePayload(c)),
+      motivationProfile: createHabitDto.motivationProfile
+        ? this.buildMotivationProfilePayload(createHabitDto.motivationProfile)
+        : null,
     });
 
     await this.analyticsService.recordActivity(userId, 'habit.created');
-
     return habit;
   }
 
   async listHabits(userId: string, habitQueryDto: HabitQueryDto) {
     await this.authService.ensureUserExists(userId);
-
-    return this.prisma.habit.findMany({
-      where: {
-        userId,
-        ...(habitQueryDto.includeArchived ? {} : { archivedAt: null }),
-      },
-      include: this.habitInclude,
-      orderBy: [{ createdAt: 'desc' }],
-    });
+    return this.habitRepo.findAllByUserId(
+      userId,
+      habitQueryDto.includeArchived,
+    );
   }
 
   async getOwnedHabitOrThrow(userId: string, habitId: string) {
     await this.authService.ensureUserExists(userId);
 
-    const habit = await this.prisma.habit.findFirst({
-      where: {
-        id: habitId,
-        userId,
-      },
-      include: this.habitInclude,
-    });
+    const habit = await this.habitRepo.findByIdAndUserId(habitId, userId);
 
     if (!habit) {
       throw new NotFoundException(
@@ -133,85 +116,86 @@ export class HabitsService {
         undefined,
       scheduleDays:
         updateHabitDto.scheduleDays ??
-        existingHabit.scheduleDays.map((scheduleDay) => ({
-          weekday: scheduleDay.weekday,
-        })),
+        existingHabit.scheduleDays.map((d) => ({ weekday: d.weekday })),
     });
 
-    const updatedHabit = await this.prisma.habit.update({
-      where: { id: habitId },
-      data: {
-        title: updateHabitDto.title,
-        description: updateHabitDto.description,
-        trackingType: updateHabitDto.trackingType,
-        allowPartialCompletion: updateHabitDto.allowPartialCompletion,
-        measurementUnit: this.resolveMeasurementUnit(
-          updateHabitDto,
-          existingHabit,
-        ),
-        targetValue: this.resolveMetricNumber(
-          updateHabitDto,
-          existingHabit,
-          'targetValue',
-        ),
-        minimumSuccessValue: this.resolveMetricNumber(
-          updateHabitDto,
-          existingHabit,
-          'minimumSuccessValue',
-        ),
-        startDate: updateHabitDto.startDate
-          ? new Date(updateHabitDto.startDate)
+    const updatedHabit = await this.habitRepo.update(habitId, {
+      title: updateHabitDto.title,
+      description: updateHabitDto.description,
+      trackingType: updateHabitDto.trackingType,
+      allowPartialCompletion: updateHabitDto.allowPartialCompletion,
+      measurementUnit: this.resolveMeasurementUnit(
+        updateHabitDto,
+        existingHabit,
+      ),
+      targetValue: this.resolveMetricNumber(
+        updateHabitDto,
+        existingHabit,
+        'targetValue',
+      ),
+      minimumSuccessValue: this.resolveMetricNumber(
+        updateHabitDto,
+        existingHabit,
+        'minimumSuccessValue',
+      ),
+      startDate: updateHabitDto.startDate
+        ? new Date(updateHabitDto.startDate)
+        : undefined,
+      status:
+        updateHabitDto.status === HabitLifecycleStatus.ARCHIVED
+          ? HabitLifecycleStatus.ARCHIVED
+          : updateHabitDto.status,
+      archivedAt:
+        updateHabitDto.status === HabitLifecycleStatus.ARCHIVED
+          ? (existingHabit.archivedAt ?? new Date())
+          : updateHabitDto.status
+            ? null
+            : undefined,
+      reminderEnabled: updateHabitDto.reminderEnabled,
+      scheduleDays: updateHabitDto.scheduleDays?.map((d) => ({
+        weekday: d.weekday,
+      })),
+      cues: updateHabitDto.cues?.map((c) => this.buildCuePayload(c)),
+      motivationProfile:
+        updateHabitDto.motivationProfile !== undefined
+          ? this.buildMotivationProfilePayload(updateHabitDto.motivationProfile)
           : undefined,
-        status:
-          updateHabitDto.status === HabitLifecycleStatus.ARCHIVED
-            ? HabitLifecycleStatus.ARCHIVED
-            : updateHabitDto.status,
-        reminderEnabled: updateHabitDto.reminderEnabled,
-        archivedAt:
-          updateHabitDto.status === HabitLifecycleStatus.ARCHIVED
-            ? (existingHabit.archivedAt ?? new Date())
-            : updateHabitDto.status
-              ? null
-              : undefined,
-        scheduleDays:
-          updateHabitDto.scheduleDays !== undefined
-            ? {
-                deleteMany: {},
-                create: updateHabitDto.scheduleDays.map((scheduleDay) => ({
-                  weekday: scheduleDay.weekday,
-                })),
-              }
-            : undefined,
-        cues:
-          updateHabitDto.cues !== undefined
-            ? {
-                deleteMany: {},
-                create: updateHabitDto.cues.map((cue) =>
-                  this.buildCuePayload(cue),
-                ),
-              }
-            : undefined,
-        motivationProfile:
-          updateHabitDto.motivationProfile !== undefined
-            ? {
-                upsert: {
-                  create: this.buildMotivationProfilePayload(
-                    updateHabitDto.motivationProfile,
-                  ),
-                  update: this.buildMotivationProfilePayload(
-                    updateHabitDto.motivationProfile,
-                  ),
-                },
-              }
-            : undefined,
-      },
-      include: this.habitInclude,
     });
 
     await this.analyticsService.recordActivity(userId, 'habit.updated');
-
     return updatedHabit;
   }
+
+  async getTodayHabits(userId: string) {
+    await this.authService.ensureUserExists(userId);
+
+    const todayWeekday = CueScheduleRules.todayWeekday();
+    const habits = await this.habitRepo.findActiveByUserId(userId);
+    const todayHabits = habits.filter((habit) =>
+      habit.isScheduledOn(todayWeekday),
+    );
+
+    return todayHabits.map((habit) => ({
+      ...habit,
+      cueContext: habit.cues.map((cue) => CueScheduleRules.evaluateCue(cue)),
+    }));
+  }
+
+  async getReminderDecision(
+    userId: string,
+    habitId: string,
+  ): Promise<ReminderDecisionResult> {
+    const habit = await this.getOwnedHabitOrThrow(userId, habitId);
+
+    return ReminderDecisionRules.decide({
+      habitId,
+      reminderEnabled: habit.reminderEnabled,
+      scheduleDays: habit.scheduleDays,
+      cues: habit.cues,
+    });
+  }
+
+  //Private helpers
 
   private validateHabitConfiguration(habitConfig: {
     trackingType: HabitTrackingType;
@@ -225,7 +209,6 @@ export class HabitsService {
       const uniqueWeekdays = new Set(
         habitConfig.scheduleDays.map((scheduleDay) => scheduleDay.weekday),
       );
-
       if (uniqueWeekdays.size !== habitConfig.scheduleDays.length) {
         throw new BadRequestException(
           'Each selected weekday may appear only once for a habit schedule.',
@@ -243,7 +226,6 @@ export class HabitsService {
           'SIMPLE_CHECKIN habits must not define quantitative measurement fields.',
         );
       }
-
       return;
     }
 
@@ -264,32 +246,10 @@ export class HabitsService {
     }
   }
 
-  private buildScheduleDaysCreate(scheduleDays?: CreateHabitScheduleDayDto[]) {
-    if (!scheduleDays?.length) {
-      return undefined;
-    }
-
-    return {
-      create: scheduleDays.map((scheduleDay) => ({
-        weekday: scheduleDay.weekday,
-      })),
-    };
-  }
-
-  private buildCuesCreate(cues?: CreateHabitCueDto[]) {
-    if (!cues?.length) {
-      return undefined;
-    }
-
-    return {
-      create: cues.map((cue) => this.buildCuePayload(cue)),
-    };
-  }
-
   private buildCuePayload(cue: CreateHabitCueDto) {
     return {
-      timeWindow: cue.timeWindow ?? null,
-      dayType: cue.dayType ?? CueDayType.ANY,
+      startTime: cue.startTime ?? null,
+      endTime: cue.endTime ?? null,
       coarseLocation: cue.coarseLocation ?? null,
       precedingRoutine: cue.precedingRoutine ?? null,
       isActive: cue.isActive ?? true,
@@ -315,11 +275,7 @@ export class HabitsService {
   ) {
     const nextTrackingType =
       updateHabitDto.trackingType ?? existingHabit.trackingType;
-
-    if (nextTrackingType === HabitTrackingType.SIMPLE_CHECKIN) {
-      return null;
-    }
-
+    if (nextTrackingType === HabitTrackingType.SIMPLE_CHECKIN) return null;
     return updateHabitDto.measurementUnit ?? existingHabit.measurementUnit;
   }
 
@@ -334,11 +290,7 @@ export class HabitsService {
   ) {
     const nextTrackingType =
       updateHabitDto.trackingType ?? existingHabit.trackingType;
-
-    if (nextTrackingType === HabitTrackingType.SIMPLE_CHECKIN) {
-      return null;
-    }
-
+    if (nextTrackingType === HabitTrackingType.SIMPLE_CHECKIN) return null;
     return updateHabitDto[field] ?? existingHabit[field];
   }
 }

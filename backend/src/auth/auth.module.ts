@@ -2,20 +2,20 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { PrismaModule } from '../prisma/prisma.module';
+import { USER_REPOSITORY } from '../domain/repositories/user.repository';
+import { UserPrismaRepository } from '../infrastructure/persistence/user.prisma-repository';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { JwtStrategy } from './jwt.strategy';
 
 /**
- * Thesis mapping:
- * auth owns user registration, login, JWT issuing, and ownership enforcement.
- * Phase 2 adds full auth flows on top of the Phase 1 foundation.
+ * Application module — Auth
+ * Provides user registration, login, JWT issuing, and ownership enforcement.
+ * Binds IUserRepository port to UserPrismaRepository adapter.
  */
 @Module({
   imports: [
-    PrismaModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -27,7 +27,12 @@ import { JwtStrategy } from './jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtAuthGuard,
+    { provide: USER_REPOSITORY, useClass: UserPrismaRepository },
+  ],
   exports: [AuthService, JwtAuthGuard],
 })
 export class AuthModule {}

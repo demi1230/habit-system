@@ -1,19 +1,18 @@
 import 'reflect-metadata';
-jest.mock('../prisma/prisma.service', () => ({
-  PrismaService: class PrismaService {},
-}));
 
 import { BadRequestException } from '@nestjs/common';
-import { HabitTrackingType } from '../common/enums/domain.enums';
+import { HabitTrackingType } from '../domain/enums/domain.enums';
 import { HabitsService } from './habits.service';
 
 describe('HabitsService', () => {
   const userId = '8e42d9f7-36f5-4d1c-8f3d-90ddf1fb878f';
 
-  const prisma = {
-    habit: {
-      create: jest.fn(),
-    },
+  const habitRepo = {
+    create: jest.fn(),
+    findAllByUserId: jest.fn(),
+    findActiveByUserId: jest.fn(),
+    findByIdAndUserId: jest.fn(),
+    update: jest.fn(),
   };
 
   const authService = {
@@ -29,7 +28,7 @@ describe('HabitsService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     habitsService = new HabitsService(
-      prisma as never,
+      habitRepo as never,
       authService as never,
       analyticsService as never,
     );
@@ -44,7 +43,7 @@ describe('HabitsService', () => {
       }),
     ).rejects.toBeInstanceOf(BadRequestException);
 
-    expect(prisma.habit.create).not.toHaveBeenCalled();
+    expect(habitRepo.create).not.toHaveBeenCalled();
   });
 
   it('rejects quantitative habits when minimumSuccessValue is above targetValue', async () => {
@@ -59,6 +58,6 @@ describe('HabitsService', () => {
       }),
     ).rejects.toBeInstanceOf(BadRequestException);
 
-    expect(prisma.habit.create).not.toHaveBeenCalled();
+    expect(habitRepo.create).not.toHaveBeenCalled();
   });
 });

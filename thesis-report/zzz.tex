@@ -1,0 +1,523 @@
+Contents
+PREFACE	3
+CHAPTER 1	11
+Understanding Task Orientation	11
+How to Read This Chapter	11
+Guidelines	13
+Discussion	17
+The Principles of Software Documentation	17
+A Definition of Task Orientation	19
+The Theory Behind Task Orientation	19
+The Default Manual	19
+The Default User	20
+The Task- Oriented User	23
+The Forms of Software Documentation	26
+Tutorial Documentation	27
+Procedural Documentation	27
+Reference Documentation	28
+The Processes of Software Documentation	28
+Glossary	30
+Checklist	31
+Practice/Problem Solving	32
+
+FOREWORD
+by the Series Editor
+1h Allyn & Bacon Series in Technical Communication is designed for the growing number of students enrolled in undergraduate and graduate programs in technical communication. Such programs offer a wide variety of courses beyond the introductory technical writing course—advanced courses for which fully satisfactory and appropriately focused textbooks have often been impossible to locate. This series will also serve the continuing education needs of professional technical communicators, both those who desire to upgrade or update their own communication abilities as well as those who train or supervise writers, editors, and artists within their organization. The chief characteristic of the books in this series is their consistent effort to integrate theory and practice. The books offer both research-based and experienced-based instruction, describing not only what to do and how to do it but explaining why. The instructors who teach advanced courses and the students who enroll in these courses are looking for more than rigid rules and ad hoc guidelines. They want books that demonstrate theoretical sophistication and a solid foundation in the research of the field as well as pragmatic advice and perceptive applications. Instructors and students will also find these books filled with activities and assignments adaptable to the classroom and to the self-guided learning processes of professional technical communication. To operate effectively in the field of technical communication, today’s students require extensive training in the creation, analysis, and design of information for both domestic and international audiences, for both paper and electronic environments. The books in the Allyn & Bacon Series address those subjects that are most frequently taught at the undergraduate and graduate levels as a direct response to both the educational needs of students and the practical demands of business and industry. Additional books will be developed for the series in order to satisfy or anticipate changes in writing technologies, academic curricula, and the profession of technical communication.
+Sam Dragga
+Texas Tech University
+
+PREFACE
+This textbook covers the subject of software documentation, which comes in many forms—from the familiar print User’s Manual or Installation Guide to the online help program, Wizards, and embedded help. I focus exclusively on creating documents (or information products) that help software users learn program features and use them to work productively. Most manuals and help documents that accompany software programs are written by technical writers in the software industry. Students or professionals interested in doing this interesting and challenging work will find in this book a basic foundation in the principles of writing these kinds of documents.
+
+What's New in the Second Edition
+
+This edition improves substantially on the first by the addition of and revision of a number of features:
+Updated examples. Where possible examples were selected (many from STC award winners) to reflect current trends in documentation.
+Discussions of communicating across cultures. The sections on task orientation and documentation planning contain discussions of techniques for communicating across boundaries of organizational and national cultures.
+Reorganized table of contents. The second edition puts the three main forms of software documentation at the front of the book so that students and others new to the field can get a clear idea of the forms before tackling the process of creating them.
+Increased emphasis on task orientation. The second edition eliminates an entire chapter on constructing an inventory of the software program (called a “task list”) that, while useful, fostered a “system” orientation in some documents.
+Stronger theoretical basis. This edition focuses on the three-part hierarchy of activity, action, and operation implicit in an “activity theory” approach to work. This approach focuses the user manual and other help documents on activities and actions rather than on operations; on user tasks rather than interface features.
+Emphasis on process. The book is divided into Part I: The Forms, Part II: The Process, and Part III: The Tools so readers can clearly see the components of software documentation as a field.
+Increased emphasis on utility. The Guidelines in all chapter sections have been revised to reflect a series of easy-to-follow steps. In Part III: The Tools, the chap- ters include suggestions for planning, executing, and testing the design features discussed in the chapter.
+
+The Approach in the Book
+
+Two words sum up my approach in this book: task orientation. The software manual that encourages productive software use should reflect the user’s workplace tasks, not just the software interface. For example, if your manual presents the features of a word processing program organized according to the menu structure of the program, then the user must already know a great deal about the software to find the right command. But if your manual presents the features of the same word processing program organized around the usual tasks office workers perform, then the user already possesses some knowledge about how to apply the software productively. In this book I show you how to apply this simple principle to all the elements of documentation. Using this principle will help you design successful projects. In this edition I introduce the concept of the default manual: the manual that is based on the structure of the program and represents little actual user analysis. The default manual follows the naive principle that the purpose of software documentation is to record what appears on the screen accurately and completely—applying the term“documentation” in the sense of being a comprehensive “documentary” of the onscreen events, menus, dialog boxes, and so on. The problem with such a manual is that it often presents too much information to the user causing an information overload or information anxiety. “Why do I need to know all this?” or “Where do I start?” the frustrated user might ask. In contrast, the task-oriented manual is essentially about the user in that it applies extensive user analysis to the organization, content, and layout of the manual. The task-oriented manual follows the principle that users bring meaning to the software features in the form of workplace activities and actions. The goal is not the use of the software, but the performance of work. Thus, the subject of the manual becomes the context of software usage, not the software itself. The priority for the writer becomes usability rather than mindless, formalistic accuracy.
+
+What Can This Book Do for You?
+
+The following list covers some of the ways this book can help students and professionals learn to write successful, task-oriented manuals and help.
+Introduce the basic concepts of task orientation and the forms it takes. Chapters| through 4 illustrate the importance of the user’s context in shaping the content and design of manuals and help. They show how principles of task orientation apply to manuals that teach, manuals that guide, and manuals that support software work.
+Give you a place to start if you don’t already have one. Chapters 5 through 9 follow a complete step-by-step process for analyzing users, learning a software program, and designing task-oriented documents.
+Teach you the basics about page and screen design. Chapters 10 through 14 provide you with the right background in designing useful information, laying out pages and screens, and designing various forms of manuals and online help.
+Provide useful tools for writing manuals and online help. Each chapter has a checklist of the main points you want to remember in preparing your documents. These checklists can keep you organized and on track.
+Provide practice in writing. The chapters all have useful and interesting exercises you can use to build useful skill sets that are valuable in the technical communication job market.
+Help you understand the software user. All chapters relate in important ways to one guiding idea: Understand your user and you'll have the key to helping that person use software productively in the workplace.
+Why Should You Read This Book?
+
+This book meets the needs of two groups of people: those interested in finding practical steps to help them start and complete a project successfully, and those interested in exploring the ideas behind software documentation as a discipline and as a profession. If you’re a project-oriented reader facing a manual or help project and needing assistance, this book can guide you through an entire successful documentation project sequence.
+If you’re relatively experienced with writing but new to software documentation and want to broaden your understanding of the ideas behind designing product-support documents for software programs, you will find a discussion of the ideas and research behind the idea of task orientation.
+Perhaps your motivation contains a combination of these two situations. Both of these activities can be relevant to the education and training of a professional technical writer in the software industry. To help you meet these goals in reading, the chapters have two tracks, represented by the two main expository sections of each chapter: the reading-to-do track (the Guidelines section) and the reading-to-understand track (the Discussion section).
+These two tracks complement one another, meeting the needs of the project-oriented reader, the understanding-oriented reader, and the needs of the reader who is reading for both purposes.
+The Reading-to-Do Track
+The ideas in the Guidelines section of the chapter give the person facing a project immediate, step-by-step advice on how to proceed. Often Guidelines will focus on the steps for achieving some documentation objective, such as getting useful review information after you’ve written a draft, or finding out if your procedures work right.
+Readers who are interested in getting a jump-start on a project will also find inspiration by browsing the Discussion section of each chapter, where I’ve included many useful examples. Similarly, when you're in the midst of a project, you'll find the Check lists at the end of each chapter very useful as a reminder of the principles in the chapter.
+
+The Reading-to-Understand Track 
+The Discussion section of each chapter looks at key issues related to the chapter topic. For instance, in Chapter 2, “Writing to Teach—Tutorials,” the Discussion section explores the background in cognitive psychology that informs much tutorial design in the profession today, contrasting the elaborative approach and the minimalist approach. The reader interested in deepening his or her understanding of the principles behind task-oriented documentation will appreciate the Practice/Problem Solving suggestions at the end of each chapter. Also, where relevant, I have tried to include cross-references to material in the Guidelines sections.
+
+What Is Software Documentation?
+
+Here is an important definition:
+Software documentation is a form of writing for both print and online media that supports the efficient and effective use of software in its intended environment.
+ Software documentation, as many researchers have shown and as technical writers and software documenters know from their work in the business, contributes significantly to the value of the software product. In this sense the documentation contributes to the user’s efficiency in the workplace and thus has an important role to play in modern business. Think of how often you hear people complain about manuals and online help.To me, this speaks for a need for documentation—more useful and practical documentation than has characterized the software industry in the past. 
+
+Over its evolution, software documentation has expanded to take on the challenge of providing useful and practical information products for users. Whereas documentation once aimed to satisfy the support needs of the experienced user, documentation in the 2000s aims also to make software useful. This means not just teaching features but supporting workplace tasks with step-by-step relevancy.
+
+In changing from the goal of supporting experts to guiding and teaching beginning and intermediate users, researchers looked to a number of resource disciplines, includ ing document design, instructional psychology, cognitive psychology, ergonomics and human factors, and traditional rhetoric. These explorations created a great number of design innovations that, coupled with technological advances in page design and functionality, have given us the exciting world of single-sourced documents (online documents with dynamically generated content and adaptive interfaces) and embedded help files (documents that present information at the point of need through features of the software interface).
+
+But of all the innovations that sprang from the rapid rise of computer and software technology during the 1980s and 1990s, task orientation has provided the most dependable and useful tool for manual design. Task orientation, as an organizing principle in manuals and online help and as a goal in their design and writing, informs the approach I take in this book.
+
+Consider another important definition:
+Task orientation is an approach to software documentation that presents information in chronological order based on the user’s workplace sequences.
+
+Task orientation encourages the successful application of software to workplace objectives. Other terms used for task orientation include how-to, step-by-step, procedures, walkthroughs, and tutorials. This approach to documentation is shown in a variety of print and online forms: tutorials, “getting started” booklets, instruction steps, job performance aids, and online help procedures. In this book I use the principles of task orientation to show you the benefits of using this strategy in every part of the design of your information product. By following these principles you will leverage the user’s interest in performing the job successfully, not just learning a new piece of software. The next section illustrates some of the benefits of the task orientation design strategy.
+
+Who Can Benefit from Reading This Book?
+
+Those who can benefit from this book include any students or professionals associated with writing for the software industry. The next section describes characteristics of some of these people and points out how the information in Writing Software Documentation can help them in their learning and work.
+
+Students Preparing for Careers in the Computer Industry
+If you want to succeed as a writer in the computer industry you need to know how to design user documentation from a task orientation point of view. Consider this scenario: A medical management software company keeps incurring high support costs from a client who still has an old version of its manual. That manual contains screen shots of the menus with explanations, in arcane computer terms, of what each of the menu functions does. Other clients using the same system log only half the support calls of this client, but they have received and used the newer step-by-step version of the manual organized after patterns of activities in the user’s workplace. They can find, by skimming the table of contents, tasks that relate to their work and that have practical value in the workplace. They see listed there things they get paid to do, like “Print a Patient-Tracking Report” or “Create a Treatment Analysis Graph.” When they turn to these procedures they find steps leading them logically through the task, whether it’s printing a document in a special way or converting a document from Microsoft Word to HTML format.
+Which manual would you want to have produced? The one that doubles the support calls (at an average cost of $75 each) from perplexed users, or the manual that lowers the number of support calls or otherwise shows an improvement in user productivity productivity you can measure convincingly and repeat in other projects?
+
+Engineers, Computer Scientists, Managers, Trainers,
+Usability Specialists
+This book has also something to offer readers from the technical side of the computer industry (IT and software development) who have a great deal of technical expertise in software programming, system design, and hardware training but may not have a full range of documentation resources at their fingertips. For these readers this book offers a number of benefits:
+Current examples. The examples, many of which won awards or represent current page or screen designs, can help the software engineer keep up with current designs. 
+Overview of the standard documentation process. The reader accustomed to engineering processes will feel right at home following the standard documentation procedure outlined in Chapter 6, “Planning and Writing Your Documents.” This procedure has helped me and many others see ways to keep development costs down.
+Insight into making their products useful. The ideas of task orientation have a broad application in many areas. Technical employees and designers need to understand the approach used by writers interested in building a bridge between users and technologies.
+ Useful tips and techniques. The programmer who wants to document his or her new application may appreciate helpful hints on structuring a help file for maximum usability or efficiently using information in the manual and the online help.
+The Structure of the Writing Software Documentation
+
+Chapter 1: Understanding Task Orientation
+Chapter 1, “Understanding Task Orientation,” describes the nature of software-mediated work and analyzes ways to design task orientation into manuals and online help. It describes a system for analyzing workplace activities and actions and matching them with software operations (descriptions of features). It offers a set of guidelines to direct the document development process.
+Part I: The Forms of Software Documentation
+Chapters 2 through 4 introduce the reader to three basic forms of software documentation: tutorials, user’s guides, and reference documents. Each of these forms has a different purpose. These purposes are: to teach as preparation for using the software, to guide while using the software, and to support after the user has experience with the software. These purposes require different kinds of user analysis that lead to different strategies for document organization, page layout, language, review, and testing.
+Chapter 2, “Writing to Teach—Tutorials,” focuses on how to write to help users memorize basic program features in order to guide them from being novices to being experienced users, or from being experienced with a program to being expert. The chapter shows how to organize the two main types of print tutorials in use today: direct instruction and minimalist. The principles of skill selection and tutorial structure apply to teaching documentation in online and multimedia formats as well as print.
+Chapter 3, “Writing to Guide—Procedures,” focuses on how to write procedures: step-by-step tasks organized around workplace activities and actions that form the heart of the task-orientated approach. This chapter discusses various formats for presenting procedural information and the elements of a typical task.
+Chapter 4, “Writing to Support—Reference,” focuses on how to create technical support pages and screens for expert users, using the strategy of the structured reference entry. The chapter also looks at methods of organizing reference information and the psychology behind reference support.
+
+Part Il: The Process of Software Documentation
+Chapters 5 through 9 present information in the sequence a writer would need while writing a manual or help system. Although the phases of the process overlap considerably and some require more time than others, the process roughly follows that used by writers in the software industry.
+Chapter 5, “Analyzing Your Users,” shows how to conduct a thorough user analysis, thus forming the basis for the design work on the documents that will follow. Because task orientation implies a thorough knowledge of the user’s workplace, the chapter focuses on special techniques for getting the right information.
+Chapter 6, “Planning and Writing Your Documents,” guides you through the Stages of writing a manual or help document and covers how to organize people and resources and design a document-with maximum usability.
+Chapter 7, “Getting Useful Reviews,” covers the process of sending out a draft for review by team members and users. This crucial process helps insure usability and task orientation, but you need to handle it carefully.
+Chapter 8, “Conducting Usability Tests,” discusses types of usability tests you can perform to measure how well your manual supports user tasks. It offers an easy-to-follow 10-step process for planning and conducting valuable usability tests.
+Chapter 9, “Editing and Fine Tuning,” covers the basics of switching from the writer mode to the editor mode. It looks at the industry standard method of editing and shows how that method can contribute to the overall task orientation of the final product. In fact, much of the polishing of a task-oriented approach occurs during editing.
+Part Ill: The Tools of Software Documentation
+Chapters 10 through 14 present information by topics selected for their importance in designing task-oriented manuals and online help. These chapters function as a tool reference for the writer: a place to read about design techniques and ways to apply them to real-world writing problems. The reader moving through the progression of Part I will want to consult these chapters as necessary to fill in the Background. Each of these chapters takes a process approach to the topic. The guidelines are arranged in a step-by-step manner to provide a methodology for planning and executing these important parts of the documentation process.
+Chapter 10, “Designing for Task Orientation,” presents techniques for structuring documents in a way that allows for ease of use and productivity. It ties in with
+Chapter 5, “Analyzing Your Users,” by showing how each of the eight information areas relevant to the user analysis can get converted into useful and productive document designs.
+Chapter 11, “Laying Out Pages and Screens,” tackles the basic elements you need to know about pages: layout and words. It focuses on layout (how to arrange text on pages and screens) and text (how to pick the right fonts for the right job). It contains a number of examples of common formats and provides a methodology for designing pages and screens.
+Chapter 12, “Getting the Language Right,” contains guidelines that show you how to maintain a high degree of task orientation by selecting language related to task work and by structuring sentences and paragraphs for easy comprehension and job performance.
+Chapter 13, “Using Graphics Effectively,” puts graphics—screens, drawings, diagrams, and icons—into the context of the user’s questions about a software product and shows ways to answer those questions using images. It elaborates on five ways to use graphics and gives descriptions of the most popular forms in manuals and help.
+Chapter 14, “Designing Indexes,” examines one of the most important elements of software documentation: the index, or, if online, the keyword search. This chapter shows how to increase the usability of a manual or online help system through indexes.
+
+How Are the Chapters Organized?
+
+Each chapter contains the following sections:
+How to Read This Chapter. The introductory section helps you identify which topics you can use for particular documentation tasks or problems. It also includes specific advice for reading the chapter, whether you’re new to software documentation or have some experience.
+Examples. The examples section of the chapter presents a page or other element relevant to the chapter topic. The examples serve to set the stage for the subsequent guidelines and discussion.
+Guidelines. The guidelines section breaks the work presented in the chapter into a process or methodology. The guidelines often contain many examples and practical tips for putting documentation features to work or preparing to write documentation.
+Discussion. The discussion section steps back from the process and looks at the underlying principles of the chapter topic.
+Checklist. The checklist section summarizes the chapter’s contents in checklist format to aid the reader who’s actively working on a documentation project.
+Glossary. The chapter glossary collects all the terms of a specific chapter that relate to the topic and warrant definition. (These terms are shown in bold italic in the text.) Terms also are represented in the book’s index.
+Practice/Problem Solving. The practice/problem solving section of each chapter poses cases for applying the chapter ideas or starting interesting discussions about the chapter topics. |
+An Instructor's Manual is available from the publisher to adopters of this text. Please contact your local Allyn & Bacon—Longman representative.
+Acknowledgments
+
+I would like to thank the many people who directly and indirectly contributed to this Book. 
+
+ At Allyn & Bacon: Joe Opiela for his professional managing of the review process, Julie Hallett for her professional manuscript preparation, Teresa Ward for her help in preparing the /nstructor’s Manual, and Stacy Dorgan for her help in preparing the companion web site
+I would also like to thank the reviewers for this edition: Daryl Grider, West Virginia State College; Sandi Harner, Cedarville University; Dan Jones, University of Central Florida; and Kim Lambdin, Metropolitan State College of Denver.
+At WestWords, Inc.: Pat McCutcheon for handling the production process and Deborah Jelinek for her careful and professional copy editing.
+At Texas Tech University: Sam Dragga for arranging my schedule so I would have time to work on the project and to’ my colleagues for their suggestions and support.
+In addition to these specific people, I also want to thank those who have provided inspiration in software documentation. Barbara Mirel and Joann Hackos are two whose work is a continuing source of ideas and innovation. I also am eternally grateful to my students for their faith in the task-oriented approach and their ability to help me see how to improve the book and its approach.
+
+
+CHAPTER 1 
+Understanding Task Orientation 
+This chapter looks first at the principles that shape the effort of writing manuals and help files. We then turn to the application of those principles to the dominant forms of documentation: tutorials, users guides, and reference guides. We also look briefly at how these principles apply to the process of documentation writing. 
+This chapter helps software documentation writers achieve two goals: encourage users to learn the program (proficiency) and encourage users to apply the program to problems in the workplace (efficiency). This chapter defines task orientation and gives two examples. It describes and explains nine characteristics of manuals that provide workplace solutions for users. It explains the five characteristics of the default user manual and explains five characteristics of the task-oriented user manual. 
+How to Read This Chapter 
+If you’re unfamiliar with software documentation, study the Examples, then read the Discussion section, then the Guidelines. 
+If you have some experience in software documentation, read the Guidelines, then compare your work to Figures 1.1 and 1.2 in the Examples section. Then ponder the Discussion. 
+
+A number of things determine the success of software documentation. Put another way, you can easily find a number of ways to mess up a documentation project. This book examines-as many dos and don’ts as possible in software documentation, but focuses on one overriding principle: Make the software usable. A manual that does this adapts the software to the user’s job, rather than making the user adapt to the soft-ware. What kind of manual encourages adaptation to the user’s job? We can begin our exploration with an example.
+
+This example comes from a tutorial manual for a program called PV-WAVE P&C. This program enables scientists and engineers to manipulate research data and view it in charts and graphs. These highly technical users may have used other programs or methods to manipulate their data, and may not easily see how this program can make a difference to them. To accommodate such users, the writers went to considerable lengths to make the integration of the program easier.! A number of features, indicated in Figure 1.1 encourage such use. Don’t get the wrong idea— that this manual doesn’t offer procedural information. If you read this example carefully you can see tl.at the writers have represented the steps of a procedure, but they have done so in a way that couches that procedure in the context of the user’s workplace. 
+Software users often need both how-so and how-to information while working with a program. In the example in Figure 1.2, the electronic controls over the presen-tation of information allow the user to choose the level of detail appropriate to the user’s problem-solving needs. Users prefer to choose the level of detail because doing so allows them to relate the program to their workplace, instead of dryly cata-loging the system features. The electronic controls make it possible for users to get to the correct steps quickly.
+
+
+
+
+
+Figure 1.1 Getting Started with PV-Wave
+This software encourages user control through a scenario that suggests efficient application of the software to work.
+
+Figure 2 Getting Assistance While You Work
+This help screen encourages software use by highlighting step-by-step information and by provid-ing background information to uninitiated users. It suggests the use of “Guidelines” as an effi-cient way to get work done.
+
+Emphasize problem-solving.
+Provide task-oriented organization.
+Encourage user control of information.
+Orient pages semantically.
+Facilitate both routine and complex tasks.
+Design for users.
+Facilitate communication tasks.
+Encourage user communities.
+Support cognitive processing.
+Figure 3 Guidelines for a Successful Manual or Help System
+Guidelines 
+All software documentation should do what the page shown in Figures 1.1 and 1.2 do: Explain and show the connections between the user’s professional work and the computer program. Scenarios, examples, and page layout can all contribute to this explanation. A manual that does this can be described as “task oriented,” because it helps the user manage and communicate information related to his or her task. This book contains many strategies for encouraging task-oriented, integrated software use. Figure 1.3 presents a summary of the main strategies. As this book progresses we will explore these and other techniques that can help you create a manual or help system that focuses on helping users solve complex tasks, one that helps your users clearly see the relation between this new program and their workplace. The following paragraphs briefly explain some of these techniques.
+
+Emphasize Problem Solving 
+A manual or help system should help users solve problems in the workplace. Some problems might include: “How can I organize this project?” “Where should our company invest development time?” or “Where can I find the peak intensity of data?” You can help the user through introductory paragraphs that preview not only the steps to follow, but the goals and objectives of their software work. As you will see in Chapter 2, “Writing to Teach,” you have opportunities to encourage creative solutions. 
+ Provide Task-Oriented Organization 
+Organize a manual or help system in a way that matches the kinds of tasks a user will perform. For example, a word processing manual that follows the “open a file, type in words, save the file, exit the program” sequence would seem more logical than one organized alphabetically, for example, or according to the menus of the program. A task-oriented arrangement begins in the table of contents (of your manual) or the introductory screen (of your help system). As the following chapters will show, a task orientation should pervade the design of your manual or help system so that even the seemingly mechanical forms of reference have the right touch to make them very functional in the workplace.
+Encourage User Control of Information 
+“User control of information” means the feeling, among software users, that they decide what the program does for them. To encourage this, the manual should show users how to make key decisions, supply key information, or determine key program outputs. Examples include: specifying what a database program will search for and identifying which data the program will process (as in Figure 1.1, which shows the sci-entist selecting just the right “slice” of data to use). Users need to feel in control of the program. Cross-references in manuals and hypertext links in online systems can help maintain the user’s sense of control over the documentation because these document design elements allow users to choose where they go for additional information, or where to proceed after they have finished a section. Chapter 3, “Writing to Guide— Procedures,” explores the importance of emphasizing the actions the user takes. 
+Orient Pages Semantically 
+Semantic orientation in page design means you arrange the elements of the page meaningfully, according to elements of the job the user needs to perform. Figure. 1.1, showing the noncomputerized image of the galaxy and the computerized chart of peak intensity, illustrates a semantic orientation. The juxtaposition of the two items mirrors the user’s work progress from the telescope to the graph. Other examples of semantic organization include putting important elements first and making important elements larger to help users apply the program to their work. One of the best ways to orient pages semantically employs visuals and graphics to balance text in a complementary way. Chapter 11, “Laying Out Pages and Screens,” discusses ways to balance graphics and text and also to maintain the appropriate den-sity of print and legibility of letters. These basic elements can contribute to the usabil-ity of information in the workplace. 
+Facilitate Both Routine and Complex Tasks 
+As Barbara Mirel points out, users of software face both routine tasks and complex tasks. Routine tasks include repeatable tasks that are easily represented by conven-tional procedures. She points out, however, that “Complex tasks differ from routine tasks such as data entry of standard accounting calculations because they are not per-formed the same way every time.”? Routine tasks are often those represented by menu functions in a program (“Save a file,” “Delete a record,” and so on) but com-plex tasks require the user to apply knowledge that isn’t easily codified in step-by-step procedures. This knowledge, called tacit or pragmatic knowledge consists of insider knowledge that comes from years of experience. Using a spreadsheet to schedule employees fairly, or using a word processor to identify trends in annual reports: These tasks are highly dependent on the situation surrounding the user and cannot be easily represented by manuals that cover only menu functions. However, the more you can help users apply software to complex tasks the more users will value your manual or help system. You learn about users’ routine and complex tasks during the user analysis covered in Chapter 5, “Analyzing Your Users.”
+Design for Users 
+The concept of user-driven design means that the organization of a manual comes from the user’s needs rather than from models or templates of what a user’s guide should look like or from schemes based on giving some users one kind of informa-tion and other users other information. According to Janice Redish, user-driven design should allow users to: e Find what they need e Understand what they find ¢ Use what they understand appropriately? User-driven design requires the kind of extensive user analysis discussed in Chapter 5, “Analyzing Your Users” and in Chapter 8, “Conducting Usability Tests.” It means that each manual or help system presents you with new design challenges that you can only meet by involving the user in the document development process. When you study your users following the seven suggestions in Chapter 5, you will find that each of the topic areas discussed in that chapter ties in to specific tech-niques, such as using icons to suggest key points or tables to show how features and their uses can add to the task orientation, and thus the value, of your documents. 
+Facilitate Communication Tasks 
+Users of software programs work in contexts that require them to communicate about their work. These tasks are called communication tasks because they depend on the user’s workplace demands rather than on a narrow view of program features. Face it, just opening a file is only part of the picture from the user’s perspective—the user opens a file so that he or she can communicate information to another person, not for its own sake. Document designers can help users see the why behind the program fea-tures by analyzing what kinds of information users need and how they communicate, and then identifying those program features—for example, print functions, report functions, or disk output functions—that support communication tasks. Also, communication tasks are facilitated by tasks that transfer data from one application to another. How do you help users with communication tasks? Learning about the user’s communication tasks presents a great opportunity to record the common terminology for procedures and tasks—the “jargon” that you can use in glossaries and for writing steps and explanations. The specifics of using communication-oriented language are discussed in Chapter 12, “Getting the Language Right.”
+Encourage User Communities 
+Users often need encouragement to rely on other users of the program, their user group; task-oriented documentation encourages users to identify and get help from others. Other users of the program, while not exactly experts in the software, can render valuable help because they understand the user’s job demands. Companies foster user communities with mailing lists, article archives, and contact lists and other information specifically for users of their products. Figure 1.4 shows an exam-ple of a user community web page for users of a popular media playing program. For a person writing, say, a tutorial for this program, this site would provide valuable information about the users of the product. User communities, discussed in detail in Chapter 5, “Analyzing Your Users,” can provide a wealth of information about user tasks. Users can also help support your development effort. Chapter 6, “Planning and Writing Your Documents,” discusses the idea of including users in the development process through interviews and client reviews. User communities can help provide candidates for this kind of user-involved document development.
+Support Cognitive Processing 
+Since the advent of computerized work in business and industry, we have learned much about how users process information. We have learned that people use mental models, called cognitive schema, that help them learn new information, process the information, and apply the information that comes at them at an alarmingly faster and faster rate. The task-oriented manual uses principles of knowledge representa-tion, parallelism, and analogy to convey software features and applications to workplace tasks. These techniques, described in Chapter 4, “Writing to Support—Reference,” allow users to absorb what your manual or help system has to say with as little effort as possible. For the modern professional in business and industry, the software program lies at the heart of the knowledge management problem because computers both repre-sent the cause and the solution to the problem. Computers generate complex infor-mation, and computer software allows the user to store, transfer, and present it. Our understanding of how computers affect work grows through research on the impact of computers on people’s work and workplace roles. If we explore software use from the point of view of the user’s information environment, we see a strong need for good software documentation.
+
+
+Figure 4 An Example of a User Community
+
+Discussion 
+The principles that underlie the guidelines provided derive from studies of the use of software to perform productive work. A good manual or help system has many fea-tures that make it succeed, but the bottom line is this: The more a manual can support productive work, the greater the chance of acceptance and satisfaction by a user. First, consider the overall goals of software documentation and examine some prob-lems inherent in doing software work, then examine some ways a good online or hard-copy manual can help users overcome these problems.
+
+The Principles of Software Documentation 
+This book addresses an important need in the business and professional workplace today to help people use software efficiently and effectively. According to the Nua Internet Surveys the number of persons online in the United States since 1995 has risen from 18 million to 166 million.‘ Like it or not, those technical communicators who choose to write software documentation—manuals of all sorts, help files, user’s guides, reference cards, job performance aids, FAQs, installation guides, and other information products that accompany software programs—find themselves confronted with no less of a challenge: Make users proficient with soft-ware and efficient in their jobs. While such factors as training, individual motiva-tion, peer pressure, the boss’s dictate, or fear of falling behind in a career can certainly contribute to people using their software (and thus their computer) effi-ciently, the computer manual (print or online) remains the single most common form of support. When in doubt and often as a last resort, most users turn to the manual. 
+Researcher Barbara Mirel, and others, approach the goals of software documen-tation from a perspective of the user doing “knowledge work” or work requiring that users do more than just learn to use the menus of a computer program. According to Mirel, the job of the manual writer consists of constructing documents that help users “learn to work with their programs in new ways, adapting software capabilities to the specific purposes and goals of their jobs.”> This kind of software work is called “adaptive computing” and means that users have to apply software to complex tasks not represented by menu selections. Complex tasks require problem solving, analyt-ical skills, and knowledge derived from experience—the kinds of learning that are situated in real workplace activities. In terms of our discussion of the goals of the software manual or help file, supporting adaptive computing means going beyond just saying how a program works. You have to show how to apply the program to complex workplace tasks. 
+Table 1.1 refers to two goals of the software user: the goal of learning a program and the goal of applying the program. The writer has to convey the correct instruc-tion on learning to use the program, helping users navigate menus, learn commands and terminology of a program. But good manuals and help files also have a second goal: telling how to apply the program to complex tasks that you can’t just perform by selecting menu functions. Helping the user solve problems—improve his or her performance in the workplace—requires that the manual writer learn the user’s workplace goals, problem-solving strategies, and other kinds of knowledge that make people effective workers, and then showing them how the software can help them do that. 
+This chapter offers a strategy for addressing the needs of software users when they turn to the manual. First you will look at a definition of a design strategy for manuals that attempts to address the user’s needs productively to encourage effi-cient use of word processors and database programs. Then you will examine examples of manuals that exhibit some of the features that contribute to efficient software use. To understand how these manuals work, you need to look at changes that have taken place in the modern workplace since computers and computer software arrived. You will see that working with software requires a significant shift in thinking and learning, a shift that requires users to develop new skills and job roles and documentation writers to adjust their approach to writing manuals and online help.
+
+
+Table 1.1 Goals of the Software User and Manual 
+Goals of the Software User
+Goals of the Manual or Help
+Learn to use the program
+Teach the features of the program
+Apply the program to useful work
+Tell how to apply the program to complex tasks
+
+
+A Definition of Task Orientation 
+This book uses the term task orientation to indicate the writer’s purpose. The fol-lowing definition expresses how task orientation helps articulate this purpose. 
+Task orientation: A design strategy for software documentation that attempts to increase user knowledge of and application of a program by integrating the software with the user’s work environment. 
+
+When confronted with a new piece of software, most users have one question: “How will this program help me in my job?” An informed answer to that question, one that points out exactly the greater job efficiency, or the savings in time, or the greater accuracy of production, can provide just the motivation a new user needs. Those who reject a software program often do so with a parallel observation: “This program did not help me in my job.” Often the complaint gets worse: “This program slowed down my production time,” or “This program alienates my employees and makes them feel like subordinates to a machine.” But when a user sees that learning and using a program can increase job efficiency, most will take the time to read the manual and learn. the program. As Patricia Anson points out, the full potential of a manual is realized when “technical writers take an approach to developing documentation (online and on paper) that models the natural cognitive processes of users who are seeking to fill knowledge gaps through the right information, presented at the right time, and in the right place to meet task goals.” Clearly, the manual that encourages this kind of inte-gration with task goals will also increase job efficiency. 
+
+The Theory Behind Task Orientation 
+While the idea that software should help people do meaningful work may seem obvi-ous, it is nonetheless helpful to explore the theory behind the approach. Exploring the theory may help you understand the principles that can guide your design of manuals and online help, and provide the foundation for techniques you will find in the chap-ters that follow. 
+
+The Default Manual 
+As you can see, there are two ways to define the user of any software: as a person who needs to learn about menu functions and commands, and as a person who uses software for workplace ends. In the past, manuals and help systems tended to focus on the former definition, assuming that if the user could understand how the program worked, he or she could figure out how to apply it in the workplace. The idea of bas-ing computer manuals on program features was and is prevalent in the computer industry today. Such an approach creates manuals with sections like “Using the File Menu,” or “Creating a Table.” While these topics are necessary for using the program, they convey a subtle message to users: “Learn the menus and features of this program and that’s all you need to do to be productive.” This may or may not be true. While these basic tasks are important, they create an implicit role for the user. That role is one of a person who is technologically deficient or ignorant, a mere receiver of information, and an operator instead of a thinker, someone who needs to accom-modate his or her behavior to the program rather than vice versa. 
+In this book I refer to the user defined by such a manual as the default user and the manual written in such a way as the default manual. Defining the user as “a person who operates a computer” tends to have a limiting effect on how that person sees a job and work. This limiting effect stems from the tendency in manuals to isolate the user from his or her environment and to concentrate on defining program features exclusively.
+
+Table 1.2 Characteristics of the Default Manual
+Characteristic
+Example
+Covers the features of the program
+Using the File Menu... 
+Saving a document...
+Implicit role of technological ignorance imposed on the user
+“Read this manual before proceeding...”
+Ignores the user's workplace use of the program
+“Understanding Net Hog Pro”
+Assumes one way of learning
+“This tutorial will help you understand the function of the Setup Menu...”
+Overly simplified approach to program operation
+Step-by-step organization
+
+
+
+The Default User 
+These are some characteristics of the default user:
+perceives job skills as decreasing in importance 
+sees computer use as separate from job goals 
+becomes isolated from other employees 
+fears remote supervision suffers from information overload 
+
+Often, people resist using computers and software because of the inherent complexi-ties of abstraction and information overload. A brief overview of these areas can demonstrate the challenges facing software documenters who are determined to help software users be efficient in their jobs. 
+
+DECREASED IMPORTANCE OF JOB SKILLS: “My EXPERIENCE ISN’T ANY GOOD ANYMORE.”  When we speak of workers’ skills losing their importance we often speak of it as job deskilling, which means that the computer program can perform many of the tasks a person used to perform so the job requires less skilled people. Consider the example of the maintenance worker in a plant. Before the advent of the computerized inventory control system, keeping track of parts for machines required experience acquired over years of repairing motors. With the computer system in place, parts are reordered auto-matically once inventory levels fall to predetermined levels. The decision to order new parts, for example, appears to have gone into the computer, so the company can now afford to hire persons with less job experience, with fewer special skills. 
+Some managers and professional workers report in research studies that they perceive their jobs as less meaningful than before.’ But often the case is that because the. computer can provide information to the experienced user on reordering parts, that user is, in fact, challenged with new problems: “How can I make reordering parts even more efficient,” or “Perhaps I can concentrate my efforts on deciding among parts vendors now instead of having to keep track of inventory.” The skill doesn’t go away, but the problem changes for the user, requiring that user skills be applied in new and more challenging ways. 
+Much resistance to computers derives from the perception by professional per-sons that the computer, often in company-wide systems, has begun to take over some tasks that employees used to perform, as in the case of deciding which parts to re-order. The default user is the user who “lets the computer do it.” Often the default user gets this limited idea from a manual that merely describes features like “reorder-ing parts.” A better way to approach this would be to help the user see ways to apply the “reordering parts” feature to the new circumstance of managing parts reordering, or making parts reordering as efficient as possible. These larger tasks suggest to the user that skills don’t decrease in importance, but that they change, grow in complex-ity, and require new learning instead of thoughtless following of steps. 
+INCREASINGLY ABSTRACT TASKS: “I JUST CAN'T UNDERSTAND HOW THIS THING WORKS”. Part of the reason people have trouble seeing the link between doing by hand and doing with a computer lies in the abstract nature of computer work. Anyone who has tried to learn a computer programming language has experienced the abstractness of the way computers do things. By-hand work (writing your name with a pencil) and com-puter work (writing your name with a word processor) embody a contrast of the con-crete and the abstract. The pencil creates marks simply, when a piece of graphite is dragged across a page leaving a visible trail. The computer uses a highly complex electronic system of buffers, wires, computer chips, and circuits to leave its visible phosphorescent trail on the screen. How does it happen? The computer does things in a very abstract way. You can’t touch it; it’s not concrete. 
+The same feeling of loss of control faces all computer users. Without a feeling of control over their work, workers feel that it loses most of its simplicity. And this apparent loss creates resistance to software and threatens efficient use. Writers of manuals and help systems need to develop techniques—such as decision trees, lists of suggested uses, examples in different disciplines—to reawaken the computer user to a confident awareness of the computer as a flexible tool. Whereas increased abstraction relates to how people see their jobs through their tools—computerized or not—work also takes place in a social domain. And that, too, appears threatened by computer-mediated work. 
+INCREASINGLY ISOLATED FROM OTHER EMPLOYEES: “I’M STUCK IN FRONT OF THIS COMPUTER” Business organizations embody a complex web of social structures that have evolved over history and often have to change because of work done at a computer screen. Social structures—the people we relate to at work, the work communities we inhabit, the coalitions we form—play a major role in our job satisfaction. In some companies, social groups take on names: the front office, the back office, the first floor, and so on. But now, Zuboff asserts that the computer screen has now become the primary focus of a person’s interaction with a company, and with others in the company. No more chatting over the cubicle walls, no more friendly errands to run to different parts of the building. One person, a benefits analyst at an insurance com-pany, put it this way: “No talking, no looking, no walking. I have a cork in my mouth, blinders for my eyes, chains on my arms. With the radiation [from the com-puter screen, supposedly] I have lost my hair. The only way you can make your production goals is to give up your freedom. 
+People need others to communicate with, get feedback from, and get rewards and other incentives that make work enjoyable. They create useful dialogs with others to help share and solve problems. But people using computers risk a diminished impor-tance of their coworkers. Many potential software users, understandably, resist this isolation. They lose their social contact, even if before they may not have realized the social aspect of their work. The software documenter, as we will see, faces a challenge to introduce the isolated user to new possibilities of interaction with coworkers through the computer.
+
+ REMOTELY SUPERVISED: “My BOSS HAS AN ELECTRONIC LEASH ON ME.” Ironically, the computer-mediated user will feel both increased isolation (because he or she seems chained to a computer screen) and increasingly exposed to the manager or supervisor. For example, before the secretary had a computer, the boss had to physically walk to the secretary’s desk to check on the status of a typing job. Now the boss can check on the secretary by looking up the file on the network. Before, the manager had to catch you loafing or had to come to your desk and pull files to make sure you kept up with your work. Now the manager can access your files electronically, check on your productivity, even organize your work day for you without ever showing up physically (Figure 1.5). 
+This kind of remote supervision through the computer system can result in a number of detrimental effects. Some computer users may feel that they can’t think up new ways of doing things because the computer “already has it figured out.” Others may get an ambiguous sense of their actual boss, and may attribute authority to the computer system itself. They may lose their sense of control over their work because of the increased supervision exercised through the computer system. Whatever the effect, computer users often resist using software because of the control they perceive it has over their work. 
+OVERLOADED WITH INFORMATION: “WHY DO I NEED TO KNOW THAT?” Some users resist computers because they feel overloaded by information. (It’s not uncommon for a frequent email user to accumulate hundreds of unread messages while away from the computer on vacation.) Consider the writing student who can’t decide which of the suggestions made by a grammatical analysis program to follow up on. Or con-sider the researcher faced with volumes of descriptive statistics but little idea as to which ones to regard as significant. Similarly, a computer network management program can provide a supervisor with a full screen of information about network use, but such a screen can also intimidate the supervisor who can’t tell which statistics mean more than others. Having volumes of information does not always solve problems for users. In fact, according to author Richard Wurman, having too much information with-out the ability to understand its significance can cause information anxiety. This anx-iety can afflict computer users who find themselves flooded by information without knowing which they should try to understand. 
+
+Workers in computerized environments often feel a sense of lacking a place of their own away from the boss and coworkers. Often our best creative work occurs in such private spaces.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Often the default manual will contain a statement at the beginning of the docu-ment that says “Read this manual before proceeding.” Rarely do users follow these directions because the default manual focuses on the system features, menu items, and other information about the software product. But users are only secondarily interested in the software product; their main focus is on their jobs. So the reader often finds him or herself trying to use the program without really having “read” all the manual, experimenting with the interface, trying to figure out how to apply the program. The problem occurs when the user gets stuck or lost. Then the user has the feeling that maybe he or she should have read the manual (but the manual doesn’t say anything about applying the program anyway). This feeling of having information but not seeing how to apply it leads to information anxiety, a condition that causes many users to restrict their use of software and, ultimately, give up trying to learn and apply it.
+
+The Task- Oriented User 
+As indicated earlier, software documenters face the challenge of making programs easy to use and applicable to workplace objectives. This book will help you meet that challenge. As a beginning, we can examine the difficulties that face the users of com-puter software, and see how we can address them through documentation design. The following discussion of the characteristics of the task-oriented user, whose software use fits with his or her work environment, can help you write manuals that support efficient and productive software work.
+
+Table 1.3 The Default User Versus the Task-Oriented User
+Default User
+Task-Oriented User
+Decreased importance of job skills
+Challenged by redefined work activities
+Increasingly abstract tasks
+Conceptually oriented
+Isolated from social networks
+Aware of user communities
+Remotely supervised
+Self-managing
+Overloaded with information 
+Supplied with resources
+
+
+CHALLENGED BY SKILL DEMANDS: “THIS PROGRAM MAKES ME A BETTER MANAGER. While software can perform some of the skills of trained employees, software use requires users to engage in complex tasks, tasks that require a human mind and that call forth sophisticated professional knowledge. A database program, for instance, requires sophisticated workplace skills in organizing and categorizing information, understand-ing relationships between sets of data, and analyzing numerical trends. A computer can sort and categorize but it cannot handle ideas. In fact, software can expand the kinds of activities a person can engage in at work, if only the manual or help system points the user in the right direction. Applying an action/operation framework to computer work can help documenters see the kinds of complex tasks they need to support. Computer activities require two kinds of efforts: actions and operations (Figure 1.6). Actions are tasks that grow out of work situations that often require communication and thought. For example, in the activity of using a word processing program, the actions would consist of writing a let-ter, writing an analysis, contributing content to a quarterly report, taking notes during an interview, and so on. When the accountant thinks of “using the word processor” he or she thinks of these kinds of actions (or complex tasks). Operations, on the other hand, consist of program functions; limited efforts, often defined by the menu items of a program. In a word processor, for example, tasks like “opening a file,” “checking the spelling,” “setting page margins” and so on comprise operations. Using the framework of an activity such as in Figure 1.6, you can see that to the reader, the activity of “using a word processor” has the most meaning at the level of actions. Actions like these have meaning to users because they relate to meaningful work, they help the user become a better communicator, they suggest thinking and reflect complexity. They help define the social conventions of the workplace (“what a letter looks like,” “what reports should contain,” and so on.) The task-oriented manual instructs and appeals to the user “where the action is” or at the action level rather than the operation level. At the operation level tasks are generic, isolated, and applicable to any number of actions.!° Any given action could employ a combination of operations to complete it. But the point is that nobody uses a word processor simply to “open a file.” The software documenter needs to find ways to reinforce the skill challenges inher-ent in actions, because these represent efficient computer work. Making the program functions or operations easy to use can help because it allows the writer to focus on high-er-level, advanced actions that challenge the user and that the user is familiar with. In this way, users begin to see computer work as more than mere step-by-step keyboarding. Users need to see their work as significant: to see that what they do with a software pro-gram can have an impact on their work, their organization, and-others within their orga-nization. Challenging the user often requires teaching computer skills in the context of a person’s job so the user can see the benefit of the software (Table 1.4).
+
+
+Figure 1.6 Activities, Actions, and Operations in Using a Word Processor
+CONCEPTUALLY ORIENTED: “THIS GIVES ME SOMETHING NEW TO THINK ABOUT.” Work with software requires handling abstract concepts such as data types and processing instructions that make computer work difficult and can cause users to reject programs. Technical writers have always faced the challenge of explaining abstract and highly technical information to novice readers. Fortunately, researchers in instructional design have found ways to help explain abstract concepts. The follow-ing paragraphs present some of the new approaches available to the software document. Part of the difficulty in using a software program or web application lies in the kinds of knowledge resources it calls on in the user. For example, if I have to learn how to use a billing application for a web site, I need to type in my name, credit card information, billing and shipping information, and so on. These require simply fol-lowing explicit steps and are easy to teach. But that’s not all there is to it. To use this program I have to understand about Internet security, my secure browser, encryption technology, and so on. I may not understand all about these complex areas, but I know enough about them and respect them enough to know that they are issues in this particular software activity. Researchers call this kind of knowledge tacit knowledge because it’s not easily represented by steps and it’s assumed and understood instead of made explicit. They can become explicit, for example, if I happen onto a web site that seems to lack the appropriate security in some way . Then I think, “Should I fol-low up with a phone call?” or “Should I use a different method of payment here?” The manual for the task-oriented user should evoke or suggest structures of tacit knowledge by giving the user control over the program, teaching in ways the user expects, putting software instructions in the context of workplace actions and aligning software work with workplace goals, and helping the user solve problems (Table 1.5).
+
+Table 1.4 Statements that Reinforce Complex Actions
+The LOGDAT file contains oil well information organized according to geographical areas familiar to well analysts.
+Owners of print shops can give you valuable advice that will affect how you create the publication—for example, which printer to compose the publication for. (There’s more about this in “Using an Outside Printing Service” on page 197.) 
+
+
+Aware of User communities: “SHAKESPEARE WOULD USE EMAIL...NOW.” The inherent communicative nature of computing provides numerous ways for the documenter to help users overcome the isolation they experience when converting their work to a com-puter. For one thing, computer users automatically become part of a user community. The term refers loosely to those who use the same program within an organization, but it can also refer to others who use software in their work. Computer support divisions in corporations have discovered an increase in user acceptance of software when they en-courage the formation of user groups. The term user groups refers to groups that meet, either electronically or in person, to discuss issues with their computing and exchange ideas to increase efficiency and productivity. In a R&D organization, for example, you might find UNIX operating system user’s groups or WordPerfect user’s groups. Meet-ing with these groups allows users to increase their social contacts within an organiza-tion and to overcome the sense of isolation they may feel. 
+Most employees work in groups and as a result have to coordinate their activi-ties, share work in progress, and store the results. This collaboration often creates situations in which managers must produce group reports or engineers must contribute designs of parts to an overall project. Documentation plays a key role in supporting collaborative work by indicating ways that users can communicate information. In fact, Bodker argues, software usage implies communicative activities in which users interact with other users socially as part of projects.!! In fact, given the prevalence of computer networks in companies, many users prefer this method of coordinating activities and sharing information.
+
+Table 1.5 Ways to Help Users Think About Software Work
+Actions Evoking Tacit Knowledge
+Example
+Give users control over software functions
+“Using the data visualization feature requires you to select an appropriate data model, as described below.”
+Select the right training method
+“Experimenting with the Net Hog Plus will help you see ways to adapt your user profile to different Internet environments.”
+Suggest workplace goals
+“Depending on how you organize your project, you can either create smaller graphics files or larger graphics files. The size of the graphics files depends on the objectives of your project.”
+Help with problem solving
+“Look over the options in the Special Effects Menu and select one that helps you convey the theme you want to portray.”
+
+
+Figure 1.7 An Example of a User Community
+User groups like this one foster communication among software users and promote sharing of information.
+
+INFORMATION RICH: “My SOFTWARE GIVES ME A BETTER VIEW OF MY TASKS.” In modern corpo-rations, information represents the source of power and authority. But for users to real-ize they need help in managing information means putting it to productive use. Good software documenters should find ways to reinforce workplace skills by showing users the potential use for information that programs generate. For example, a phone utility program that records time spent on the phone can generate valuable information for sales reps about time of contact with clients. But just how to apply this information may elude the novice user. Pointing out how to use phone tracking time in progress reports to supervisors can help salespersons understand the value of this program feature. It is up to manual and help writers to alert users to new information work they face. Not only does software increase the ways employees can manipulate informa-tion, it can open them up to new kinds of tasks. Table 1.6 lists and describes a number of new kinds of tasks facing the task-oriented software user. 
+The Forms of Software Documentation 
+So far in this chapter we have looked at the principles that underlie any form of soft-ware documentation: principles of instruction in workplace tasks using techniques to help the reader relate software to complex tasks that face users in contemporary business settings. When you apply those principles to the creation of actual manuals and help files, consider the types of documents you will create and the processes you will follow to create them. 
+Let’s look at how people use software. First they usually learn how to apply the program to their work, how the features match their workplace goals, and how the actions they perform correlate to the menus and screens. Next they use the program, sometimes on a daily basis and sometimes intermittently, using features they know well and some they don’t know well but can follow with a little guidance from the manual or help system if they get stuck. Finally, as advanced users, they just need to look up information about a program, find examples, and troubleshoot error mes-sages. These users focus on the technical aspects of a program, how it works, what its components consist of, and so on. 
+Forms of documentation follow these functions in the workplace. Initial users of a program, or novice users of software in general, require tutorial documents, the intention of which is to teach basic functions and their application. Intermediate users require procedural documentation, the intention of which is to help them during actu-al use of the program in their workplace. Advanced users require reference docu-mentation, the intention of which is to further their understanding about how the program operates and how they can manipulate and adapt it to highly specialized uses. 
+The following three chapters explore in greater detail the three forms of manuals and help that arise from these kinds of usage patterns. For our purposes in this chap-ter it is useful to see how the three forms relate to the principles of task orientation. Table 1.7 shows an overview of the three forms of documentation.
+
+
+Table 1.6 New types of User tasks
+Type of User Task
+What the Person Does
+Example
+Planning Tasks
+Identifying goals and manipulating time and resources in the abstract to find ways to meet the goal. Articulating future events using various computer programs.
+“What's the best way to organize the shop inventory?”
+Decision-Making Tasks
+Assembling rich alternatives without giving in to one solution for doing something. Clarity of evaluation of alternatives in settling on an action or stance.
+“Which supplier provides the most efficient delivery times?”  
+Problem-Solving Tasks
+Identifying elements that block progress in business or organizations and identifying and evaluating ways to accommodate the unexpected.
+“How many strawberries can we ship in each box?”
+Operating Tasks
+Keypunching and inputting of information and using menu items to manipulate the program and the data. Essential work in information processing, involving questions of transfer and storage.
+“How do I translate my design into transferable format?”
+Knowledge Work Tasks
+Identifying information of value to an organization or department, with the intention of accumulating valuable wisdom.
+“I would like to open this meeting with figures, showing last . quarter's increase in productivity in our department.”
+
+
+Tutorial Documentation 
+Tutorial documentation is documentation that intends to teach the basic functions and features of a program to a user in such a way that the person can begin applying the program to workplace tasks. Examples of this form include getting started guides and online and printed tutorials. Because the intention is to teach, the relationship between the writer and the user resembles that of a teacher and learner. The tutorial document embodies all sorts of instructional design tools to assist in learning: sample scenarios, examples of usage, walk-throughs, demonstrations, rewards for learning, structured “lessons,” worksheets, self-evaluation forms, and memory aids. Tutorial documentation focuses heavily on actions the user can take that evoke problem solving and other productive workplace behaviors.
+
+Procedural Documentation 
+Procedural documentation is documentation that intends to guide the user in the everyday use of the program, often when the user needs information at the time of use. Examples of this form include users guides and help files consisting of step-by-step procedures, tips and help embedded in the user interface, context-sensitive help available at the click of a mouse, and wizards that assist users in performing difficult, important, but seldom used tasks. Procedural documentation, because of its intention to guide the reader, implies a more distant relationship between the manual writer and user: one of an informed assistant. This type of document employs many tools to help users in actual use of the program, including step-by-step procedures, suggestions and tips, descriptions of fields and screens, pop-ups and screen regions containing definitions and usage ideas. The focus on actions in procedural documentation comes through organization of pro-cedures around key decision-making or problem-solving activities of the user. Using electronic interfaces, performance support systems can “read” a user’s keystrokes and behaviors and automatically provide the right information at the right time.
+
+Table 1.7 The forms of Software Documentation
+Toturial
+Procedural
+Reference
+The user motivation is to learn 
+The user motivation is to perform routine tasks
+The user motivation is to obtain information “about” the program
+Intention to teach the features of the program
+" Intention to guide through step-by-step procedures for using the program
+
+
+Relationship of teacher and learner 
+Relationship of guide and mentor 
+Relationship of resource and client
+Defines the task through scenarios, cases, examples; narrative structures 
+Defines the task through chronological, step-by-step structures following the menu choices or fields in a pane or screen
+Lets the user define the task
+Focus on basic actions 
+Focus on operations organized around workplace actions
+Focus on the program
+
+
+Reference Documentation 
+Reference documentation is documentation that intends to supply information “about” the program for advanced users. Reference users rarely consult the user’s guide or tutorial but occasionally need to look up information about the program. Examples of this form include alphabetical listings of program features, lists of examples, file formats, technical troubleshooting data, data for using an application with related programs, and special program settings. Because reference documenta-tion serves advanced program users, the relationship of writer to user is that of an information resource to a client. The “task” the user needs to accomplish is not defined by the writer (as is often the case with tutorial documentation) but by the user. The user brings the task to the document as opposed to having tasks outlined by the document. Of the three main forms of documentation, reference documenta-tion is more purely descriptive of the program itself than of the user or the user’s application of the program. It focuses on interface elements more than the other two forms.
+
+The Processes of Software Documentation 
+The writer who faces the challenge of creating truly useful task-orientated documen-tation needs to look to the process of writing itself and find ways to learn about users. Can a writer write a document without ever consulting a user? Of course. You can study the program diligently, and comb over the specifications that programmers use to write it. If you’re part of a development team, you can ask the programmers them-selves how the program operates and compile that information into a manual or help system. Earlier in this chapter I described the kind of manual you would produce fol-lowing this process—the default manual. And because the default manual builds its model of the user from the program itself, you end up writing to the default user: a disembodied, context-neutral, logical abstraction. This user results when you default to the excuse that “anybody could use this program.” If you write to that user all you’re doing is putting the program into textual form; “documenting” it in the most simplistic way by just telling what one sees on the computer screen when the program is running. Task-oriented documentation consists of something else. 
+Task-oriented documentation consists of manuals and help that reflect actual users in all their variety and human forms. This means that the process you follow does not begin with the program, but with the users themselves. The process of task-oriented documentation requires that you analyze the user in his or her actual work environment to discover the rich texture of activities within which your program and your manual must fit. 
+Take for example, Aubrey’s exploration of palm pilot software users. Aubrey could have just written down what the features of the software are and how they work, but instead he spends some time with actual users. When he does he discovers that palm pilot software plays an important but small role in users’ workplace activities. He learns that Michael’s pilot sits on his desk most of the time until he takes a trip to the Ukraine to do educational consulting. He learns that Susan uses her palm pilot to keep track of research lab usage on the fly because she’s too busy to record it on a laptop or desktop computer and that she needs to know the fastest ways to down-load information. He learns that nobody really uses certain functions because they are so poorly designed that users avoid them. He finds out that, for security reasons, international construction users need to download additional encryption programs. Aubrey’s writing process doesn’t start with the software but with people. 
+As you will see in the second section of this book, the process of writing task-oriented software documentation is one of exploration of user needs, and then of constant involvement of the user in the process of writing and testing. This process is called a usability process (see Figure 1.8) and it means that users and their needs drive the writing. Early in the process user interviews help you learn about actions and activities in the workplace. Later, user reviews help you refine narratives and cases you will use to orient your readers to the right procedures and help topics. Usability tests give you feedback on how well your manual or help files meet your readers’ objectives of supporting problem solving and integrating with workplace activ-ities. Finally, usability evaluations help you understand how well your techniques  organization, examples, information design, page layout, hypertext structures worked in actual user settings.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure 1.8 The Usability Process
+Glossary 
+actions: tasks that require a combination of various menu functions and program features to accomplish, but that grow out of the user’s actual work environment. Actions associated with a fitness tracking program would be getting into shape, controlling one’s diet, decid-ing on an exercise program. Actions arise out of the user’s workplace or activity context and consist of one or more operations. 
+automating: a process of converting a manufacturing or business task from one done by human action to one done through a machine such as a robot or a computer. Tasks such as calculation, writing, and analysis are automated by computers. 
+cognitive schema: in cognitive psychology, this term refers to mental models of people, things, organizations, and so forth that people form as a way of interpreting their world. For example, the schemata for a kitchen would include a room with a stove, refrigerator, counter, sink, and appropriate cooking tools and materials. Knowing a user’s schemata can help documenters understand thought processes users employ when they approach work problems. 
+communication tasks: tasks that require the use and manipulation of information to coor-dinate workplace activities. Planning a meeting, evaluating employees, and tracking sales data are examples of tasks with a communicative dimension. 
+complex tasks: tasks that require users of software to call on assumptions and understand-ings gained through experience, education, and training in professional work. 
+conceptually oriented: a type of page layout that organizes paragraphs around ideas that underlie software use. Researchers tell us that users with the right conceptual understand-ing of a task perform that task more effectively. 
+default user: the user who is defined as a person who uses the menu items and functionali-ties of a software program. 
+default user manual: a manual consisting primarily of step-by-step procedures based on menu items in a software program; primarily descriptive in nature and limited in applica-tion to real-world job tasks. 
+information anxiety: a problem experienced by computer users and others that relates to our ability to make use of information. The feeling of information anxiety comes from experiencing an overload of data (such as a computer manual or help system) but not understanding how to use it. 
+job deskilling: in management terminology, this term indicates what happens to a job when thinking and analytical skills get taken over by a computer. A certain job is deskilled when the skills formerly needed to perform it are no longer needed and a per-son possessing lesser skills can be hired, usually for less money, to perform the job. 
+operations: in describing software work, operations refer to units of activity usually defined by menu items, screens, or panes. “View a ruler,” “Select a table,” “Save a file” are opera-tions that make up the feature set of a word processing program. 
+organizational existence: in end-use computing, this term refers to a person’s under-standing of his or her role within a corporation as part of a network of information, know-ing where information comes from and where information goes. Users who understand their place in this network have a strong sense of the context of their computer work and learn to apply software to their work effectively. 
+routine tasks: tasks that lend themselves to easy description, are repeatable, and usually do not call for extra thought. 
+scenario: a kind of narrative of events that describes what a person does to perform a spe-cific task. Often taking on the form of a story or play, a scenario tells the rich details of a person’s work. Documenters use scenarios to help understand the complexities of a user’s work in order to provide well-designed support. A scenario for an advertising account representative who decides on a kind of media for a client would include a description of the client and the problem and the steps the representative took to research, solve, and present the solution to the client. 
+semantic orientation: a type of page layout that orders or creates patterns of information on the page according to the user’s task needs. Example: headings for skimming the page to find topics, and paragraphs to help the user understand concepts. 
+skill transfer: refers to the way skills used in one activity can also apply to the learning of a new activity. For example, a person with the basic knowledge of how to fry can learn to fry green tomatoes more quickly than a person without the basic knowledge in this area. In software work, skill transfer often refers to a person’s ability to learn a new program more readily if the basics are already understood through the use of a similar program. The skills from one program transfer to the learning of the second. 
+tacit knowledge: the kind of internalized knowledge a person acquires as part of a work organization, a society, and a culture. Often tacit knowledge is unacknowledged and part of a person’s mental makeup. Social skills, experience with people, and assumed rules for handling work situations are examples of tacit knowledge. 
+task orientation: a method of organizing online and hard-copy documentation that follows the typical tasks and task sequences of the software user. 
+training method: in training literature, this term relates to kinds of structures of training for computer users. Training methods include: applications-based (which teaches the user to apply the program to work) and construct-based (which teaches the user the features of the program). Good documentation should include both kinds of teaching for appropriate user tasks. 
+usability process: the process of writing task-oriented documentation that involves the user in all stages of writing to ensure an appropriate fit with workplace activities. 
+user groups: a group of users who use the same program. They may exist within the user's organization or within the larger community, and may be organized according to various degrees of formality. Some user communities meet on a regular basis and exchange information, others exchange information only informally. Examples: Word- Perfect users in a college department, UNIX users in a R&D organization.
+
+Checklist
+ A manual that integrates a software program into the user’s information environment has a better chance of getting used than a manual that only documents the features of the program. Often users subconsciously perform a cost/benefit analysis when con-sidering a program: “Will this program help me do enough productive work to offset and compensate me for the time it takes to learn and operate it?” 
+
+Cost/Benefit Analysis Checklist 
+If we translate the characteristics of the task-oriented manual just presented into a cost/benefit analysis for the user it might look something like this: 
+
+Cost/Benefit Analysis Checklist 
+Will the manual help me use the software to solve problems? 
+Does the manual tell me how I can control the program? 
+Do the pages follow a logical design that emphasizes what I need to know? 
+Is the manual clearly segmented into useful activities I engage in at work? 
+Is the manual designed for use rather than to describe the system? 
+Does the manual help me connect with other users of this software? 
+
+A user who can answer yes to these questions might find the manual and the program useful, and might use it. Most importantly, your manual should function to provide access for the user to the thinking and working capabilities of the program.
+
+Practice/Problem Solving 
+Examine a Manual or Help System for Task Orientation 
+Examine a copy of a manual for a software program such as a word processor, spreadsheet, or database, or examine a help system for a program you use regularly. Study the table of contents, looking at all the elements in the documents (there may be more than one document included in the printed set). Find instances where you think the manual or help reinforces the user’s workplace and workplace tasks. How much of the document is in “how-to” format?
+Examine a Computer User for Work Characteristics and Software Use Habits
+Interview one or more people who use computers in their work. Find out how they use computers and what job goals software helps them achieve. Compile a short report covering the following topics: 
+description of the job: duties, coworkers, decisions, types of computers used, kinds of information encountered 
+description of the level of computer expertise required 
+description of their methods of learning software skills: user community, manuals, training sessions, and so forth 
+suggestions they have for making the software manuals they use more useful 
+
+If you were writing a word processing manual for this person, which actions would you address? What about a manual for a spreadsheet or database program? A business statistics program? 
+Link Program Features with Work Tasks 
+Using your Internet browser, visit a web site that has shareware or free programs. Such sites include: 
+http://shareware.cnet.com/ 
+http://www.files32.com/ 
+http://www.tucows.com/ 
+http://www.macworld.com/ 
+http://www.freebiedirectory.com/ 
+http://www.softpile.com/ 
+You can also get samples of free software at the website for this textbook: 
+http://www.writingsoftwaredocumentation.com 
+and navigate to the software download section. 
+Familiarize yourself with the software program until you gain a basic under-standing of it and can list some of its features. Then think of who might use the software, and complete the following form. You can add to the list of features if you like. The point is to think not only of things a program can do but how to apply the program.
+
+PROGRAM NAME
+User workplace task
+Program features
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+List the User and Tasks for a Program 
+Select one of the following program descriptions. What specific tasks might the fol-lowing users find for the program you select?
+User
+Tasks
+Accountant
+
+
+Engineering consultant
+
+
+Business owner
+
+
+High school teacher
+
+
+
+
+Description: LollyDex is a document management tool optimized for correspon-dence control. It boasts fast and easy-to-use data entry routines and powerful search capabilities. It adapts to your systems and is suitable for paper or electronic docu-ments. Search on any combination of author, recipient, date range, document number, document type, file reference, routing, and subject, and print reports of results. Browse forward or backward through threads of replies. Track outstanding replies to issued documents. View any electronic or scanned document using your default viewers. Option to automatically generate document numbers. Optional password and authority level features. Share data across network. Basic address book features. 
+
+Description: Bids, Quotes, Estimator Software for small businesses. Easy to use bids and quotes software allows you to enter the client’s information and save it to a database if you like or just print out the bid. The purpose of this software is so that whoever accepts the office calls and is behind the PC can fill in all the customer details and bid details, along with the estimator’s name who will be handling the bid. Estimators can just pick up their list of bids for the day with all the client’s informa-tion on it and the exact description of the job the estimator is supposed to bid. It is not meant to give to the client. It is for internal office and estimator use so that each esti-mator knows exactly what bids and what times he is supposed to be there. All data can easily be backed up and it even has a mailing list feature for clients you have already completed bids for. This makes it simple to do mass mailing to people you have already quoted to let them know of any relevant sales or new information you want to send to your own in-house mailing list of prospective clients. 
+
+Description: PolyMap is a desktop mapping program that lets you use your own data to customize the maps supplied with the program. Use the built-in spreadsheet to enter data or paste it from other Windows applications. Alternatively, you can use the import feature to bring in data from external spreadsheets, text, or database files. The Map Presentation Wizard gives you a step-by-step process to customize your map and the map’s legend. Any data in a spreadsheet column may be utilized for labeling. You may use a set of geographic layers in different formats (state and coun-ty boundaries, five-digit ZIP codes, U.S. and state highways, cities, rivers, and lakes) to add details and create your new thematic map. For instance, state and county boundaries can be “extruded” to 3D prisms, shaded in color, “sprayed” with a dot-density distribution, embedded with individual pie and bar charts, or placed into a matrix for portfolio analysis. New custom point layer can be added to the maps. Maps and spreadsheets may be printed with any Windows-compatible printer. Maps can be exported to Bitmap format (.bmp) enhanced Metafile (.emf) and JPEG (jpg). PolyMap sends JPG Bitmaps of the maps as attachments, to any email address using MAPI compatible email clients like Outlook Express or Netscape Communicator. This trial version will function for only 30 days and comes with only a fraction of the maps available in the registered edition. Additional sample maps and a manual as a PDF file are available from the PolyMap web site. New functions: Database Import Wizard, export to BMP, EMF, and JPG format, send maps by email (MAPI), cus-tomize maps and layers, add custom points to the map, custom shading, measure dis-tance on map, enhanced print preview.

@@ -23,7 +23,12 @@ describe('DTO validation', () => {
     ];
 
     expect(errorProperties).toEqual(
-      expect.arrayContaining(['title', 'trackingType', 'startDate', 'scheduleDays']),
+      expect.arrayContaining([
+        'title',
+        'trackingType',
+        'startDate',
+        'scheduleDays',
+      ]),
     );
   });
 

@@ -253,23 +253,6 @@ export type EnumWeekdayWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumWeekdayFilter<$PrismaModel>
 }
 
-export type EnumCueDayTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.CueDayType | Prisma.EnumCueDayTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.CueDayType[] | Prisma.ListEnumCueDayTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.CueDayType[] | Prisma.ListEnumCueDayTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumCueDayTypeFilter<$PrismaModel> | $Enums.CueDayType
-}
-
-export type EnumCueDayTypeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.CueDayType | Prisma.EnumCueDayTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.CueDayType[] | Prisma.ListEnumCueDayTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.CueDayType[] | Prisma.ListEnumCueDayTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumCueDayTypeWithAggregatesFilter<$PrismaModel> | $Enums.CueDayType
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumCueDayTypeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumCueDayTypeFilter<$PrismaModel>
-}
-
 export type EnumHabitLogStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.HabitLogStatus | Prisma.EnumHabitLogStatusFieldRefInput<$PrismaModel>
   in?: $Enums.HabitLogStatus[] | Prisma.ListEnumHabitLogStatusFieldRefInput<$PrismaModel>
@@ -552,23 +535,6 @@ export type NestedEnumWeekdayWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumWeekdayFilter<$PrismaModel>
   _max?: Prisma.NestedEnumWeekdayFilter<$PrismaModel>
-}
-
-export type NestedEnumCueDayTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.CueDayType | Prisma.EnumCueDayTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.CueDayType[] | Prisma.ListEnumCueDayTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.CueDayType[] | Prisma.ListEnumCueDayTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumCueDayTypeFilter<$PrismaModel> | $Enums.CueDayType
-}
-
-export type NestedEnumCueDayTypeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.CueDayType | Prisma.EnumCueDayTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.CueDayType[] | Prisma.ListEnumCueDayTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.CueDayType[] | Prisma.ListEnumCueDayTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumCueDayTypeWithAggregatesFilter<$PrismaModel> | $Enums.CueDayType
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumCueDayTypeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumCueDayTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumHabitLogStatusFilter<$PrismaModel = never> = {

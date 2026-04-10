@@ -9,7 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateHabitDto } from './dto/create-habit.dto';
 import { HabitQueryDto } from './dto/habit-query.dto';
@@ -39,6 +39,20 @@ export class HabitsController {
     return this.habitsService.listHabits(userId, habitQueryDto);
   }
 
+  /**
+   * Phase 3: returns only ACTIVE habits scheduled for today's weekday.
+   * Habits with no scheduleDays are included every day.
+   * Each habit includes a cueContext array with evaluation results.
+   * Must be declared before GET :habitId to avoid route shadowing.
+   */
+  @Get('today')
+  @ApiOperation({
+    summary: 'Get habits scheduled for today with cue context',
+  })
+  getTodayHabits(@Param('userId', new ParseUUIDPipe()) userId: string) {
+    return this.habitsService.getTodayHabits(userId);
+  }
+
   @Get(':habitId')
   getHabitById(
     @Param('userId', new ParseUUIDPipe()) userId: string,
@@ -54,5 +68,21 @@ export class HabitsController {
     @Body() updateHabitDto: UpdateHabitDto,
   ) {
     return this.habitsService.updateHabit(userId, habitId, updateHabitDto);
+  }
+
+  /**
+   * Phase 3: stateless reminder decision for a habit.
+   * Evaluates reminderEnabled + schedule + active cues — no notification delivery.
+   */
+  @Get(':habitId/reminder-decision')
+  @ApiOperation({
+    summary:
+      'Get reminder decision for a habit (stateless, no delivery triggered)',
+  })
+  getReminderDecision(
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Param('habitId', new ParseUUIDPipe()) habitId: string,
+  ) {
+    return this.habitsService.getReminderDecision(userId, habitId);
   }
 }

@@ -1013,8 +1013,8 @@ export type HabitScheduleDayScalarFieldEnum = (typeof HabitScheduleDayScalarFiel
 export const HabitCueScalarFieldEnum = {
   id: 'id',
   habitId: 'habitId',
-  timeWindow: 'timeWindow',
-  dayType: 'dayType',
+  startTime: 'startTime',
+  endTime: 'endTime',
   coarseLocation: 'coarseLocation',
   precedingRoutine: 'precedingRoutine',
   isActive: 'isActive',
@@ -1179,20 +1179,6 @@ export type EnumWeekdayFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMo
  * Reference to a field of type 'Weekday[]'
  */
 export type ListEnumWeekdayFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Weekday[]'>
-    
-
-
-/**
- * Reference to a field of type 'CueDayType'
- */
-export type EnumCueDayTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CueDayType'>
-    
-
-
-/**
- * Reference to a field of type 'CueDayType[]'
- */
-export type ListEnumCueDayTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CueDayType[]'>
     
 
 

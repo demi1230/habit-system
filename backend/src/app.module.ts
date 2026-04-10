@@ -5,8 +5,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { HabitsModule } from './habits/habits.module';
-import { PrismaModule } from './prisma/prisma.module';
+import { PrismaModule } from './infrastructure/prisma/prisma.module';
 import { ProgressModule } from './progress/progress.module';
+import { RemindersModule } from './reminders/reminders.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ProgressModule } from './progress/progress.module';
     AnalyticsModule,
     HabitsModule,
     ProgressModule,
+    RemindersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

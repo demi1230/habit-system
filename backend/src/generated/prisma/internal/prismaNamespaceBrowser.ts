@@ -122,8 +122,8 @@ export type HabitScheduleDayScalarFieldEnum = (typeof HabitScheduleDayScalarFiel
 export const HabitCueScalarFieldEnum = {
   id: 'id',
   habitId: 'habitId',
-  timeWindow: 'timeWindow',
-  dayType: 'dayType',
+  startTime: 'startTime',
+  endTime: 'endTime',
   coarseLocation: 'coarseLocation',
   precedingRoutine: 'precedingRoutine',
   isActive: 'isActive',

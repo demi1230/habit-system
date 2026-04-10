@@ -27,8 +27,8 @@ export type AggregateHabitCue = {
 export type HabitCueMinAggregateOutputType = {
   id: string | null
   habitId: string | null
-  timeWindow: string | null
-  dayType: $Enums.CueDayType | null
+  startTime: string | null
+  endTime: string | null
   coarseLocation: string | null
   precedingRoutine: string | null
   isActive: boolean | null
@@ -39,8 +39,8 @@ export type HabitCueMinAggregateOutputType = {
 export type HabitCueMaxAggregateOutputType = {
   id: string | null
   habitId: string | null
-  timeWindow: string | null
-  dayType: $Enums.CueDayType | null
+  startTime: string | null
+  endTime: string | null
   coarseLocation: string | null
   precedingRoutine: string | null
   isActive: boolean | null
@@ -51,8 +51,8 @@ export type HabitCueMaxAggregateOutputType = {
 export type HabitCueCountAggregateOutputType = {
   id: number
   habitId: number
-  timeWindow: number
-  dayType: number
+  startTime: number
+  endTime: number
   coarseLocation: number
   precedingRoutine: number
   isActive: number
@@ -65,8 +65,8 @@ export type HabitCueCountAggregateOutputType = {
 export type HabitCueMinAggregateInputType = {
   id?: true
   habitId?: true
-  timeWindow?: true
-  dayType?: true
+  startTime?: true
+  endTime?: true
   coarseLocation?: true
   precedingRoutine?: true
   isActive?: true
@@ -77,8 +77,8 @@ export type HabitCueMinAggregateInputType = {
 export type HabitCueMaxAggregateInputType = {
   id?: true
   habitId?: true
-  timeWindow?: true
-  dayType?: true
+  startTime?: true
+  endTime?: true
   coarseLocation?: true
   precedingRoutine?: true
   isActive?: true
@@ -89,8 +89,8 @@ export type HabitCueMaxAggregateInputType = {
 export type HabitCueCountAggregateInputType = {
   id?: true
   habitId?: true
-  timeWindow?: true
-  dayType?: true
+  startTime?: true
+  endTime?: true
   coarseLocation?: true
   precedingRoutine?: true
   isActive?: true
@@ -174,8 +174,8 @@ export type HabitCueGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type HabitCueGroupByOutputType = {
   id: string
   habitId: string
-  timeWindow: string | null
-  dayType: $Enums.CueDayType
+  startTime: string | null
+  endTime: string | null
   coarseLocation: string | null
   precedingRoutine: string | null
   isActive: boolean
@@ -207,8 +207,8 @@ export type HabitCueWhereInput = {
   NOT?: Prisma.HabitCueWhereInput | Prisma.HabitCueWhereInput[]
   id?: Prisma.UuidFilter<"HabitCue"> | string
   habitId?: Prisma.UuidFilter<"HabitCue"> | string
-  timeWindow?: Prisma.StringNullableFilter<"HabitCue"> | string | null
-  dayType?: Prisma.EnumCueDayTypeFilter<"HabitCue"> | $Enums.CueDayType
+  startTime?: Prisma.StringNullableFilter<"HabitCue"> | string | null
+  endTime?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   coarseLocation?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   precedingRoutine?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   isActive?: Prisma.BoolFilter<"HabitCue"> | boolean
@@ -220,8 +220,8 @@ export type HabitCueWhereInput = {
 export type HabitCueOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   habitId?: Prisma.SortOrder
-  timeWindow?: Prisma.SortOrderInput | Prisma.SortOrder
-  dayType?: Prisma.SortOrder
+  startTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  endTime?: Prisma.SortOrderInput | Prisma.SortOrder
   coarseLocation?: Prisma.SortOrderInput | Prisma.SortOrder
   precedingRoutine?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -236,8 +236,8 @@ export type HabitCueWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.HabitCueWhereInput[]
   NOT?: Prisma.HabitCueWhereInput | Prisma.HabitCueWhereInput[]
   habitId?: Prisma.UuidFilter<"HabitCue"> | string
-  timeWindow?: Prisma.StringNullableFilter<"HabitCue"> | string | null
-  dayType?: Prisma.EnumCueDayTypeFilter<"HabitCue"> | $Enums.CueDayType
+  startTime?: Prisma.StringNullableFilter<"HabitCue"> | string | null
+  endTime?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   coarseLocation?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   precedingRoutine?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   isActive?: Prisma.BoolFilter<"HabitCue"> | boolean
@@ -249,8 +249,8 @@ export type HabitCueWhereUniqueInput = Prisma.AtLeast<{
 export type HabitCueOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   habitId?: Prisma.SortOrder
-  timeWindow?: Prisma.SortOrderInput | Prisma.SortOrder
-  dayType?: Prisma.SortOrder
+  startTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  endTime?: Prisma.SortOrderInput | Prisma.SortOrder
   coarseLocation?: Prisma.SortOrderInput | Prisma.SortOrder
   precedingRoutine?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -267,8 +267,8 @@ export type HabitCueScalarWhereWithAggregatesInput = {
   NOT?: Prisma.HabitCueScalarWhereWithAggregatesInput | Prisma.HabitCueScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"HabitCue"> | string
   habitId?: Prisma.UuidWithAggregatesFilter<"HabitCue"> | string
-  timeWindow?: Prisma.StringNullableWithAggregatesFilter<"HabitCue"> | string | null
-  dayType?: Prisma.EnumCueDayTypeWithAggregatesFilter<"HabitCue"> | $Enums.CueDayType
+  startTime?: Prisma.StringNullableWithAggregatesFilter<"HabitCue"> | string | null
+  endTime?: Prisma.StringNullableWithAggregatesFilter<"HabitCue"> | string | null
   coarseLocation?: Prisma.StringNullableWithAggregatesFilter<"HabitCue"> | string | null
   precedingRoutine?: Prisma.StringNullableWithAggregatesFilter<"HabitCue"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"HabitCue"> | boolean
@@ -278,8 +278,8 @@ export type HabitCueScalarWhereWithAggregatesInput = {
 
 export type HabitCueCreateInput = {
   id?: string
-  timeWindow?: string | null
-  dayType?: $Enums.CueDayType
+  startTime?: string | null
+  endTime?: string | null
   coarseLocation?: string | null
   precedingRoutine?: string | null
   isActive?: boolean
@@ -291,8 +291,8 @@ export type HabitCueCreateInput = {
 export type HabitCueUncheckedCreateInput = {
   id?: string
   habitId: string
-  timeWindow?: string | null
-  dayType?: $Enums.CueDayType
+  startTime?: string | null
+  endTime?: string | null
   coarseLocation?: string | null
   precedingRoutine?: string | null
   isActive?: boolean
@@ -302,8 +302,8 @@ export type HabitCueUncheckedCreateInput = {
 
 export type HabitCueUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  timeWindow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dayType?: Prisma.EnumCueDayTypeFieldUpdateOperationsInput | $Enums.CueDayType
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -315,8 +315,8 @@ export type HabitCueUpdateInput = {
 export type HabitCueUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   habitId?: Prisma.StringFieldUpdateOperationsInput | string
-  timeWindow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dayType?: Prisma.EnumCueDayTypeFieldUpdateOperationsInput | $Enums.CueDayType
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -327,8 +327,8 @@ export type HabitCueUncheckedUpdateInput = {
 export type HabitCueCreateManyInput = {
   id?: string
   habitId: string
-  timeWindow?: string | null
-  dayType?: $Enums.CueDayType
+  startTime?: string | null
+  endTime?: string | null
   coarseLocation?: string | null
   precedingRoutine?: string | null
   isActive?: boolean
@@ -338,8 +338,8 @@ export type HabitCueCreateManyInput = {
 
 export type HabitCueUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  timeWindow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dayType?: Prisma.EnumCueDayTypeFieldUpdateOperationsInput | $Enums.CueDayType
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -350,8 +350,8 @@ export type HabitCueUpdateManyMutationInput = {
 export type HabitCueUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   habitId?: Prisma.StringFieldUpdateOperationsInput | string
-  timeWindow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dayType?: Prisma.EnumCueDayTypeFieldUpdateOperationsInput | $Enums.CueDayType
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -372,8 +372,8 @@ export type HabitCueOrderByRelationAggregateInput = {
 export type HabitCueCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   habitId?: Prisma.SortOrder
-  timeWindow?: Prisma.SortOrder
-  dayType?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  endTime?: Prisma.SortOrder
   coarseLocation?: Prisma.SortOrder
   precedingRoutine?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -384,8 +384,8 @@ export type HabitCueCountOrderByAggregateInput = {
 export type HabitCueMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   habitId?: Prisma.SortOrder
-  timeWindow?: Prisma.SortOrder
-  dayType?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  endTime?: Prisma.SortOrder
   coarseLocation?: Prisma.SortOrder
   precedingRoutine?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -396,8 +396,8 @@ export type HabitCueMaxOrderByAggregateInput = {
 export type HabitCueMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   habitId?: Prisma.SortOrder
-  timeWindow?: Prisma.SortOrder
-  dayType?: Prisma.SortOrder
+  startTime?: Prisma.SortOrder
+  endTime?: Prisma.SortOrder
   coarseLocation?: Prisma.SortOrder
   precedingRoutine?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -447,14 +447,10 @@ export type HabitCueUncheckedUpdateManyWithoutHabitNestedInput = {
   deleteMany?: Prisma.HabitCueScalarWhereInput | Prisma.HabitCueScalarWhereInput[]
 }
 
-export type EnumCueDayTypeFieldUpdateOperationsInput = {
-  set?: $Enums.CueDayType
-}
-
 export type HabitCueCreateWithoutHabitInput = {
   id?: string
-  timeWindow?: string | null
-  dayType?: $Enums.CueDayType
+  startTime?: string | null
+  endTime?: string | null
   coarseLocation?: string | null
   precedingRoutine?: string | null
   isActive?: boolean
@@ -464,8 +460,8 @@ export type HabitCueCreateWithoutHabitInput = {
 
 export type HabitCueUncheckedCreateWithoutHabitInput = {
   id?: string
-  timeWindow?: string | null
-  dayType?: $Enums.CueDayType
+  startTime?: string | null
+  endTime?: string | null
   coarseLocation?: string | null
   precedingRoutine?: string | null
   isActive?: boolean
@@ -505,8 +501,8 @@ export type HabitCueScalarWhereInput = {
   NOT?: Prisma.HabitCueScalarWhereInput | Prisma.HabitCueScalarWhereInput[]
   id?: Prisma.UuidFilter<"HabitCue"> | string
   habitId?: Prisma.UuidFilter<"HabitCue"> | string
-  timeWindow?: Prisma.StringNullableFilter<"HabitCue"> | string | null
-  dayType?: Prisma.EnumCueDayTypeFilter<"HabitCue"> | $Enums.CueDayType
+  startTime?: Prisma.StringNullableFilter<"HabitCue"> | string | null
+  endTime?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   coarseLocation?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   precedingRoutine?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   isActive?: Prisma.BoolFilter<"HabitCue"> | boolean
@@ -516,8 +512,8 @@ export type HabitCueScalarWhereInput = {
 
 export type HabitCueCreateManyHabitInput = {
   id?: string
-  timeWindow?: string | null
-  dayType?: $Enums.CueDayType
+  startTime?: string | null
+  endTime?: string | null
   coarseLocation?: string | null
   precedingRoutine?: string | null
   isActive?: boolean
@@ -527,8 +523,8 @@ export type HabitCueCreateManyHabitInput = {
 
 export type HabitCueUpdateWithoutHabitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  timeWindow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dayType?: Prisma.EnumCueDayTypeFieldUpdateOperationsInput | $Enums.CueDayType
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -538,8 +534,8 @@ export type HabitCueUpdateWithoutHabitInput = {
 
 export type HabitCueUncheckedUpdateWithoutHabitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  timeWindow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dayType?: Prisma.EnumCueDayTypeFieldUpdateOperationsInput | $Enums.CueDayType
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -549,8 +545,8 @@ export type HabitCueUncheckedUpdateWithoutHabitInput = {
 
 export type HabitCueUncheckedUpdateManyWithoutHabitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  timeWindow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dayType?: Prisma.EnumCueDayTypeFieldUpdateOperationsInput | $Enums.CueDayType
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -563,8 +559,8 @@ export type HabitCueUncheckedUpdateManyWithoutHabitInput = {
 export type HabitCueSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   habitId?: boolean
-  timeWindow?: boolean
-  dayType?: boolean
+  startTime?: boolean
+  endTime?: boolean
   coarseLocation?: boolean
   precedingRoutine?: boolean
   isActive?: boolean
@@ -576,8 +572,8 @@ export type HabitCueSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type HabitCueSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   habitId?: boolean
-  timeWindow?: boolean
-  dayType?: boolean
+  startTime?: boolean
+  endTime?: boolean
   coarseLocation?: boolean
   precedingRoutine?: boolean
   isActive?: boolean
@@ -589,8 +585,8 @@ export type HabitCueSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type HabitCueSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   habitId?: boolean
-  timeWindow?: boolean
-  dayType?: boolean
+  startTime?: boolean
+  endTime?: boolean
   coarseLocation?: boolean
   precedingRoutine?: boolean
   isActive?: boolean
@@ -602,8 +598,8 @@ export type HabitCueSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type HabitCueSelectScalar = {
   id?: boolean
   habitId?: boolean
-  timeWindow?: boolean
-  dayType?: boolean
+  startTime?: boolean
+  endTime?: boolean
   coarseLocation?: boolean
   precedingRoutine?: boolean
   isActive?: boolean
@@ -611,7 +607,7 @@ export type HabitCueSelectScalar = {
   updatedAt?: boolean
 }
 
-export type HabitCueOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "habitId" | "timeWindow" | "dayType" | "coarseLocation" | "precedingRoutine" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["habitCue"]>
+export type HabitCueOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "habitId" | "startTime" | "endTime" | "coarseLocation" | "precedingRoutine" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["habitCue"]>
 export type HabitCueInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>
 }
@@ -630,8 +626,8 @@ export type $HabitCuePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     habitId: string
-    timeWindow: string | null
-    dayType: $Enums.CueDayType
+    startTime: string | null
+    endTime: string | null
     coarseLocation: string | null
     precedingRoutine: string | null
     isActive: boolean
@@ -1063,8 +1059,8 @@ export interface Prisma__HabitCueClient<T, Null = never, ExtArgs extends runtime
 export interface HabitCueFieldRefs {
   readonly id: Prisma.FieldRef<"HabitCue", 'String'>
   readonly habitId: Prisma.FieldRef<"HabitCue", 'String'>
-  readonly timeWindow: Prisma.FieldRef<"HabitCue", 'String'>
-  readonly dayType: Prisma.FieldRef<"HabitCue", 'CueDayType'>
+  readonly startTime: Prisma.FieldRef<"HabitCue", 'String'>
+  readonly endTime: Prisma.FieldRef<"HabitCue", 'String'>
   readonly coarseLocation: Prisma.FieldRef<"HabitCue", 'String'>
   readonly precedingRoutine: Prisma.FieldRef<"HabitCue", 'String'>
   readonly isActive: Prisma.FieldRef<"HabitCue", 'Boolean'>

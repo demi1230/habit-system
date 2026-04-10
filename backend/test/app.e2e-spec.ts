@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-jest.mock('./../src/prisma/prisma.service', () => ({
+jest.mock('./../src/infrastructure/prisma/prisma.service', () => ({
   PrismaService: class PrismaService {},
 }));
 
@@ -8,7 +8,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { PrismaService } from './../src/prisma/prisma.service';
+import { PrismaService } from './../src/infrastructure/prisma/prisma.service';
 
 describe('Backend foundation (e2e)', () => {
   const userId = '8e42d9f7-36f5-4d1c-8f3d-90ddf1fb878f';
