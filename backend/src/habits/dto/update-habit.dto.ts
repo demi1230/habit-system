@@ -4,19 +4,16 @@ import {
   ArrayUnique,
   IsArray,
   IsBoolean,
-  IsEnum,
   IsISO8601,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   MaxLength,
+  Min,
   ValidateNested,
 } from 'class-validator';
-import {
-  HabitLifecycleStatus,
-  HabitTrackingType,
-} from '../../domain/enums/domain.enums';
+import { HabitLifecycleStatus } from '../../domain/enums/domain.enums';
 import { CreateHabitCueDto } from '../cues/dto/create-habit-cue.dto';
 import { CreateHabitMotivationProfileDto } from '../motivation/dto/create-habit-motivation-profile.dto';
 import { CreateHabitScheduleDayDto } from '../schedule/dto/create-habit-schedule-day.dto';
@@ -39,21 +36,8 @@ export class UpdateHabitDto {
   description?: string;
 
   @ApiPropertyOptional({
-    enum: HabitTrackingType,
-    example: HabitTrackingType.SIMPLE_CHECKIN,
-  })
-  @IsOptional()
-  @IsEnum(HabitTrackingType)
-  trackingType?: HabitTrackingType;
-
-  @ApiPropertyOptional({ example: true })
-  @IsOptional()
-  @IsBoolean()
-  allowPartialCompletion?: boolean;
-
-  @ApiPropertyOptional({
     maxLength: 40,
-    description: 'QUANTITATIVE only — e.g. "km", "pages", "glasses"',
+    description: 'Unit of measurement, e.g. "km", "pages", "glasses"',
   })
   @IsOptional()
   @IsString()
@@ -62,21 +46,23 @@ export class UpdateHabitDto {
   measurementUnit?: string;
 
   @ApiPropertyOptional({
-    description: 'QUANTITATIVE only — target value to reach for DONE status',
+    description: 'Ideal target value.',
   })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
+  @Min(0)
   targetValue?: number;
 
   @ApiPropertyOptional({
     description:
-      'QUANTITATIVE only — minimum value for PARTIAL status. Must be <= targetValue',
+      'Minimum value that counts as a successful completion. Must be <= targetValue.',
   })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  minimumSuccessValue?: number;
+  @Min(0)
+  minimumTarget?: number;
 
   @ApiPropertyOptional({
     example: '2026-03-24',
@@ -91,7 +77,7 @@ export class UpdateHabitDto {
     example: HabitLifecycleStatus.PAUSED,
   })
   @IsOptional()
-  @IsEnum(HabitLifecycleStatus)
+  @IsNotEmpty()
   status?: HabitLifecycleStatus;
 
   @ApiPropertyOptional({ example: false })
@@ -133,9 +119,7 @@ export class UpdateHabitDto {
   @ApiPropertyOptional({
     type: () => CreateHabitMotivationProfileDto,
     example: {
-      goalTag: 'health',
-      personalReason: 'Wind down and stay active after a long work day',
-      identityStatement: 'I am someone who takes care of their body',
+      reason: 'Wind down and stay active after a long work day',
     },
   })
   @IsOptional()

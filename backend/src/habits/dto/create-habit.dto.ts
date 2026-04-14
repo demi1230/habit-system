@@ -4,19 +4,16 @@ import {
   ArrayUnique,
   IsArray,
   IsBoolean,
-  IsEnum,
   IsISO8601,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   MaxLength,
+  Min,
   ValidateNested,
 } from 'class-validator';
-import {
-  HabitLifecycleStatus,
-  HabitTrackingType,
-} from '../../domain/enums/domain.enums';
+import { HabitLifecycleStatus } from '../../domain/enums/domain.enums';
 import { CreateHabitCueDto } from '../cues/dto/create-habit-cue.dto';
 import { CreateHabitMotivationProfileDto } from '../motivation/dto/create-habit-motivation-profile.dto';
 import { CreateHabitScheduleDayDto } from '../schedule/dto/create-habit-schedule-day.dto';
@@ -38,43 +35,33 @@ export class CreateHabitDto {
   description?: string;
 
   @ApiProperty({
-    enum: HabitTrackingType,
-    example: HabitTrackingType.SIMPLE_CHECKIN,
-  })
-  @IsEnum(HabitTrackingType)
-  trackingType!: HabitTrackingType;
-
-  @ApiPropertyOptional({ example: false })
-  @IsOptional()
-  @IsBoolean()
-  allowPartialCompletion?: boolean;
-
-  @ApiPropertyOptional({
     maxLength: 40,
-    description: 'QUANTITATIVE only — e.g. "km", "pages", "glasses"',
+    example: 'km',
+    description: 'Unit of measurement, e.g. "km", "pages", "glasses"',
   })
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MaxLength(40)
-  measurementUnit?: string;
+  measurementUnit!: string;
 
-  @ApiPropertyOptional({
-    description: 'QUANTITATIVE only — target value to reach for DONE status',
+  @ApiProperty({
+    example: 5,
+    description: 'Ideal target value. Completion is DONE when actualValue >= targetValue.',
   })
-  @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  targetValue?: number;
+  @Min(0)
+  targetValue!: number;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    example: 3,
     description:
-      'QUANTITATIVE only — minimum value for PARTIAL status. Must be <= targetValue',
+      'Minimum value that counts as a successful completion (actualValue >= minimumTarget → DONE). Must be <= targetValue.',
   })
-  @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  minimumSuccessValue?: number;
+  @Min(0)
+  minimumTarget!: number;
 
   @ApiProperty({ example: '2026-03-24', description: 'ISO 8601 date string' })
   @IsISO8601()
@@ -85,7 +72,7 @@ export class CreateHabitDto {
     example: HabitLifecycleStatus.ACTIVE,
   })
   @IsOptional()
-  @IsEnum(HabitLifecycleStatus)
+  @IsNotEmpty()
   status?: HabitLifecycleStatus;
 
   @ApiPropertyOptional({ example: true })
@@ -131,10 +118,7 @@ export class CreateHabitDto {
   @ApiPropertyOptional({
     type: () => CreateHabitMotivationProfileDto,
     example: {
-      goalTag: 'fitness',
-      personalReason:
-        'I want to build consistent exercise habits for long-term health',
-      identityStatement: 'I am someone who moves their body every day',
+      reason: 'I want to build consistent exercise habits for long-term health',
     },
   })
   @IsOptional()

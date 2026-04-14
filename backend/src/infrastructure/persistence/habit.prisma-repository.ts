@@ -33,9 +33,7 @@ type PrismaHabit = Awaited<
   motivationProfile: {
     id: string;
     habitId: string;
-    goalTag: string | null;
-    personalReason: string | null;
-    identityStatement: string | null;
+    reason: string | null;
     createdAt: Date;
     updatedAt: Date;
   } | null;
@@ -55,11 +53,9 @@ export class HabitPrismaRepository implements IHabitRepository {
         userId: data.userId,
         title: data.title,
         description: data.description,
-        trackingType: data.trackingType,
-        allowPartialCompletion: data.allowPartialCompletion,
         measurementUnit: data.measurementUnit,
         targetValue: data.targetValue,
-        minimumSuccessValue: data.minimumSuccessValue,
+        minimumTarget: data.minimumTarget,
         startDate: data.startDate,
         status: data.status,
         reminderEnabled: data.reminderEnabled,
@@ -125,20 +121,14 @@ export class HabitPrismaRepository implements IHabitRepository {
         ...(data.description !== undefined && {
           description: data.description,
         }),
-        ...(data.trackingType !== undefined && {
-          trackingType: data.trackingType,
-        }),
-        ...(data.allowPartialCompletion !== undefined && {
-          allowPartialCompletion: data.allowPartialCompletion,
-        }),
         ...(data.measurementUnit !== undefined && {
           measurementUnit: data.measurementUnit,
         }),
         ...(data.targetValue !== undefined && {
           targetValue: data.targetValue,
         }),
-        ...(data.minimumSuccessValue !== undefined && {
-          minimumSuccessValue: data.minimumSuccessValue,
+        ...(data.minimumTarget !== undefined && {
+          minimumTarget: data.minimumTarget,
         }),
         ...(data.startDate !== undefined && { startDate: data.startDate }),
         ...(data.status !== undefined && { status: data.status }),

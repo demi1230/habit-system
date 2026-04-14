@@ -4,6 +4,7 @@ import {
   IHabitLogRepository,
   CreateHabitLogData,
 } from '../../domain/repositories/habit-log.repository';
+import { CompletionTriggerSource } from '../../domain/enums/domain.enums';
 import { PrismaService } from '../prisma/prisma.service';
 
 /**
@@ -15,21 +16,19 @@ export class HabitLogPrismaRepository implements IHabitLogRepository {
 
   async create(data: CreateHabitLogData): Promise<HabitLogEntity> {
     const result = await this.prisma.habitLog.create({
-      // Cast required: generated client predates linkedReminderId / sourceConfidence / context columns.
-      // Remove once `prisma generate` is re-run after migration.
       data: {
         habitId: data.habitId,
         status: data.status,
         actualValue: data.actualValue ?? null,
         completedAt: data.completedAt,
         loggedAt: data.loggedAt,
-        triggerSource: data.triggerSource ?? null,
+        triggerSource: data.triggerSource ?? CompletionTriggerSource.UNKNOWN,
         linkedReminderId: data.linkedReminderId ?? null,
         sourceConfidence: data.sourceConfidence ?? null,
         completionHour: data.completionHour ?? null,
         coarseLocation: data.coarseLocation ?? null,
         precedingRoutine: data.precedingRoutine ?? null,
-      } as any,
+      },
     });
     return result as unknown as HabitLogEntity;
   }
@@ -75,8 +74,7 @@ export class HabitLogPrismaRepository implements IHabitLogRepository {
     reminderId: string,
   ): Promise<HabitLogEntity | null> {
     const result = await this.prisma.habitLog.findFirst({
-      // Cast required: linkedReminderId not yet in generated client.
-      where: { linkedReminderId: reminderId } as any,
+      where: { linkedReminderId: reminderId },
     });
     return result as unknown as HabitLogEntity | null;
   }
@@ -93,12 +91,12 @@ export class HabitLogPrismaRepository implements IHabitLogRepository {
     >
   > {
     const results = await this.prisma.habitLog.findMany({
-      where: { habitId, status: 'DONE' as any },
+      where: { habitId, status: 'DONE' },
       select: {
         completionHour: true,
         coarseLocation: true,
         precedingRoutine: true,
-      } as any,
+      },
       orderBy: [{ completedAt: 'desc' }],
       take: limit,
     });

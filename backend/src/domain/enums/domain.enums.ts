@@ -3,17 +3,9 @@
  * All layers import from here; src/common/enums re-exports for backwards
  * compatibility with existing DTOs and controllers.
  */
-export const HabitTrackingType = {
-  SIMPLE_CHECKIN: 'SIMPLE_CHECKIN',
-  QUANTITATIVE: 'QUANTITATIVE',
-} as const;
-
-export type HabitTrackingType =
-  (typeof HabitTrackingType)[keyof typeof HabitTrackingType];
 
 export const HabitLogStatus = {
   DONE: 'DONE',
-  PARTIAL: 'PARTIAL',
   NOT_DONE: 'NOT_DONE',
 } as const;
 
@@ -32,7 +24,7 @@ export type HabitLifecycleStatus =
 export const CompletionTriggerSource = {
   SELF_INITIATED: 'SELF_INITIATED',
   REMINDER_TRIGGERED: 'REMINDER_TRIGGERED',
-  MANUAL_ENTRY: 'MANUAL_ENTRY',
+  UNKNOWN: 'UNKNOWN',
 } as const;
 
 export type CompletionTriggerSource =
@@ -101,3 +93,16 @@ export const HabitStrengthStage = {
 
 export type HabitStrengthStage =
   (typeof HabitStrengthStage)[keyof typeof HabitStrengthStage];
+
+// ─── Phase 4B: Difficulty rating ─────────────────────────────────────────────
+
+export const DifficultyRating = {
+  VERY_EASY: 'very_easy',
+  EASY: 'easy',
+  MODERATE: 'moderate',
+  HARD: 'hard',
+  VERY_HARD: 'very_hard',
+} as const;
+
+export type DifficultyRating =
+  (typeof DifficultyRating)[keyof typeof DifficultyRating];

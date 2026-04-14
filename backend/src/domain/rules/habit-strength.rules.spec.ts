@@ -1,5 +1,5 @@
 import { HabitStrengthRules } from './habit-strength.rules';
-import { ReminderPolicyMode } from '../enums/domain.enums';
+import { ReminderPolicyMode, HabitLogStatus, CompletionTriggerSource } from '../enums/domain.enums';
 
 describe('HabitStrengthRules.scoreSrbai', () => {
   it('computes rawAverage = mean of 4 items', () => {
@@ -135,5 +135,66 @@ describe('HabitStrengthRules.recommendTaperingPolicy', () => {
     const result = HabitStrengthRules.recommendTaperingPolicy('weak', 0.0);
     expect(result.cooldownMinutes).toBe(30);
     expect(result.maxPerDay).toBe(4);
+  });
+});
+
+describe('HabitStrengthRules.compute', () => {
+  const D = HabitLogStatus.DONE;
+  const N = HabitLogStatus.NOT_DONE;
+  const SI = CompletionTriggerSource.SELF_INITIATED;
+  const RT = CompletionTriggerSource.REMINDER_TRIGGERED;
+  const UK = CompletionTriggerSource.UNKNOWN;
+
+  const base = {
+    habitId: 'h1',
+    scheduledWeekdayCount: 5,
+    hasCueConfiguration: true,
+    hasMotivationProfile: false,
+  };
+
+  it('counts selfInitiatedRate over doneCount only (not totalLogs)', () => {
+    const result = HabitStrengthRules.compute({
+      ...base,
+      logs: [
+        { status: D, triggerSource: SI },
+        { status: D, triggerSource: SI },
+        { status: N, triggerSource: UK }, // NOT_DONE — should not affect selfInitiatedRate
+        { status: N, triggerSource: SI }, // NOT_DONE SELF_INITIATED — must NOT count
+      ],
+    });
+    expect(result.doneCount).toBe(2);
+    expect(result.notDoneCount).toBe(2);
+    expect(result.totalLogs).toBe(4);
+    // 2 self-initiated out of 2 DONE → 1.0
+    expect(result.selfInitiatedRate).toBe(1.0);
+    expect(result.doneRate).toBe(0.5);
+  });
+
+  it('returns selfInitiatedRate=0 when all logs are NOT_DONE', () => {
+    const result = HabitStrengthRules.compute({
+      ...base,
+      logs: [
+        { status: N, triggerSource: SI },
+        { status: N, triggerSource: RT },
+      ],
+    });
+    expect(result.doneCount).toBe(0);
+    expect(result.selfInitiatedRate).toBe(0);
+    expect(result.doneRate).toBe(0);
+  });
+
+  it('computes correct selfInitiatedRate with mixed DONE trigger sources', () => {
+    const result = HabitStrengthRules.compute({
+      ...base,
+      logs: [
+        { status: D, triggerSource: SI },
+        { status: D, triggerSource: RT },
+        { status: D, triggerSource: RT },
+        { status: D, triggerSource: UK },
+      ],
+    });
+    // 1 SI out of 4 DONE
+    expect(result.selfInitiatedRate).toBe(0.25);
+    expect(result.doneRate).toBe(1);
   });
 });

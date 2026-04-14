@@ -1,0 +1,47 @@
+/* ── Bottom Nav (shared) ─────────────────────────────────────────────────── */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+}
+
+.bottom-nav__inner {
+  background: white;
+  border-radius: 48px;
+  box-shadow: 10px 14px 56px rgba(0, 0, 0, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 10px 24px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 48px;
+  padding: 0;
+  color: #474747;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.nav-item--active {
+  background: #303437;
+  color: #f2f4f5;
+  padding: 10px 20px 10px 12px;
+}
+
+.nav-item:hover:not(.nav-item--active) {
+  color: #303437;
+}

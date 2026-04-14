@@ -1,12 +1,6 @@
-import { Weekday } from '../enums/domain.enums';
+import { Weekday, ReminderDecisionReason } from '../enums/domain.enums';
 import { HabitCueEntity } from '../entities/habit-cue.entity';
 import { CueScheduleRules } from './cue-schedule.rules';
-
-export type ReminderDecisionReason =
-  | 'reminder_disabled'
-  | 'not_scheduled_today'
-  | 'no_active_cues'
-  | 'remind';
 
 export interface ReminderDecisionInput {
   habitId: string;
@@ -40,18 +34,18 @@ export class ReminderDecisionRules {
     let reason: ReminderDecisionReason;
 
     if (!input.reminderEnabled) {
-      reason = 'reminder_disabled';
+      reason = ReminderDecisionReason.REMINDER_DISABLED;
     } else if (!isScheduledToday) {
-      reason = 'not_scheduled_today';
+      reason = ReminderDecisionReason.NOT_SCHEDULED_TODAY;
     } else if (activeCueCount === 0) {
-      reason = 'no_active_cues';
+      reason = ReminderDecisionReason.NO_ACTIVE_CUES;
     } else {
-      reason = 'remind';
+      reason = ReminderDecisionReason.SHOULD_REMIND;
     }
 
     return {
       habitId: input.habitId,
-      shouldRemind: reason === 'remind',
+      shouldRemind: reason === ReminderDecisionReason.SHOULD_REMIND,
       reason,
       isScheduledToday,
       activeCueCount,

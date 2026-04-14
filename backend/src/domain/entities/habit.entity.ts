@@ -1,5 +1,4 @@
 import {
-  HabitTrackingType,
   HabitLifecycleStatus,
   Weekday,
 } from '../enums/domain.enums';
@@ -18,11 +17,9 @@ export class HabitEntity {
   userId!: string;
   title!: string;
   description!: string | null;
-  trackingType!: HabitTrackingType;
-  allowPartialCompletion!: boolean;
-  measurementUnit!: string | null;
-  targetValue!: number | null;
-  minimumSuccessValue!: number | null;
+  measurementUnit!: string;
+  targetValue!: number;
+  minimumTarget!: number;
   startDate!: Date;
   status!: HabitLifecycleStatus;
   reminderEnabled!: boolean;

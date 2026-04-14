@@ -28,12 +28,12 @@ export type AggregateHabit = {
 
 export type HabitAvgAggregateOutputType = {
   targetValue: number | null
-  minimumSuccessValue: number | null
+  minimumTarget: number | null
 }
 
 export type HabitSumAggregateOutputType = {
   targetValue: number | null
-  minimumSuccessValue: number | null
+  minimumTarget: number | null
 }
 
 export type HabitMinAggregateOutputType = {
@@ -41,11 +41,9 @@ export type HabitMinAggregateOutputType = {
   userId: string | null
   title: string | null
   description: string | null
-  trackingType: $Enums.HabitTrackingType | null
-  allowPartialCompletion: boolean | null
   measurementUnit: string | null
   targetValue: number | null
-  minimumSuccessValue: number | null
+  minimumTarget: number | null
   startDate: Date | null
   status: $Enums.HabitLifecycleStatus | null
   reminderEnabled: boolean | null
@@ -59,11 +57,9 @@ export type HabitMaxAggregateOutputType = {
   userId: string | null
   title: string | null
   description: string | null
-  trackingType: $Enums.HabitTrackingType | null
-  allowPartialCompletion: boolean | null
   measurementUnit: string | null
   targetValue: number | null
-  minimumSuccessValue: number | null
+  minimumTarget: number | null
   startDate: Date | null
   status: $Enums.HabitLifecycleStatus | null
   reminderEnabled: boolean | null
@@ -77,11 +73,9 @@ export type HabitCountAggregateOutputType = {
   userId: number
   title: number
   description: number
-  trackingType: number
-  allowPartialCompletion: number
   measurementUnit: number
   targetValue: number
-  minimumSuccessValue: number
+  minimumTarget: number
   startDate: number
   status: number
   reminderEnabled: number
@@ -94,12 +88,12 @@ export type HabitCountAggregateOutputType = {
 
 export type HabitAvgAggregateInputType = {
   targetValue?: true
-  minimumSuccessValue?: true
+  minimumTarget?: true
 }
 
 export type HabitSumAggregateInputType = {
   targetValue?: true
-  minimumSuccessValue?: true
+  minimumTarget?: true
 }
 
 export type HabitMinAggregateInputType = {
@@ -107,11 +101,9 @@ export type HabitMinAggregateInputType = {
   userId?: true
   title?: true
   description?: true
-  trackingType?: true
-  allowPartialCompletion?: true
   measurementUnit?: true
   targetValue?: true
-  minimumSuccessValue?: true
+  minimumTarget?: true
   startDate?: true
   status?: true
   reminderEnabled?: true
@@ -125,11 +117,9 @@ export type HabitMaxAggregateInputType = {
   userId?: true
   title?: true
   description?: true
-  trackingType?: true
-  allowPartialCompletion?: true
   measurementUnit?: true
   targetValue?: true
-  minimumSuccessValue?: true
+  minimumTarget?: true
   startDate?: true
   status?: true
   reminderEnabled?: true
@@ -143,11 +133,9 @@ export type HabitCountAggregateInputType = {
   userId?: true
   title?: true
   description?: true
-  trackingType?: true
-  allowPartialCompletion?: true
   measurementUnit?: true
   targetValue?: true
-  minimumSuccessValue?: true
+  minimumTarget?: true
   startDate?: true
   status?: true
   reminderEnabled?: true
@@ -248,11 +236,9 @@ export type HabitGroupByOutputType = {
   userId: string
   title: string
   description: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion: boolean
-  measurementUnit: string | null
-  targetValue: number | null
-  minimumSuccessValue: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date
   status: $Enums.HabitLifecycleStatus
   reminderEnabled: boolean
@@ -289,11 +275,9 @@ export type HabitWhereInput = {
   userId?: Prisma.UuidFilter<"Habit"> | string
   title?: Prisma.StringFilter<"Habit"> | string
   description?: Prisma.StringNullableFilter<"Habit"> | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFilter<"Habit"> | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFilter<"Habit"> | boolean
-  measurementUnit?: Prisma.StringNullableFilter<"Habit"> | string | null
-  targetValue?: Prisma.FloatNullableFilter<"Habit"> | number | null
-  minimumSuccessValue?: Prisma.FloatNullableFilter<"Habit"> | number | null
+  measurementUnit?: Prisma.StringFilter<"Habit"> | string
+  targetValue?: Prisma.FloatFilter<"Habit"> | number
+  minimumTarget?: Prisma.FloatFilter<"Habit"> | number
   startDate?: Prisma.DateTimeFilter<"Habit"> | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFilter<"Habit"> | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFilter<"Habit"> | boolean
@@ -305,6 +289,11 @@ export type HabitWhereInput = {
   cues?: Prisma.HabitCueListRelationFilter
   motivationProfile?: Prisma.XOR<Prisma.HabitMotivationProfileNullableScalarRelationFilter, Prisma.HabitMotivationProfileWhereInput> | null
   logs?: Prisma.HabitLogListRelationFilter
+  reminders?: Prisma.ReminderListRelationFilter
+  srbaiAssessments?: Prisma.SrbaiAssessmentListRelationFilter
+  reminderPolicy?: Prisma.XOR<Prisma.ReminderPolicyNullableScalarRelationFilter, Prisma.ReminderPolicyWhereInput> | null
+  difficultyFeedback?: Prisma.DifficultyFeedbackListRelationFilter
+  reflections?: Prisma.ReflectionListRelationFilter
 }
 
 export type HabitOrderByWithRelationInput = {
@@ -312,11 +301,9 @@ export type HabitOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  trackingType?: Prisma.SortOrder
-  allowPartialCompletion?: Prisma.SortOrder
-  measurementUnit?: Prisma.SortOrderInput | Prisma.SortOrder
-  targetValue?: Prisma.SortOrderInput | Prisma.SortOrder
-  minimumSuccessValue?: Prisma.SortOrderInput | Prisma.SortOrder
+  measurementUnit?: Prisma.SortOrder
+  targetValue?: Prisma.SortOrder
+  minimumTarget?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reminderEnabled?: Prisma.SortOrder
@@ -328,6 +315,11 @@ export type HabitOrderByWithRelationInput = {
   cues?: Prisma.HabitCueOrderByRelationAggregateInput
   motivationProfile?: Prisma.HabitMotivationProfileOrderByWithRelationInput
   logs?: Prisma.HabitLogOrderByRelationAggregateInput
+  reminders?: Prisma.ReminderOrderByRelationAggregateInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentOrderByRelationAggregateInput
+  reminderPolicy?: Prisma.ReminderPolicyOrderByWithRelationInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackOrderByRelationAggregateInput
+  reflections?: Prisma.ReflectionOrderByRelationAggregateInput
 }
 
 export type HabitWhereUniqueInput = Prisma.AtLeast<{
@@ -338,11 +330,9 @@ export type HabitWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.UuidFilter<"Habit"> | string
   title?: Prisma.StringFilter<"Habit"> | string
   description?: Prisma.StringNullableFilter<"Habit"> | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFilter<"Habit"> | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFilter<"Habit"> | boolean
-  measurementUnit?: Prisma.StringNullableFilter<"Habit"> | string | null
-  targetValue?: Prisma.FloatNullableFilter<"Habit"> | number | null
-  minimumSuccessValue?: Prisma.FloatNullableFilter<"Habit"> | number | null
+  measurementUnit?: Prisma.StringFilter<"Habit"> | string
+  targetValue?: Prisma.FloatFilter<"Habit"> | number
+  minimumTarget?: Prisma.FloatFilter<"Habit"> | number
   startDate?: Prisma.DateTimeFilter<"Habit"> | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFilter<"Habit"> | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFilter<"Habit"> | boolean
@@ -354,6 +344,11 @@ export type HabitWhereUniqueInput = Prisma.AtLeast<{
   cues?: Prisma.HabitCueListRelationFilter
   motivationProfile?: Prisma.XOR<Prisma.HabitMotivationProfileNullableScalarRelationFilter, Prisma.HabitMotivationProfileWhereInput> | null
   logs?: Prisma.HabitLogListRelationFilter
+  reminders?: Prisma.ReminderListRelationFilter
+  srbaiAssessments?: Prisma.SrbaiAssessmentListRelationFilter
+  reminderPolicy?: Prisma.XOR<Prisma.ReminderPolicyNullableScalarRelationFilter, Prisma.ReminderPolicyWhereInput> | null
+  difficultyFeedback?: Prisma.DifficultyFeedbackListRelationFilter
+  reflections?: Prisma.ReflectionListRelationFilter
 }, "id">
 
 export type HabitOrderByWithAggregationInput = {
@@ -361,11 +356,9 @@ export type HabitOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  trackingType?: Prisma.SortOrder
-  allowPartialCompletion?: Prisma.SortOrder
-  measurementUnit?: Prisma.SortOrderInput | Prisma.SortOrder
-  targetValue?: Prisma.SortOrderInput | Prisma.SortOrder
-  minimumSuccessValue?: Prisma.SortOrderInput | Prisma.SortOrder
+  measurementUnit?: Prisma.SortOrder
+  targetValue?: Prisma.SortOrder
+  minimumTarget?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reminderEnabled?: Prisma.SortOrder
@@ -387,11 +380,9 @@ export type HabitScalarWhereWithAggregatesInput = {
   userId?: Prisma.UuidWithAggregatesFilter<"Habit"> | string
   title?: Prisma.StringWithAggregatesFilter<"Habit"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Habit"> | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeWithAggregatesFilter<"Habit"> | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolWithAggregatesFilter<"Habit"> | boolean
-  measurementUnit?: Prisma.StringNullableWithAggregatesFilter<"Habit"> | string | null
-  targetValue?: Prisma.FloatNullableWithAggregatesFilter<"Habit"> | number | null
-  minimumSuccessValue?: Prisma.FloatNullableWithAggregatesFilter<"Habit"> | number | null
+  measurementUnit?: Prisma.StringWithAggregatesFilter<"Habit"> | string
+  targetValue?: Prisma.FloatWithAggregatesFilter<"Habit"> | number
+  minimumTarget?: Prisma.FloatWithAggregatesFilter<"Habit"> | number
   startDate?: Prisma.DateTimeWithAggregatesFilter<"Habit"> | Date | string
   status?: Prisma.EnumHabitLifecycleStatusWithAggregatesFilter<"Habit"> | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolWithAggregatesFilter<"Habit"> | boolean
@@ -404,11 +395,9 @@ export type HabitCreateInput = {
   id?: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -420,6 +409,11 @@ export type HabitCreateInput = {
   cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
   motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
   logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateInput = {
@@ -427,11 +421,9 @@ export type HabitUncheckedCreateInput = {
   userId: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -442,17 +434,20 @@ export type HabitUncheckedCreateInput = {
   cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
   motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
   logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -464,6 +459,11 @@ export type HabitUpdateInput = {
   cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
   motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
   logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateInput = {
@@ -471,11 +471,9 @@ export type HabitUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -486,6 +484,11 @@ export type HabitUncheckedUpdateInput = {
   cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
   motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
   logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateManyInput = {
@@ -493,11 +496,9 @@ export type HabitCreateManyInput = {
   userId: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -510,11 +511,9 @@ export type HabitUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -528,11 +527,9 @@ export type HabitUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -556,11 +553,9 @@ export type HabitCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  trackingType?: Prisma.SortOrder
-  allowPartialCompletion?: Prisma.SortOrder
   measurementUnit?: Prisma.SortOrder
   targetValue?: Prisma.SortOrder
-  minimumSuccessValue?: Prisma.SortOrder
+  minimumTarget?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reminderEnabled?: Prisma.SortOrder
@@ -571,7 +566,7 @@ export type HabitCountOrderByAggregateInput = {
 
 export type HabitAvgOrderByAggregateInput = {
   targetValue?: Prisma.SortOrder
-  minimumSuccessValue?: Prisma.SortOrder
+  minimumTarget?: Prisma.SortOrder
 }
 
 export type HabitMaxOrderByAggregateInput = {
@@ -579,11 +574,9 @@ export type HabitMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  trackingType?: Prisma.SortOrder
-  allowPartialCompletion?: Prisma.SortOrder
   measurementUnit?: Prisma.SortOrder
   targetValue?: Prisma.SortOrder
-  minimumSuccessValue?: Prisma.SortOrder
+  minimumTarget?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reminderEnabled?: Prisma.SortOrder
@@ -597,11 +590,9 @@ export type HabitMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  trackingType?: Prisma.SortOrder
-  allowPartialCompletion?: Prisma.SortOrder
   measurementUnit?: Prisma.SortOrder
   targetValue?: Prisma.SortOrder
-  minimumSuccessValue?: Prisma.SortOrder
+  minimumTarget?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reminderEnabled?: Prisma.SortOrder
@@ -612,7 +603,7 @@ export type HabitMinOrderByAggregateInput = {
 
 export type HabitSumOrderByAggregateInput = {
   targetValue?: Prisma.SortOrder
-  minimumSuccessValue?: Prisma.SortOrder
+  minimumTarget?: Prisma.SortOrder
 }
 
 export type HabitScalarRelationFilter = {
@@ -662,16 +653,8 @@ export type HabitUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.HabitScalarWhereInput | Prisma.HabitScalarWhereInput[]
 }
 
-export type EnumHabitTrackingTypeFieldUpdateOperationsInput = {
-  set?: $Enums.HabitTrackingType
-}
-
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
-export type NullableFloatFieldUpdateOperationsInput = {
-  set?: number | null
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
   increment?: number
   decrement?: number
   multiply?: number
@@ -680,6 +663,10 @@ export type NullableFloatFieldUpdateOperationsInput = {
 
 export type EnumHabitLifecycleStatusFieldUpdateOperationsInput = {
   set?: $Enums.HabitLifecycleStatus
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -742,15 +729,83 @@ export type HabitUpdateOneRequiredWithoutLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.HabitUpdateToOneWithWhereWithoutLogsInput, Prisma.HabitUpdateWithoutLogsInput>, Prisma.HabitUncheckedUpdateWithoutLogsInput>
 }
 
+export type HabitCreateNestedOneWithoutDifficultyFeedbackInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutDifficultyFeedbackInput, Prisma.HabitUncheckedCreateWithoutDifficultyFeedbackInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutDifficultyFeedbackInput
+  connect?: Prisma.HabitWhereUniqueInput
+}
+
+export type HabitUpdateOneRequiredWithoutDifficultyFeedbackNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutDifficultyFeedbackInput, Prisma.HabitUncheckedCreateWithoutDifficultyFeedbackInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutDifficultyFeedbackInput
+  upsert?: Prisma.HabitUpsertWithoutDifficultyFeedbackInput
+  connect?: Prisma.HabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitUpdateToOneWithWhereWithoutDifficultyFeedbackInput, Prisma.HabitUpdateWithoutDifficultyFeedbackInput>, Prisma.HabitUncheckedUpdateWithoutDifficultyFeedbackInput>
+}
+
+export type HabitCreateNestedOneWithoutReflectionsInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutReflectionsInput, Prisma.HabitUncheckedCreateWithoutReflectionsInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutReflectionsInput
+  connect?: Prisma.HabitWhereUniqueInput
+}
+
+export type HabitUpdateOneRequiredWithoutReflectionsNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutReflectionsInput, Prisma.HabitUncheckedCreateWithoutReflectionsInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutReflectionsInput
+  upsert?: Prisma.HabitUpsertWithoutReflectionsInput
+  connect?: Prisma.HabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitUpdateToOneWithWhereWithoutReflectionsInput, Prisma.HabitUpdateWithoutReflectionsInput>, Prisma.HabitUncheckedUpdateWithoutReflectionsInput>
+}
+
+export type HabitCreateNestedOneWithoutRemindersInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutRemindersInput, Prisma.HabitUncheckedCreateWithoutRemindersInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutRemindersInput
+  connect?: Prisma.HabitWhereUniqueInput
+}
+
+export type HabitUpdateOneRequiredWithoutRemindersNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutRemindersInput, Prisma.HabitUncheckedCreateWithoutRemindersInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutRemindersInput
+  upsert?: Prisma.HabitUpsertWithoutRemindersInput
+  connect?: Prisma.HabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitUpdateToOneWithWhereWithoutRemindersInput, Prisma.HabitUpdateWithoutRemindersInput>, Prisma.HabitUncheckedUpdateWithoutRemindersInput>
+}
+
+export type HabitCreateNestedOneWithoutSrbaiAssessmentsInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutSrbaiAssessmentsInput, Prisma.HabitUncheckedCreateWithoutSrbaiAssessmentsInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutSrbaiAssessmentsInput
+  connect?: Prisma.HabitWhereUniqueInput
+}
+
+export type HabitUpdateOneRequiredWithoutSrbaiAssessmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutSrbaiAssessmentsInput, Prisma.HabitUncheckedCreateWithoutSrbaiAssessmentsInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutSrbaiAssessmentsInput
+  upsert?: Prisma.HabitUpsertWithoutSrbaiAssessmentsInput
+  connect?: Prisma.HabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitUpdateToOneWithWhereWithoutSrbaiAssessmentsInput, Prisma.HabitUpdateWithoutSrbaiAssessmentsInput>, Prisma.HabitUncheckedUpdateWithoutSrbaiAssessmentsInput>
+}
+
+export type HabitCreateNestedOneWithoutReminderPolicyInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutReminderPolicyInput, Prisma.HabitUncheckedCreateWithoutReminderPolicyInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutReminderPolicyInput
+  connect?: Prisma.HabitWhereUniqueInput
+}
+
+export type HabitUpdateOneRequiredWithoutReminderPolicyNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutReminderPolicyInput, Prisma.HabitUncheckedCreateWithoutReminderPolicyInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutReminderPolicyInput
+  upsert?: Prisma.HabitUpsertWithoutReminderPolicyInput
+  connect?: Prisma.HabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitUpdateToOneWithWhereWithoutReminderPolicyInput, Prisma.HabitUpdateWithoutReminderPolicyInput>, Prisma.HabitUncheckedUpdateWithoutReminderPolicyInput>
+}
+
 export type HabitCreateWithoutUserInput = {
   id?: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -761,17 +816,20 @@ export type HabitCreateWithoutUserInput = {
   cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
   motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
   logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutUserInput = {
   id?: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -782,6 +840,11 @@ export type HabitUncheckedCreateWithoutUserInput = {
   cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
   motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
   logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutUserInput = {
@@ -818,11 +881,9 @@ export type HabitScalarWhereInput = {
   userId?: Prisma.UuidFilter<"Habit"> | string
   title?: Prisma.StringFilter<"Habit"> | string
   description?: Prisma.StringNullableFilter<"Habit"> | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFilter<"Habit"> | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFilter<"Habit"> | boolean
-  measurementUnit?: Prisma.StringNullableFilter<"Habit"> | string | null
-  targetValue?: Prisma.FloatNullableFilter<"Habit"> | number | null
-  minimumSuccessValue?: Prisma.FloatNullableFilter<"Habit"> | number | null
+  measurementUnit?: Prisma.StringFilter<"Habit"> | string
+  targetValue?: Prisma.FloatFilter<"Habit"> | number
+  minimumTarget?: Prisma.FloatFilter<"Habit"> | number
   startDate?: Prisma.DateTimeFilter<"Habit"> | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFilter<"Habit"> | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFilter<"Habit"> | boolean
@@ -835,11 +896,9 @@ export type HabitCreateWithoutScheduleDaysInput = {
   id?: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -850,6 +909,11 @@ export type HabitCreateWithoutScheduleDaysInput = {
   cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
   motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
   logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutScheduleDaysInput = {
@@ -857,11 +921,9 @@ export type HabitUncheckedCreateWithoutScheduleDaysInput = {
   userId: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -871,6 +933,11 @@ export type HabitUncheckedCreateWithoutScheduleDaysInput = {
   cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
   motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
   logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutScheduleDaysInput = {
@@ -893,11 +960,9 @@ export type HabitUpdateWithoutScheduleDaysInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -908,6 +973,11 @@ export type HabitUpdateWithoutScheduleDaysInput = {
   cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
   motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
   logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutScheduleDaysInput = {
@@ -915,11 +985,9 @@ export type HabitUncheckedUpdateWithoutScheduleDaysInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -929,17 +997,20 @@ export type HabitUncheckedUpdateWithoutScheduleDaysInput = {
   cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
   motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
   logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateWithoutCuesInput = {
   id?: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -950,6 +1021,11 @@ export type HabitCreateWithoutCuesInput = {
   scheduleDays?: Prisma.HabitScheduleDayCreateNestedManyWithoutHabitInput
   motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
   logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutCuesInput = {
@@ -957,11 +1033,9 @@ export type HabitUncheckedCreateWithoutCuesInput = {
   userId: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -971,6 +1045,11 @@ export type HabitUncheckedCreateWithoutCuesInput = {
   scheduleDays?: Prisma.HabitScheduleDayUncheckedCreateNestedManyWithoutHabitInput
   motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
   logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutCuesInput = {
@@ -993,11 +1072,9 @@ export type HabitUpdateWithoutCuesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1008,6 +1085,11 @@ export type HabitUpdateWithoutCuesInput = {
   scheduleDays?: Prisma.HabitScheduleDayUpdateManyWithoutHabitNestedInput
   motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
   logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutCuesInput = {
@@ -1015,11 +1097,9 @@ export type HabitUncheckedUpdateWithoutCuesInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1029,17 +1109,20 @@ export type HabitUncheckedUpdateWithoutCuesInput = {
   scheduleDays?: Prisma.HabitScheduleDayUncheckedUpdateManyWithoutHabitNestedInput
   motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
   logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateWithoutMotivationProfileInput = {
   id?: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -1050,6 +1133,11 @@ export type HabitCreateWithoutMotivationProfileInput = {
   scheduleDays?: Prisma.HabitScheduleDayCreateNestedManyWithoutHabitInput
   cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
   logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutMotivationProfileInput = {
@@ -1057,11 +1145,9 @@ export type HabitUncheckedCreateWithoutMotivationProfileInput = {
   userId: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -1071,6 +1157,11 @@ export type HabitUncheckedCreateWithoutMotivationProfileInput = {
   scheduleDays?: Prisma.HabitScheduleDayUncheckedCreateNestedManyWithoutHabitInput
   cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
   logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutMotivationProfileInput = {
@@ -1093,11 +1184,9 @@ export type HabitUpdateWithoutMotivationProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1108,6 +1197,11 @@ export type HabitUpdateWithoutMotivationProfileInput = {
   scheduleDays?: Prisma.HabitScheduleDayUpdateManyWithoutHabitNestedInput
   cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
   logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutMotivationProfileInput = {
@@ -1115,11 +1209,9 @@ export type HabitUncheckedUpdateWithoutMotivationProfileInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1129,17 +1221,20 @@ export type HabitUncheckedUpdateWithoutMotivationProfileInput = {
   scheduleDays?: Prisma.HabitScheduleDayUncheckedUpdateManyWithoutHabitNestedInput
   cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
   logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateWithoutLogsInput = {
   id?: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -1150,6 +1245,11 @@ export type HabitCreateWithoutLogsInput = {
   scheduleDays?: Prisma.HabitScheduleDayCreateNestedManyWithoutHabitInput
   cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
   motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutLogsInput = {
@@ -1157,11 +1257,9 @@ export type HabitUncheckedCreateWithoutLogsInput = {
   userId: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -1171,6 +1269,11 @@ export type HabitUncheckedCreateWithoutLogsInput = {
   scheduleDays?: Prisma.HabitScheduleDayUncheckedCreateNestedManyWithoutHabitInput
   cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
   motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutLogsInput = {
@@ -1193,11 +1296,9 @@ export type HabitUpdateWithoutLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1208,6 +1309,11 @@ export type HabitUpdateWithoutLogsInput = {
   scheduleDays?: Prisma.HabitScheduleDayUpdateManyWithoutHabitNestedInput
   cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
   motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutLogsInput = {
@@ -1215,11 +1321,9 @@ export type HabitUncheckedUpdateWithoutLogsInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1229,17 +1333,580 @@ export type HabitUncheckedUpdateWithoutLogsInput = {
   scheduleDays?: Prisma.HabitScheduleDayUncheckedUpdateManyWithoutHabitNestedInput
   cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
   motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitCreateWithoutDifficultyFeedbackInput = {
+  id?: string
+  title: string
+  description?: string | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutHabitsInput
+  scheduleDays?: Prisma.HabitScheduleDayCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+}
+
+export type HabitUncheckedCreateWithoutDifficultyFeedbackInput = {
+  id?: string
+  userId: string
+  title: string
+  description?: string | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type HabitCreateOrConnectWithoutDifficultyFeedbackInput = {
+  where: Prisma.HabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitCreateWithoutDifficultyFeedbackInput, Prisma.HabitUncheckedCreateWithoutDifficultyFeedbackInput>
+}
+
+export type HabitUpsertWithoutDifficultyFeedbackInput = {
+  update: Prisma.XOR<Prisma.HabitUpdateWithoutDifficultyFeedbackInput, Prisma.HabitUncheckedUpdateWithoutDifficultyFeedbackInput>
+  create: Prisma.XOR<Prisma.HabitCreateWithoutDifficultyFeedbackInput, Prisma.HabitUncheckedCreateWithoutDifficultyFeedbackInput>
+  where?: Prisma.HabitWhereInput
+}
+
+export type HabitUpdateToOneWithWhereWithoutDifficultyFeedbackInput = {
+  where?: Prisma.HabitWhereInput
+  data: Prisma.XOR<Prisma.HabitUpdateWithoutDifficultyFeedbackInput, Prisma.HabitUncheckedUpdateWithoutDifficultyFeedbackInput>
+}
+
+export type HabitUpdateWithoutDifficultyFeedbackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
+  scheduleDays?: Prisma.HabitScheduleDayUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitUncheckedUpdateWithoutDifficultyFeedbackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitCreateWithoutReflectionsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutHabitsInput
+  scheduleDays?: Prisma.HabitScheduleDayCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+}
+
+export type HabitUncheckedCreateWithoutReflectionsInput = {
+  id?: string
+  userId: string
+  title: string
+  description?: string | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type HabitCreateOrConnectWithoutReflectionsInput = {
+  where: Prisma.HabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitCreateWithoutReflectionsInput, Prisma.HabitUncheckedCreateWithoutReflectionsInput>
+}
+
+export type HabitUpsertWithoutReflectionsInput = {
+  update: Prisma.XOR<Prisma.HabitUpdateWithoutReflectionsInput, Prisma.HabitUncheckedUpdateWithoutReflectionsInput>
+  create: Prisma.XOR<Prisma.HabitCreateWithoutReflectionsInput, Prisma.HabitUncheckedCreateWithoutReflectionsInput>
+  where?: Prisma.HabitWhereInput
+}
+
+export type HabitUpdateToOneWithWhereWithoutReflectionsInput = {
+  where?: Prisma.HabitWhereInput
+  data: Prisma.XOR<Prisma.HabitUpdateWithoutReflectionsInput, Prisma.HabitUncheckedUpdateWithoutReflectionsInput>
+}
+
+export type HabitUpdateWithoutReflectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
+  scheduleDays?: Prisma.HabitScheduleDayUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitUncheckedUpdateWithoutReflectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitCreateWithoutRemindersInput = {
+  id?: string
+  title: string
+  description?: string | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutHabitsInput
+  scheduleDays?: Prisma.HabitScheduleDayCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+}
+
+export type HabitUncheckedCreateWithoutRemindersInput = {
+  id?: string
+  userId: string
+  title: string
+  description?: string | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type HabitCreateOrConnectWithoutRemindersInput = {
+  where: Prisma.HabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitCreateWithoutRemindersInput, Prisma.HabitUncheckedCreateWithoutRemindersInput>
+}
+
+export type HabitUpsertWithoutRemindersInput = {
+  update: Prisma.XOR<Prisma.HabitUpdateWithoutRemindersInput, Prisma.HabitUncheckedUpdateWithoutRemindersInput>
+  create: Prisma.XOR<Prisma.HabitCreateWithoutRemindersInput, Prisma.HabitUncheckedCreateWithoutRemindersInput>
+  where?: Prisma.HabitWhereInput
+}
+
+export type HabitUpdateToOneWithWhereWithoutRemindersInput = {
+  where?: Prisma.HabitWhereInput
+  data: Prisma.XOR<Prisma.HabitUpdateWithoutRemindersInput, Prisma.HabitUncheckedUpdateWithoutRemindersInput>
+}
+
+export type HabitUpdateWithoutRemindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
+  scheduleDays?: Prisma.HabitScheduleDayUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitUncheckedUpdateWithoutRemindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitCreateWithoutSrbaiAssessmentsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutHabitsInput
+  scheduleDays?: Prisma.HabitScheduleDayCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+}
+
+export type HabitUncheckedCreateWithoutSrbaiAssessmentsInput = {
+  id?: string
+  userId: string
+  title: string
+  description?: string | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type HabitCreateOrConnectWithoutSrbaiAssessmentsInput = {
+  where: Prisma.HabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitCreateWithoutSrbaiAssessmentsInput, Prisma.HabitUncheckedCreateWithoutSrbaiAssessmentsInput>
+}
+
+export type HabitUpsertWithoutSrbaiAssessmentsInput = {
+  update: Prisma.XOR<Prisma.HabitUpdateWithoutSrbaiAssessmentsInput, Prisma.HabitUncheckedUpdateWithoutSrbaiAssessmentsInput>
+  create: Prisma.XOR<Prisma.HabitCreateWithoutSrbaiAssessmentsInput, Prisma.HabitUncheckedCreateWithoutSrbaiAssessmentsInput>
+  where?: Prisma.HabitWhereInput
+}
+
+export type HabitUpdateToOneWithWhereWithoutSrbaiAssessmentsInput = {
+  where?: Prisma.HabitWhereInput
+  data: Prisma.XOR<Prisma.HabitUpdateWithoutSrbaiAssessmentsInput, Prisma.HabitUncheckedUpdateWithoutSrbaiAssessmentsInput>
+}
+
+export type HabitUpdateWithoutSrbaiAssessmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
+  scheduleDays?: Prisma.HabitScheduleDayUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitUncheckedUpdateWithoutSrbaiAssessmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitCreateWithoutReminderPolicyInput = {
+  id?: string
+  title: string
+  description?: string | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutHabitsInput
+  scheduleDays?: Prisma.HabitScheduleDayCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+}
+
+export type HabitUncheckedCreateWithoutReminderPolicyInput = {
+  id?: string
+  userId: string
+  title: string
+  description?: string | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type HabitCreateOrConnectWithoutReminderPolicyInput = {
+  where: Prisma.HabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitCreateWithoutReminderPolicyInput, Prisma.HabitUncheckedCreateWithoutReminderPolicyInput>
+}
+
+export type HabitUpsertWithoutReminderPolicyInput = {
+  update: Prisma.XOR<Prisma.HabitUpdateWithoutReminderPolicyInput, Prisma.HabitUncheckedUpdateWithoutReminderPolicyInput>
+  create: Prisma.XOR<Prisma.HabitCreateWithoutReminderPolicyInput, Prisma.HabitUncheckedCreateWithoutReminderPolicyInput>
+  where?: Prisma.HabitWhereInput
+}
+
+export type HabitUpdateToOneWithWhereWithoutReminderPolicyInput = {
+  where?: Prisma.HabitWhereInput
+  data: Prisma.XOR<Prisma.HabitUpdateWithoutReminderPolicyInput, Prisma.HabitUncheckedUpdateWithoutReminderPolicyInput>
+}
+
+export type HabitUpdateWithoutReminderPolicyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
+  scheduleDays?: Prisma.HabitScheduleDayUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitUncheckedUpdateWithoutReminderPolicyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateManyUserInput = {
   id?: string
   title: string
   description?: string | null
-  trackingType: $Enums.HabitTrackingType
-  allowPartialCompletion?: boolean
-  measurementUnit?: string | null
-  targetValue?: number | null
-  minimumSuccessValue?: number | null
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
   startDate: Date | string
   status?: $Enums.HabitLifecycleStatus
   reminderEnabled?: boolean
@@ -1252,11 +1919,9 @@ export type HabitUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1267,17 +1932,20 @@ export type HabitUpdateWithoutUserInput = {
   cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
   motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
   logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1288,17 +1956,20 @@ export type HabitUncheckedUpdateWithoutUserInput = {
   cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
   motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
   logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trackingType?: Prisma.EnumHabitTrackingTypeFieldUpdateOperationsInput | $Enums.HabitTrackingType
-  allowPartialCompletion?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  measurementUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  targetValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  minimumSuccessValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
   reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1316,12 +1987,20 @@ export type HabitCountOutputType = {
   scheduleDays: number
   cues: number
   logs: number
+  reminders: number
+  srbaiAssessments: number
+  difficultyFeedback: number
+  reflections: number
 }
 
 export type HabitCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   scheduleDays?: boolean | HabitCountOutputTypeCountScheduleDaysArgs
   cues?: boolean | HabitCountOutputTypeCountCuesArgs
   logs?: boolean | HabitCountOutputTypeCountLogsArgs
+  reminders?: boolean | HabitCountOutputTypeCountRemindersArgs
+  srbaiAssessments?: boolean | HabitCountOutputTypeCountSrbaiAssessmentsArgs
+  difficultyFeedback?: boolean | HabitCountOutputTypeCountDifficultyFeedbackArgs
+  reflections?: boolean | HabitCountOutputTypeCountReflectionsArgs
 }
 
 /**
@@ -1355,17 +2034,43 @@ export type HabitCountOutputTypeCountLogsArgs<ExtArgs extends runtime.Types.Exte
   where?: Prisma.HabitLogWhereInput
 }
 
+/**
+ * HabitCountOutputType without action
+ */
+export type HabitCountOutputTypeCountRemindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReminderWhereInput
+}
+
+/**
+ * HabitCountOutputType without action
+ */
+export type HabitCountOutputTypeCountSrbaiAssessmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SrbaiAssessmentWhereInput
+}
+
+/**
+ * HabitCountOutputType without action
+ */
+export type HabitCountOutputTypeCountDifficultyFeedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DifficultyFeedbackWhereInput
+}
+
+/**
+ * HabitCountOutputType without action
+ */
+export type HabitCountOutputTypeCountReflectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReflectionWhereInput
+}
+
 
 export type HabitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
   title?: boolean
   description?: boolean
-  trackingType?: boolean
-  allowPartialCompletion?: boolean
   measurementUnit?: boolean
   targetValue?: boolean
-  minimumSuccessValue?: boolean
+  minimumTarget?: boolean
   startDate?: boolean
   status?: boolean
   reminderEnabled?: boolean
@@ -1377,6 +2082,11 @@ export type HabitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   cues?: boolean | Prisma.Habit$cuesArgs<ExtArgs>
   motivationProfile?: boolean | Prisma.Habit$motivationProfileArgs<ExtArgs>
   logs?: boolean | Prisma.Habit$logsArgs<ExtArgs>
+  reminders?: boolean | Prisma.Habit$remindersArgs<ExtArgs>
+  srbaiAssessments?: boolean | Prisma.Habit$srbaiAssessmentsArgs<ExtArgs>
+  reminderPolicy?: boolean | Prisma.Habit$reminderPolicyArgs<ExtArgs>
+  difficultyFeedback?: boolean | Prisma.Habit$difficultyFeedbackArgs<ExtArgs>
+  reflections?: boolean | Prisma.Habit$reflectionsArgs<ExtArgs>
   _count?: boolean | Prisma.HabitCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["habit"]>
 
@@ -1385,11 +2095,9 @@ export type HabitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   userId?: boolean
   title?: boolean
   description?: boolean
-  trackingType?: boolean
-  allowPartialCompletion?: boolean
   measurementUnit?: boolean
   targetValue?: boolean
-  minimumSuccessValue?: boolean
+  minimumTarget?: boolean
   startDate?: boolean
   status?: boolean
   reminderEnabled?: boolean
@@ -1404,11 +2112,9 @@ export type HabitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   userId?: boolean
   title?: boolean
   description?: boolean
-  trackingType?: boolean
-  allowPartialCompletion?: boolean
   measurementUnit?: boolean
   targetValue?: boolean
-  minimumSuccessValue?: boolean
+  minimumTarget?: boolean
   startDate?: boolean
   status?: boolean
   reminderEnabled?: boolean
@@ -1423,11 +2129,9 @@ export type HabitSelectScalar = {
   userId?: boolean
   title?: boolean
   description?: boolean
-  trackingType?: boolean
-  allowPartialCompletion?: boolean
   measurementUnit?: boolean
   targetValue?: boolean
-  minimumSuccessValue?: boolean
+  minimumTarget?: boolean
   startDate?: boolean
   status?: boolean
   reminderEnabled?: boolean
@@ -1436,13 +2140,18 @@ export type HabitSelectScalar = {
   updatedAt?: boolean
 }
 
-export type HabitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "description" | "trackingType" | "allowPartialCompletion" | "measurementUnit" | "targetValue" | "minimumSuccessValue" | "startDate" | "status" | "reminderEnabled" | "archivedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["habit"]>
+export type HabitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "description" | "measurementUnit" | "targetValue" | "minimumTarget" | "startDate" | "status" | "reminderEnabled" | "archivedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["habit"]>
 export type HabitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   scheduleDays?: boolean | Prisma.Habit$scheduleDaysArgs<ExtArgs>
   cues?: boolean | Prisma.Habit$cuesArgs<ExtArgs>
   motivationProfile?: boolean | Prisma.Habit$motivationProfileArgs<ExtArgs>
   logs?: boolean | Prisma.Habit$logsArgs<ExtArgs>
+  reminders?: boolean | Prisma.Habit$remindersArgs<ExtArgs>
+  srbaiAssessments?: boolean | Prisma.Habit$srbaiAssessmentsArgs<ExtArgs>
+  reminderPolicy?: boolean | Prisma.Habit$reminderPolicyArgs<ExtArgs>
+  difficultyFeedback?: boolean | Prisma.Habit$difficultyFeedbackArgs<ExtArgs>
+  reflections?: boolean | Prisma.Habit$reflectionsArgs<ExtArgs>
   _count?: boolean | Prisma.HabitCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type HabitIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1460,17 +2169,20 @@ export type $HabitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     cues: Prisma.$HabitCuePayload<ExtArgs>[]
     motivationProfile: Prisma.$HabitMotivationProfilePayload<ExtArgs> | null
     logs: Prisma.$HabitLogPayload<ExtArgs>[]
+    reminders: Prisma.$ReminderPayload<ExtArgs>[]
+    srbaiAssessments: Prisma.$SrbaiAssessmentPayload<ExtArgs>[]
+    reminderPolicy: Prisma.$ReminderPolicyPayload<ExtArgs> | null
+    difficultyFeedback: Prisma.$DifficultyFeedbackPayload<ExtArgs>[]
+    reflections: Prisma.$ReflectionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
     title: string
     description: string | null
-    trackingType: $Enums.HabitTrackingType
-    allowPartialCompletion: boolean
-    measurementUnit: string | null
-    targetValue: number | null
-    minimumSuccessValue: number | null
+    measurementUnit: string
+    targetValue: number
+    minimumTarget: number
     startDate: Date
     status: $Enums.HabitLifecycleStatus
     reminderEnabled: boolean
@@ -1876,6 +2588,11 @@ export interface Prisma__HabitClient<T, Null = never, ExtArgs extends runtime.Ty
   cues<T extends Prisma.Habit$cuesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$cuesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitCuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   motivationProfile<T extends Prisma.Habit$motivationProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$motivationProfileArgs<ExtArgs>>): Prisma.Prisma__HabitMotivationProfileClient<runtime.Types.Result.GetResult<Prisma.$HabitMotivationProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   logs<T extends Prisma.Habit$logsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$logsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reminders<T extends Prisma.Habit$remindersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  srbaiAssessments<T extends Prisma.Habit$srbaiAssessmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$srbaiAssessmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SrbaiAssessmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reminderPolicy<T extends Prisma.Habit$reminderPolicyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$reminderPolicyArgs<ExtArgs>>): Prisma.Prisma__ReminderPolicyClient<runtime.Types.Result.GetResult<Prisma.$ReminderPolicyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  difficultyFeedback<T extends Prisma.Habit$difficultyFeedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$difficultyFeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DifficultyFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reflections<T extends Prisma.Habit$reflectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$reflectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReflectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1909,11 +2626,9 @@ export interface HabitFieldRefs {
   readonly userId: Prisma.FieldRef<"Habit", 'String'>
   readonly title: Prisma.FieldRef<"Habit", 'String'>
   readonly description: Prisma.FieldRef<"Habit", 'String'>
-  readonly trackingType: Prisma.FieldRef<"Habit", 'HabitTrackingType'>
-  readonly allowPartialCompletion: Prisma.FieldRef<"Habit", 'Boolean'>
   readonly measurementUnit: Prisma.FieldRef<"Habit", 'String'>
   readonly targetValue: Prisma.FieldRef<"Habit", 'Float'>
-  readonly minimumSuccessValue: Prisma.FieldRef<"Habit", 'Float'>
+  readonly minimumTarget: Prisma.FieldRef<"Habit", 'Float'>
   readonly startDate: Prisma.FieldRef<"Habit", 'DateTime'>
   readonly status: Prisma.FieldRef<"Habit", 'HabitLifecycleStatus'>
   readonly reminderEnabled: Prisma.FieldRef<"Habit", 'Boolean'>
@@ -2409,6 +3124,121 @@ export type Habit$logsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   distinct?: Prisma.HabitLogScalarFieldEnum | Prisma.HabitLogScalarFieldEnum[]
+}
+
+/**
+ * Habit.reminders
+ */
+export type Habit$remindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Reminder
+   */
+  select?: Prisma.ReminderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Reminder
+   */
+  omit?: Prisma.ReminderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReminderInclude<ExtArgs> | null
+  where?: Prisma.ReminderWhereInput
+  orderBy?: Prisma.ReminderOrderByWithRelationInput | Prisma.ReminderOrderByWithRelationInput[]
+  cursor?: Prisma.ReminderWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReminderScalarFieldEnum | Prisma.ReminderScalarFieldEnum[]
+}
+
+/**
+ * Habit.srbaiAssessments
+ */
+export type Habit$srbaiAssessmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SrbaiAssessment
+   */
+  select?: Prisma.SrbaiAssessmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SrbaiAssessment
+   */
+  omit?: Prisma.SrbaiAssessmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SrbaiAssessmentInclude<ExtArgs> | null
+  where?: Prisma.SrbaiAssessmentWhereInput
+  orderBy?: Prisma.SrbaiAssessmentOrderByWithRelationInput | Prisma.SrbaiAssessmentOrderByWithRelationInput[]
+  cursor?: Prisma.SrbaiAssessmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SrbaiAssessmentScalarFieldEnum | Prisma.SrbaiAssessmentScalarFieldEnum[]
+}
+
+/**
+ * Habit.reminderPolicy
+ */
+export type Habit$reminderPolicyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReminderPolicy
+   */
+  select?: Prisma.ReminderPolicySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReminderPolicy
+   */
+  omit?: Prisma.ReminderPolicyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReminderPolicyInclude<ExtArgs> | null
+  where?: Prisma.ReminderPolicyWhereInput
+}
+
+/**
+ * Habit.difficultyFeedback
+ */
+export type Habit$difficultyFeedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DifficultyFeedback
+   */
+  select?: Prisma.DifficultyFeedbackSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DifficultyFeedback
+   */
+  omit?: Prisma.DifficultyFeedbackOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DifficultyFeedbackInclude<ExtArgs> | null
+  where?: Prisma.DifficultyFeedbackWhereInput
+  orderBy?: Prisma.DifficultyFeedbackOrderByWithRelationInput | Prisma.DifficultyFeedbackOrderByWithRelationInput[]
+  cursor?: Prisma.DifficultyFeedbackWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DifficultyFeedbackScalarFieldEnum | Prisma.DifficultyFeedbackScalarFieldEnum[]
+}
+
+/**
+ * Habit.reflections
+ */
+export type Habit$reflectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Reflection
+   */
+  select?: Prisma.ReflectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Reflection
+   */
+  omit?: Prisma.ReflectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReflectionInclude<ExtArgs> | null
+  where?: Prisma.ReflectionWhereInput
+  orderBy?: Prisma.ReflectionOrderByWithRelationInput | Prisma.ReflectionOrderByWithRelationInput[]
+  cursor?: Prisma.ReflectionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReflectionScalarFieldEnum | Prisma.ReflectionScalarFieldEnum[]
 }
 
 /**

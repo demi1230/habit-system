@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 
 import { BadRequestException } from '@nestjs/common';
-import { HabitTrackingType } from '../domain/enums/domain.enums';
 import { HabitsService } from './habits.service';
 
 describe('HabitsService', () => {
@@ -34,11 +33,13 @@ describe('HabitsService', () => {
     );
   });
 
-  it('rejects quantitative habits without measurement fields', async () => {
+  it('rejects habits when minimumTarget exceeds targetValue', async () => {
     await expect(
       habitsService.createHabit(userId, {
-        title: 'Drink water',
-        trackingType: HabitTrackingType.QUANTITATIVE,
+        title: 'Walk',
+        measurementUnit: 'steps',
+        targetValue: 10000,
+        minimumTarget: 12000,
         startDate: '2026-03-23',
       }),
     ).rejects.toBeInstanceOf(BadRequestException);
@@ -46,18 +47,39 @@ describe('HabitsService', () => {
     expect(habitRepo.create).not.toHaveBeenCalled();
   });
 
-  it('rejects quantitative habits when minimumSuccessValue is above targetValue', async () => {
+  it('creates a habit when minimumTarget <= targetValue', async () => {
+    const mockHabit = {
+      id: 'habit-1',
+      userId,
+      title: 'Drink water',
+      measurementUnit: 'glasses',
+      targetValue: 8,
+      minimumTarget: 4,
+    };
+    habitRepo.create.mockResolvedValue(mockHabit);
+
+    const result = await habitsService.createHabit(userId, {
+      title: 'Drink water',
+      measurementUnit: 'glasses',
+      targetValue: 8,
+      minimumTarget: 4,
+      startDate: '2026-03-23',
+    });
+
+    expect(result).toEqual(mockHabit);
+    expect(habitRepo.create).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects habits with duplicate weekdays in scheduleDays', async () => {
     await expect(
       habitsService.createHabit(userId, {
-        title: 'Walk',
-        trackingType: HabitTrackingType.QUANTITATIVE,
-        measurementUnit: 'steps',
-        targetValue: 10000,
-        minimumSuccessValue: 12000,
+        title: 'Yoga',
+        measurementUnit: 'minutes',
+        targetValue: 30,
+        minimumTarget: 15,
         startDate: '2026-03-23',
+        scheduleDays: [{ weekday: 'MONDAY' }, { weekday: 'MONDAY' }],
       }),
     ).rejects.toBeInstanceOf(BadRequestException);
-
-    expect(habitRepo.create).not.toHaveBeenCalled();
   });
 });

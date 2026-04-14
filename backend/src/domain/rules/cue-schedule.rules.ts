@@ -59,7 +59,11 @@ export class CueScheduleRules {
     };
   }
 
-  /** Returns all evaluated cues that are currently active. */
+  /**
+   * Returns all evaluated cues that are currently active.
+   * "Active" means the cue's `isActive` flag is `true` (an admin/user toggle).
+   * Real-time time-window or location matching is NOT performed here.
+   */
   static getActiveCues(cues: HabitCueEntity[]): CueContext[] {
     return cues
       .map((c) => CueScheduleRules.evaluateCue(c))

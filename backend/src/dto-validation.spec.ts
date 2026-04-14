@@ -9,7 +9,6 @@ describe('DTO validation', () => {
   it('rejects invalid habit payloads', async () => {
     const dto = plainToInstance(CreateHabitDto, {
       title: '',
-      trackingType: 'INVALID',
       startDate: 'not-a-date',
       scheduleDays: [{ weekday: 'FUNDAY' }],
     });
@@ -25,7 +24,9 @@ describe('DTO validation', () => {
     expect(errorProperties).toEqual(
       expect.arrayContaining([
         'title',
-        'trackingType',
+        'measurementUnit',
+        'targetValue',
+        'minimumTarget',
         'startDate',
         'scheduleDays',
       ]),
@@ -35,7 +36,7 @@ describe('DTO validation', () => {
   it('rejects invalid habit log payloads', async () => {
     const dto = plainToInstance(CreateHabitLogDto, {
       completedAt: 'not-a-date',
-      triggerSource: 'UNKNOWN',
+      triggerSource: 'INVALID_SOURCE',
     });
 
     const errors = await validate(dto);

@@ -1,6 +1,5 @@
 import { HabitEntity } from '../entities/habit.entity';
 import {
-  HabitTrackingType,
   HabitLifecycleStatus,
   Weekday,
 } from '../enums/domain.enums';
@@ -12,11 +11,9 @@ export interface CreateHabitData {
   userId: string;
   title: string;
   description?: string | null;
-  trackingType: HabitTrackingType;
-  allowPartialCompletion: boolean;
-  measurementUnit?: string | null;
-  targetValue?: number | null;
-  minimumSuccessValue?: number | null;
+  measurementUnit: string;
+  targetValue: number;
+  minimumTarget: number;
   startDate: Date;
   status: HabitLifecycleStatus;
   reminderEnabled: boolean;
@@ -29,20 +26,16 @@ export interface CreateHabitData {
     isActive: boolean;
   }>;
   motivationProfile?: {
-    goalTag?: string | null;
-    personalReason?: string | null;
-    identityStatement?: string | null;
+    reason?: string | null;
   } | null;
 }
 
 export interface UpdateHabitData {
   title?: string;
   description?: string | null;
-  trackingType?: HabitTrackingType;
-  allowPartialCompletion?: boolean;
-  measurementUnit?: string | null;
-  targetValue?: number | null;
-  minimumSuccessValue?: number | null;
+  measurementUnit?: string;
+  targetValue?: number;
+  minimumTarget?: number;
   startDate?: Date;
   status?: HabitLifecycleStatus;
   archivedAt?: Date | null;
@@ -59,9 +52,7 @@ export interface UpdateHabitData {
   }>;
   /** When provided, upserts the motivation profile. */
   motivationProfile?: {
-    goalTag?: string | null;
-    personalReason?: string | null;
-    identityStatement?: string | null;
+    reason?: string | null;
   } | null;
 }
 

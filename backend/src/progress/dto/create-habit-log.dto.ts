@@ -1,30 +1,18 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsEnum, IsISO8601, IsNumber, IsOptional } from 'class-validator';
-import {
-  CompletionTriggerSource,
-  HabitLogStatus,
-} from '../../domain/enums/domain.enums';
+import { IsEnum, IsISO8601, IsNumber, IsOptional, Min } from 'class-validator';
+import { CompletionTriggerSource } from '../../domain/enums/domain.enums';
 
 export class CreateHabitLogDto {
-  @ApiPropertyOptional({
-    enum: HabitLogStatus,
-    example: HabitLogStatus.DONE,
-    description:
-      'Required for SIMPLE_CHECKIN habits. Omit for QUANTITATIVE — status is derived from actualValue.',
-  })
-  @IsOptional()
-  @IsEnum(HabitLogStatus)
-  status?: HabitLogStatus;
-
-  @ApiPropertyOptional({
+  @ApiProperty({
     example: 5.2,
-    description: 'Required for QUANTITATIVE habits. Omit for SIMPLE_CHECKIN.',
+    description:
+      'Actual measured value. Status is derived: >= minimumTarget → DONE, else NOT_DONE.',
   })
-  @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  actualValue?: number;
+  @Min(0)
+  actualValue!: number;
 
   @ApiProperty({
     example: '2026-03-24T07:30:00.000Z',

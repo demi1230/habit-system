@@ -1,14 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsISO8601, IsOptional, IsString, MaxLength } from 'class-validator';
-
-export const DifficultyRating = {
-  VERY_EASY: 'very_easy',
-  EASY: 'easy',
-  MODERATE: 'moderate',
-  HARD: 'hard',
-  VERY_HARD: 'very_hard',
-} as const;
-export type DifficultyRating = (typeof DifficultyRating)[keyof typeof DifficultyRating];
+import { DifficultyRating } from '../../domain/enums/domain.enums';
+export { DifficultyRating } from '../../domain/enums/domain.enums';
 
 export class SubmitDifficultyDto {
   @ApiProperty({

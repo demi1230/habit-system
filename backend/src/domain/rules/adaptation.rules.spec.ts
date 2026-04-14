@@ -1,5 +1,5 @@
 import { AdaptationRules } from './adaptation.rules';
-import { DifficultyRating } from '../../progress/dto/submit-difficulty.dto';
+import { DifficultyRating } from '../enums/domain.enums';
 import { ReminderPolicyMode } from '../enums/domain.enums';
 
 describe('AdaptationRules.recommend', () => {
@@ -8,7 +8,7 @@ describe('AdaptationRules.recommend', () => {
     selfInitiatedRate: 0.5,
     reminderDependenceRate: 0.3,
     doneCount: 10,
-    recentAvgDifficulty: null,
+    recentDifficultyLevel: null,
     currentPolicyMode: ReminderPolicyMode.FULL_SUPPORT,
   };
 
@@ -27,7 +27,7 @@ describe('AdaptationRules.recommend', () => {
     const result = AdaptationRules.recommend({
       ...base,
       compositeScore: 30,
-      recentAvgDifficulty: DifficultyRating.HARD,
+      recentDifficultyLevel: DifficultyRating.HARD,
       doneCount: 8,
     });
     expect(result.focus).toBe('review_difficulty');
@@ -38,7 +38,7 @@ describe('AdaptationRules.recommend', () => {
     const result = AdaptationRules.recommend({
       ...base,
       compositeScore: 40,
-      recentAvgDifficulty: DifficultyRating.VERY_HARD,
+      recentDifficultyLevel: DifficultyRating.VERY_HARD,
       doneCount: 10,
     });
     expect(result.focus).toBe('review_difficulty');
@@ -93,7 +93,7 @@ describe('AdaptationRules.recommend', () => {
   it('does NOT trigger review_difficulty when doneCount < 5', () => {
     const result = AdaptationRules.recommend({
       ...base,
-      recentAvgDifficulty: DifficultyRating.VERY_HARD,
+      recentDifficultyLevel: DifficultyRating.VERY_HARD,
       doneCount: 3,
     });
     // Should fall through to celebrate_consistency check, then maintain

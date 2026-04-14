@@ -9,17 +9,8 @@
 * 🟢 You can import this file directly.
 */
 
-export const HabitTrackingType = {
-  SIMPLE_CHECKIN: 'SIMPLE_CHECKIN',
-  QUANTITATIVE: 'QUANTITATIVE'
-} as const
-
-export type HabitTrackingType = (typeof HabitTrackingType)[keyof typeof HabitTrackingType]
-
-
 export const HabitLogStatus = {
   DONE: 'DONE',
-  PARTIAL: 'PARTIAL',
   NOT_DONE: 'NOT_DONE'
 } as const
 
@@ -38,7 +29,7 @@ export type HabitLifecycleStatus = (typeof HabitLifecycleStatus)[keyof typeof Ha
 export const CompletionTriggerSource = {
   SELF_INITIATED: 'SELF_INITIATED',
   REMINDER_TRIGGERED: 'REMINDER_TRIGGERED',
-  MANUAL_ENTRY: 'MANUAL_ENTRY'
+  UNKNOWN: 'UNKNOWN'
 } as const
 
 export type CompletionTriggerSource = (typeof CompletionTriggerSource)[keyof typeof CompletionTriggerSource]
@@ -55,3 +46,53 @@ export const Weekday = {
 } as const
 
 export type Weekday = (typeof Weekday)[keyof typeof Weekday]
+
+
+export const ReminderStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  ACTED: 'ACTED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ReminderStatus = (typeof ReminderStatus)[keyof typeof ReminderStatus]
+
+
+export const ReminderDecisionReason = {
+  REMINDER_DISABLED: 'REMINDER_DISABLED',
+  NOT_SCHEDULED_TODAY: 'NOT_SCHEDULED_TODAY',
+  NO_ACTIVE_CUES: 'NO_ACTIVE_CUES',
+  SHOULD_REMIND: 'SHOULD_REMIND'
+} as const
+
+export type ReminderDecisionReason = (typeof ReminderDecisionReason)[keyof typeof ReminderDecisionReason]
+
+
+export const ReminderActionType = {
+  DONE: 'DONE',
+  SNOOZE: 'SNOOZE'
+} as const
+
+export type ReminderActionType = (typeof ReminderActionType)[keyof typeof ReminderActionType]
+
+
+export const DifficultyRating = {
+  VERY_EASY: 'VERY_EASY',
+  EASY: 'EASY',
+  MODERATE: 'MODERATE',
+  HARD: 'HARD',
+  VERY_HARD: 'VERY_HARD'
+} as const
+
+export type DifficultyRating = (typeof DifficultyRating)[keyof typeof DifficultyRating]
+
+
+export const ReminderPolicyMode = {
+  FULL_SUPPORT: 'FULL_SUPPORT',
+  MODERATE_SUPPORT: 'MODERATE_SUPPORT',
+  FADE_OUT: 'FADE_OUT',
+  MINIMAL: 'MINIMAL'
+} as const
+
+export type ReminderPolicyMode = (typeof ReminderPolicyMode)[keyof typeof ReminderPolicyMode]

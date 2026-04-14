@@ -192,6 +192,10 @@ export type UserWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   habits?: Prisma.HabitListRelationFilter
   activityLogs?: Prisma.UserActivityLogListRelationFilter
+  reminders?: Prisma.ReminderListRelationFilter
+  reminderActions?: Prisma.ReminderActionListRelationFilter
+  difficultyFeedback?: Prisma.DifficultyFeedbackListRelationFilter
+  reflections?: Prisma.ReflectionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -203,6 +207,10 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   habits?: Prisma.HabitOrderByRelationAggregateInput
   activityLogs?: Prisma.UserActivityLogOrderByRelationAggregateInput
+  reminders?: Prisma.ReminderOrderByRelationAggregateInput
+  reminderActions?: Prisma.ReminderActionOrderByRelationAggregateInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackOrderByRelationAggregateInput
+  reflections?: Prisma.ReflectionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -217,6 +225,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   habits?: Prisma.HabitListRelationFilter
   activityLogs?: Prisma.UserActivityLogListRelationFilter
+  reminders?: Prisma.ReminderListRelationFilter
+  reminderActions?: Prisma.ReminderActionListRelationFilter
+  difficultyFeedback?: Prisma.DifficultyFeedbackListRelationFilter
+  reflections?: Prisma.ReflectionListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -252,6 +264,10 @@ export type UserCreateInput = {
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -263,6 +279,10 @@ export type UserUncheckedCreateInput = {
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -274,6 +294,10 @@ export type UserUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -285,6 +309,10 @@ export type UserUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -372,6 +400,34 @@ export type UserUpdateOneRequiredWithoutHabitsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHabitsInput, Prisma.UserUpdateWithoutHabitsInput>, Prisma.UserUncheckedUpdateWithoutHabitsInput>
 }
 
+export type UserCreateNestedOneWithoutDifficultyFeedbackInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDifficultyFeedbackInput, Prisma.UserUncheckedCreateWithoutDifficultyFeedbackInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDifficultyFeedbackInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDifficultyFeedbackNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDifficultyFeedbackInput, Prisma.UserUncheckedCreateWithoutDifficultyFeedbackInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDifficultyFeedbackInput
+  upsert?: Prisma.UserUpsertWithoutDifficultyFeedbackInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDifficultyFeedbackInput, Prisma.UserUpdateWithoutDifficultyFeedbackInput>, Prisma.UserUncheckedUpdateWithoutDifficultyFeedbackInput>
+}
+
+export type UserCreateNestedOneWithoutReflectionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReflectionsInput, Prisma.UserUncheckedCreateWithoutReflectionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReflectionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutReflectionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReflectionsInput, Prisma.UserUncheckedCreateWithoutReflectionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReflectionsInput
+  upsert?: Prisma.UserUpsertWithoutReflectionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReflectionsInput, Prisma.UserUpdateWithoutReflectionsInput>, Prisma.UserUncheckedUpdateWithoutReflectionsInput>
+}
+
 export type UserCreateNestedOneWithoutActivityLogsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutActivityLogsInput, Prisma.UserUncheckedCreateWithoutActivityLogsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutActivityLogsInput
@@ -386,6 +442,34 @@ export type UserUpdateOneRequiredWithoutActivityLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutActivityLogsInput, Prisma.UserUpdateWithoutActivityLogsInput>, Prisma.UserUncheckedUpdateWithoutActivityLogsInput>
 }
 
+export type UserCreateNestedOneWithoutRemindersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRemindersInput, Prisma.UserUncheckedCreateWithoutRemindersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRemindersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRemindersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRemindersInput, Prisma.UserUncheckedCreateWithoutRemindersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRemindersInput
+  upsert?: Prisma.UserUpsertWithoutRemindersInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRemindersInput, Prisma.UserUpdateWithoutRemindersInput>, Prisma.UserUncheckedUpdateWithoutRemindersInput>
+}
+
+export type UserCreateNestedOneWithoutReminderActionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReminderActionsInput, Prisma.UserUncheckedCreateWithoutReminderActionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReminderActionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutReminderActionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReminderActionsInput, Prisma.UserUncheckedCreateWithoutReminderActionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReminderActionsInput
+  upsert?: Prisma.UserUpsertWithoutReminderActionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReminderActionsInput, Prisma.UserUpdateWithoutReminderActionsInput>, Prisma.UserUncheckedUpdateWithoutReminderActionsInput>
+}
+
 export type UserCreateWithoutHabitsInput = {
   id?: string
   email: string
@@ -394,6 +478,10 @@ export type UserCreateWithoutHabitsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutHabitsInput = {
@@ -404,6 +492,10 @@ export type UserUncheckedCreateWithoutHabitsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutHabitsInput = {
@@ -430,6 +522,10 @@ export type UserUpdateWithoutHabitsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutHabitsInput = {
@@ -440,6 +536,154 @@ export type UserUncheckedUpdateWithoutHabitsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutDifficultyFeedbackInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDifficultyFeedbackInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDifficultyFeedbackInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDifficultyFeedbackInput, Prisma.UserUncheckedCreateWithoutDifficultyFeedbackInput>
+}
+
+export type UserUpsertWithoutDifficultyFeedbackInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDifficultyFeedbackInput, Prisma.UserUncheckedUpdateWithoutDifficultyFeedbackInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDifficultyFeedbackInput, Prisma.UserUncheckedCreateWithoutDifficultyFeedbackInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDifficultyFeedbackInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDifficultyFeedbackInput, Prisma.UserUncheckedUpdateWithoutDifficultyFeedbackInput>
+}
+
+export type UserUpdateWithoutDifficultyFeedbackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDifficultyFeedbackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutReflectionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutReflectionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutReflectionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReflectionsInput, Prisma.UserUncheckedCreateWithoutReflectionsInput>
+}
+
+export type UserUpsertWithoutReflectionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReflectionsInput, Prisma.UserUncheckedUpdateWithoutReflectionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReflectionsInput, Prisma.UserUncheckedCreateWithoutReflectionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReflectionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReflectionsInput, Prisma.UserUncheckedUpdateWithoutReflectionsInput>
+}
+
+export type UserUpdateWithoutReflectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReflectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutActivityLogsInput = {
@@ -450,6 +694,10 @@ export type UserCreateWithoutActivityLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActivityLogsInput = {
@@ -460,6 +708,10 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActivityLogsInput = {
@@ -486,6 +738,10 @@ export type UserUpdateWithoutActivityLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivityLogsInput = {
@@ -496,6 +752,154 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutRemindersInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutRemindersInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutRemindersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRemindersInput, Prisma.UserUncheckedCreateWithoutRemindersInput>
+}
+
+export type UserUpsertWithoutRemindersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRemindersInput, Prisma.UserUncheckedUpdateWithoutRemindersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRemindersInput, Prisma.UserUncheckedCreateWithoutRemindersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRemindersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRemindersInput, Prisma.UserUncheckedUpdateWithoutRemindersInput>
+}
+
+export type UserUpdateWithoutRemindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRemindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutReminderActionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutReminderActionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutReminderActionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReminderActionsInput, Prisma.UserUncheckedCreateWithoutReminderActionsInput>
+}
+
+export type UserUpsertWithoutReminderActionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReminderActionsInput, Prisma.UserUncheckedUpdateWithoutReminderActionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReminderActionsInput, Prisma.UserUncheckedCreateWithoutReminderActionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReminderActionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReminderActionsInput, Prisma.UserUncheckedUpdateWithoutReminderActionsInput>
+}
+
+export type UserUpdateWithoutReminderActionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReminderActionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -506,11 +910,19 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
 export type UserCountOutputType = {
   habits: number
   activityLogs: number
+  reminders: number
+  reminderActions: number
+  difficultyFeedback: number
+  reflections: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habits?: boolean | UserCountOutputTypeCountHabitsArgs
   activityLogs?: boolean | UserCountOutputTypeCountActivityLogsArgs
+  reminders?: boolean | UserCountOutputTypeCountRemindersArgs
+  reminderActions?: boolean | UserCountOutputTypeCountReminderActionsArgs
+  difficultyFeedback?: boolean | UserCountOutputTypeCountDifficultyFeedbackArgs
+  reflections?: boolean | UserCountOutputTypeCountReflectionsArgs
 }
 
 /**
@@ -537,6 +949,34 @@ export type UserCountOutputTypeCountActivityLogsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.UserActivityLogWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRemindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReminderWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReminderActionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReminderActionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDifficultyFeedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DifficultyFeedbackWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReflectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReflectionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -547,6 +987,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   habits?: boolean | Prisma.User$habitsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.User$activityLogsArgs<ExtArgs>
+  reminders?: boolean | Prisma.User$remindersArgs<ExtArgs>
+  reminderActions?: boolean | Prisma.User$reminderActionsArgs<ExtArgs>
+  difficultyFeedback?: boolean | Prisma.User$difficultyFeedbackArgs<ExtArgs>
+  reflections?: boolean | Prisma.User$reflectionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -581,6 +1025,10 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habits?: boolean | Prisma.User$habitsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.User$activityLogsArgs<ExtArgs>
+  reminders?: boolean | Prisma.User$remindersArgs<ExtArgs>
+  reminderActions?: boolean | Prisma.User$reminderActionsArgs<ExtArgs>
+  difficultyFeedback?: boolean | Prisma.User$difficultyFeedbackArgs<ExtArgs>
+  reflections?: boolean | Prisma.User$reflectionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -591,6 +1039,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     habits: Prisma.$HabitPayload<ExtArgs>[]
     activityLogs: Prisma.$UserActivityLogPayload<ExtArgs>[]
+    reminders: Prisma.$ReminderPayload<ExtArgs>[]
+    reminderActions: Prisma.$ReminderActionPayload<ExtArgs>[]
+    difficultyFeedback: Prisma.$DifficultyFeedbackPayload<ExtArgs>[]
+    reflections: Prisma.$ReflectionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -995,6 +1447,10 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   habits<T extends Prisma.User$habitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$habitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activityLogs<T extends Prisma.User$activityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reminders<T extends Prisma.User$remindersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reminderActions<T extends Prisma.User$reminderActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reminderActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReminderActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  difficultyFeedback<T extends Prisma.User$difficultyFeedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$difficultyFeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DifficultyFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reflections<T extends Prisma.User$reflectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reflectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReflectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1468,6 +1924,102 @@ export type User$activityLogsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.UserActivityLogScalarFieldEnum | Prisma.UserActivityLogScalarFieldEnum[]
+}
+
+/**
+ * User.reminders
+ */
+export type User$remindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Reminder
+   */
+  select?: Prisma.ReminderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Reminder
+   */
+  omit?: Prisma.ReminderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReminderInclude<ExtArgs> | null
+  where?: Prisma.ReminderWhereInput
+  orderBy?: Prisma.ReminderOrderByWithRelationInput | Prisma.ReminderOrderByWithRelationInput[]
+  cursor?: Prisma.ReminderWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReminderScalarFieldEnum | Prisma.ReminderScalarFieldEnum[]
+}
+
+/**
+ * User.reminderActions
+ */
+export type User$reminderActionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReminderAction
+   */
+  select?: Prisma.ReminderActionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReminderAction
+   */
+  omit?: Prisma.ReminderActionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReminderActionInclude<ExtArgs> | null
+  where?: Prisma.ReminderActionWhereInput
+  orderBy?: Prisma.ReminderActionOrderByWithRelationInput | Prisma.ReminderActionOrderByWithRelationInput[]
+  cursor?: Prisma.ReminderActionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReminderActionScalarFieldEnum | Prisma.ReminderActionScalarFieldEnum[]
+}
+
+/**
+ * User.difficultyFeedback
+ */
+export type User$difficultyFeedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DifficultyFeedback
+   */
+  select?: Prisma.DifficultyFeedbackSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DifficultyFeedback
+   */
+  omit?: Prisma.DifficultyFeedbackOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DifficultyFeedbackInclude<ExtArgs> | null
+  where?: Prisma.DifficultyFeedbackWhereInput
+  orderBy?: Prisma.DifficultyFeedbackOrderByWithRelationInput | Prisma.DifficultyFeedbackOrderByWithRelationInput[]
+  cursor?: Prisma.DifficultyFeedbackWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DifficultyFeedbackScalarFieldEnum | Prisma.DifficultyFeedbackScalarFieldEnum[]
+}
+
+/**
+ * User.reflections
+ */
+export type User$reflectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Reflection
+   */
+  select?: Prisma.ReflectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Reflection
+   */
+  omit?: Prisma.ReflectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReflectionInclude<ExtArgs> | null
+  where?: Prisma.ReflectionWhereInput
+  orderBy?: Prisma.ReflectionOrderByWithRelationInput | Prisma.ReflectionOrderByWithRelationInput[]
+  cursor?: Prisma.ReflectionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReflectionScalarFieldEnum | Prisma.ReflectionScalarFieldEnum[]
 }
 
 /**

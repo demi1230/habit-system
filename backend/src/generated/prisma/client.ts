@@ -72,7 +72,37 @@ export type HabitMotivationProfile = Prisma.HabitMotivationProfileModel
  */
 export type HabitLog = Prisma.HabitLogModel
 /**
+ * Model DifficultyFeedback
+ * 
+ */
+export type DifficultyFeedback = Prisma.DifficultyFeedbackModel
+/**
+ * Model Reflection
+ * 
+ */
+export type Reflection = Prisma.ReflectionModel
+/**
  * Model UserActivityLog
  * 
  */
 export type UserActivityLog = Prisma.UserActivityLogModel
+/**
+ * Model Reminder
+ * 
+ */
+export type Reminder = Prisma.ReminderModel
+/**
+ * Model ReminderAction
+ * 
+ */
+export type ReminderAction = Prisma.ReminderActionModel
+/**
+ * Model SrbaiAssessment
+ * 
+ */
+export type SrbaiAssessment = Prisma.SrbaiAssessmentModel
+/**
+ * Model ReminderPolicy
+ * 
+ */
+export type ReminderPolicy = Prisma.ReminderPolicyModel

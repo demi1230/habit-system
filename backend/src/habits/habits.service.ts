@@ -5,10 +5,7 @@
   NotFoundException,
 } from '@nestjs/common';
 import { AnalyticsService } from '../analytics/analytics.service';
-import {
-  HabitLifecycleStatus,
-  HabitTrackingType,
-} from '../domain/enums/domain.enums';
+import { HabitLifecycleStatus } from '../domain/enums/domain.enums';
 import type { IHabitRepository } from '../domain/repositories/habit.repository';
 import { HABIT_REPOSITORY } from '../domain/repositories/habit.repository';
 import { CueScheduleRules } from '../domain/rules/cue-schedule.rules';
@@ -40,20 +37,9 @@ export class HabitsService {
       userId,
       title: createHabitDto.title,
       description: createHabitDto.description,
-      trackingType: createHabitDto.trackingType,
-      allowPartialCompletion: createHabitDto.allowPartialCompletion ?? false,
-      measurementUnit:
-        createHabitDto.trackingType === HabitTrackingType.QUANTITATIVE
-          ? createHabitDto.measurementUnit
-          : null,
-      targetValue:
-        createHabitDto.trackingType === HabitTrackingType.QUANTITATIVE
-          ? createHabitDto.targetValue
-          : null,
-      minimumSuccessValue:
-        createHabitDto.trackingType === HabitTrackingType.QUANTITATIVE
-          ? createHabitDto.minimumSuccessValue
-          : null,
+      measurementUnit: createHabitDto.measurementUnit,
+      targetValue: createHabitDto.targetValue,
+      minimumTarget: createHabitDto.minimumTarget,
       startDate: new Date(createHabitDto.startDate),
       status: createHabitDto.status ?? HabitLifecycleStatus.ACTIVE,
       reminderEnabled: createHabitDto.reminderEnabled ?? false,
@@ -66,7 +52,7 @@ export class HabitsService {
         : null,
     });
 
-    await this.analyticsService.recordActivity(userId, 'habit.created');
+    await this.analyticsService.recordActivity(userId, 'habit_created');
     return habit;
   }
 
@@ -100,20 +86,10 @@ export class HabitsService {
     const existingHabit = await this.getOwnedHabitOrThrow(userId, habitId);
 
     this.validateHabitConfiguration({
-      trackingType: updateHabitDto.trackingType ?? existingHabit.trackingType,
-      allowPartialCompletion:
-        updateHabitDto.allowPartialCompletion ??
-        existingHabit.allowPartialCompletion,
-      measurementUnit:
-        updateHabitDto.measurementUnit ??
-        existingHabit.measurementUnit ??
-        undefined,
+      minimumTarget:
+        updateHabitDto.minimumTarget ?? existingHabit.minimumTarget,
       targetValue:
-        updateHabitDto.targetValue ?? existingHabit.targetValue ?? undefined,
-      minimumSuccessValue:
-        updateHabitDto.minimumSuccessValue ??
-        existingHabit.minimumSuccessValue ??
-        undefined,
+        updateHabitDto.targetValue ?? existingHabit.targetValue,
       scheduleDays:
         updateHabitDto.scheduleDays ??
         existingHabit.scheduleDays.map((d) => ({ weekday: d.weekday })),
@@ -122,22 +98,9 @@ export class HabitsService {
     const updatedHabit = await this.habitRepo.update(habitId, {
       title: updateHabitDto.title,
       description: updateHabitDto.description,
-      trackingType: updateHabitDto.trackingType,
-      allowPartialCompletion: updateHabitDto.allowPartialCompletion,
-      measurementUnit: this.resolveMeasurementUnit(
-        updateHabitDto,
-        existingHabit,
-      ),
-      targetValue: this.resolveMetricNumber(
-        updateHabitDto,
-        existingHabit,
-        'targetValue',
-      ),
-      minimumSuccessValue: this.resolveMetricNumber(
-        updateHabitDto,
-        existingHabit,
-        'minimumSuccessValue',
-      ),
+      measurementUnit: updateHabitDto.measurementUnit,
+      targetValue: updateHabitDto.targetValue,
+      minimumTarget: updateHabitDto.minimumTarget,
       startDate: updateHabitDto.startDate
         ? new Date(updateHabitDto.startDate)
         : undefined,
@@ -162,7 +125,7 @@ export class HabitsService {
           : undefined,
     });
 
-    await this.analyticsService.recordActivity(userId, 'habit.updated');
+    await this.analyticsService.recordActivity(userId, 'habit_updated');
     return updatedHabit;
   }
 
@@ -198,11 +161,8 @@ export class HabitsService {
   //Private helpers
 
   private validateHabitConfiguration(habitConfig: {
-    trackingType: HabitTrackingType;
-    allowPartialCompletion?: boolean;
-    measurementUnit?: string;
-    targetValue?: number;
-    minimumSuccessValue?: number;
+    minimumTarget: number;
+    targetValue: number;
     scheduleDays?: CreateHabitScheduleDayDto[];
   }) {
     if (habitConfig.scheduleDays) {
@@ -216,32 +176,9 @@ export class HabitsService {
       }
     }
 
-    if (habitConfig.trackingType === HabitTrackingType.SIMPLE_CHECKIN) {
-      if (
-        habitConfig.measurementUnit !== undefined ||
-        habitConfig.targetValue !== undefined ||
-        habitConfig.minimumSuccessValue !== undefined
-      ) {
-        throw new BadRequestException(
-          'SIMPLE_CHECKIN habits must not define quantitative measurement fields.',
-        );
-      }
-      return;
-    }
-
-    if (
-      !habitConfig.measurementUnit ||
-      habitConfig.targetValue === undefined ||
-      habitConfig.minimumSuccessValue === undefined
-    ) {
+    if (habitConfig.minimumTarget > habitConfig.targetValue) {
       throw new BadRequestException(
-        'QUANTITATIVE habits require measurementUnit, targetValue, and minimumSuccessValue.',
-      );
-    }
-
-    if (habitConfig.minimumSuccessValue > habitConfig.targetValue) {
-      throw new BadRequestException(
-        'minimumSuccessValue must be less than or equal to targetValue.',
+        'minimumTarget must be less than or equal to targetValue.',
       );
     }
   }
@@ -260,37 +197,7 @@ export class HabitsService {
     motivationProfile: CreateHabitMotivationProfileDto,
   ) {
     return {
-      goalTag: motivationProfile.goalTag ?? null,
-      personalReason: motivationProfile.personalReason ?? null,
-      identityStatement: motivationProfile.identityStatement ?? null,
+      reason: motivationProfile.reason ?? null,
     };
-  }
-
-  private resolveMeasurementUnit(
-    updateHabitDto: UpdateHabitDto,
-    existingHabit: {
-      trackingType: HabitTrackingType;
-      measurementUnit: string | null;
-    },
-  ) {
-    const nextTrackingType =
-      updateHabitDto.trackingType ?? existingHabit.trackingType;
-    if (nextTrackingType === HabitTrackingType.SIMPLE_CHECKIN) return null;
-    return updateHabitDto.measurementUnit ?? existingHabit.measurementUnit;
-  }
-
-  private resolveMetricNumber(
-    updateHabitDto: UpdateHabitDto,
-    existingHabit: {
-      trackingType: HabitTrackingType;
-      targetValue: number | null;
-      minimumSuccessValue: number | null;
-    },
-    field: 'targetValue' | 'minimumSuccessValue',
-  ) {
-    const nextTrackingType =
-      updateHabitDto.trackingType ?? existingHabit.trackingType;
-    if (nextTrackingType === HabitTrackingType.SIMPLE_CHECKIN) return null;
-    return updateHabitDto[field] ?? existingHabit[field];
   }
 }

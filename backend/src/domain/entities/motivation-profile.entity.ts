@@ -6,9 +6,7 @@
 export interface MotivationProfileEntity {
   id: string;
   habitId: string;
-  goalTag: string | null;
-  personalReason: string | null;
-  identityStatement: string | null;
+  reason: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

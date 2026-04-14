@@ -1,0 +1,187 @@
+Design a complete mobile-first UI/UX system in Figma for a thesis project called “Behavior-Based Habit Formation System”.
+
+Goal:
+Create a supportive habit formation application that helps users build sustainable habits using behavior design principles. The app should avoid guilt-based UX and instead focus on flexible progress, contextual reminders, partial success, reflection, and long-term consistency.
+
+Target users:
+University students and young adults who want to build healthy, productive, and realistic habits.
+
+Platform:
+Mobile-first PWA / mobile app UI
+Create frames for iPhone 14 / 390x844
+Use clean auto layout, reusable components, and a modern design system.
+
+Core UX principles:
+- Calm, supportive, non-judgmental tone
+- Progress over perfection
+- Flexible habit completion, not all-or-nothing
+- Reduce friction when logging a habit
+- Context-aware reminder experience
+- Reflection and self-awareness after completion
+- Simple and motivating analytics
+- Easy archive flow for stabilized habits
+
+Design style:
+- Minimal, modern, warm, emotionally safe
+- Soft rounded cards
+- Clean spacing
+- Friendly typography
+- Subtle illustrations or icon placeholders
+- Soft neutral background with one primary accent color
+- Avoid harsh red failure states
+- Use encouraging colors and microcopy
+- Create a premium but simple student-friendly feel
+
+Information architecture:
+Create these main screens and flows:
+
+1. Splash / Welcome screen
+- Product name
+- Short value proposition
+- CTA: Get Started
+- CTA: Sign In
+
+2. Onboarding flow (3–5 screens)
+- Explain supportive habit building
+- Explain flexible progress and reminders
+- Explain reflection and personal motivation
+- Collect user goal types such as health, study, fitness, mindfulness, productivity
+
+3. Authentication
+- Sign up
+- Log in
+- Forgot password
+
+4. Home / Dashboard
+- Greeting
+- Today’s habits
+- Progress summary
+- Quick action to mark done
+- Habit streak or consistency indicator
+- Reminder summary
+- Motivational card
+- “Why this matters” card
+- Bottom navigation
+
+5. Create Habit flow (multi-step wizard)
+Step 1: Habit basics
+- Habit title
+- Description
+- Category
+Step 2: Measurement
+- Binary or measurable habit
+- Unit such as times, minutes, pages, liters, km
+- Target value
+- Minimum success value
+Step 3: Schedule
+- Daily / weekly frequency
+- Select days of week
+- Start date
+Step 4: Cue / context
+- Time window
+- Day type
+- Coarse location
+- Preceding routine
+Step 5: Motivation
+- Goal tag
+- Personal reason
+- Identity statement
+Step 6: Reminder settings
+- Reminder on/off
+- Flexible reminder window
+- Smart timing hint
+Step 7: Review and create
+
+6. Habit Details screen
+- Habit name
+- Why card / personal reason
+- Schedule
+- Cue information
+- Reminder settings
+- Progress overview
+- Completion history
+- Edit button
+- Archive habit button
+
+7. Daily Check-in / Log Completion
+- Quick complete action
+- Partial completion input
+- Manual value entry
+- “Done for today” interaction
+- Missed / skipped state
+- Friendly confirmation feedback
+
+8. Reflection / Reward screen after completion
+- Ask how the user feels
+- Short reflection options: energy, mood, focus, proud, calm
+- Optional note field
+- Encouraging reward moment
+- Continue button
+
+9. Progress / Analytics screen
+- Weekly consistency
+- Completion rate
+- Active days
+- Session frequency
+- Streak or consistency trend
+- Reflection trends
+- Habit performance cards
+- Avoid overly negative charts
+
+10. Reminder / Notification settings
+- Reminder time windows
+- Quiet hours
+- Day-type based reminders
+- Flexible reschedule or snooze options
+- Explain wrong-time reminder handling in a user-friendly way
+
+11. Archive screen
+- Archived habits
+- Habit achieved / stabilized label
+- Restore option
+- Archive explanation
+
+12. Profile / Settings
+- User profile
+- Theme
+- Notification preferences
+- Privacy
+- App usage preferences
+
+Required reusable components:
+- Buttons
+- Input fields
+- Segmented controls
+- Chips
+- Progress cards
+- Habit cards
+- Bottom navigation bar
+- Tabs
+- Empty states
+- Reminder cards
+- Reflection chips
+- Modal / bottom sheet
+- Success state
+- Archive confirmation dialog
+
+UX content style:
+Use concise, warm microcopy such as:
+- “Small steps still count”
+- “You’re building consistency”
+- “Progress matters more than perfection”
+- “A little done is still done”
+
+Accessibility:
+- High contrast text
+- Touch-friendly tap targets
+- Clear hierarchy
+- Consistent spacing
+- Avoid clutter
+- Keep forms easy to scan
+
+Deliverables:
+- Low-fidelity wireframes first
+- Then polished high-fidelity mobile UI
+- Include a small design system page
+- Include reusable components and color styles
+- Show user flow between onboarding, habit creation, dashboard, completion, reflection, analytics, and archive

@@ -28,10 +28,14 @@ export type AggregateHabitLog = {
 
 export type HabitLogAvgAggregateOutputType = {
   actualValue: number | null
+  sourceConfidence: number | null
+  completionHour: number | null
 }
 
 export type HabitLogSumAggregateOutputType = {
   actualValue: number | null
+  sourceConfidence: number | null
+  completionHour: number | null
 }
 
 export type HabitLogMinAggregateOutputType = {
@@ -42,6 +46,11 @@ export type HabitLogMinAggregateOutputType = {
   completedAt: Date | null
   loggedAt: Date | null
   triggerSource: $Enums.CompletionTriggerSource | null
+  linkedReminderId: string | null
+  sourceConfidence: number | null
+  completionHour: number | null
+  coarseLocation: string | null
+  precedingRoutine: string | null
 }
 
 export type HabitLogMaxAggregateOutputType = {
@@ -52,6 +61,11 @@ export type HabitLogMaxAggregateOutputType = {
   completedAt: Date | null
   loggedAt: Date | null
   triggerSource: $Enums.CompletionTriggerSource | null
+  linkedReminderId: string | null
+  sourceConfidence: number | null
+  completionHour: number | null
+  coarseLocation: string | null
+  precedingRoutine: string | null
 }
 
 export type HabitLogCountAggregateOutputType = {
@@ -62,16 +76,25 @@ export type HabitLogCountAggregateOutputType = {
   completedAt: number
   loggedAt: number
   triggerSource: number
+  linkedReminderId: number
+  sourceConfidence: number
+  completionHour: number
+  coarseLocation: number
+  precedingRoutine: number
   _all: number
 }
 
 
 export type HabitLogAvgAggregateInputType = {
   actualValue?: true
+  sourceConfidence?: true
+  completionHour?: true
 }
 
 export type HabitLogSumAggregateInputType = {
   actualValue?: true
+  sourceConfidence?: true
+  completionHour?: true
 }
 
 export type HabitLogMinAggregateInputType = {
@@ -82,6 +105,11 @@ export type HabitLogMinAggregateInputType = {
   completedAt?: true
   loggedAt?: true
   triggerSource?: true
+  linkedReminderId?: true
+  sourceConfidence?: true
+  completionHour?: true
+  coarseLocation?: true
+  precedingRoutine?: true
 }
 
 export type HabitLogMaxAggregateInputType = {
@@ -92,6 +120,11 @@ export type HabitLogMaxAggregateInputType = {
   completedAt?: true
   loggedAt?: true
   triggerSource?: true
+  linkedReminderId?: true
+  sourceConfidence?: true
+  completionHour?: true
+  coarseLocation?: true
+  precedingRoutine?: true
 }
 
 export type HabitLogCountAggregateInputType = {
@@ -102,6 +135,11 @@ export type HabitLogCountAggregateInputType = {
   completedAt?: true
   loggedAt?: true
   triggerSource?: true
+  linkedReminderId?: true
+  sourceConfidence?: true
+  completionHour?: true
+  coarseLocation?: true
+  precedingRoutine?: true
   _all?: true
 }
 
@@ -198,7 +236,12 @@ export type HabitLogGroupByOutputType = {
   actualValue: number | null
   completedAt: Date
   loggedAt: Date
-  triggerSource: $Enums.CompletionTriggerSource | null
+  triggerSource: $Enums.CompletionTriggerSource
+  linkedReminderId: string | null
+  sourceConfidence: number | null
+  completionHour: number | null
+  coarseLocation: string | null
+  precedingRoutine: string | null
   _count: HabitLogCountAggregateOutputType | null
   _avg: HabitLogAvgAggregateOutputType | null
   _sum: HabitLogSumAggregateOutputType | null
@@ -231,8 +274,16 @@ export type HabitLogWhereInput = {
   actualValue?: Prisma.FloatNullableFilter<"HabitLog"> | number | null
   completedAt?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
   loggedAt?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
-  triggerSource?: Prisma.EnumCompletionTriggerSourceNullableFilter<"HabitLog"> | $Enums.CompletionTriggerSource | null
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFilter<"HabitLog"> | $Enums.CompletionTriggerSource
+  linkedReminderId?: Prisma.UuidNullableFilter<"HabitLog"> | string | null
+  sourceConfidence?: Prisma.FloatNullableFilter<"HabitLog"> | number | null
+  completionHour?: Prisma.IntNullableFilter<"HabitLog"> | number | null
+  coarseLocation?: Prisma.StringNullableFilter<"HabitLog"> | string | null
+  precedingRoutine?: Prisma.StringNullableFilter<"HabitLog"> | string | null
   habit?: Prisma.XOR<Prisma.HabitScalarRelationFilter, Prisma.HabitWhereInput>
+  linkedReminder?: Prisma.XOR<Prisma.ReminderNullableScalarRelationFilter, Prisma.ReminderWhereInput> | null
+  difficultyFeedback?: Prisma.DifficultyFeedbackListRelationFilter
+  reflections?: Prisma.ReflectionListRelationFilter
 }
 
 export type HabitLogOrderByWithRelationInput = {
@@ -242,8 +293,16 @@ export type HabitLogOrderByWithRelationInput = {
   actualValue?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   loggedAt?: Prisma.SortOrder
-  triggerSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  triggerSource?: Prisma.SortOrder
+  linkedReminderId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceConfidence?: Prisma.SortOrderInput | Prisma.SortOrder
+  completionHour?: Prisma.SortOrderInput | Prisma.SortOrder
+  coarseLocation?: Prisma.SortOrderInput | Prisma.SortOrder
+  precedingRoutine?: Prisma.SortOrderInput | Prisma.SortOrder
   habit?: Prisma.HabitOrderByWithRelationInput
+  linkedReminder?: Prisma.ReminderOrderByWithRelationInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackOrderByRelationAggregateInput
+  reflections?: Prisma.ReflectionOrderByRelationAggregateInput
 }
 
 export type HabitLogWhereUniqueInput = Prisma.AtLeast<{
@@ -256,8 +315,16 @@ export type HabitLogWhereUniqueInput = Prisma.AtLeast<{
   actualValue?: Prisma.FloatNullableFilter<"HabitLog"> | number | null
   completedAt?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
   loggedAt?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
-  triggerSource?: Prisma.EnumCompletionTriggerSourceNullableFilter<"HabitLog"> | $Enums.CompletionTriggerSource | null
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFilter<"HabitLog"> | $Enums.CompletionTriggerSource
+  linkedReminderId?: Prisma.UuidNullableFilter<"HabitLog"> | string | null
+  sourceConfidence?: Prisma.FloatNullableFilter<"HabitLog"> | number | null
+  completionHour?: Prisma.IntNullableFilter<"HabitLog"> | number | null
+  coarseLocation?: Prisma.StringNullableFilter<"HabitLog"> | string | null
+  precedingRoutine?: Prisma.StringNullableFilter<"HabitLog"> | string | null
   habit?: Prisma.XOR<Prisma.HabitScalarRelationFilter, Prisma.HabitWhereInput>
+  linkedReminder?: Prisma.XOR<Prisma.ReminderNullableScalarRelationFilter, Prisma.ReminderWhereInput> | null
+  difficultyFeedback?: Prisma.DifficultyFeedbackListRelationFilter
+  reflections?: Prisma.ReflectionListRelationFilter
 }, "id">
 
 export type HabitLogOrderByWithAggregationInput = {
@@ -267,7 +334,12 @@ export type HabitLogOrderByWithAggregationInput = {
   actualValue?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   loggedAt?: Prisma.SortOrder
-  triggerSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  triggerSource?: Prisma.SortOrder
+  linkedReminderId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceConfidence?: Prisma.SortOrderInput | Prisma.SortOrder
+  completionHour?: Prisma.SortOrderInput | Prisma.SortOrder
+  coarseLocation?: Prisma.SortOrderInput | Prisma.SortOrder
+  precedingRoutine?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.HabitLogCountOrderByAggregateInput
   _avg?: Prisma.HabitLogAvgOrderByAggregateInput
   _max?: Prisma.HabitLogMaxOrderByAggregateInput
@@ -285,7 +357,12 @@ export type HabitLogScalarWhereWithAggregatesInput = {
   actualValue?: Prisma.FloatNullableWithAggregatesFilter<"HabitLog"> | number | null
   completedAt?: Prisma.DateTimeWithAggregatesFilter<"HabitLog"> | Date | string
   loggedAt?: Prisma.DateTimeWithAggregatesFilter<"HabitLog"> | Date | string
-  triggerSource?: Prisma.EnumCompletionTriggerSourceNullableWithAggregatesFilter<"HabitLog"> | $Enums.CompletionTriggerSource | null
+  triggerSource?: Prisma.EnumCompletionTriggerSourceWithAggregatesFilter<"HabitLog"> | $Enums.CompletionTriggerSource
+  linkedReminderId?: Prisma.UuidNullableWithAggregatesFilter<"HabitLog"> | string | null
+  sourceConfidence?: Prisma.FloatNullableWithAggregatesFilter<"HabitLog"> | number | null
+  completionHour?: Prisma.IntNullableWithAggregatesFilter<"HabitLog"> | number | null
+  coarseLocation?: Prisma.StringNullableWithAggregatesFilter<"HabitLog"> | string | null
+  precedingRoutine?: Prisma.StringNullableWithAggregatesFilter<"HabitLog"> | string | null
 }
 
 export type HabitLogCreateInput = {
@@ -294,8 +371,15 @@ export type HabitLogCreateInput = {
   actualValue?: number | null
   completedAt: Date | string
   loggedAt?: Date | string
-  triggerSource?: $Enums.CompletionTriggerSource | null
+  triggerSource?: $Enums.CompletionTriggerSource
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
   habit: Prisma.HabitCreateNestedOneWithoutLogsInput
+  linkedReminder?: Prisma.ReminderCreateNestedOneWithoutHabitLogsInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutLogInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutLogInput
 }
 
 export type HabitLogUncheckedCreateInput = {
@@ -305,7 +389,14 @@ export type HabitLogUncheckedCreateInput = {
   actualValue?: number | null
   completedAt: Date | string
   loggedAt?: Date | string
-  triggerSource?: $Enums.CompletionTriggerSource | null
+  triggerSource?: $Enums.CompletionTriggerSource
+  linkedReminderId?: string | null
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutLogInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutLogInput
 }
 
 export type HabitLogUpdateInput = {
@@ -314,8 +405,15 @@ export type HabitLogUpdateInput = {
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  triggerSource?: Prisma.NullableEnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource | null
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   habit?: Prisma.HabitUpdateOneRequiredWithoutLogsNestedInput
+  linkedReminder?: Prisma.ReminderUpdateOneWithoutHabitLogsNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutLogNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutLogNestedInput
 }
 
 export type HabitLogUncheckedUpdateInput = {
@@ -325,7 +423,14 @@ export type HabitLogUncheckedUpdateInput = {
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  triggerSource?: Prisma.NullableEnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource | null
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  linkedReminderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutLogNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutLogNestedInput
 }
 
 export type HabitLogCreateManyInput = {
@@ -335,7 +440,12 @@ export type HabitLogCreateManyInput = {
   actualValue?: number | null
   completedAt: Date | string
   loggedAt?: Date | string
-  triggerSource?: $Enums.CompletionTriggerSource | null
+  triggerSource?: $Enums.CompletionTriggerSource
+  linkedReminderId?: string | null
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
 }
 
 export type HabitLogUpdateManyMutationInput = {
@@ -344,7 +454,11 @@ export type HabitLogUpdateManyMutationInput = {
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  triggerSource?: Prisma.NullableEnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource | null
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type HabitLogUncheckedUpdateManyInput = {
@@ -354,7 +468,12 @@ export type HabitLogUncheckedUpdateManyInput = {
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  triggerSource?: Prisma.NullableEnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource | null
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  linkedReminderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type HabitLogListRelationFilter = {
@@ -375,10 +494,17 @@ export type HabitLogCountOrderByAggregateInput = {
   completedAt?: Prisma.SortOrder
   loggedAt?: Prisma.SortOrder
   triggerSource?: Prisma.SortOrder
+  linkedReminderId?: Prisma.SortOrder
+  sourceConfidence?: Prisma.SortOrder
+  completionHour?: Prisma.SortOrder
+  coarseLocation?: Prisma.SortOrder
+  precedingRoutine?: Prisma.SortOrder
 }
 
 export type HabitLogAvgOrderByAggregateInput = {
   actualValue?: Prisma.SortOrder
+  sourceConfidence?: Prisma.SortOrder
+  completionHour?: Prisma.SortOrder
 }
 
 export type HabitLogMaxOrderByAggregateInput = {
@@ -389,6 +515,11 @@ export type HabitLogMaxOrderByAggregateInput = {
   completedAt?: Prisma.SortOrder
   loggedAt?: Prisma.SortOrder
   triggerSource?: Prisma.SortOrder
+  linkedReminderId?: Prisma.SortOrder
+  sourceConfidence?: Prisma.SortOrder
+  completionHour?: Prisma.SortOrder
+  coarseLocation?: Prisma.SortOrder
+  precedingRoutine?: Prisma.SortOrder
 }
 
 export type HabitLogMinOrderByAggregateInput = {
@@ -399,10 +530,22 @@ export type HabitLogMinOrderByAggregateInput = {
   completedAt?: Prisma.SortOrder
   loggedAt?: Prisma.SortOrder
   triggerSource?: Prisma.SortOrder
+  linkedReminderId?: Prisma.SortOrder
+  sourceConfidence?: Prisma.SortOrder
+  completionHour?: Prisma.SortOrder
+  coarseLocation?: Prisma.SortOrder
+  precedingRoutine?: Prisma.SortOrder
 }
 
 export type HabitLogSumOrderByAggregateInput = {
   actualValue?: Prisma.SortOrder
+  sourceConfidence?: Prisma.SortOrder
+  completionHour?: Prisma.SortOrder
+}
+
+export type HabitLogScalarRelationFilter = {
+  is?: Prisma.HabitLogWhereInput
+  isNot?: Prisma.HabitLogWhereInput
 }
 
 export type HabitLogCreateNestedManyWithoutHabitInput = {
@@ -451,8 +594,94 @@ export type EnumHabitLogStatusFieldUpdateOperationsInput = {
   set?: $Enums.HabitLogStatus
 }
 
-export type NullableEnumCompletionTriggerSourceFieldUpdateOperationsInput = {
-  set?: $Enums.CompletionTriggerSource | null
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type EnumCompletionTriggerSourceFieldUpdateOperationsInput = {
+  set?: $Enums.CompletionTriggerSource
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type HabitLogCreateNestedOneWithoutDifficultyFeedbackInput = {
+  create?: Prisma.XOR<Prisma.HabitLogCreateWithoutDifficultyFeedbackInput, Prisma.HabitLogUncheckedCreateWithoutDifficultyFeedbackInput>
+  connectOrCreate?: Prisma.HabitLogCreateOrConnectWithoutDifficultyFeedbackInput
+  connect?: Prisma.HabitLogWhereUniqueInput
+}
+
+export type HabitLogUpdateOneRequiredWithoutDifficultyFeedbackNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitLogCreateWithoutDifficultyFeedbackInput, Prisma.HabitLogUncheckedCreateWithoutDifficultyFeedbackInput>
+  connectOrCreate?: Prisma.HabitLogCreateOrConnectWithoutDifficultyFeedbackInput
+  upsert?: Prisma.HabitLogUpsertWithoutDifficultyFeedbackInput
+  connect?: Prisma.HabitLogWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitLogUpdateToOneWithWhereWithoutDifficultyFeedbackInput, Prisma.HabitLogUpdateWithoutDifficultyFeedbackInput>, Prisma.HabitLogUncheckedUpdateWithoutDifficultyFeedbackInput>
+}
+
+export type HabitLogCreateNestedOneWithoutReflectionsInput = {
+  create?: Prisma.XOR<Prisma.HabitLogCreateWithoutReflectionsInput, Prisma.HabitLogUncheckedCreateWithoutReflectionsInput>
+  connectOrCreate?: Prisma.HabitLogCreateOrConnectWithoutReflectionsInput
+  connect?: Prisma.HabitLogWhereUniqueInput
+}
+
+export type HabitLogUpdateOneRequiredWithoutReflectionsNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitLogCreateWithoutReflectionsInput, Prisma.HabitLogUncheckedCreateWithoutReflectionsInput>
+  connectOrCreate?: Prisma.HabitLogCreateOrConnectWithoutReflectionsInput
+  upsert?: Prisma.HabitLogUpsertWithoutReflectionsInput
+  connect?: Prisma.HabitLogWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitLogUpdateToOneWithWhereWithoutReflectionsInput, Prisma.HabitLogUpdateWithoutReflectionsInput>, Prisma.HabitLogUncheckedUpdateWithoutReflectionsInput>
+}
+
+export type HabitLogCreateNestedManyWithoutLinkedReminderInput = {
+  create?: Prisma.XOR<Prisma.HabitLogCreateWithoutLinkedReminderInput, Prisma.HabitLogUncheckedCreateWithoutLinkedReminderInput> | Prisma.HabitLogCreateWithoutLinkedReminderInput[] | Prisma.HabitLogUncheckedCreateWithoutLinkedReminderInput[]
+  connectOrCreate?: Prisma.HabitLogCreateOrConnectWithoutLinkedReminderInput | Prisma.HabitLogCreateOrConnectWithoutLinkedReminderInput[]
+  createMany?: Prisma.HabitLogCreateManyLinkedReminderInputEnvelope
+  connect?: Prisma.HabitLogWhereUniqueInput | Prisma.HabitLogWhereUniqueInput[]
+}
+
+export type HabitLogUncheckedCreateNestedManyWithoutLinkedReminderInput = {
+  create?: Prisma.XOR<Prisma.HabitLogCreateWithoutLinkedReminderInput, Prisma.HabitLogUncheckedCreateWithoutLinkedReminderInput> | Prisma.HabitLogCreateWithoutLinkedReminderInput[] | Prisma.HabitLogUncheckedCreateWithoutLinkedReminderInput[]
+  connectOrCreate?: Prisma.HabitLogCreateOrConnectWithoutLinkedReminderInput | Prisma.HabitLogCreateOrConnectWithoutLinkedReminderInput[]
+  createMany?: Prisma.HabitLogCreateManyLinkedReminderInputEnvelope
+  connect?: Prisma.HabitLogWhereUniqueInput | Prisma.HabitLogWhereUniqueInput[]
+}
+
+export type HabitLogUpdateManyWithoutLinkedReminderNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitLogCreateWithoutLinkedReminderInput, Prisma.HabitLogUncheckedCreateWithoutLinkedReminderInput> | Prisma.HabitLogCreateWithoutLinkedReminderInput[] | Prisma.HabitLogUncheckedCreateWithoutLinkedReminderInput[]
+  connectOrCreate?: Prisma.HabitLogCreateOrConnectWithoutLinkedReminderInput | Prisma.HabitLogCreateOrConnectWithoutLinkedReminderInput[]
+  upsert?: Prisma.HabitLogUpsertWithWhereUniqueWithoutLinkedReminderInput | Prisma.HabitLogUpsertWithWhereUniqueWithoutLinkedReminderInput[]
+  createMany?: Prisma.HabitLogCreateManyLinkedReminderInputEnvelope
+  set?: Prisma.HabitLogWhereUniqueInput | Prisma.HabitLogWhereUniqueInput[]
+  disconnect?: Prisma.HabitLogWhereUniqueInput | Prisma.HabitLogWhereUniqueInput[]
+  delete?: Prisma.HabitLogWhereUniqueInput | Prisma.HabitLogWhereUniqueInput[]
+  connect?: Prisma.HabitLogWhereUniqueInput | Prisma.HabitLogWhereUniqueInput[]
+  update?: Prisma.HabitLogUpdateWithWhereUniqueWithoutLinkedReminderInput | Prisma.HabitLogUpdateWithWhereUniqueWithoutLinkedReminderInput[]
+  updateMany?: Prisma.HabitLogUpdateManyWithWhereWithoutLinkedReminderInput | Prisma.HabitLogUpdateManyWithWhereWithoutLinkedReminderInput[]
+  deleteMany?: Prisma.HabitLogScalarWhereInput | Prisma.HabitLogScalarWhereInput[]
+}
+
+export type HabitLogUncheckedUpdateManyWithoutLinkedReminderNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitLogCreateWithoutLinkedReminderInput, Prisma.HabitLogUncheckedCreateWithoutLinkedReminderInput> | Prisma.HabitLogCreateWithoutLinkedReminderInput[] | Prisma.HabitLogUncheckedCreateWithoutLinkedReminderInput[]
+  connectOrCreate?: Prisma.HabitLogCreateOrConnectWithoutLinkedReminderInput | Prisma.HabitLogCreateOrConnectWithoutLinkedReminderInput[]
+  upsert?: Prisma.HabitLogUpsertWithWhereUniqueWithoutLinkedReminderInput | Prisma.HabitLogUpsertWithWhereUniqueWithoutLinkedReminderInput[]
+  createMany?: Prisma.HabitLogCreateManyLinkedReminderInputEnvelope
+  set?: Prisma.HabitLogWhereUniqueInput | Prisma.HabitLogWhereUniqueInput[]
+  disconnect?: Prisma.HabitLogWhereUniqueInput | Prisma.HabitLogWhereUniqueInput[]
+  delete?: Prisma.HabitLogWhereUniqueInput | Prisma.HabitLogWhereUniqueInput[]
+  connect?: Prisma.HabitLogWhereUniqueInput | Prisma.HabitLogWhereUniqueInput[]
+  update?: Prisma.HabitLogUpdateWithWhereUniqueWithoutLinkedReminderInput | Prisma.HabitLogUpdateWithWhereUniqueWithoutLinkedReminderInput[]
+  updateMany?: Prisma.HabitLogUpdateManyWithWhereWithoutLinkedReminderInput | Prisma.HabitLogUpdateManyWithWhereWithoutLinkedReminderInput[]
+  deleteMany?: Prisma.HabitLogScalarWhereInput | Prisma.HabitLogScalarWhereInput[]
 }
 
 export type HabitLogCreateWithoutHabitInput = {
@@ -461,7 +690,14 @@ export type HabitLogCreateWithoutHabitInput = {
   actualValue?: number | null
   completedAt: Date | string
   loggedAt?: Date | string
-  triggerSource?: $Enums.CompletionTriggerSource | null
+  triggerSource?: $Enums.CompletionTriggerSource
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
+  linkedReminder?: Prisma.ReminderCreateNestedOneWithoutHabitLogsInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutLogInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutLogInput
 }
 
 export type HabitLogUncheckedCreateWithoutHabitInput = {
@@ -470,7 +706,14 @@ export type HabitLogUncheckedCreateWithoutHabitInput = {
   actualValue?: number | null
   completedAt: Date | string
   loggedAt?: Date | string
-  triggerSource?: $Enums.CompletionTriggerSource | null
+  triggerSource?: $Enums.CompletionTriggerSource
+  linkedReminderId?: string | null
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutLogInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutLogInput
 }
 
 export type HabitLogCreateOrConnectWithoutHabitInput = {
@@ -509,7 +752,230 @@ export type HabitLogScalarWhereInput = {
   actualValue?: Prisma.FloatNullableFilter<"HabitLog"> | number | null
   completedAt?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
   loggedAt?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
-  triggerSource?: Prisma.EnumCompletionTriggerSourceNullableFilter<"HabitLog"> | $Enums.CompletionTriggerSource | null
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFilter<"HabitLog"> | $Enums.CompletionTriggerSource
+  linkedReminderId?: Prisma.UuidNullableFilter<"HabitLog"> | string | null
+  sourceConfidence?: Prisma.FloatNullableFilter<"HabitLog"> | number | null
+  completionHour?: Prisma.IntNullableFilter<"HabitLog"> | number | null
+  coarseLocation?: Prisma.StringNullableFilter<"HabitLog"> | string | null
+  precedingRoutine?: Prisma.StringNullableFilter<"HabitLog"> | string | null
+}
+
+export type HabitLogCreateWithoutDifficultyFeedbackInput = {
+  id?: string
+  status: $Enums.HabitLogStatus
+  actualValue?: number | null
+  completedAt: Date | string
+  loggedAt?: Date | string
+  triggerSource?: $Enums.CompletionTriggerSource
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
+  habit: Prisma.HabitCreateNestedOneWithoutLogsInput
+  linkedReminder?: Prisma.ReminderCreateNestedOneWithoutHabitLogsInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutLogInput
+}
+
+export type HabitLogUncheckedCreateWithoutDifficultyFeedbackInput = {
+  id?: string
+  habitId: string
+  status: $Enums.HabitLogStatus
+  actualValue?: number | null
+  completedAt: Date | string
+  loggedAt?: Date | string
+  triggerSource?: $Enums.CompletionTriggerSource
+  linkedReminderId?: string | null
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutLogInput
+}
+
+export type HabitLogCreateOrConnectWithoutDifficultyFeedbackInput = {
+  where: Prisma.HabitLogWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitLogCreateWithoutDifficultyFeedbackInput, Prisma.HabitLogUncheckedCreateWithoutDifficultyFeedbackInput>
+}
+
+export type HabitLogUpsertWithoutDifficultyFeedbackInput = {
+  update: Prisma.XOR<Prisma.HabitLogUpdateWithoutDifficultyFeedbackInput, Prisma.HabitLogUncheckedUpdateWithoutDifficultyFeedbackInput>
+  create: Prisma.XOR<Prisma.HabitLogCreateWithoutDifficultyFeedbackInput, Prisma.HabitLogUncheckedCreateWithoutDifficultyFeedbackInput>
+  where?: Prisma.HabitLogWhereInput
+}
+
+export type HabitLogUpdateToOneWithWhereWithoutDifficultyFeedbackInput = {
+  where?: Prisma.HabitLogWhereInput
+  data: Prisma.XOR<Prisma.HabitLogUpdateWithoutDifficultyFeedbackInput, Prisma.HabitLogUncheckedUpdateWithoutDifficultyFeedbackInput>
+}
+
+export type HabitLogUpdateWithoutDifficultyFeedbackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
+  actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  habit?: Prisma.HabitUpdateOneRequiredWithoutLogsNestedInput
+  linkedReminder?: Prisma.ReminderUpdateOneWithoutHabitLogsNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutLogNestedInput
+}
+
+export type HabitLogUncheckedUpdateWithoutDifficultyFeedbackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  habitId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
+  actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  linkedReminderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutLogNestedInput
+}
+
+export type HabitLogCreateWithoutReflectionsInput = {
+  id?: string
+  status: $Enums.HabitLogStatus
+  actualValue?: number | null
+  completedAt: Date | string
+  loggedAt?: Date | string
+  triggerSource?: $Enums.CompletionTriggerSource
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
+  habit: Prisma.HabitCreateNestedOneWithoutLogsInput
+  linkedReminder?: Prisma.ReminderCreateNestedOneWithoutHabitLogsInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutLogInput
+}
+
+export type HabitLogUncheckedCreateWithoutReflectionsInput = {
+  id?: string
+  habitId: string
+  status: $Enums.HabitLogStatus
+  actualValue?: number | null
+  completedAt: Date | string
+  loggedAt?: Date | string
+  triggerSource?: $Enums.CompletionTriggerSource
+  linkedReminderId?: string | null
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutLogInput
+}
+
+export type HabitLogCreateOrConnectWithoutReflectionsInput = {
+  where: Prisma.HabitLogWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitLogCreateWithoutReflectionsInput, Prisma.HabitLogUncheckedCreateWithoutReflectionsInput>
+}
+
+export type HabitLogUpsertWithoutReflectionsInput = {
+  update: Prisma.XOR<Prisma.HabitLogUpdateWithoutReflectionsInput, Prisma.HabitLogUncheckedUpdateWithoutReflectionsInput>
+  create: Prisma.XOR<Prisma.HabitLogCreateWithoutReflectionsInput, Prisma.HabitLogUncheckedCreateWithoutReflectionsInput>
+  where?: Prisma.HabitLogWhereInput
+}
+
+export type HabitLogUpdateToOneWithWhereWithoutReflectionsInput = {
+  where?: Prisma.HabitLogWhereInput
+  data: Prisma.XOR<Prisma.HabitLogUpdateWithoutReflectionsInput, Prisma.HabitLogUncheckedUpdateWithoutReflectionsInput>
+}
+
+export type HabitLogUpdateWithoutReflectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
+  actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  habit?: Prisma.HabitUpdateOneRequiredWithoutLogsNestedInput
+  linkedReminder?: Prisma.ReminderUpdateOneWithoutHabitLogsNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutLogNestedInput
+}
+
+export type HabitLogUncheckedUpdateWithoutReflectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  habitId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
+  actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  linkedReminderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutLogNestedInput
+}
+
+export type HabitLogCreateWithoutLinkedReminderInput = {
+  id?: string
+  status: $Enums.HabitLogStatus
+  actualValue?: number | null
+  completedAt: Date | string
+  loggedAt?: Date | string
+  triggerSource?: $Enums.CompletionTriggerSource
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
+  habit: Prisma.HabitCreateNestedOneWithoutLogsInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutLogInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutLogInput
+}
+
+export type HabitLogUncheckedCreateWithoutLinkedReminderInput = {
+  id?: string
+  habitId: string
+  status: $Enums.HabitLogStatus
+  actualValue?: number | null
+  completedAt: Date | string
+  loggedAt?: Date | string
+  triggerSource?: $Enums.CompletionTriggerSource
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutLogInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutLogInput
+}
+
+export type HabitLogCreateOrConnectWithoutLinkedReminderInput = {
+  where: Prisma.HabitLogWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitLogCreateWithoutLinkedReminderInput, Prisma.HabitLogUncheckedCreateWithoutLinkedReminderInput>
+}
+
+export type HabitLogCreateManyLinkedReminderInputEnvelope = {
+  data: Prisma.HabitLogCreateManyLinkedReminderInput | Prisma.HabitLogCreateManyLinkedReminderInput[]
+  skipDuplicates?: boolean
+}
+
+export type HabitLogUpsertWithWhereUniqueWithoutLinkedReminderInput = {
+  where: Prisma.HabitLogWhereUniqueInput
+  update: Prisma.XOR<Prisma.HabitLogUpdateWithoutLinkedReminderInput, Prisma.HabitLogUncheckedUpdateWithoutLinkedReminderInput>
+  create: Prisma.XOR<Prisma.HabitLogCreateWithoutLinkedReminderInput, Prisma.HabitLogUncheckedCreateWithoutLinkedReminderInput>
+}
+
+export type HabitLogUpdateWithWhereUniqueWithoutLinkedReminderInput = {
+  where: Prisma.HabitLogWhereUniqueInput
+  data: Prisma.XOR<Prisma.HabitLogUpdateWithoutLinkedReminderInput, Prisma.HabitLogUncheckedUpdateWithoutLinkedReminderInput>
+}
+
+export type HabitLogUpdateManyWithWhereWithoutLinkedReminderInput = {
+  where: Prisma.HabitLogScalarWhereInput
+  data: Prisma.XOR<Prisma.HabitLogUpdateManyMutationInput, Prisma.HabitLogUncheckedUpdateManyWithoutLinkedReminderInput>
 }
 
 export type HabitLogCreateManyHabitInput = {
@@ -518,7 +984,12 @@ export type HabitLogCreateManyHabitInput = {
   actualValue?: number | null
   completedAt: Date | string
   loggedAt?: Date | string
-  triggerSource?: $Enums.CompletionTriggerSource | null
+  triggerSource?: $Enums.CompletionTriggerSource
+  linkedReminderId?: string | null
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
 }
 
 export type HabitLogUpdateWithoutHabitInput = {
@@ -527,7 +998,14 @@ export type HabitLogUpdateWithoutHabitInput = {
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  triggerSource?: Prisma.NullableEnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource | null
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedReminder?: Prisma.ReminderUpdateOneWithoutHabitLogsNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutLogNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutLogNestedInput
 }
 
 export type HabitLogUncheckedUpdateWithoutHabitInput = {
@@ -536,7 +1014,14 @@ export type HabitLogUncheckedUpdateWithoutHabitInput = {
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  triggerSource?: Prisma.NullableEnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource | null
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  linkedReminderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutLogNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutLogNestedInput
 }
 
 export type HabitLogUncheckedUpdateManyWithoutHabitInput = {
@@ -545,9 +1030,112 @@ export type HabitLogUncheckedUpdateManyWithoutHabitInput = {
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  triggerSource?: Prisma.NullableEnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource | null
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  linkedReminderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
+export type HabitLogCreateManyLinkedReminderInput = {
+  id?: string
+  habitId: string
+  status: $Enums.HabitLogStatus
+  actualValue?: number | null
+  completedAt: Date | string
+  loggedAt?: Date | string
+  triggerSource?: $Enums.CompletionTriggerSource
+  sourceConfidence?: number | null
+  completionHour?: number | null
+  coarseLocation?: string | null
+  precedingRoutine?: string | null
+}
+
+export type HabitLogUpdateWithoutLinkedReminderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
+  actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  habit?: Prisma.HabitUpdateOneRequiredWithoutLogsNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutLogNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutLogNestedInput
+}
+
+export type HabitLogUncheckedUpdateWithoutLinkedReminderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  habitId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
+  actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutLogNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutLogNestedInput
+}
+
+export type HabitLogUncheckedUpdateManyWithoutLinkedReminderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  habitId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
+  actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
+  sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  completionHour?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+
+/**
+ * Count Type HabitLogCountOutputType
+ */
+
+export type HabitLogCountOutputType = {
+  difficultyFeedback: number
+  reflections: number
+}
+
+export type HabitLogCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  difficultyFeedback?: boolean | HabitLogCountOutputTypeCountDifficultyFeedbackArgs
+  reflections?: boolean | HabitLogCountOutputTypeCountReflectionsArgs
+}
+
+/**
+ * HabitLogCountOutputType without action
+ */
+export type HabitLogCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the HabitLogCountOutputType
+   */
+  select?: Prisma.HabitLogCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * HabitLogCountOutputType without action
+ */
+export type HabitLogCountOutputTypeCountDifficultyFeedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DifficultyFeedbackWhereInput
+}
+
+/**
+ * HabitLogCountOutputType without action
+ */
+export type HabitLogCountOutputTypeCountReflectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReflectionWhereInput
+}
 
 
 export type HabitLogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -558,7 +1146,16 @@ export type HabitLogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   completedAt?: boolean
   loggedAt?: boolean
   triggerSource?: boolean
+  linkedReminderId?: boolean
+  sourceConfidence?: boolean
+  completionHour?: boolean
+  coarseLocation?: boolean
+  precedingRoutine?: boolean
   habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>
+  linkedReminder?: boolean | Prisma.HabitLog$linkedReminderArgs<ExtArgs>
+  difficultyFeedback?: boolean | Prisma.HabitLog$difficultyFeedbackArgs<ExtArgs>
+  reflections?: boolean | Prisma.HabitLog$reflectionsArgs<ExtArgs>
+  _count?: boolean | Prisma.HabitLogCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["habitLog"]>
 
 export type HabitLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -569,7 +1166,13 @@ export type HabitLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   completedAt?: boolean
   loggedAt?: boolean
   triggerSource?: boolean
+  linkedReminderId?: boolean
+  sourceConfidence?: boolean
+  completionHour?: boolean
+  coarseLocation?: boolean
+  precedingRoutine?: boolean
   habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>
+  linkedReminder?: boolean | Prisma.HabitLog$linkedReminderArgs<ExtArgs>
 }, ExtArgs["result"]["habitLog"]>
 
 export type HabitLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -580,7 +1183,13 @@ export type HabitLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   completedAt?: boolean
   loggedAt?: boolean
   triggerSource?: boolean
+  linkedReminderId?: boolean
+  sourceConfidence?: boolean
+  completionHour?: boolean
+  coarseLocation?: boolean
+  precedingRoutine?: boolean
   habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>
+  linkedReminder?: boolean | Prisma.HabitLog$linkedReminderArgs<ExtArgs>
 }, ExtArgs["result"]["habitLog"]>
 
 export type HabitLogSelectScalar = {
@@ -591,23 +1200,37 @@ export type HabitLogSelectScalar = {
   completedAt?: boolean
   loggedAt?: boolean
   triggerSource?: boolean
+  linkedReminderId?: boolean
+  sourceConfidence?: boolean
+  completionHour?: boolean
+  coarseLocation?: boolean
+  precedingRoutine?: boolean
 }
 
-export type HabitLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "habitId" | "status" | "actualValue" | "completedAt" | "loggedAt" | "triggerSource", ExtArgs["result"]["habitLog"]>
+export type HabitLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "habitId" | "status" | "actualValue" | "completedAt" | "loggedAt" | "triggerSource" | "linkedReminderId" | "sourceConfidence" | "completionHour" | "coarseLocation" | "precedingRoutine", ExtArgs["result"]["habitLog"]>
 export type HabitLogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>
+  linkedReminder?: boolean | Prisma.HabitLog$linkedReminderArgs<ExtArgs>
+  difficultyFeedback?: boolean | Prisma.HabitLog$difficultyFeedbackArgs<ExtArgs>
+  reflections?: boolean | Prisma.HabitLog$reflectionsArgs<ExtArgs>
+  _count?: boolean | Prisma.HabitLogCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type HabitLogIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>
+  linkedReminder?: boolean | Prisma.HabitLog$linkedReminderArgs<ExtArgs>
 }
 export type HabitLogIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>
+  linkedReminder?: boolean | Prisma.HabitLog$linkedReminderArgs<ExtArgs>
 }
 
 export type $HabitLogPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "HabitLog"
   objects: {
     habit: Prisma.$HabitPayload<ExtArgs>
+    linkedReminder: Prisma.$ReminderPayload<ExtArgs> | null
+    difficultyFeedback: Prisma.$DifficultyFeedbackPayload<ExtArgs>[]
+    reflections: Prisma.$ReflectionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -616,7 +1239,12 @@ export type $HabitLogPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     actualValue: number | null
     completedAt: Date
     loggedAt: Date
-    triggerSource: $Enums.CompletionTriggerSource | null
+    triggerSource: $Enums.CompletionTriggerSource
+    linkedReminderId: string | null
+    sourceConfidence: number | null
+    completionHour: number | null
+    coarseLocation: string | null
+    precedingRoutine: string | null
   }, ExtArgs["result"]["habitLog"]>
   composites: {}
 }
@@ -1012,6 +1640,9 @@ readonly fields: HabitLogFieldRefs;
 export interface Prisma__HabitLogClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   habit<T extends Prisma.HabitDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.HabitDefaultArgs<ExtArgs>>): Prisma.Prisma__HabitClient<runtime.Types.Result.GetResult<Prisma.$HabitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  linkedReminder<T extends Prisma.HabitLog$linkedReminderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.HabitLog$linkedReminderArgs<ExtArgs>>): Prisma.Prisma__ReminderClient<runtime.Types.Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  difficultyFeedback<T extends Prisma.HabitLog$difficultyFeedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.HabitLog$difficultyFeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DifficultyFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reflections<T extends Prisma.HabitLog$reflectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.HabitLog$reflectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReflectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1048,6 +1679,11 @@ export interface HabitLogFieldRefs {
   readonly completedAt: Prisma.FieldRef<"HabitLog", 'DateTime'>
   readonly loggedAt: Prisma.FieldRef<"HabitLog", 'DateTime'>
   readonly triggerSource: Prisma.FieldRef<"HabitLog", 'CompletionTriggerSource'>
+  readonly linkedReminderId: Prisma.FieldRef<"HabitLog", 'String'>
+  readonly sourceConfidence: Prisma.FieldRef<"HabitLog", 'Float'>
+  readonly completionHour: Prisma.FieldRef<"HabitLog", 'Int'>
+  readonly coarseLocation: Prisma.FieldRef<"HabitLog", 'String'>
+  readonly precedingRoutine: Prisma.FieldRef<"HabitLog", 'String'>
 }
     
 
@@ -1446,6 +2082,73 @@ export type HabitLogDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many HabitLogs to delete.
    */
   limit?: number
+}
+
+/**
+ * HabitLog.linkedReminder
+ */
+export type HabitLog$linkedReminderArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Reminder
+   */
+  select?: Prisma.ReminderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Reminder
+   */
+  omit?: Prisma.ReminderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReminderInclude<ExtArgs> | null
+  where?: Prisma.ReminderWhereInput
+}
+
+/**
+ * HabitLog.difficultyFeedback
+ */
+export type HabitLog$difficultyFeedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DifficultyFeedback
+   */
+  select?: Prisma.DifficultyFeedbackSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DifficultyFeedback
+   */
+  omit?: Prisma.DifficultyFeedbackOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DifficultyFeedbackInclude<ExtArgs> | null
+  where?: Prisma.DifficultyFeedbackWhereInput
+  orderBy?: Prisma.DifficultyFeedbackOrderByWithRelationInput | Prisma.DifficultyFeedbackOrderByWithRelationInput[]
+  cursor?: Prisma.DifficultyFeedbackWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DifficultyFeedbackScalarFieldEnum | Prisma.DifficultyFeedbackScalarFieldEnum[]
+}
+
+/**
+ * HabitLog.reflections
+ */
+export type HabitLog$reflectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Reflection
+   */
+  select?: Prisma.ReflectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Reflection
+   */
+  omit?: Prisma.ReflectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReflectionInclude<ExtArgs> | null
+  where?: Prisma.ReflectionWhereInput
+  orderBy?: Prisma.ReflectionOrderByWithRelationInput | Prisma.ReflectionOrderByWithRelationInput[]
+  cursor?: Prisma.ReflectionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReflectionScalarFieldEnum | Prisma.ReflectionScalarFieldEnum[]
 }
 
 /**

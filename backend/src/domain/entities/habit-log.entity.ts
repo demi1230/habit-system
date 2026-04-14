@@ -12,7 +12,7 @@ export interface HabitLogEntity {
   actualValue: number | null;
   completedAt: Date;
   loggedAt: Date;
-  triggerSource: CompletionTriggerSource | null;
+  triggerSource: CompletionTriggerSource;
   /** Phase 4A: link to the Reminder that triggered this completion. */
   linkedReminderId: string | null;
   /** Phase 4A: confidence score (0–1) that this source classification is correct. */

@@ -57,7 +57,13 @@ export const ModelName = {
   HabitCue: 'HabitCue',
   HabitMotivationProfile: 'HabitMotivationProfile',
   HabitLog: 'HabitLog',
-  UserActivityLog: 'UserActivityLog'
+  DifficultyFeedback: 'DifficultyFeedback',
+  Reflection: 'Reflection',
+  UserActivityLog: 'UserActivityLog',
+  Reminder: 'Reminder',
+  ReminderAction: 'ReminderAction',
+  SrbaiAssessment: 'SrbaiAssessment',
+  ReminderPolicy: 'ReminderPolicy'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -93,11 +99,9 @@ export const HabitScalarFieldEnum = {
   userId: 'userId',
   title: 'title',
   description: 'description',
-  trackingType: 'trackingType',
-  allowPartialCompletion: 'allowPartialCompletion',
   measurementUnit: 'measurementUnit',
   targetValue: 'targetValue',
-  minimumSuccessValue: 'minimumSuccessValue',
+  minimumTarget: 'minimumTarget',
   startDate: 'startDate',
   status: 'status',
   reminderEnabled: 'reminderEnabled',
@@ -137,9 +141,7 @@ export type HabitCueScalarFieldEnum = (typeof HabitCueScalarFieldEnum)[keyof typ
 export const HabitMotivationProfileScalarFieldEnum = {
   id: 'id',
   habitId: 'habitId',
-  goalTag: 'goalTag',
-  personalReason: 'personalReason',
-  identityStatement: 'identityStatement',
+  reason: 'reason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -154,10 +156,42 @@ export const HabitLogScalarFieldEnum = {
   actualValue: 'actualValue',
   completedAt: 'completedAt',
   loggedAt: 'loggedAt',
-  triggerSource: 'triggerSource'
+  triggerSource: 'triggerSource',
+  linkedReminderId: 'linkedReminderId',
+  sourceConfidence: 'sourceConfidence',
+  completionHour: 'completionHour',
+  coarseLocation: 'coarseLocation',
+  precedingRoutine: 'precedingRoutine'
 } as const
 
 export type HabitLogScalarFieldEnum = (typeof HabitLogScalarFieldEnum)[keyof typeof HabitLogScalarFieldEnum]
+
+
+export const DifficultyFeedbackScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  logId: 'logId',
+  rating: 'rating',
+  note: 'note',
+  occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type DifficultyFeedbackScalarFieldEnum = (typeof DifficultyFeedbackScalarFieldEnum)[keyof typeof DifficultyFeedbackScalarFieldEnum]
+
+
+export const ReflectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  logId: 'logId',
+  text: 'text',
+  occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ReflectionScalarFieldEnum = (typeof ReflectionScalarFieldEnum)[keyof typeof ReflectionScalarFieldEnum]
 
 
 export const UserActivityLogScalarFieldEnum = {
@@ -170,12 +204,86 @@ export const UserActivityLogScalarFieldEnum = {
 export type UserActivityLogScalarFieldEnum = (typeof UserActivityLogScalarFieldEnum)[keyof typeof UserActivityLogScalarFieldEnum]
 
 
+export const ReminderScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  linkedCueId: 'linkedCueId',
+  decisionReason: 'decisionReason',
+  status: 'status',
+  scheduledFor: 'scheduledFor',
+  evaluatedAt: 'evaluatedAt',
+  sentAt: 'sentAt',
+  deliveredAt: 'deliveredAt',
+  effectiveUntil: 'effectiveUntil',
+  cooldownKey: 'cooldownKey',
+  explanation: 'explanation',
+  createdAt: 'createdAt'
+} as const
+
+export type ReminderScalarFieldEnum = (typeof ReminderScalarFieldEnum)[keyof typeof ReminderScalarFieldEnum]
+
+
+export const ReminderActionScalarFieldEnum = {
+  id: 'id',
+  reminderId: 'reminderId',
+  userId: 'userId',
+  actionType: 'actionType',
+  actedAt: 'actedAt',
+  snoozedUntil: 'snoozedUntil',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type ReminderActionScalarFieldEnum = (typeof ReminderActionScalarFieldEnum)[keyof typeof ReminderActionScalarFieldEnum]
+
+
+export const SrbaiAssessmentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  item1: 'item1',
+  item2: 'item2',
+  item3: 'item3',
+  item4: 'item4',
+  rawAverage: 'rawAverage',
+  normalizedScore100: 'normalizedScore100',
+  assessedAt: 'assessedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SrbaiAssessmentScalarFieldEnum = (typeof SrbaiAssessmentScalarFieldEnum)[keyof typeof SrbaiAssessmentScalarFieldEnum]
+
+
+export const ReminderPolicyScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  mode: 'mode',
+  cooldownMinutes: 'cooldownMinutes',
+  maxPerDay: 'maxPerDay',
+  narrowingLevel: 'narrowingLevel',
+  effectiveFrom: 'effectiveFrom',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReminderPolicyScalarFieldEnum = (typeof ReminderPolicyScalarFieldEnum)[keyof typeof ReminderPolicyScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -192,4 +300,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

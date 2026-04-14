@@ -1,10 +1,6 @@
-﻿import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+﻿import { Inject, Injectable } from '@nestjs/common';
 import { AnalyticsService } from '../analytics/analytics.service';
-import {
-  CompletionTriggerSource,
-  HabitLogStatus,
-  HabitTrackingType,
-} from '../domain/enums/domain.enums';
+import { CompletionTriggerSource } from '../domain/enums/domain.enums';
 import type { IHabitLogRepository } from '../domain/repositories/habit-log.repository';
 import { HABIT_LOG_REPOSITORY } from '../domain/repositories/habit-log.repository';
 import { HabitStrengthRules } from '../domain/rules/habit-strength.rules';
@@ -12,7 +8,6 @@ import { HabitsService } from '../habits/habits.service';
 import { CreateHabitLogDto } from './dto/create-habit-log.dto';
 import {
   ProgressSummary,
-  progressStatusCountKeyMap,
 } from './interfaces/progress-summary.interface';
 import { HabitStrengthSignals } from './foundation/habit-strength/habit-strength.interface';
 
@@ -38,7 +33,7 @@ export class ProgressService {
 
     const habitLog = await this.habitLogRepo.create({ habitId, ...logData });
 
-    await this.analyticsService.recordActivity(userId, 'habit.logged');
+    await this.analyticsService.recordActivity(userId, 'habit_logged');
     return habitLog;
   }
 
@@ -57,14 +52,13 @@ export class ProgressService {
     const summary: ProgressSummary = {
       totalLogs: logs.length,
       doneCount: 0,
-      partialCount: 0,
       notDoneCount: 0,
       lastLoggedAt: logs[0]?.loggedAt.toISOString() ?? null,
       lastCompletedAt: logs[0]?.completedAt.toISOString() ?? null,
       completionByTriggerSource: {
         [CompletionTriggerSource.SELF_INITIATED]: 0,
         [CompletionTriggerSource.REMINDER_TRIGGERED]: 0,
-        [CompletionTriggerSource.MANUAL_ENTRY]: 0,
+        [CompletionTriggerSource.UNKNOWN]: 0,
       },
       selfInitiatedCount: 0,
       reminderTriggeredCount: 0,
@@ -75,14 +69,13 @@ export class ProgressService {
     };
 
     for (const log of logs) {
-      summary[progressStatusCountKeyMap[log.status]] += 1;
-      if (log.triggerSource) {
-        summary.completionByTriggerSource[log.triggerSource] += 1;
-      }
+      if (log.status === 'DONE') summary.doneCount += 1;
+      else summary.notDoneCount += 1;
+      summary.completionByTriggerSource[log.triggerSource] += 1;
     }
 
     // Phase 4A: compute source breakdown from DONE logs only
-    const doneLogs = logs.filter((l) => l.status === HabitLogStatus.DONE);
+    const doneLogs = logs.filter((l) => l.status === 'DONE');
     const doneTotal = doneLogs.length;
 
     summary.selfInitiatedCount = doneLogs.filter(
@@ -92,9 +85,7 @@ export class ProgressService {
       (l) => l.triggerSource === CompletionTriggerSource.REMINDER_TRIGGERED,
     ).length;
     summary.unknownSourceCount = doneLogs.filter(
-      (l) =>
-        !l.triggerSource ||
-        l.triggerSource === CompletionTriggerSource.MANUAL_ENTRY,
+      (l) => l.triggerSource === CompletionTriggerSource.UNKNOWN,
     ).length;
 
     if (doneTotal > 0) {
@@ -134,10 +125,8 @@ export class ProgressService {
 
   private buildLogPayload(
     habit: {
-      trackingType: HabitTrackingType;
-      allowPartialCompletion: boolean;
-      minimumSuccessValue: number | null;
-      targetValue: number | null;
+      minimumTarget: number;
+      targetValue: number;
     },
     createHabitLogDto: CreateHabitLogDto,
   ) {
@@ -146,75 +135,14 @@ export class ProgressService {
       ? new Date(createHabitLogDto.loggedAt)
       : new Date();
 
-    if (habit.trackingType === HabitTrackingType.SIMPLE_CHECKIN) {
-      if (!createHabitLogDto.status) {
-        throw new BadRequestException(
-          'SIMPLE_CHECKIN habit logs require a direct status value.',
-        );
-      }
-
-      if (createHabitLogDto.actualValue !== undefined) {
-        throw new BadRequestException(
-          'SIMPLE_CHECKIN habit logs must not include actualValue.',
-        );
-      }
-
-      if (
-        !habit.allowPartialCompletion &&
-        createHabitLogDto.status === HabitLogStatus.PARTIAL
-      ) {
-        throw new BadRequestException(
-          'PARTIAL is not allowed when allowPartialCompletion is false.',
-        );
-      }
-
-      return {
-        status: createHabitLogDto.status,
-        actualValue: null,
-        completedAt,
-        loggedAt,
-        triggerSource: createHabitLogDto.triggerSource ?? null,
-      };
-    }
-
-    if (createHabitLogDto.status) {
-      throw new BadRequestException(
-        'QUANTITATIVE habit logs must not submit status directly.',
-      );
-    }
-
-    if (createHabitLogDto.actualValue === undefined) {
-      throw new BadRequestException(
-        'QUANTITATIVE habit logs require actualValue.',
-      );
-    }
-
-    if (habit.minimumSuccessValue === null || habit.targetValue === null) {
-      throw new BadRequestException(
-        'QUANTITATIVE habits must define minimumSuccessValue and targetValue before logging.',
-      );
-    }
-
     return {
-      status: this.deriveQuantitativeStatus(
-        createHabitLogDto.actualValue,
-        habit.minimumSuccessValue,
-        habit.targetValue,
-      ),
+      status: createHabitLogDto.actualValue >= habit.minimumTarget
+        ? 'DONE' as const
+        : 'NOT_DONE' as const,
       actualValue: createHabitLogDto.actualValue,
       completedAt,
       loggedAt,
-      triggerSource: createHabitLogDto.triggerSource ?? null,
+      triggerSource: createHabitLogDto.triggerSource ?? CompletionTriggerSource.UNKNOWN,
     };
-  }
-
-  private deriveQuantitativeStatus(
-    actualValue: number,
-    minimumSuccessValue: number,
-    targetValue: number,
-  ) {
-    if (actualValue >= targetValue) return HabitLogStatus.DONE;
-    if (actualValue >= minimumSuccessValue) return HabitLogStatus.PARTIAL;
-    return HabitLogStatus.NOT_DONE;
   }
 }

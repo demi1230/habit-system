@@ -1,4 +1,4 @@
-import { DifficultyRating } from '../../progress/dto/submit-difficulty.dto';
+import { DifficultyRating } from '../enums/domain.enums';
 import { ReminderPolicyMode } from '../enums/domain.enums';
 
 export type AdaptationFocus =
@@ -18,7 +18,7 @@ export interface AdaptationRecommendationInput {
   /** Total DONE completions */
   doneCount: number;
   /** Average of the last N difficulty ratings (null = no ratings yet) */
-  recentAvgDifficulty: DifficultyRating | null;
+  recentDifficultyLevel: DifficultyRating | null;
   /** Current tapering policy mode, or null if none set */
   currentPolicyMode: ReminderPolicyMode | null;
 }
@@ -54,8 +54,8 @@ export class AdaptationRules {
     const evaluatedAt = new Date().toISOString();
     const score = input.compositeScore;
     const hardDifficulty =
-      input.recentAvgDifficulty !== null &&
-      DIFFICULTY_SCORE[input.recentAvgDifficulty] >= 4;
+      input.recentDifficultyLevel !== null &&
+      DIFFICULTY_SCORE[input.recentDifficultyLevel] >= 4;
     const milestoneReached =
       input.doneCount === 7 || input.doneCount === 21 || input.doneCount === 66;
 

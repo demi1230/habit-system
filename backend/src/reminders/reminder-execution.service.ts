@@ -72,7 +72,7 @@ export class ReminderExecutionService {
       cues: habit.cues,
     });
 
-    const decisionReason = this.mapReason(decision.reason);
+    const decisionReason = decision.reason;
 
     if (!decision.shouldRemind) {
       return {
@@ -157,17 +157,6 @@ export class ReminderExecutionService {
     };
   }
 
-  private mapReason(
-    reason: ReturnType<typeof ReminderDecisionRules.decide>['reason'],
-  ): ReminderDecisionReason {
-    const map: Record<string, ReminderDecisionReason> = {
-      reminder_disabled: ReminderDecisionReason.REMINDER_DISABLED,
-      not_scheduled_today: ReminderDecisionReason.NOT_SCHEDULED_TODAY,
-      no_active_cues: ReminderDecisionReason.NO_ACTIVE_CUES,
-      remind: ReminderDecisionReason.SHOULD_REMIND,
-    };
-    return map[reason] ?? ReminderDecisionReason.SHOULD_REMIND;
-  }
 }
 
 export interface EvaluateAndCreateResult {

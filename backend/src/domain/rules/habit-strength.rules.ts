@@ -54,7 +54,7 @@ export interface HabitStrengthInput {
   habitId: string;
   logs: Array<{
     status: HabitLogStatus;
-    triggerSource: CompletionTriggerSource | null;
+    triggerSource: CompletionTriggerSource;
   }>;
   scheduledWeekdayCount: number;
   hasCueConfiguration: boolean;
@@ -65,7 +65,6 @@ export interface HabitStrengthResult {
   habitId: string;
   totalLogs: number;
   doneCount: number;
-  partialCount: number;
   notDoneCount: number;
   doneRate: number;
   selfInitiatedRate: number;
@@ -93,17 +92,17 @@ export class HabitStrengthRules {
 
     const totalLogs = logs.length;
     let doneCount = 0;
-    let partialCount = 0;
     let notDoneCount = 0;
     let selfInitiatedCount = 0;
 
     for (const log of logs) {
-      if (log.status === HabitLogStatus.DONE) doneCount++;
-      else if (log.status === HabitLogStatus.PARTIAL) partialCount++;
-      else notDoneCount++;
-
-      if (log.triggerSource === CompletionTriggerSource.SELF_INITIATED) {
-        selfInitiatedCount++;
+      if (log.status === HabitLogStatus.DONE) {
+        doneCount++;
+        if (log.triggerSource === CompletionTriggerSource.SELF_INITIATED) {
+          selfInitiatedCount++;
+        }
+      } else {
+        notDoneCount++;
       }
     }
 
@@ -111,13 +110,12 @@ export class HabitStrengthRules {
       habitId,
       totalLogs,
       doneCount,
-      partialCount,
       notDoneCount,
       doneRate:
         totalLogs > 0 ? Math.round((doneCount / totalLogs) * 1000) / 1000 : 0,
       selfInitiatedRate:
-        totalLogs > 0
-          ? Math.round((selfInitiatedCount / totalLogs) * 1000) / 1000
+        doneCount > 0
+          ? Math.round((selfInitiatedCount / doneCount) * 1000) / 1000
           : 0,
       scheduledWeekdayCount,
       hasCueConfiguration,
@@ -157,8 +155,10 @@ export class HabitStrengthRules {
     if (snapshots.length === 0) return 0;
     const n = snapshots.length;
 
-    const modalRate = (values: Array<string | number | null>): number | null => {
-      const valid = values.filter((v) => v !== null) as Array<string | number>;
+    const modalRate = (
+      values: Array<string | number | null>,
+    ): number | null => {
+      const valid = values.filter((v) => v !== null);
       if (valid.length === 0) return null;
       const freq = new Map<string | number, number>();
       for (const v of valid) freq.set(v, (freq.get(v) ?? 0) + 1);

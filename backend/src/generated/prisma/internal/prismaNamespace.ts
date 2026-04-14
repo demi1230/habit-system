@@ -390,7 +390,13 @@ export const ModelName = {
   HabitCue: 'HabitCue',
   HabitMotivationProfile: 'HabitMotivationProfile',
   HabitLog: 'HabitLog',
-  UserActivityLog: 'UserActivityLog'
+  DifficultyFeedback: 'DifficultyFeedback',
+  Reflection: 'Reflection',
+  UserActivityLog: 'UserActivityLog',
+  Reminder: 'Reminder',
+  ReminderAction: 'ReminderAction',
+  SrbaiAssessment: 'SrbaiAssessment',
+  ReminderPolicy: 'ReminderPolicy'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -406,7 +412,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "habit" | "habitScheduleDay" | "habitCue" | "habitMotivationProfile" | "habitLog" | "userActivityLog"
+    modelProps: "user" | "habit" | "habitScheduleDay" | "habitCue" | "habitMotivationProfile" | "habitLog" | "difficultyFeedback" | "reflection" | "userActivityLog" | "reminder" | "reminderAction" | "srbaiAssessment" | "reminderPolicy"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -854,6 +860,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DifficultyFeedback: {
+      payload: Prisma.$DifficultyFeedbackPayload<ExtArgs>
+      fields: Prisma.DifficultyFeedbackFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DifficultyFeedbackFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DifficultyFeedbackPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DifficultyFeedbackFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DifficultyFeedbackPayload>
+        }
+        findFirst: {
+          args: Prisma.DifficultyFeedbackFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DifficultyFeedbackPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DifficultyFeedbackFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DifficultyFeedbackPayload>
+        }
+        findMany: {
+          args: Prisma.DifficultyFeedbackFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DifficultyFeedbackPayload>[]
+        }
+        create: {
+          args: Prisma.DifficultyFeedbackCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DifficultyFeedbackPayload>
+        }
+        createMany: {
+          args: Prisma.DifficultyFeedbackCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DifficultyFeedbackCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DifficultyFeedbackPayload>[]
+        }
+        delete: {
+          args: Prisma.DifficultyFeedbackDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DifficultyFeedbackPayload>
+        }
+        update: {
+          args: Prisma.DifficultyFeedbackUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DifficultyFeedbackPayload>
+        }
+        deleteMany: {
+          args: Prisma.DifficultyFeedbackDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DifficultyFeedbackUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DifficultyFeedbackUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DifficultyFeedbackPayload>[]
+        }
+        upsert: {
+          args: Prisma.DifficultyFeedbackUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DifficultyFeedbackPayload>
+        }
+        aggregate: {
+          args: Prisma.DifficultyFeedbackAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDifficultyFeedback>
+        }
+        groupBy: {
+          args: Prisma.DifficultyFeedbackGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DifficultyFeedbackGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DifficultyFeedbackCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DifficultyFeedbackCountAggregateOutputType> | number
+        }
+      }
+    }
+    Reflection: {
+      payload: Prisma.$ReflectionPayload<ExtArgs>
+      fields: Prisma.ReflectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReflectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReflectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReflectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReflectionPayload>
+        }
+        findFirst: {
+          args: Prisma.ReflectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReflectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReflectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReflectionPayload>
+        }
+        findMany: {
+          args: Prisma.ReflectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReflectionPayload>[]
+        }
+        create: {
+          args: Prisma.ReflectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReflectionPayload>
+        }
+        createMany: {
+          args: Prisma.ReflectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReflectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReflectionPayload>[]
+        }
+        delete: {
+          args: Prisma.ReflectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReflectionPayload>
+        }
+        update: {
+          args: Prisma.ReflectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReflectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReflectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReflectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReflectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReflectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ReflectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReflectionPayload>
+        }
+        aggregate: {
+          args: Prisma.ReflectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReflection>
+        }
+        groupBy: {
+          args: Prisma.ReflectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReflectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReflectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReflectionCountAggregateOutputType> | number
+        }
+      }
+    }
     UserActivityLog: {
       payload: Prisma.$UserActivityLogPayload<ExtArgs>
       fields: Prisma.UserActivityLogFieldRefs
@@ -928,6 +1082,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Reminder: {
+      payload: Prisma.$ReminderPayload<ExtArgs>
+      fields: Prisma.ReminderFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReminderFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReminderFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>
+        }
+        findFirst: {
+          args: Prisma.ReminderFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReminderFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>
+        }
+        findMany: {
+          args: Prisma.ReminderFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>[]
+        }
+        create: {
+          args: Prisma.ReminderCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>
+        }
+        createMany: {
+          args: Prisma.ReminderCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReminderCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>[]
+        }
+        delete: {
+          args: Prisma.ReminderDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>
+        }
+        update: {
+          args: Prisma.ReminderUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReminderDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReminderUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReminderUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>[]
+        }
+        upsert: {
+          args: Prisma.ReminderUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>
+        }
+        aggregate: {
+          args: Prisma.ReminderAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReminder>
+        }
+        groupBy: {
+          args: Prisma.ReminderGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReminderGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReminderCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReminderCountAggregateOutputType> | number
+        }
+      }
+    }
+    ReminderAction: {
+      payload: Prisma.$ReminderActionPayload<ExtArgs>
+      fields: Prisma.ReminderActionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReminderActionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderActionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReminderActionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderActionPayload>
+        }
+        findFirst: {
+          args: Prisma.ReminderActionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderActionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReminderActionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderActionPayload>
+        }
+        findMany: {
+          args: Prisma.ReminderActionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderActionPayload>[]
+        }
+        create: {
+          args: Prisma.ReminderActionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderActionPayload>
+        }
+        createMany: {
+          args: Prisma.ReminderActionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReminderActionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderActionPayload>[]
+        }
+        delete: {
+          args: Prisma.ReminderActionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderActionPayload>
+        }
+        update: {
+          args: Prisma.ReminderActionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderActionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReminderActionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReminderActionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReminderActionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderActionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ReminderActionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderActionPayload>
+        }
+        aggregate: {
+          args: Prisma.ReminderActionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReminderAction>
+        }
+        groupBy: {
+          args: Prisma.ReminderActionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReminderActionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReminderActionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReminderActionCountAggregateOutputType> | number
+        }
+      }
+    }
+    SrbaiAssessment: {
+      payload: Prisma.$SrbaiAssessmentPayload<ExtArgs>
+      fields: Prisma.SrbaiAssessmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SrbaiAssessmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SrbaiAssessmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SrbaiAssessmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SrbaiAssessmentPayload>
+        }
+        findFirst: {
+          args: Prisma.SrbaiAssessmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SrbaiAssessmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SrbaiAssessmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SrbaiAssessmentPayload>
+        }
+        findMany: {
+          args: Prisma.SrbaiAssessmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SrbaiAssessmentPayload>[]
+        }
+        create: {
+          args: Prisma.SrbaiAssessmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SrbaiAssessmentPayload>
+        }
+        createMany: {
+          args: Prisma.SrbaiAssessmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SrbaiAssessmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SrbaiAssessmentPayload>[]
+        }
+        delete: {
+          args: Prisma.SrbaiAssessmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SrbaiAssessmentPayload>
+        }
+        update: {
+          args: Prisma.SrbaiAssessmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SrbaiAssessmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.SrbaiAssessmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SrbaiAssessmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SrbaiAssessmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SrbaiAssessmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.SrbaiAssessmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SrbaiAssessmentPayload>
+        }
+        aggregate: {
+          args: Prisma.SrbaiAssessmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSrbaiAssessment>
+        }
+        groupBy: {
+          args: Prisma.SrbaiAssessmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SrbaiAssessmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SrbaiAssessmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SrbaiAssessmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    ReminderPolicy: {
+      payload: Prisma.$ReminderPolicyPayload<ExtArgs>
+      fields: Prisma.ReminderPolicyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReminderPolicyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPolicyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReminderPolicyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPolicyPayload>
+        }
+        findFirst: {
+          args: Prisma.ReminderPolicyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPolicyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReminderPolicyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPolicyPayload>
+        }
+        findMany: {
+          args: Prisma.ReminderPolicyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPolicyPayload>[]
+        }
+        create: {
+          args: Prisma.ReminderPolicyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPolicyPayload>
+        }
+        createMany: {
+          args: Prisma.ReminderPolicyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReminderPolicyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPolicyPayload>[]
+        }
+        delete: {
+          args: Prisma.ReminderPolicyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPolicyPayload>
+        }
+        update: {
+          args: Prisma.ReminderPolicyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPolicyPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReminderPolicyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReminderPolicyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReminderPolicyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPolicyPayload>[]
+        }
+        upsert: {
+          args: Prisma.ReminderPolicyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPolicyPayload>
+        }
+        aggregate: {
+          args: Prisma.ReminderPolicyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReminderPolicy>
+        }
+        groupBy: {
+          args: Prisma.ReminderPolicyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReminderPolicyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReminderPolicyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReminderPolicyCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -984,11 +1434,9 @@ export const HabitScalarFieldEnum = {
   userId: 'userId',
   title: 'title',
   description: 'description',
-  trackingType: 'trackingType',
-  allowPartialCompletion: 'allowPartialCompletion',
   measurementUnit: 'measurementUnit',
   targetValue: 'targetValue',
-  minimumSuccessValue: 'minimumSuccessValue',
+  minimumTarget: 'minimumTarget',
   startDate: 'startDate',
   status: 'status',
   reminderEnabled: 'reminderEnabled',
@@ -1028,9 +1476,7 @@ export type HabitCueScalarFieldEnum = (typeof HabitCueScalarFieldEnum)[keyof typ
 export const HabitMotivationProfileScalarFieldEnum = {
   id: 'id',
   habitId: 'habitId',
-  goalTag: 'goalTag',
-  personalReason: 'personalReason',
-  identityStatement: 'identityStatement',
+  reason: 'reason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1045,10 +1491,42 @@ export const HabitLogScalarFieldEnum = {
   actualValue: 'actualValue',
   completedAt: 'completedAt',
   loggedAt: 'loggedAt',
-  triggerSource: 'triggerSource'
+  triggerSource: 'triggerSource',
+  linkedReminderId: 'linkedReminderId',
+  sourceConfidence: 'sourceConfidence',
+  completionHour: 'completionHour',
+  coarseLocation: 'coarseLocation',
+  precedingRoutine: 'precedingRoutine'
 } as const
 
 export type HabitLogScalarFieldEnum = (typeof HabitLogScalarFieldEnum)[keyof typeof HabitLogScalarFieldEnum]
+
+
+export const DifficultyFeedbackScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  logId: 'logId',
+  rating: 'rating',
+  note: 'note',
+  occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type DifficultyFeedbackScalarFieldEnum = (typeof DifficultyFeedbackScalarFieldEnum)[keyof typeof DifficultyFeedbackScalarFieldEnum]
+
+
+export const ReflectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  logId: 'logId',
+  text: 'text',
+  occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ReflectionScalarFieldEnum = (typeof ReflectionScalarFieldEnum)[keyof typeof ReflectionScalarFieldEnum]
 
 
 export const UserActivityLogScalarFieldEnum = {
@@ -1061,12 +1539,86 @@ export const UserActivityLogScalarFieldEnum = {
 export type UserActivityLogScalarFieldEnum = (typeof UserActivityLogScalarFieldEnum)[keyof typeof UserActivityLogScalarFieldEnum]
 
 
+export const ReminderScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  linkedCueId: 'linkedCueId',
+  decisionReason: 'decisionReason',
+  status: 'status',
+  scheduledFor: 'scheduledFor',
+  evaluatedAt: 'evaluatedAt',
+  sentAt: 'sentAt',
+  deliveredAt: 'deliveredAt',
+  effectiveUntil: 'effectiveUntil',
+  cooldownKey: 'cooldownKey',
+  explanation: 'explanation',
+  createdAt: 'createdAt'
+} as const
+
+export type ReminderScalarFieldEnum = (typeof ReminderScalarFieldEnum)[keyof typeof ReminderScalarFieldEnum]
+
+
+export const ReminderActionScalarFieldEnum = {
+  id: 'id',
+  reminderId: 'reminderId',
+  userId: 'userId',
+  actionType: 'actionType',
+  actedAt: 'actedAt',
+  snoozedUntil: 'snoozedUntil',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type ReminderActionScalarFieldEnum = (typeof ReminderActionScalarFieldEnum)[keyof typeof ReminderActionScalarFieldEnum]
+
+
+export const SrbaiAssessmentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  item1: 'item1',
+  item2: 'item2',
+  item3: 'item3',
+  item4: 'item4',
+  rawAverage: 'rawAverage',
+  normalizedScore100: 'normalizedScore100',
+  assessedAt: 'assessedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SrbaiAssessmentScalarFieldEnum = (typeof SrbaiAssessmentScalarFieldEnum)[keyof typeof SrbaiAssessmentScalarFieldEnum]
+
+
+export const ReminderPolicyScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  mode: 'mode',
+  cooldownMinutes: 'cooldownMinutes',
+  maxPerDay: 'maxPerDay',
+  narrowingLevel: 'narrowingLevel',
+  effectiveFrom: 'effectiveFrom',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReminderPolicyScalarFieldEnum = (typeof ReminderPolicyScalarFieldEnum)[keyof typeof ReminderPolicyScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1083,6 +1635,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -1120,27 +1681,6 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
- * Reference to a field of type 'HabitTrackingType'
- */
-export type EnumHabitTrackingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HabitTrackingType'>
-    
-
-
-/**
- * Reference to a field of type 'HabitTrackingType[]'
- */
-export type ListEnumHabitTrackingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HabitTrackingType[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1165,6 +1705,13 @@ export type EnumHabitLifecycleStatusFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'HabitLifecycleStatus[]'
  */
 export type ListEnumHabitLifecycleStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HabitLifecycleStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -1221,6 +1768,90 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DifficultyRating'
+ */
+export type EnumDifficultyRatingFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DifficultyRating'>
+    
+
+
+/**
+ * Reference to a field of type 'DifficultyRating[]'
+ */
+export type ListEnumDifficultyRatingFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DifficultyRating[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ReminderDecisionReason'
+ */
+export type EnumReminderDecisionReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderDecisionReason'>
+    
+
+
+/**
+ * Reference to a field of type 'ReminderDecisionReason[]'
+ */
+export type ListEnumReminderDecisionReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderDecisionReason[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ReminderStatus'
+ */
+export type EnumReminderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ReminderStatus[]'
+ */
+export type ListEnumReminderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'ReminderActionType'
+ */
+export type EnumReminderActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderActionType'>
+    
+
+
+/**
+ * Reference to a field of type 'ReminderActionType[]'
+ */
+export type ListEnumReminderActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderActionType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ReminderPolicyMode'
+ */
+export type EnumReminderPolicyModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderPolicyMode'>
+    
+
+
+/**
+ * Reference to a field of type 'ReminderPolicyMode[]'
+ */
+export type ListEnumReminderPolicyModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderPolicyMode[]'>
     
 
 /**
@@ -1324,7 +1955,13 @@ export type GlobalOmitConfig = {
   habitCue?: Prisma.HabitCueOmit
   habitMotivationProfile?: Prisma.HabitMotivationProfileOmit
   habitLog?: Prisma.HabitLogOmit
+  difficultyFeedback?: Prisma.DifficultyFeedbackOmit
+  reflection?: Prisma.ReflectionOmit
   userActivityLog?: Prisma.UserActivityLogOmit
+  reminder?: Prisma.ReminderOmit
+  reminderAction?: Prisma.ReminderActionOmit
+  srbaiAssessment?: Prisma.SrbaiAssessmentOmit
+  reminderPolicy?: Prisma.ReminderPolicyOmit
 }
 
 /* Types for Logging */

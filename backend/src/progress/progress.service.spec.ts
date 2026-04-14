@@ -1,10 +1,8 @@
 ﻿import 'reflect-metadata';
 
-import { BadRequestException } from '@nestjs/common';
 import {
   CompletionTriggerSource,
   HabitLogStatus,
-  HabitTrackingType,
 } from '../domain/enums/domain.enums';
 import { ProgressService } from './progress.service';
 
@@ -45,54 +43,17 @@ describe('ProgressService', () => {
     );
   });
 
-  it('rejects PARTIAL for simple check-in habits when partial completion is disabled', async () => {
-    habitsService.getOwnedHabitOrThrow.mockResolvedValue({
-      id: habitId,
-      trackingType: HabitTrackingType.SIMPLE_CHECKIN,
-      allowPartialCompletion: false,
-    });
-
-    await expect(
-      progressService.createHabitLog(userId, habitId, {
-        status: HabitLogStatus.PARTIAL,
-        completedAt: '2026-03-23T09:00:00.000Z',
-      }),
-    ).rejects.toBeInstanceOf(BadRequestException);
-  });
-
-  it('accepts PARTIAL for simple check-in habits when partial completion is enabled', async () => {
-    habitsService.getOwnedHabitOrThrow.mockResolvedValue({
-      id: habitId,
-      trackingType: HabitTrackingType.SIMPLE_CHECKIN,
-      allowPartialCompletion: true,
-    });
-
-    const result = await progressService.createHabitLog(userId, habitId, {
-      status: HabitLogStatus.PARTIAL,
-      completedAt: '2026-03-23T09:00:00.000Z',
-      triggerSource: CompletionTriggerSource.SELF_INITIATED,
-    });
-
-    expect(result.status).toBe(HabitLogStatus.PARTIAL);
-    expect(result.actualValue).toBeNull();
-    expect(analyticsService.recordActivity).toHaveBeenCalledWith(
-      userId,
-      'habit.logged',
-    );
-  });
-
   it.each([
-    { actualValue: 10, expected: HabitLogStatus.DONE },
-    { actualValue: 6, expected: HabitLogStatus.PARTIAL },
-    { actualValue: 3, expected: HabitLogStatus.NOT_DONE },
+    { actualValue: 10, minimumTarget: 5, expected: HabitLogStatus.DONE },
+    { actualValue: 5, minimumTarget: 5, expected: HabitLogStatus.DONE },
+    { actualValue: 3, minimumTarget: 5, expected: HabitLogStatus.NOT_DONE },
   ])(
-    'derives $expected for quantitative logs',
-    async ({ actualValue, expected }) => {
+    'derives $expected when actualValue=$actualValue and minimumTarget=$minimumTarget',
+    async ({ actualValue, minimumTarget, expected }) => {
       habitsService.getOwnedHabitOrThrow.mockResolvedValue({
         id: habitId,
-        trackingType: HabitTrackingType.QUANTITATIVE,
-        allowPartialCompletion: true,
-        minimumSuccessValue: 5,
+        measurementUnit: 'km',
+        minimumTarget,
         targetValue: 10,
       });
 
@@ -106,11 +67,32 @@ describe('ProgressService', () => {
     },
   );
 
+  it('creates habit log and records analytics event', async () => {
+    habitsService.getOwnedHabitOrThrow.mockResolvedValue({
+      id: habitId,
+      measurementUnit: 'glasses',
+      minimumTarget: 4,
+      targetValue: 8,
+    });
+
+    await progressService.createHabitLog(userId, habitId, {
+      actualValue: 6,
+      completedAt: '2026-03-23T09:00:00.000Z',
+      triggerSource: CompletionTriggerSource.SELF_INITIATED,
+    });
+
+    expect(analyticsService.recordActivity).toHaveBeenCalledWith(
+      userId,
+      'habit_logged',
+    );
+  });
+
   it('builds a progress summary from stored logs', async () => {
     habitsService.getOwnedHabitOrThrow.mockResolvedValue({
       id: habitId,
-      trackingType: HabitTrackingType.SIMPLE_CHECKIN,
-      allowPartialCompletion: true,
+      measurementUnit: 'km',
+      minimumTarget: 3,
+      targetValue: 5,
       scheduleDays: [{ weekday: 'MONDAY' }],
       cues: [{ id: 'cue-1' }],
     });
@@ -122,14 +104,14 @@ describe('ProgressService', () => {
         loggedAt: new Date('2026-03-23T09:05:00.000Z'),
       },
       {
-        status: HabitLogStatus.PARTIAL,
+        status: HabitLogStatus.NOT_DONE,
         triggerSource: CompletionTriggerSource.REMINDER_TRIGGERED,
         completedAt: new Date('2026-03-22T09:00:00.000Z'),
         loggedAt: new Date('2026-03-22T09:05:00.000Z'),
       },
       {
         status: HabitLogStatus.NOT_DONE,
-        triggerSource: null,
+        triggerSource: CompletionTriggerSource.UNKNOWN,
         completedAt: new Date('2026-03-21T09:00:00.000Z'),
         loggedAt: new Date('2026-03-21T09:05:00.000Z'),
       },
@@ -140,14 +122,13 @@ describe('ProgressService', () => {
     expect(summary).toEqual({
       totalLogs: 3,
       doneCount: 1,
-      partialCount: 1,
-      notDoneCount: 1,
+      notDoneCount: 2,
       lastLoggedAt: '2026-03-23T09:05:00.000Z',
       lastCompletedAt: '2026-03-23T09:00:00.000Z',
       completionByTriggerSource: {
         [CompletionTriggerSource.SELF_INITIATED]: 1,
         [CompletionTriggerSource.REMINDER_TRIGGERED]: 1,
-        [CompletionTriggerSource.MANUAL_ENTRY]: 0,
+        [CompletionTriggerSource.UNKNOWN]: 1,
       },
       selfInitiatedCount: 1,
       reminderTriggeredCount: 0,

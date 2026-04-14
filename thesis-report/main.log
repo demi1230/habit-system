@@ -1,10 +1,13 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.1) (preloaded format=xelatex 2026.2.1)  25 MAR 2026 12:40
+This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.1) (preloaded format=xelatex 2026.2.1)  12 APR 2026 16:07
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"c:/Users/Dell 14 5425/UNI/2026spring/thesis/bachelor_report-main/main.tex"
-(c:/Users/Dell 14 5425/UNI/2026spring/thesis/bachelor_report-main/main.tex
+**"c:/Users/Dell 14 5425/UNI/2026spring/thesis/habit-system/thesis-report/main.
+tex"
+
+(c:/Users/Dell 14 5425/UNI/2026spring/thesis/habit-system/thesis-report/main.te
+x
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
 (preamble.tex
@@ -1139,7 +1142,7 @@ Underfull \hbox (badness 2689) in paragraph at lines 14--14
 [2
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 72--72
+Underfull \hbox (badness 10000) in paragraph at lines 68--68
  [][] [][]\TU/TimesNewRoman(0)/m/n/12 Хэрэглээний тохиолдол ба системийн урсгал
 ын нэмэлт 
  []
@@ -1283,9 +1286,9 @@ Underfull \hbox (badness 2005) in paragraph at lines 3--4
  []
 
 
-Underfull \hbox (badness 1365) in paragraph at lines 5--6
-\TU/TimesNewRoman(0)/m/n/12 сэдэл, боломж, өдөөгч гэсэн хүчин зүйлс тухайн мөчи
-д нэгэн зэрэг бүрдсэн байх
+Underfull \hbox (badness 1048) in paragraph at lines 5--6
+\TU/TimesNewRoman(0)/b/n/12 сэдэл, боломж, өдөөгч \TU/TimesNewRoman(0)/m/n/12 г
+эсэн хүчин зүйлс тухайн мөчид нэгэн зэрэг бүрдсэн байх
  []
 
 
@@ -1295,39 +1298,15 @@ Underfull \hbox (badness 7116) in paragraph at lines 7--8
  []
 
 
-Underfull \hbox (badness 6859) in paragraph at lines 7--8
-\TU/TimesNewRoman(0)/m/n/12 гүйцэтгэлийг бүртгэх, тасралтгүй гүйцэтгэлийн цуваа
- болон статистик мэдээлэл
+Underfull \hbox (badness 1655) in paragraph at lines 7--8
+\TU/TimesNewRoman(0)/m/n/12 интерфэйсээс хэт хамааралтай болгох эрсдэлтэйг тэмд
+эглэсэн байдаг [[]]. Иймээс
  []
 
 
-Underfull \hbox (badness 1009) in paragraph at lines 7--8
-\TU/TimesNewRoman(0)/m/n/12 Судалгаагаар сануулга, оноо, урамшуулал зэрэг элеме
-нтүүд нь хэрэглэгчийг давтан
- []
-
-
-Underfull \hbox (badness 1406) in paragraph at lines 7--8
-\TU/TimesNewRoman(0)/m/n/12 үйлдэл хийхэд тодорхой хэмжээнд дэмждэг боловч зари
-м тохиолдолд хэрэглэгчийг
- []
-
-
-Underfull \hbox (badness 1881) in paragraph at lines 7--8
-\TU/TimesNewRoman(0)/m/n/12 системийн мэдэгдэл, интерфэйсээс хэт хамааралтай бо
-лгох эрсдэлтэйг тэмдэглэсэн
- []
-
-
-Underfull \hbox (badness 1824) in paragraph at lines 7--8
-\TU/TimesNewRoman(0)/m/n/12 онолын механизмыг системийн архитектур, системийн з
-охиомж, өгөгдлийн загвар,
- []
-
-
-Underfull \hbox (badness 7504) in paragraph at lines 7--8
-\TU/TimesNewRoman(0)/m/n/12 үндсэн алгоритмын түвшинд уялдуулсан зан үйлд суури
-лсан системийн загвар
+Underfull \hbox (badness 2269) in paragraph at lines 7--8
+\TU/TimesNewRoman(0)/m/n/12 системийн архитектур, системийн зохиомж, өгөгдлийн 
+загвар, үндсэн алгоритмын
  []
 
 [1
@@ -1360,9 +1339,10 @@ Underfull \hbox (badness 3039) in paragraph at lines 9--10
  []
 
 
-Underfull \hbox (badness 1442) in paragraph at lines 11--12
+Underfull \hbox (badness 1092) in paragraph at lines 11--12
 \TU/TimesNewRoman(0)/m/n/12 нь тухайн дадлыг хийх сэдэл, зорилго, хүлээгдэж буй
- өгөөжийг, хариу үйлдэл нь
+ өгөөжийг, \TU/TimesNewRoman(0)/b/n/12 хариу үйлдэл \TU/TimesNewRoman(0)/m/n/12
+ нь
  []
 
 
@@ -1402,21 +1382,15 @@ Underfull \hbox (badness 1107) in paragraph at lines 28--29
  []
 
 [3]
-Underfull \hbox (badness 3815) in paragraph at lines 39--40
-[]\TU/TimesNewRoman(0)/m/n/12 СА-3. Нөхцөл байдалд суурилсан сануулга, төвөгшли
-йг бууруулах дэмжлэг,
+Underfull \hbox (badness 3657) in paragraph at lines 39--40
+[]\TU/TimesNewRoman(0)/b/n/12 СА-3. \TU/TimesNewRoman(0)/m/n/12 Нөхцөл байдалд 
+суурилсан сануулга, төвөгшлийг бууруулах дэмжлэг,
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 39--40
 \TU/TimesNewRoman(0)/m/n/12 эргэцүүлсэн урамшуулал болон автоматжилтын үнэлгээг
  хослуулсан системийн
- []
-
-
-Underfull \hbox (badness 2547) in paragraph at lines 43--44
-[]\TU/TimesNewRoman(0)/m/n/12 Энэхүү судалгааны ажлын шинэлэг тал ба гол хувь н
-эмрийг дараах байдлаар
  []
 
 
@@ -1432,9 +1406,15 @@ Underfull \hbox (badness 1377) in paragraph at lines 47--48
  []
 
 
-Underfull \hbox (badness 3386) in paragraph at lines 47--48
-\TU/TimesNewRoman(0)/m/n/12 цуваа зэргээр бус, SRBAI (Self-Report Behavioral Au
-tomaticity Index)-д суурилсан
+Underfull \hbox (badness 5008) in paragraph at lines 47--48
+\TU/TimesNewRoman(0)/b/n/12 автоматжилтын үндсэн оноо \TU/TimesNewRoman(0)/m/n/
+12 болон \TU/TimesNewRoman(0)/b/n/12 гүйцэтгэлийн тогтвортой байдал, нөхцөл
+ []
+
+
+Underfull \hbox (badness 1983) in paragraph at lines 47--48
+\TU/TimesNewRoman(0)/b/n/12 байдлын тогтвортой байдал, сануулгаас хамааралтай б
+айдал \TU/TimesNewRoman(0)/m/n/12 зэрэг зан үйлийн
  []
 
 [4]
@@ -1505,61 +1485,79 @@ Underfull \hbox (badness 1184) in paragraph at lines 3--4
 лийн судалгаанууд нь нэг
  []
 
+
+Underfull \hbox (badness 1803) in paragraph at lines 7--8
+\TU/TimesNewRoman(0)/m/n/12 эртний туршилтуудаас эхтэй. Павловын сонгодог нөхцө
+лдөлтийн туршилтаар анх
+ []
+
+
+Underfull \hbox (badness 2970) in paragraph at lines 7--8
+\TU/TimesNewRoman(0)/m/n/12 саармаг байсан дохио давталтын үр дүнд автомат хари
+у үйлдэл өдөөж болдгийг
+ []
+
+
+Underfull \hbox (badness 1259) in paragraph at lines 7--8
+\TU/TimesNewRoman(0)/m/n/12 харуулсан [[]]. Харин Скиннерийн оперант нөхцөлдөлт
+ийн судалгаагаар эерэг үр
+ []
+
 [7
 
 
 
 
 ]
-Underfull \hbox (badness 1867) in paragraph at lines 15--16
+Underfull \hbox (badness 1867) in paragraph at lines 17--18
 []\TU/TimesNewRoman(0)/m/n/12 Дадлын хүчийг судалгаанд ихэвчлэн тухайн зан үйл 
 хэр зэрэг автоматжсан бэ
  []
 
-
-Underfull \hbox (badness 1210) in paragraph at lines 23--24
+[8]
+Underfull \hbox (badness 1210) in paragraph at lines 25--26
 \TU/TimesNewRoman(0)/m/n/12 төлөвшлийн мөчлөг юм. Duhigg уг загварыг өдөөгч дох
 ио – үйлдлийн хэвшил –
  []
 
 
-Underfull \hbox (badness 1264) in paragraph at lines 23--24
+Underfull \hbox (badness 1264) in paragraph at lines 25--26
 \TU/TimesNewRoman(0)/m/n/12 урамшууллын мэдрэмж нь тухайн зан үйлийг бататган, 
 улмаар давталтын үр дүнд
  []
 
-[8]
-Underfull \hbox (badness 2903) in paragraph at lines 33--34
+[9]
+Underfull \hbox (badness 2903) in paragraph at lines 35--36
 \TU/TimesNewRoman(0)/m/n/12 тухайн дадлыг дотоод автомат зан үйл болгон төлөвшү
 үлэхийн оронд системийн
  []
 
-[9]
-Underfull \hbox (badness 1102) in paragraph at lines 35--36
+
+Underfull \hbox (badness 1102) in paragraph at lines 37--38
 []\TU/TimesNewRoman(0)/m/n/12 Stawarz, Cox, Blandford нарын судалгаанд шинэ дад
 лыг төлөвшүүлэхдээ жижиг,
  []
 
-
-Underfull \hbox (badness 1430) in paragraph at lines 47--48
+[10]
+Underfull \hbox (badness 1430) in paragraph at lines 49--50
 []\TU/TimesNewRoman(0)/m/n/12 Сүүлийн жилүүдэд энэ чиглэл яг цаг тухайд нь даса
 н зохицсон оролцоо гэсэн
  []
 
-[10]
-Underfull \hbox (badness 1077) in paragraph at lines 51--52
+
+Underfull \hbox (badness 1077) in paragraph at lines 53--54
 \TU/TimesNewRoman(0)/m/n/12 өөрийгөө хянах, урамшуулал, нөхцөл байдалд нийцсэн 
 дэмжлэг зэрэг механизмууд
  []
 
 
-Underfull \hbox (badness 2027) in paragraph at lines 55--56
+Underfull \hbox (badness 2027) in paragraph at lines 57--58
 \TU/TimesNewRoman(0)/m/n/12 хангамжийн системийн архитектур, өгөгдлийн загвар, 
 системийн зохиомж, үндсэн
  []
 
 
-Underfull \hbox (badness 3118) in paragraph at lines 55--56
+Underfull \hbox (badness 3118) in paragraph at lines 57--58
 \TU/TimesNewRoman(0)/m/n/12 гэсэн үе шатуудыг уялдуулан дэмжихийн зэрэгцээ дадл
 ын хүчийг автоматжилтад
  []
@@ -1579,25 +1577,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 1--2
  []
 
 
-Underfull \hbox (badness 2376) in paragraph at lines 3--4
-\TU/TimesNewRoman(0)/m/n/12 хязгаарлалтыг судлагдсан байдлын хүрээнд авч үзсэн.
- Харин энэ бүлэгт тухайн
- []
-
-
-Underfull \hbox (badness 1895) in paragraph at lines 5--6
-[]\TU/TimesNewRoman(0)/m/n/12 Уг судалгаанд онолын тулгуур болгон дадал төлөвшл
-ийн мөчлөг, Фоггийн зан
- []
-
-
-Underfull \hbox (badness 1817) in paragraph at lines 9--10
+Underfull \hbox (badness 1817) in paragraph at lines 7--8
 \TU/TimesNewRoman(0)/m/n/12 бууруулах шийдэл, дасан зохицох дэмжлэгийг онолын т
 үвшинд зөвтгөнө. Харин
  []
 
 
-Underfull \hbox (badness 1394) in paragraph at lines 9--10
+Underfull \hbox (badness 1394) in paragraph at lines 7--8
 \TU/TimesNewRoman(0)/m/n/12 итгүүлэн нөлөөлөх системийн зохиомжийн зарчим нь хэ
 рэглэгчийг албадахгүйгээр,
  []
@@ -1608,74 +1594,123 @@ Underfull \hbox (badness 1394) in paragraph at lines 9--10
 
 
 ]
-Underfull \hbox (badness 1127) in paragraph at lines 13--14
-[]\TU/TimesNewRoman(0)/m/n/12 Энэ судалгаанд дадал төлөвшлийн мөчлөгийг системи
-йн үндсэн концепц загвар
- []
-
 LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/sl' in size <12> not avai
 lable
 (Font)              Font shape `TU/TimesNewRoman(0)/m/it' tried instead on inpu
-t line 15.
+t line 13.
 LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/b/sl' in size <12> not avai
 lable
 (Font)              Font shape `TU/TimesNewRoman(0)/b/it' tried instead on inpu
-t line 15.
-[14]
-Underfull \hbox (badness 10000) in paragraph at lines 29--30
+t line 13.
+
+Underfull \hbox (badness 2961) in paragraph at lines 19--20
+[]\TU/TimesNewRoman(0)/m/n/12 Хүсэл тэмүүллийн давхарга нь хэрэглэгч тухайн зан
+ үйлийг яагаад хийх гэж
+ []
+
+
+Underfull \hbox (badness 1173) in paragraph at lines 23--24
+\TU/TimesNewRoman(0)/m/n/12 аль болох энгийн, ойлгомжтой, бага төвөгшилтэй байл
+гах явдал юм. Иймээс нэг
+ []
+
+
+Underfull \hbox (badness 6396) in paragraph at lines 23--24
+\TU/TimesNewRoman(0)/m/n/12 товшилтоор бүртгэх, дадлыг жижиг алхмуудад хуваах, 
+minimum target тогтоох,
+ []
+
+
+Underfull \hbox (badness 2932) in paragraph at lines 23--24
+\TU/TimesNewRoman(0)/m/n/12 шаардлагатай үед бодит гүйцэтгэлийн утгыг хурдан ор
+уулах зэрэг шийдлүүд энэ
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 26--27
 []\TU/TimesNewRoman(0)/m/n/12 Урамшууллын давхарга нь зан үйлийн дараах бататга
 л, ахицын мэдрэмж,
  []
 
 
-Underfull \hbox (badness 1057) in paragraph at lines 29--30
-\TU/TimesNewRoman(0)/m/n/12 хугацааны урамшуулал, ахицын өөрчлөлтийн дүрслэл, э
-ргэцүүлсэн санал сэтгэгдэл,
+Underfull \hbox (badness 2753) in paragraph at lines 26--27
+\TU/TimesNewRoman(0)/m/n/12 үргэлжлүүлэх шалтгааныг бэхжүүлэхэд чиглэнэ. Энэ тү
+вшинд систем нь зөвхөн
  []
 
-
-Underfull \hbox (badness 1603) in paragraph at lines 33--34
+[14]
+Underfull \hbox (badness 1603) in paragraph at lines 30--31
 \TU/TimesNewRoman(0)/m/n/12 байх, үйлдэл хийх боломж бүрдсэн байх, мөн зөв цагт
  өдөөгч дохио ирсэн байх
  []
 
 
-Underfull \hbox (badness 1796) in paragraph at lines 35--36
+Underfull \hbox (badness 1796) in paragraph at lines 32--33
 []\TU/TimesNewRoman(0)/m/n/12 Энэ логикийг системийн түвшинд дараах байдлаар ту
 сгаж байна. Нэгдүгээрт,
  []
 
 
-Underfull \hbox (badness 2903) in paragraph at lines 35--36
-\TU/TimesNewRoman(0)/m/n/12 боломжийг нэмэгдүүлнэ. Гуравдугаарт, мэдэгдлийг тог
-тмол нэг цагт бус, харин
+Underfull \hbox (badness 1383) in paragraph at lines 32--33
+\TU/TimesNewRoman(0)/m/n/12 өндөр байвал гүйцэтгэлийг жижигрүүлэх, нэг товшилто
+ор хариу өгөх, хэсэгчилсэн
  []
 
 
-Underfull \hbox (badness 1400) in paragraph at lines 39--40
+Underfull \hbox (badness 3557) in paragraph at lines 32--33
+\TU/TimesNewRoman(0)/m/n/12 гүйцэтгэл зөвшөөрөх зэргээр боломжийг нэмэгдүүлнэ. 
+Гуравдугаарт, мэдэгдлийг
+ []
+
+
+Underfull \hbox (badness 1400) in paragraph at lines 36--37
 \TU/TimesNewRoman(0)/m/n/12 өгөх зохиомжийн зарчмыг тодорхойлоход ашиглагдана. 
 Энэ хүрээнд хэрэглэгчийн
  []
 
-[15] [16]
-Underfull \hbox (badness 4752) in paragraph at lines 77--78
-[]$\OML/cmm/m/it/12 ContextStability[]$ \TU/TimesNewRoman(0)/m/n/12 нь ижил цаг
-ийн хүрээ, өдрийн төрөл, өдөөгч нөхцөлд
+[15]
+Underfull \hbox (badness 1533) in paragraph at lines 40--41
+\TU/TimesNewRoman(0)/m/n/12 гүйцэтгэлийн хувиар бус, харин тухайн зан үйл хэр з
+эрэг автоматжсан бэ гэдгээр
  []
 
-
-Underfull \hbox (badness 6364) in paragraph at lines 80--81
+[16]
+Underfull \hbox (badness 6364) in paragraph at lines 77--78
 []\TU/TimesNewRoman(0)/m/n/12 Энэ томьёо нь судалгаанд тогтсон стандарт томьёо 
 биш, харин судалгааны
  []
 
 
-Underfull \hbox (badness 2229) in paragraph at lines 82--83
+Underfull \hbox (badness 2229) in paragraph at lines 79--80
 \TU/TimesNewRoman(0)/m/n/12 дадлын хувьд “өгөгдсөн өдөөгч дохион дээр эхэлсэн э
 сэх” үзүүлэлтийг тусгайлан
  []
 
-) [17]
+
+Underfull \hbox (badness 3179) in paragraph at lines 85--86
+\TU/TimesNewRoman(0)/m/n/12 тэмүүллийг идэвхжүүлнэ. Гуравдугаарт, гүйцэтгэлийг 
+аль болох хялбар болгож,
+ []
+
+
+Underfull \hbox (badness 3019) in paragraph at lines 85--86
+\TU/TimesNewRoman(0)/m/n/12 төвөгшлийг бууруулснаар хариу үйлдлийг дэмжинэ. Дөр
+өвдүгээрт, гүйцэтгэлийн
+ []
+
+
+Underfull \hbox (badness 1082) in paragraph at lines 85--86
+\TU/TimesNewRoman(0)/m/n/12 дараа шууд болон эргэцүүлсэн урамшуулал өгч зан үйл
+ийг бататгана. Тавдугаарт,
+ []
+
+[17])
+Underfull \hbox (badness 4341) in paragraph at lines 89--18
+[]\TU/TimesNewRoman(0)/m/n/12 Дадал төлөвшлийн мөчлөгийг системийн үндсэн логик
+, Фоггийн зан үйлийн
+ []
+
+[18]
 \openout2 = `chapter4_system_design.aux'.
 
  (chapter4_system_design.tex
@@ -1707,82 +1742,52 @@ Underfull \hbox (badness 1275) in paragraph at lines 3--4
  []
 
 
-Underfull \hbox (badness 1320) in paragraph at lines 5--6
-[]\TU/TimesNewRoman(0)/m/n/12 Судалгааны хүрээнд боловсруулж буй систем нь энги
-йн дадал хянах системээс
- []
-
-
-Underfull \hbox (badness 1348) in paragraph at lines 5--6
-\TU/TimesNewRoman(0)/m/n/12 ялгаатай. Уг систем нь хэрэглэгчийн дадал төлөвших 
-үйл явцыг нөхцөл байдалд
- []
-
-
-Underfull \hbox (badness 3343) in paragraph at lines 5--6
-\TU/TimesNewRoman(0)/m/n/12 эргэцүүлсэн санал сэтгэгдэл, мөн өгөгдөлд тулгуурла
-сан дасан зохицох логикоор
- []
-
-
-Underfull \hbox (badness 3514) in paragraph at lines 5--6
-\TU/TimesNewRoman(0)/m/n/12 хадгалах суурь шаардлагыг тодорхойлохоос гадна сану
-улгаас хэт хараат байдлыг
- []
-
-
-Underfull \hbox (badness 3803) in paragraph at lines 5--6
-\TU/TimesNewRoman(0)/m/n/12 нийцсэн сануулгын логик хэрэгжүүлэх, дадлын хүчийг 
-үнэлэх зэрэг зан үйлийн
- []
-
-[18
-
-
-
-
-]
-Underfull \hbox (badness 2088) in paragraph at lines 13--14
+Underfull \hbox (badness 2088) in paragraph at lines 11--12
 \TU/TimesNewRoman(0)/m/n/12 хэрэглэгчид суралцах дадал, цагийн менежмент, хувий
 н зохион байгуулалт, эрүүл
  []
 
 
-Underfull \hbox (badness 1661) in paragraph at lines 13--14
+Underfull \hbox (badness 1661) in paragraph at lines 11--12
 \TU/TimesNewRoman(0)/m/n/12 амьдралын энгийн хэвшил зэрэг өдөр тутмын зан үйлий
 г тогтмолжуулах хэрэгцээ
  []
 
+[19
 
-Underfull \hbox (badness 1577) in paragraph at lines 27--27
+
+
+
+]
+Underfull \hbox (badness 1577) in paragraph at lines 25--25
 []|\TU/TimesNewRoman(0)/m/n/10.95 Цаг, ажил, өдөр тутмын 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--38
+Underfull \hbox (badness 10000) in paragraph at lines 35--36
 \TU/TimesNewRoman(0)/m/n/12 өгөгдлийн загвар, сануулгын логик, санал сэтгэгдлий
 н бүтэц зэрэг дараагийн
  []
 
-[19]
-Underfull \hbox (badness 10000) in paragraph at lines 61--62
+[20]
+Underfull \hbox (badness 10000) in paragraph at lines 59--60
 []\TU/TimesNewRoman(0)/m/n/12 Системийн хамрах хүрээг тодорхойлох нь судалгааны
  ажлын хүрээнд ямар
  []
 
 
-Underfull \hbox (badness 5231) in paragraph at lines 61--62
+Underfull \hbox (badness 5231) in paragraph at lines 59--60
 \TU/TimesNewRoman(0)/m/n/12 боломжуудыг хэрэгжүүлэх, мөн ямар боломжуудыг зориу
 д хамруулахгүй байхыг
  []
 
 
-Underfull \hbox (badness 1005) in paragraph at lines 61--62
+Underfull \hbox (badness 1005) in paragraph at lines 59--60
 \TU/TimesNewRoman(0)/m/n/12 хэрэглээ, туршилтын загварын түвшний хэрэгжих болом
 ж, зан үйлийн дэмжлэгийн
  []
 
-[20]
+[21]
 Underfull \hbox (badness 3557) in paragraph at lines 78--79
 []\TU/TimesNewRoman(0)/m/n/12 Тасралтгүй гүйцэтгэлийн цуваа, урамшуулал, дадлын
  хүчний оноо, ахицын
@@ -1800,252 +1805,369 @@ Underfull \hbox (badness 2582) in paragraph at lines 90--91
 гуурласан зан үйлийн
  []
 
-[21]
-Underfull \hbox (badness 4429) in paragraph at lines 103--104
-\TU/TimesNewRoman(0)/m/n/12 агуулсан байхыг тодорхойлно. Энэ ажлын хүрээнд шаар
-длагуудыг гол домайн
- []
-
-
-Underfull \hbox (badness 4084) in paragraph at lines 103--104
-\TU/TimesNewRoman(0)/m/n/12 урсгалуудаар нь нэгтгэн авч үзсэн бөгөөд дэлгэрэнгү
-й жагсаалт, баталгаажуулах
- []
-
 [22]
-Underfull \hbox (badness 2707) in paragraph at lines 131--132
-[]\TU/TimesNewRoman(0)/m/n/12 Уг системийн онцлог нь дадлын хүчийг зөвхөн гүйцэ
-тгэлийн тоо, тасралтгүй
+Underfull \hbox (badness 1616) in paragraph at lines 103--104
+\TU/TimesNewRoman(0)/m/n/12 агуулсан байхыг тодорхойлно. Уг судалгаанд эдгээр ш
+аардлагыг бүртгэл, дадлын
  []
 
 
-Underfull \hbox (badness 1097) in paragraph at lines 131--132
-\TU/TimesNewRoman(0)/m/n/12 гүйцэтгэлийн цуваа, эсвэл өндөр гүйцэтгэлийн хувиар
- үнэлэхгүйд оршино. Харин
+Underfull \hbox (badness 10000) in alignment at lines 105--109
+[] [] [] []
  []
 
 
-Underfull \hbox (badness 3884) in paragraph at lines 131--132
-\TU/TimesNewRoman(0)/m/n/12 байдал, өдөөгч дохио–хариу үйлдлийн тогтмол байдал 
-зэрэг зан үйлийн прокси
+Underfull \hbox (badness 1142) in paragraph at lines 116--116
+[]|\TU/TimesNewRoman(0)/m/n/12 Систем нь дадал бүрт 
  []
 
 
-Underfull \hbox (badness 1102) in paragraph at lines 131--132
-\TU/TimesNewRoman(0)/m/n/12 үзүүлэлтүүдтэй нэгтгэн үнэлнэ. Энэхүү үнэлгээ нь ах
-ицын шинжилгээ, сануулгыг
+Underfull \hbox (badness 1142) in paragraph at lines 118--118
+[]|\TU/TimesNewRoman(0)/m/n/12 Систем нь дадал бүрт 
+ []
+
+
+Underfull \hbox (badness 1087) in paragraph at lines 118--119
+[]|\TU/TimesNewRoman(0)/m/n/12 Оруулсан 
+ []
+
+
+Underfull \hbox (badness 1033) in paragraph at lines 126--127
+\TU/TimesNewRoman(0)/m/n/12 шийдвэрт 
+ []
+
+
+Underfull \hbox (badness 2608) in paragraph at lines 132--132
+[]|\TU/TimesNewRoman(0)/m/n/12 Систем нь дадлын 
+ []
+
+
+Underfull \hbox (badness 1281) in paragraph at lines 132--132
+\TU/TimesNewRoman(0)/m/n/12 бүртгэсэн хугацаа, эх 
+ []
+
+
+Underfull \hbox (badness 1394) in paragraph at lines 144--144
+[]|\TU/TimesNewRoman(0)/m/n/12 Систем нь дараалсан 
+ []
+
+
+Underfull \hbox (badness 2334) in paragraph at lines 144--144
+\TU/TimesNewRoman(0)/m/n/12 амжилттай өдрийн 
+ []
+
+
+Underfull \hbox (badness 1087) in paragraph at lines 146--146
+[]|\TU/TimesNewRoman(0)/m/n/12 Систем нь амжилттай 
+ []
+
+
+Underfull \hbox (badness 2707) in paragraph at lines 146--147
+[]|\TU/TimesNewRoman(0)/m/n/12 Бодит 
+ []
+
+
+Overfull \hbox (12.1064pt too wide) in paragraph at lines 150--150
+[]|\TU/TimesNewRoman(0)/m/n/12 Автоматжилтын 
+ []
+
+
+Underfull \hbox (badness 1019) in paragraph at lines 150--150
+[]|\TU/TimesNewRoman(0)/m/n/12 Систем нь зан үйлийн 
+ []
+
+
+Underfull \hbox (badness 1038) in paragraph at lines 152--152
+\TU/TimesNewRoman(0)/m/n/12 прокси үзүүлэлтүүдэд 
+ []
+
+
+Underfull \hbox (badness 1163) in paragraph at lines 152--153
+\TU/TimesNewRoman(0)/m/n/12 оролцсон 
+ []
+
+
+Underfull \hbox (badness 1558) in paragraph at lines 156--156
+\TU/TimesNewRoman(0)/m/n/12 хүчний өөрчлөлтийг 
+ []
+
+
+Overfull \hbox (9.00679pt too wide) in paragraph at lines 160--160
+[]|\TU/TimesNewRoman(0)/m/n/12 Шинжилгээний 
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 109--162
+[] [] [] []
  []
 
 [23]
-Underfull \hbox (badness 1910) in paragraph at lines 153--154
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Нууц үг хамгаалалттай хадгалагдах, зөвхөн 
+chapter4_system_design.tex:162: ignored: Infinite glue shrinkage found in box b
+eing split [24]
+chapter4_system_design.tex:162: ignored: Infinite glue shrinkage found in box b
+eing split [25]
+chapter4_system_design.tex:162: ignored: Infinite glue shrinkage found in box b
+eing split [26]
+chapter4_system_design.tex:162: ignored: Infinite glue shrinkage found in box b
+eing split [27]
+chapter4_system_design.tex:162: ignored: Infinite glue shrinkage found in box b
+eing split [28]
+chapter4_system_design.tex:162: ignored: Infinite glue shrinkage found in box b
+eing split [29]
+chapter4_system_design.tex:162: ignored: Infinite glue shrinkage found in box b
+eing split [30]
+Underfull \hbox (badness 1635) in paragraph at lines 174--174
+[]|\TU/TimesNewRoman(0)/b/n/12 Функциональ бус 
  []
 
-[24]
-Underfull \hbox (badness 1168) in paragraph at lines 167--168
+
+Underfull \hbox (badness 10000) in alignment at lines 172--176
+[] [] [] []
+ []
+
+
+Overfull \hbox (1.17445pt too wide) in paragraph at lines 177--177
+[]|\TU/TimesNewRoman(0)/m/n/12 ФБШ- 
+ []
+
+
+Underfull \hbox (badness 1072) in paragraph at lines 177--177
+[]|\TU/TimesNewRoman(0)/m/n/12 Үндсэн хэрэглээний 
+ []
+
+
+Overfull \hbox (1.17445pt too wide) in paragraph at lines 179--179
+[]|\TU/TimesNewRoman(0)/m/n/12 ФБШ- 
+ []
+
+
+Overfull \hbox (1.17445pt too wide) in paragraph at lines 181--181
+[]|\TU/TimesNewRoman(0)/m/n/12 ФБШ- 
+ []
+
+
+Underfull \hbox (badness 1609) in paragraph at lines 181--181
+\TU/TimesNewRoman(0)/m/n/12 сануулгын үйлдэл, 
+ []
+
+
+Overfull \hbox (1.17445pt too wide) in paragraph at lines 183--183
+[]|\TU/TimesNewRoman(0)/m/n/12 ФБШ- 
+ []
+
+
+Overfull \hbox (1.17445pt too wide) in paragraph at lines 185--185
+[]|\TU/TimesNewRoman(0)/m/n/12 ФБШ- 
+ []
+
+
+Overfull \hbox (1.17445pt too wide) in paragraph at lines 187--187
+[]|\TU/TimesNewRoman(0)/m/n/12 ФБШ- 
+ []
+
+
+Overfull \hbox (1.17445pt too wide) in paragraph at lines 189--189
+[]|\TU/TimesNewRoman(0)/m/n/12 ФБШ- 
+ []
+
+
+Underfull \hbox (badness 1024) in paragraph at lines 189--189
+[]|\TU/TimesNewRoman(0)/m/n/12 Системийн бүтэц нь 
+ []
+
+
+Overfull \hbox (1.17445pt too wide) in paragraph at lines 191--191
+[]|\TU/TimesNewRoman(0)/m/n/12 ФБШ- 
+ []
+
+
+Overfull \hbox (1.17445pt too wide) in paragraph at lines 193--193
+[]|\TU/TimesNewRoman(0)/m/n/12 ФБШ- 
+ []
+
+
+Overfull \hbox (1.17445pt too wide) in paragraph at lines 195--195
+[]|\TU/TimesNewRoman(0)/m/n/12 ФБШ- 
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 176--197
+[] [] [] []
+ []
+
+[31]
+chapter4_system_design.tex:197: ignored: Infinite glue shrinkage found in box b
+eing split [32]
+chapter4_system_design.tex:197: ignored: Infinite glue shrinkage found in box b
+eing split [33]
+Underfull \hbox (badness 1067) in paragraph at lines 199--200
+\TU/TimesNewRoman(0)/m/n/12 хялбар байдал, төвөгшил багатай харилцан үйлчлэл, н
+ууцлалыг хамгаалсан нөхцөл
+ []
+
+
+Underfull \hbox (badness 1168) in paragraph at lines 203--204
 \TU/TimesNewRoman(0)/m/n/12 логикоор хэрэгжих тул хэрэглээний тохиолдлын диагра
 ммд тусдаа гадаад оролцогч
  []
 
+
+Underfull \hbox (badness 1748) in paragraph at lines 229--230
+[]|\TU/TimesNewRoman(0)/m/n/10.95 Гүйцэтгэлийн түүх, цуваа, оноо, 
+ []
+
+[34]
 File: images/GeneralUseCaseDiagram.png Graphic file (type bmp)
 <images/GeneralUseCaseDiagram.png>
-[25]
-Underfull \hbox (badness 1325) in paragraph at lines 185--186
+ [35]
+Underfull \hbox (badness 1325) in paragraph at lines 251--252
 \TU/TimesNewRoman(0)/m/n/12 оффлайн дэмжлэгийг хэрэгжүүлэх боломж бүрдүүлнэ. Се
 рвер тал нь NestJS дээр
  []
 
-
-Underfull \hbox (badness 1237) in paragraph at lines 187--188
+[36]
+Underfull \hbox (badness 1237) in paragraph at lines 253--254
 []\TU/TimesNewRoman(0)/m/n/12 Системийн ерөнхий архитектурын давхаргат зохион б
 айгуулалтыг дараах зурагт
  []
 
 File: images/CleanArchitectureDiagram.png Graphic file (type bmp)
 <images/CleanArchitectureDiagram.png>
-[26]
-Underfull \hbox (badness 1009) in paragraph at lines 205--205
+
+Underfull \hbox (badness 1009) in paragraph at lines 271--271
 []|\TU/TimesNewRoman(0)/m/n/10.95 Хэрэглэгчийн 
  []
 
 
-Underfull \hbox (badness 1584) in paragraph at lines 251--252
+Underfull \hbox (badness 1584) in paragraph at lines 317--318
 \TU/TimesNewRoman(0)/m/n/12 гүйцэтгэлийн түүх, сануулгад өгсөн үйлдлийн түүх, с
 ануулгыг аажмаар бууруулах
  []
 
 
-Underfull \hbox (badness 1152) in paragraph at lines 251--252
+Underfull \hbox (badness 1152) in paragraph at lines 317--318
 \TU/TimesNewRoman(0)/m/n/12 Харин дадлын хүчний модуль нь автоматжилтын үнэлгээ
 , гүйцэтгэлийн тогтвортой
  []
 
-[27] [28]
-Underfull \hbox (badness 7558) in paragraph at lines 255--256
+[37]
+Underfull \hbox (badness 7558) in paragraph at lines 321--322
 []\TU/TimesNewRoman(0)/m/n/12 Архитектурын нэг чухал онцлог нь мэдэгдэл хүргэх 
 логикийг хэрэглэгчийн
  []
 
 
-Underfull \hbox (badness 1281) in paragraph at lines 255--256
+Underfull \hbox (badness 1281) in paragraph at lines 321--322
 \TU/TimesNewRoman(0)/m/n/12 сануулга илгээх шаардлагатай гэж үзсэн тохиолдолд м
 эдэгдэл хүргэх бүрэлдэхүүнд
  []
 
-
-Underfull \hbox (badness 1072) in paragraph at lines 319--320
-\TU/TimesNewRoman(0)/m/n/12 Гүйцэтгэлийн бүртгэл бүр нь хэцүү байдлын үнэлгээ, 
-эргэцүүлсэн санал сэтгэгдэл,
+[38] [39]
+Underfull \hbox (badness 1242) in paragraph at lines 385--386
+[]\TU/TimesNewRoman(0)/m/n/12 Өгөгдөлийн хамаарлын бүтэцэд дадал нь төв нэгж бо
+лно. Нэг хэрэглэгч олон
  []
 
-
-Underfull \hbox (badness 1184) in paragraph at lines 319--320
-\TU/TimesNewRoman(0)/m/n/12 дадлын хүчний оноо нь хугацааны явцад олон удаа бүр
-тгэгдэх тул тухайн дадлын
- []
-
-[29] [30]
-Underfull \hbox (badness 1939) in paragraph at lines 323--324
-[]\TU/TimesNewRoman(0)/m/n/12 Энэхүү хэсэгт зан үйлд суурилсан дадал төлөвшүүлэ
-х системийн хэрэглэгчийн
- []
-
-
-Underfull \hbox (badness 5203) in paragraph at lines 323--324
-\TU/TimesNewRoman(0)/m/n/12 интерфэйс болон хэрэглээний туршлагын зохиомжийг то
-дорхойлно. Системийн
- []
-
-
-Underfull \hbox (badness 1077) in paragraph at lines 323--324
-\TU/TimesNewRoman(0)/m/n/12 зорилго нь зөвхөн гүйцэтгэл бүртгэх бус, харин хэрэ
-глэгчийн дадал төлөвших үйл
- []
-
-
-Underfull \hbox (badness 1509) in paragraph at lines 323--324
-\TU/TimesNewRoman(0)/m/n/12 ахицын ойлгомжтой дүрслэлээр дамжуулан дэмжихэд орш
-ино. Иймээс интерфэйс
- []
-
-
-Underfull \hbox (badness 4378) in paragraph at lines 323--324
-\TU/TimesNewRoman(0)/m/n/12 нь ойлгомжтой, цэвэр, цөөн алхамтай, хэрэглэгчид да
-рамт учруулахгүй байхаар
- []
-
-[31]
-Underfull \hbox (badness 1348) in paragraph at lines 331--332
-[]\TU/TimesNewRoman(0)/m/n/12 Системийн үндсэн урсгалд бүртгүүлэх ба нэвтрэх, д
-адал үүсгэх ба тохируулах,
- []
-
-[32]
-Underfull \hbox (badness 1603) in paragraph at lines 353--354
+[40] [41]
+Underfull \hbox (badness 1603) in paragraph at lines 401--402
 \TU/TimesNewRoman(0)/m/n/12 нийцсэн байдлаар зохион байгуулагдсан. Өөрөөр хэлбэ
 л, систем нь хэрэглэгчийн
  []
 
 
-Underfull \hbox (badness 3108) in paragraph at lines 353--354
+Underfull \hbox (badness 3108) in paragraph at lines 401--402
 \TU/TimesNewRoman(0)/m/n/12 зан үйлийг зөвхөн бүртгэх бус, харин эхлүүлэх, хэрэ
 гжүүлэх, бататгах, аажмаар
  []
 
 
-Underfull \hbox (badness 3354) in paragraph at lines 357--358
+Underfull \hbox (badness 3354) in paragraph at lines 405--406
 []\TU/TimesNewRoman(0)/m/n/12 Системийн ажиллагааны үндсэн урсгал дараах байдал
 тай байна. Нэгдүгээрт,
  []
 
 
-Underfull \hbox (badness 3701) in paragraph at lines 357--358
+Underfull \hbox (badness 3701) in paragraph at lines 405--406
 \TU/TimesNewRoman(0)/m/n/12 хэрэглэгч шинэ дадал үүсгэж, түүнд хамаарах зорилго
 , өдөөгч нөхцөл, хуваарь,
  []
 
 
-Underfull \hbox (badness 1259) in paragraph at lines 357--358
+Underfull \hbox (badness 1259) in paragraph at lines 405--406
 \TU/TimesNewRoman(0)/m/n/12 хүргэх модуль рүү дамжуулна. Дөрөвдүгээрт, хэрэглэг
 ч сануулгад үйлдэл сонгож,
  []
 
 
-Underfull \hbox (badness 4060) in paragraph at lines 357--358
+Underfull \hbox (badness 4060) in paragraph at lines 405--406
 \TU/TimesNewRoman(0)/m/n/12 эсвэл өөрийн санаачилгаар гүйцэтгэл бүртгэнэ. Тавду
 гаарт, гүйцэтгэлийн дараа
  []
 
-[33]
+[42]
 File: images/ActivityDiagram1.png Graphic file (type bmp)
 <images/ActivityDiagram1.png>
 
-Underfull \hbox (badness 1424) in paragraph at lines 392--393
+Underfull \hbox (badness 1424) in paragraph at lines 440--441
 []\TU/TimesNewRoman(0)/m/n/12 Энэхүү уялдаа нь онолын загвар системийн функц, ө
 гөгдлийн бүтэц, харилцан
  []
 
-
-Underfull \hbox (badness 2050) in paragraph at lines 398--399
+[43]
+Underfull \hbox (badness 2050) in paragraph at lines 446--447
 []\TU/TimesNewRoman(0)/m/n/12 Хэрэв хэрэглэгч сануулгад үйлдэл сонгосны дараа б
 огино хугацаанд гүйцэтгэл
  []
 
-[34]
-Underfull \hbox (badness 5064) in paragraph at lines 422--423
+[44]
+Underfull \hbox (badness 5064) in paragraph at lines 470--471
 []\TU/TimesNewRoman(0)/m/n/12 Өөрийн санаачилгатай бүртгэл, сануулгад хариулах 
 урсгал, мөн гүйцэтгэлээс
  []
 
 
-Underfull \hbox (badness 4634) in paragraph at lines 426--427
+Underfull \hbox (badness 4634) in paragraph at lines 474--475
 []\TU/TimesNewRoman(0)/m/n/12 Систем нь хэрэглэгчийг үргэлж ижил түвшний сануул
 гаар өдөөх бус, дадал
  []
 
 
-Underfull \hbox (badness 4316) in paragraph at lines 426--427
+Underfull \hbox (badness 4316) in paragraph at lines 474--475
 \TU/TimesNewRoman(0)/m/n/12 тогтворжихын хэрээр сануулгын давтамжийг аажмаар бу
 уруулах логиктой байна.
  []
 
-[35]
-Underfull \hbox (badness 10000) in paragraph at lines 432--433
+[45]
+Underfull \hbox (badness 10000) in paragraph at lines 480--481
 \TU/TimesNewRoman(0)/m/n/12 амжилттай гүйцэтгэж чадах боломжит нөхцөлийг бүрдүү
 лэхэд оршиж байгааг
  []
 
-[36] [37] [38]
-Underfull \hbox (badness 3219) in paragraph at lines 483--484
+[46] [47] [48]
+Underfull \hbox (badness 3219) in paragraph at lines 546--547
 \TU/TimesNewRoman(0)/m/n/12 зэрэг доод түвшний мэдээлэлд тогтвортой хандах боло
 мжгүй. Хоёрдугаарт, вэб
  []
 
 
-Underfull \hbox (badness 1629) in paragraph at lines 483--484
+Underfull \hbox (badness 1629) in paragraph at lines 546--547
 \TU/TimesNewRoman(0)/m/n/12 байнгын хяналт хийхгүй. Дөрөвдүгээрт, сануулгын ший
 двэрийн логик нь дүрэмт
  []
 
 
-Underfull \hbox (badness 1067) in paragraph at lines 489--490
+Underfull \hbox (badness 1067) in paragraph at lines 552--553
 \TU/TimesNewRoman(0)/m/n/12 урамшуулал, автоматжилт зэрэг зан үйлийн үндсэн ойл
 голтуудыг сануулгын логик,
  []
 
 
-Underfull \hbox (badness 1960) in paragraph at lines 489--490
-\TU/TimesNewRoman(0)/m/n/12 сэдлийн профайл, гүйцэтгэлийн бүртгэл, санал сэтгэг
-дэл, урамшууллын механизм,
- []
-
-
-Underfull \hbox (badness 1742) in paragraph at lines 491--492
+Underfull \hbox (badness 1742) in paragraph at lines 554--555
 \TU/TimesNewRoman(0)/m/n/12 байна. Иймээс энэхүү бүлэг нь дараагийн хэрэгжүүлэл
 т, интерфэйсийн зохиомж,
  []
 
-[39]) [40]
+[49]) [50]
 \openout2 = `chapter5_evaluation.aux'.
 
  (chapter5_evaluation.tex
@@ -2060,89 +2182,53 @@ Underfull \hbox (badness 10000) in paragraph at lines 1--2
  []
 
 
-Underfull \hbox (badness 1033) in paragraph at lines 5--6
-\TU/TimesNewRoman(0)/m/n/12 энэ бүлгийн үнэлгээ нь системийн эцсийн үр нөлөөг б
-үхэлд нь нотлох зорилготой
- []
-
-
-Underfull \hbox (badness 1147) in paragraph at lines 9--10
-[]\TU/TimesNewRoman(0)/m/n/12 Энэхүү ажилд холимог арга зүйт, нэг бүлэгт суурил
-сан pilot туршилтын загвар
- []
-
-
-Underfull \hbox (badness 1371) in paragraph at lines 9--10
-\TU/TimesNewRoman(0)/m/n/12 үнэлнэ. Хяналтын бүлэг болон урт хугацааны дагаж су
-длах зохиомж энэ шатанд
- []
-
-[41
-
-
-
-
-]
-Underfull \hbox (badness 2772) in paragraph at lines 17--18
-[]\TU/TimesNewRoman(0)/m/n/12 Оролцогчдыг зорилтот хэрэглэгчийн бүлэгт хамаарах
- сайн дурын үндсэн дээр
- []
-
-
-Underfull \hbox (badness 3769) in paragraph at lines 17--18
-\TU/TimesNewRoman(0)/m/n/12 туршилтын зорилго, цуглуулах өгөгдлийн төрөл, оролц
-ооны хугацаа, оролцохоос
- []
-
-
-Underfull \hbox (badness 1668) in paragraph at lines 19--20
-\TU/TimesNewRoman(0)/m/n/12 судалгааны зорилгод шаардлагатай хамгийн бага өгөгд
-лийг цуглуулна. Байршлын
- []
-
-
-Underfull \hbox (badness 3954) in paragraph at lines 23--24
+Underfull \hbox (badness 3954) in paragraph at lines 17--18
 \TU/TimesNewRoman(0)/m/n/12 оролцогчид системд дадлаа үүсгэж, өдөөгч нөхцөл, ху
 ваарь, сэдлийн профайлаа
  []
 
 
-Underfull \hbox (badness 3118) in paragraph at lines 23--24
+Underfull \hbox (badness 3118) in paragraph at lines 17--18
 \TU/TimesNewRoman(0)/m/n/12 хэцүү байдлын үнэлгээ, эргэцүүлсэн санал сэтгэгдэл,
  SRBAI үнэлгээг цуглуулна.
  []
 
+[51
 
-Underfull \hbox (badness 3250) in paragraph at lines 23--24
-\TU/TimesNewRoman(0)/m/n/12 Туршилтын төгсгөлд системийн ашиглахад хялбар байда
-л, хэрэглээний туршлага,
+
+
+
+]
+Underfull \hbox (badness 1163) in paragraph at lines 25--26
+[]\TU/TimesNewRoman(0)/m/n/12 Сануулгын өгөгдөл – илгээгдсэн сануулга, сонгосон
+ үйлдэл, дахин сануулсан
  []
 
-[42]
-Underfull \hbox (badness 2460) in paragraph at lines 51--52
+
+Underfull \hbox (badness 4242) in paragraph at lines 28--29
+[]\TU/TimesNewRoman(0)/m/n/12 Санал сэтгэгдлийн өгөгдөл – хэцүү байдлын үнэлгээ
+, ашиг тусын талаарх
+ []
+
+[52]
+Underfull \hbox (badness 2221) in paragraph at lines 49--50
+\TU/TimesNewRoman(0)/m/n/12 хүрээ, ерөнхий байршил, өмнөх үйлдлийн нөхцөлд хэр 
+тогтвор хэрэгжүүлж буйг
+ []
+
+
+Underfull \hbox (badness 2460) in paragraph at lines 53--54
 \TU/TimesNewRoman(0)/m/n/12 гүйцэтгэл, автоматжилтын үнэлгээ, дадлын хүчний өөр
 члөлтийг хүснэгт, шугаман
  []
 
 
-Underfull \hbox (badness 3536) in paragraph at lines 51--52
+Underfull \hbox (badness 3536) in paragraph at lines 53--54
 \TU/TimesNewRoman(0)/m/n/12 аргаар ангилж, сануулгын тохиромжтой байдал, хялбар
 шуулах саналын хэрэгцээ,
  []
 
-[43]
-Underfull \hbox (badness 1565) in paragraph at lines 55--56
-[]\TU/TimesNewRoman(0)/m/n/12 Энэхүү үнэлгээ нь бага хэмжээний оролцогчтой pilo
-t түвшний судалгаа тул үр
- []
-
-
-Underfull \hbox (badness 7613) in paragraph at lines 55--56
-\TU/TimesNewRoman(0)/m/n/12 туршилтын хугацаа харьцангуй богино, хяналтын бүлэг
-гүй, өөрийн тайлагналд
- []
-
-) [44]
+) [53]
 \openout2 = `appendix_system_details.aux'.
 
  (appendix_system_details.tex
@@ -2199,7 +2285,7 @@ Underfull \hbox (badness 10000) in alignment at lines 18--45
  []
 
 appendix_system_details.tex:45: ignored: Infinite glue shrinkage found in box b
-eing split [45
+eing split [54
 
 
 
@@ -2221,76 +2307,76 @@ Underfull \hbox (badness 10000) in alignment at lines 55--59
  []
 
 
-Underfull \hbox (badness 1242) in paragraph at lines 78--78
+Underfull \hbox (badness 1242) in paragraph at lines 80--80
 []|\TU/TimesNewRoman(0)/m/n/10 Систем нь ахиц, цуваа, 
  []
 
 
-Underfull \hbox (badness 10000) in alignment at lines 59--84
+Underfull \hbox (badness 10000) in alignment at lines 59--86
 [] [] [] []
  []
 
-appendix_system_details.tex:84: ignored: Infinite glue shrinkage found in box b
-eing split [46]
-Underfull \hbox (badness 1406) in paragraph at lines 103--103
+appendix_system_details.tex:86: ignored: Infinite glue shrinkage found in box b
+eing split [55]
+Underfull \hbox (badness 1406) in paragraph at lines 105--105
 []|\TU/TimesNewRoman(0)/m/n/10 Хэрэглэгчийн өгөгдлийг 
  []
 
-[47]
+[56]
 File: images/HabitManagementUseCase.png Graphic file (type bmp)
 <images/HabitManagementUseCase.png>
- [48]
+ [57]
 File: images/SequenceDiagram1.png Graphic file (type bmp)
 <images/SequenceDiagram1.png>
- [49]
+ [58]
 File: images/ActivityDiagram3.png Graphic file (type bmp)
 <images/ActivityDiagram3.png>
 File: images/SequenceDiagram2.png Graphic file (type bmp)
 <images/SequenceDiagram2.png>
 
-Underfull \hbox (badness 1688) in paragraph at lines 144--144
+Underfull \hbox (badness 1688) in paragraph at lines 146--146
 []\TU/TimesNewRoman(0)/m/n/12 Зураг A.4: |Нөхцөл байдалд суурилсан сануулга ший
 двэрлэх ба хүргэх дарааллын
  []
 
-[50]
+[59]
 File: images/SequenceDiagram4.png Graphic file (type bmp)
 <images/SequenceDiagram4.png>
 
-Underfull \hbox (badness 5036) in paragraph at lines 150--150
+Underfull \hbox (badness 5036) in paragraph at lines 152--152
 []\TU/TimesNewRoman(0)/m/n/12 Зураг A.5: |Сануулгагүйгээр өөрийн санаачилгатай 
 гүйцэтгэл бүртгэх дарааллын
  []
 
-[51]
+[60]
 File: images/activityDiagram4.png Graphic file (type bmp)
 <images/activityDiagram4.png>
 
-Underfull \hbox (badness 1067) in paragraph at lines 156--156
+Underfull \hbox (badness 1067) in paragraph at lines 158--158
 []\TU/TimesNewRoman(0)/m/n/12 Зураг A.6: |Гүйцэтгэл бүртгэх, санал сэтгэгдэл ав
 ах, урамшуулал идэвхжүүлэх үйл
  []
 
-[52]
+[61]
 File: images/SequenceDiagram3.png Graphic file (type bmp)
 <images/SequenceDiagram3.png>
- [53]
+ [62]
 File: images/ActivityDiagram5.png Graphic file (type bmp)
 <images/ActivityDiagram5.png>
 File: images/SequenceDiagram5.png Graphic file (type bmp)
 <images/SequenceDiagram5.png>
- [54]) [55] [56] [57
+ [63]) [64] [65] [66
 
 
 
 ]
-Underfull \hbox (badness 4454) in paragraph at lines 70--71
+Underfull \hbox (badness 4454) in paragraph at lines 76--77
 []\TU/TimesNewRoman(0)/m/n/12 Crunchy Bagel. (2026). \TU/TimesNewRoman(0)/m/it/
 12 STREAKS\TU/TimesNewRoman(0)/m/n/12 . Retrieved March 19, 2026, from []$[][][
 ][][] [] [] []
  []
 
-[58] (main.aux (main-pre.aux) (chapter1_research.aux) (chapter2_license.aux)
+[67] (main.aux (main-pre.aux) (chapter1_research.aux) (chapter2_license.aux)
 (chapter3_architecture.aux) (chapter4_system_design.aux)
 (chapter5_evaluation.aux) (appendix_system_details.aux))
  ***********
@@ -2298,15 +2384,15 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: A3783ECB623C5590FAF939783CE0396C;16202.
+(rerunfilecheck)             Checksum: F8262115D140557D713FF68141675764;16404.
  ) 
 Here is how much of TeX's memory you used:
- 23332 strings out of 402982
- 427793 string characters out of 5447025
- 945174 words of memory out of 5000000
- 51658 multiletter control sequences out of 15000+600000
+ 23336 strings out of 402982
+ 427847 string characters out of 5447025
+ 968589 words of memory out of 5000000
+ 51662 multiletter control sequences out of 15000+600000
  643808 words of font info for 147 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 115i,13n,120p,1077b,641s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 115i,13n,120p,1083b,641s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (67 pages).
+Output written on main.pdf (76 pages).

@@ -10,7 +10,7 @@ export interface CreateHabitLogData {
   actualValue?: number | null;
   completedAt: Date;
   loggedAt: Date;
-  triggerSource?: CompletionTriggerSource | null;
+  triggerSource?: CompletionTriggerSource;
   /** Phase 4A: link to the Reminder that triggered this log entry. */
   linkedReminderId?: string | null;
   /** Phase 4A: confidence of the source classification (0–1). */

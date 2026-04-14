@@ -167,14 +167,14 @@ export class FeedbackService {
         : 0;
 
     // Derive recent average difficulty from last 5 entries
-    let recentAvgDifficulty: DifficultyRating | null = null;
+    let recentDifficultyLevel: DifficultyRating | null = null;
     if (recentDifficulty.length > 0) {
       const avg =
         recentDifficulty.reduce(
           (sum, e) => sum + (DIFFICULTY_SCORE[e.rating as DifficultyRating] ?? 3),
           0,
         ) / recentDifficulty.length;
-      recentAvgDifficulty = REVERSE_DIFFICULTY[Math.round(avg)] ?? null;
+      recentDifficultyLevel = REVERSE_DIFFICULTY[Math.round(avg)] ?? null;
     }
 
     return AdaptationRules.recommend({
@@ -182,7 +182,7 @@ export class FeedbackService {
       selfInitiatedRate,
       reminderDependenceRate,
       doneCount,
-      recentAvgDifficulty,
+      recentDifficultyLevel,
       currentPolicyMode: policy?.mode ?? null,
     });
   }
