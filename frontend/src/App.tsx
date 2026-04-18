@@ -20,12 +20,14 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 function AppRoutes() {
   const { token } = useAuth();
   const location = useLocation();
-  const showNav = token && !['/login'].includes(location.pathname);
+  const mainTabs = ['/analytics', '/learn', '/profile'];
+  const showNav = token && mainTabs.includes(location.pathname);
 
   return (
     <>
       <Routes>
         <Route path="/login" element={token ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
+        <Route path="/signup" element={token ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
         <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
         <Route path="/create" element={<RequireAuth><CreateHabitPage /></RequireAuth>} />
         <Route path="/habit/:id" element={<RequireAuth><HabitDetailPage /></RequireAuth>} />

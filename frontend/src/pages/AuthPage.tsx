@@ -35,6 +35,7 @@ export function AuthPage() {
         login(res.accessToken, name);
         navigate('/dashboard');
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err?.message || (isLogin ? t('auth.loginError', 'Нэвтрэхэд алдаа гарлаа') : t('auth.signupError', 'Бүртгүүлэхэд алдаа гарлаа')));
     } finally {

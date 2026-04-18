@@ -17,6 +17,7 @@ import { HabitLifecycleStatus } from '../../domain/enums/domain.enums';
 import { CreateHabitCueDto } from '../cues/dto/create-habit-cue.dto';
 import { CreateHabitMotivationProfileDto } from '../motivation/dto/create-habit-motivation-profile.dto';
 import { CreateHabitScheduleDayDto } from '../schedule/dto/create-habit-schedule-day.dto';
+import { ReminderSettingsDto } from './reminder-settings.dto';
 
 export class UpdateHabitDto {
   @ApiPropertyOptional({ example: 'Evening Walk', maxLength: 120 })
@@ -34,6 +35,43 @@ export class UpdateHabitDto {
   @IsString()
   @MaxLength(500)
   description?: string;
+
+  @ApiPropertyOptional({ example: 'wake up', maxLength: 150 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(150)
+  precedingRoutine?: string;
+
+  @ApiPropertyOptional({ maxLength: 500 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  reason?: string;
+
+  @ApiPropertyOptional({ example: 'lavender', maxLength: 30 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(30)
+  color?: string;
+
+  @ApiPropertyOptional({ example: 'EMOJI', maxLength: 20 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  iconType?: string;
+
+  @ApiPropertyOptional({ example: '🧘', maxLength: 10 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(10)
+  iconValue?: string;
+
+  @ApiPropertyOptional({ example: ['Тайвшруулна'] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @MaxLength(100, { each: true })
+  benefits?: string[];
 
   @ApiPropertyOptional({
     maxLength: 40,
@@ -126,4 +164,10 @@ export class UpdateHabitDto {
   @ValidateNested()
   @Type(() => CreateHabitMotivationProfileDto)
   motivationProfile?: CreateHabitMotivationProfileDto;
+
+  @ApiPropertyOptional({ type: () => ReminderSettingsDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => ReminderSettingsDto)
+  reminder?: ReminderSettingsDto;
 }

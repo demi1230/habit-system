@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, Bell, BellOff, Clock, Check, X } from 'lucide-react';
+import { Bell, BellOff, Clock, Check } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { remindersApi, type Reminder } from '@/api/reminders';
 
@@ -11,23 +10,24 @@ function formatTime(iso: string) {
 
 function ReminderCard({ reminder, delay }: { reminder: Reminder; delay: number }) {
   const { userId } = useAuth();
-  const [responded, setResponded] = useState(reminder.status !== 'PENDING');
+  const [responded, setResponded] = useState(reminder.status === 'ACTED' || reminder.status === 'EXPIRED' || reminder.status === 'CANCELLED');
   const [saving, setSaving] = useState(false);
 
   const handleAction = async (action: 'DONE' | 'SNOOZE') => {
     if (!userId || saving) return;
     setSaving(true);
     try {
-      await remindersApi.submitAction(userId, reminder.id, action);
+      await remindersApi.submitAction(userId, reminder.id, action, action === 'SNOOZE' ? 5 : undefined);
       setResponded(true);
     } catch (err) { console.error('Reminder action failed:', err); }
     finally { setSaving(false); }
   };
 
   const statusColor =
-    reminder.status === 'DONE' ? '#22c55e' :
-    reminder.status === 'SNOOZED' ? '#f59e0b' :
-    reminder.status === 'CANCELLED' ? '#ef4444' : '#8B7EC8';
+    reminder.status === 'ACTED' ? '#22c55e' :
+    reminder.status === 'SENT' ? '#8B7EC8' :
+    reminder.status === 'CANCELLED' ? '#ef4444' :
+    reminder.status === 'EXPIRED' ? '#9ca3af' : '#8B7EC8';
 
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
@@ -40,24 +40,23 @@ function ReminderCard({ reminder, delay }: { reminder: Reminder; delay: number }
           <Bell className="w-4 h-4" style={{ color: statusColor }} />
         </div>
         <div className="flex-1 min-w-0">
-          <p style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.3, marginBottom: 3 }} className="text-foreground">
+          <p style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.3, marginBottom: 3 }} className="text-foreground">
             Сануулга
           </p>
-          {reminder.triggerReason && (
-            <p style={{ fontSize: 12, lineHeight: 1.5, color: 'rgba(0,0,0,0.52)', marginBottom: 4 }}>{reminder.triggerReason}</p>
+          {reminder.decisionReason && (
+            <p style={{ fontSize: 12, lineHeight: 1.5, color: 'rgba(0,0,0,0.52)', marginBottom: 4 }}>{reminder.decisionReason}</p>
           )}
           <div className="flex items-center gap-1.5">
             <Clock className="w-3 h-3" style={{ color: 'rgba(0,0,0,0.3)' }} />
             <span style={{ fontSize: 11, color: 'rgba(0,0,0,0.38)', fontWeight: 500 }}>
               {formatTime(reminder.scheduledFor)}
             </span>
-            {reminder.status !== 'PENDING' && (
+            {reminder.status !== 'PENDING' && reminder.status !== 'SENT' && (
               <span className="ml-2 px-2 py-0.5 rounded-full" style={{
-                fontSize: 10, fontWeight: 600, color: statusColor,
+                fontSize: 10, fontWeight: 500, color: statusColor,
                 backgroundColor: statusColor + '15',
               }}>
-                {reminder.status === 'DONE' ? 'Дууссан' :
-                 reminder.status === 'SNOOZED' ? 'Хойшлуулсан' :
+                {reminder.status === 'ACTED' ? 'Дууссан' :
                  reminder.status === 'CANCELLED' ? 'Цуцлагдсан' : 'Хугацаа дууссан'}
               </span>
             )}
@@ -65,19 +64,19 @@ function ReminderCard({ reminder, delay }: { reminder: Reminder; delay: number }
         </div>
       </div>
 
-      {!responded && reminder.status === 'PENDING' && (
+      {!responded && (reminder.status === 'PENDING' || reminder.status === 'SENT') && (
         <div className="flex gap-2 mt-3 pt-3" style={{ borderTop: '0.5px solid rgba(0,0,0,0.07)' }}>
           <motion.button whileTap={{ scale: 0.95 }} onClick={() => handleAction('DONE')} disabled={saving}
             className="flex-1 py-2.5 rounded-[12px] flex items-center justify-center gap-1.5 disabled:opacity-50"
             style={{ backgroundColor: '#22c55e18' }}>
             <Check className="w-3.5 h-3.5" style={{ color: '#22c55e' }} strokeWidth={2.5} />
-            <span style={{ fontSize: 12, fontWeight: 600, color: '#22c55e' }}>Хийлээ</span>
+            <span style={{ fontSize: 12, fontWeight: 500, color: '#22c55e' }}>Хийлээ</span>
           </motion.button>
           <motion.button whileTap={{ scale: 0.95 }} onClick={() => handleAction('SNOOZE')} disabled={saving}
             className="flex-1 py-2.5 rounded-[12px] flex items-center justify-center gap-1.5 disabled:opacity-50"
             style={{ backgroundColor: '#f59e0b18' }}>
             <Clock className="w-3.5 h-3.5" style={{ color: '#f59e0b' }} />
-            <span style={{ fontSize: 12, fontWeight: 600, color: '#f59e0b' }}>5 мин</span>
+            <span style={{ fontSize: 12, fontWeight: 500, color: '#f59e0b' }}>5 мин</span>
           </motion.button>
         </div>
       )}
@@ -86,7 +85,6 @@ function ReminderCard({ reminder, delay }: { reminder: Reminder; delay: number }
 }
 
 export function RemindersPage() {
-  const navigate = useNavigate();
   const { userId } = useAuth();
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -104,14 +102,9 @@ export function RemindersPage() {
       {/* HEADER */}
       <div className="sticky top-0 z-20 bg-background" style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
         <div className="flex items-center gap-3 px-5 pt-13 pb-3">
-          <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)}
-            className="w-9 h-9 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
-            <ArrowLeft className="w-4 h-4" style={{ color: '#474747' }} />
-          </motion.button>
           <div className="flex items-center gap-2">
             <Bell className="w-4.5 h-4.5 text-primary" />
-            <p style={{ fontSize: 17, fontWeight: 700 }} className="text-foreground">Сануулга</p>
+            <p style={{ fontSize: 17, fontWeight: 600 }} className="text-foreground">Сануулга</p>
           </div>
         </div>
       </div>
@@ -133,7 +126,7 @@ export function RemindersPage() {
               style={{ backgroundColor: 'rgba(0,0,0,0.04)' }}>
               <BellOff className="w-8 h-8" style={{ color: 'rgba(0,0,0,0.2)' }} />
             </div>
-            <p style={{ fontSize: 17, fontWeight: 700, marginTop: 16 }} className="text-foreground">
+            <p style={{ fontSize: 17, fontWeight: 600, marginTop: 16 }} className="text-foreground">
               Сануулга байхгүй
             </p>
             <p style={{ fontSize: 13, marginTop: 6, lineHeight: 1.6 }} className="text-muted-foreground">

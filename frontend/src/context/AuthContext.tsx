@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react';
+import { analyticsApi } from '@/api/analytics';
 
 /** Decode JWT payload without a library */
 function decodePayload(token: string): { sub: string; email: string } | null {
@@ -28,6 +29,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const token = localStorage.getItem('access_token');
     const userId = localStorage.getItem('user_id');
     const displayName = localStorage.getItem('display_name');
+    // Validate stored token is a real JWT with a uuid sub claim
+    if (token) {
+      const payload = decodePayload(token);
+      const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!payload?.sub || !uuidRe.test(payload.sub)) {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user_id');
+        localStorage.removeItem('display_name');
+        return { token: null, userId: null, displayName: null };
+      }
+    }
     return { token, userId, displayName };
   });
 
@@ -41,11 +53,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    if (state.userId) {
+      analyticsApi.log(state.userId, 'session_end').catch(() => {});
+    }
     localStorage.removeItem('access_token');
     localStorage.removeItem('user_id');
     localStorage.removeItem('display_name');
     setState({ token: null, userId: null, displayName: null });
   };
+
+  // Track app_open / session_start when user is already logged in
+  const sessionTracked = useRef(false);
+  useEffect(() => {
+    if (state.userId && state.token && !sessionTracked.current) {
+      sessionTracked.current = true;
+      analyticsApi.log(state.userId, 'app_open').catch(() => {});
+      analyticsApi.log(state.userId, 'session_start').catch(() => {});
+    }
+  }, [state.userId, state.token]);
 
   return (
     <AuthContext.Provider value={{ ...state, login, logout }}>

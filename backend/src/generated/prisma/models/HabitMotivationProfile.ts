@@ -27,6 +27,7 @@ export type AggregateHabitMotivationProfile = {
 export type HabitMotivationProfileMinAggregateOutputType = {
   id: string | null
   habitId: string | null
+  goalTag: string | null
   reason: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -35,6 +36,7 @@ export type HabitMotivationProfileMinAggregateOutputType = {
 export type HabitMotivationProfileMaxAggregateOutputType = {
   id: string | null
   habitId: string | null
+  goalTag: string | null
   reason: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -43,6 +45,7 @@ export type HabitMotivationProfileMaxAggregateOutputType = {
 export type HabitMotivationProfileCountAggregateOutputType = {
   id: number
   habitId: number
+  goalTag: number
   reason: number
   createdAt: number
   updatedAt: number
@@ -53,6 +56,7 @@ export type HabitMotivationProfileCountAggregateOutputType = {
 export type HabitMotivationProfileMinAggregateInputType = {
   id?: true
   habitId?: true
+  goalTag?: true
   reason?: true
   createdAt?: true
   updatedAt?: true
@@ -61,6 +65,7 @@ export type HabitMotivationProfileMinAggregateInputType = {
 export type HabitMotivationProfileMaxAggregateInputType = {
   id?: true
   habitId?: true
+  goalTag?: true
   reason?: true
   createdAt?: true
   updatedAt?: true
@@ -69,6 +74,7 @@ export type HabitMotivationProfileMaxAggregateInputType = {
 export type HabitMotivationProfileCountAggregateInputType = {
   id?: true
   habitId?: true
+  goalTag?: true
   reason?: true
   createdAt?: true
   updatedAt?: true
@@ -150,6 +156,7 @@ export type HabitMotivationProfileGroupByArgs<ExtArgs extends runtime.Types.Exte
 export type HabitMotivationProfileGroupByOutputType = {
   id: string
   habitId: string
+  goalTag: string | null
   reason: string | null
   createdAt: Date
   updatedAt: Date
@@ -179,6 +186,7 @@ export type HabitMotivationProfileWhereInput = {
   NOT?: Prisma.HabitMotivationProfileWhereInput | Prisma.HabitMotivationProfileWhereInput[]
   id?: Prisma.UuidFilter<"HabitMotivationProfile"> | string
   habitId?: Prisma.UuidFilter<"HabitMotivationProfile"> | string
+  goalTag?: Prisma.StringNullableFilter<"HabitMotivationProfile"> | string | null
   reason?: Prisma.StringNullableFilter<"HabitMotivationProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"HabitMotivationProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"HabitMotivationProfile"> | Date | string
@@ -188,6 +196,7 @@ export type HabitMotivationProfileWhereInput = {
 export type HabitMotivationProfileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   habitId?: Prisma.SortOrder
+  goalTag?: Prisma.SortOrderInput | Prisma.SortOrder
   reason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -200,6 +209,7 @@ export type HabitMotivationProfileWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.HabitMotivationProfileWhereInput | Prisma.HabitMotivationProfileWhereInput[]
   OR?: Prisma.HabitMotivationProfileWhereInput[]
   NOT?: Prisma.HabitMotivationProfileWhereInput | Prisma.HabitMotivationProfileWhereInput[]
+  goalTag?: Prisma.StringNullableFilter<"HabitMotivationProfile"> | string | null
   reason?: Prisma.StringNullableFilter<"HabitMotivationProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"HabitMotivationProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"HabitMotivationProfile"> | Date | string
@@ -209,6 +219,7 @@ export type HabitMotivationProfileWhereUniqueInput = Prisma.AtLeast<{
 export type HabitMotivationProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   habitId?: Prisma.SortOrder
+  goalTag?: Prisma.SortOrderInput | Prisma.SortOrder
   reason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -223,6 +234,7 @@ export type HabitMotivationProfileScalarWhereWithAggregatesInput = {
   NOT?: Prisma.HabitMotivationProfileScalarWhereWithAggregatesInput | Prisma.HabitMotivationProfileScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"HabitMotivationProfile"> | string
   habitId?: Prisma.UuidWithAggregatesFilter<"HabitMotivationProfile"> | string
+  goalTag?: Prisma.StringNullableWithAggregatesFilter<"HabitMotivationProfile"> | string | null
   reason?: Prisma.StringNullableWithAggregatesFilter<"HabitMotivationProfile"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"HabitMotivationProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"HabitMotivationProfile"> | Date | string
@@ -230,6 +242,7 @@ export type HabitMotivationProfileScalarWhereWithAggregatesInput = {
 
 export type HabitMotivationProfileCreateInput = {
   id?: string
+  goalTag?: string | null
   reason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -239,6 +252,7 @@ export type HabitMotivationProfileCreateInput = {
 export type HabitMotivationProfileUncheckedCreateInput = {
   id?: string
   habitId: string
+  goalTag?: string | null
   reason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -246,6 +260,7 @@ export type HabitMotivationProfileUncheckedCreateInput = {
 
 export type HabitMotivationProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  goalTag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -255,6 +270,7 @@ export type HabitMotivationProfileUpdateInput = {
 export type HabitMotivationProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   habitId?: Prisma.StringFieldUpdateOperationsInput | string
+  goalTag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -263,6 +279,7 @@ export type HabitMotivationProfileUncheckedUpdateInput = {
 export type HabitMotivationProfileCreateManyInput = {
   id?: string
   habitId: string
+  goalTag?: string | null
   reason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -270,6 +287,7 @@ export type HabitMotivationProfileCreateManyInput = {
 
 export type HabitMotivationProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  goalTag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -278,6 +296,7 @@ export type HabitMotivationProfileUpdateManyMutationInput = {
 export type HabitMotivationProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   habitId?: Prisma.StringFieldUpdateOperationsInput | string
+  goalTag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -291,6 +310,7 @@ export type HabitMotivationProfileNullableScalarRelationFilter = {
 export type HabitMotivationProfileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   habitId?: Prisma.SortOrder
+  goalTag?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -299,6 +319,7 @@ export type HabitMotivationProfileCountOrderByAggregateInput = {
 export type HabitMotivationProfileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   habitId?: Prisma.SortOrder
+  goalTag?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -307,6 +328,7 @@ export type HabitMotivationProfileMaxOrderByAggregateInput = {
 export type HabitMotivationProfileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   habitId?: Prisma.SortOrder
+  goalTag?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -346,6 +368,7 @@ export type HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput = {
 
 export type HabitMotivationProfileCreateWithoutHabitInput = {
   id?: string
+  goalTag?: string | null
   reason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -353,6 +376,7 @@ export type HabitMotivationProfileCreateWithoutHabitInput = {
 
 export type HabitMotivationProfileUncheckedCreateWithoutHabitInput = {
   id?: string
+  goalTag?: string | null
   reason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -376,6 +400,7 @@ export type HabitMotivationProfileUpdateToOneWithWhereWithoutHabitInput = {
 
 export type HabitMotivationProfileUpdateWithoutHabitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  goalTag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -383,6 +408,7 @@ export type HabitMotivationProfileUpdateWithoutHabitInput = {
 
 export type HabitMotivationProfileUncheckedUpdateWithoutHabitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  goalTag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -393,6 +419,7 @@ export type HabitMotivationProfileUncheckedUpdateWithoutHabitInput = {
 export type HabitMotivationProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   habitId?: boolean
+  goalTag?: boolean
   reason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -402,6 +429,7 @@ export type HabitMotivationProfileSelect<ExtArgs extends runtime.Types.Extension
 export type HabitMotivationProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   habitId?: boolean
+  goalTag?: boolean
   reason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -411,6 +439,7 @@ export type HabitMotivationProfileSelectCreateManyAndReturn<ExtArgs extends runt
 export type HabitMotivationProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   habitId?: boolean
+  goalTag?: boolean
   reason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -420,12 +449,13 @@ export type HabitMotivationProfileSelectUpdateManyAndReturn<ExtArgs extends runt
 export type HabitMotivationProfileSelectScalar = {
   id?: boolean
   habitId?: boolean
+  goalTag?: boolean
   reason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type HabitMotivationProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "habitId" | "reason" | "createdAt" | "updatedAt", ExtArgs["result"]["habitMotivationProfile"]>
+export type HabitMotivationProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "habitId" | "goalTag" | "reason" | "createdAt" | "updatedAt", ExtArgs["result"]["habitMotivationProfile"]>
 export type HabitMotivationProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>
 }
@@ -444,6 +474,7 @@ export type $HabitMotivationProfilePayload<ExtArgs extends runtime.Types.Extensi
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     habitId: string
+    goalTag: string | null
     reason: string | null
     createdAt: Date
     updatedAt: Date
@@ -873,6 +904,7 @@ export interface Prisma__HabitMotivationProfileClient<T, Null = never, ExtArgs e
 export interface HabitMotivationProfileFieldRefs {
   readonly id: Prisma.FieldRef<"HabitMotivationProfile", 'String'>
   readonly habitId: Prisma.FieldRef<"HabitMotivationProfile", 'String'>
+  readonly goalTag: Prisma.FieldRef<"HabitMotivationProfile", 'String'>
   readonly reason: Prisma.FieldRef<"HabitMotivationProfile", 'String'>
   readonly createdAt: Prisma.FieldRef<"HabitMotivationProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"HabitMotivationProfile", 'DateTime'>

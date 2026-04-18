@@ -92,6 +92,11 @@ model Habit {
   userId                 String                  @map("user_id") @db.Uuid
   title                  String
   description            String?
+  precedingRoutine       String?                 @map("preceding_routine")
+  color                  String?
+  iconType               String?                 @map("icon_type")
+  iconValue              String?                 @map("icon_value")
+  benefits               String[]                @default([])
   measurementUnit        String                  @map("measurement_unit")
   targetValue            Float                   @map("target_value")
   minimumTarget          Float                   @map("minimum_target")
@@ -148,6 +153,7 @@ model HabitCue {
 model HabitMotivationProfile {
   id        String   @id @default(uuid()) @db.Uuid
   habitId   String   @unique @map("habit_id") @db.Uuid
+  goalTag   String?  @map("goal_tag")
   reason    String?  @map("reason")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

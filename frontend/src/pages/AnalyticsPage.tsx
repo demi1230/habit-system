@@ -1,17 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, BarChart3, ChevronLeft, ChevronRight, Flame, Calendar, Target, Clock } from 'lucide-react';
+import { BarChart3, ChevronLeft, ChevronRight, Flame, Calendar, Target, Clock } from 'lucide-react';
 import { getHabitColor } from '@/lib/habit-colors';
 import { useAuth } from '@/context/AuthContext';
 import { habitsApi } from '@/api/habits';
 import type { Habit, HabitLog, HabitStrengthSignals } from '@/api/types';
 
-const GOAL_TAG_MAP: Record<string, { emoji: string }> = {
-  mindfulness: { emoji: '🧘' }, fitness: { emoji: '💪' }, health: { emoji: '❤️' },
-  learning: { emoji: '📚' }, creativity: { emoji: '🎨' }, productivity: { emoji: '⚡' },
-  social: { emoji: '🤝' }, finance: { emoji: '💰' },
-};
+
 
 const WEEKDAY_LABELS = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
 
@@ -130,7 +125,6 @@ function StatCard({ icon, label, value, color }: {
 }
 
 export function AnalyticsPage() {
-  const navigate = useNavigate();
   const { userId } = useAuth();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [selectedIdx, setSelectedIdx] = useState(0);
@@ -165,9 +159,7 @@ export function AnalyticsPage() {
     );
   }
 
-  const goalTag = selected?.motivationProfile?.goalTag;
-  const color = getHabitColor(goalTag ?? 'lavender');
-  const tagInfo = goalTag ? GOAL_TAG_MAP[goalTag] : null;
+  const color = getHabitColor(selected?.color);
 
   const doneLogs = logs.filter(l => l.status === 'DONE');
   const completionRate = logs.length > 0 ? Math.round((doneLogs.length / logs.length) * 100) : 0;
@@ -196,11 +188,6 @@ export function AnalyticsPage() {
       {/* HEADER */}
       <div className="sticky top-0 z-20 bg-background" style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
         <div className="flex items-center gap-3 px-5 pt-13 pb-3">
-          <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)}
-            className="w-9 h-9 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
-            <ArrowLeft className="w-4 h-4" style={{ color: '#474747' }} />
-          </motion.button>
           <div className="flex items-center gap-2">
             <BarChart3 className="w-4.5 h-4.5 text-primary" />
             <p style={{ fontSize: 17, fontWeight: 700 }} className="text-foreground">Шинжилгээ</p>
@@ -214,8 +201,8 @@ export function AnalyticsPage() {
           <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
             {habits.map((h, i) => {
               const active = i === selectedIdx;
-              const c = getHabitColor(h.motivationProfile?.goalTag ?? 'lavender');
-              const t = h.motivationProfile?.goalTag ? GOAL_TAG_MAP[h.motivationProfile.goalTag] : null;
+              const c = getHabitColor(h.color);
+              const icon = h.iconValue || '✨';
               return (
                 <motion.button key={h.id} whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedIdx(i)}
@@ -226,7 +213,7 @@ export function AnalyticsPage() {
                       backgroundColor: active ? c.card : 'rgba(0,0,0,0.05)',
                       border: active ? `2px solid ${c.accent}` : '2px solid transparent',
                     }}>
-                    <span style={{ fontSize: 20 }}>{t?.emoji || '✨'}</span>
+                    <span style={{ fontSize: 20 }}>{icon}</span>
                   </div>
                   <span style={{
                     fontSize: 10, fontWeight: active ? 700 : 400, maxWidth: 60,

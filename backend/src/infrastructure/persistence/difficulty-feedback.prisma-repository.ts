@@ -20,12 +20,12 @@ export class DifficultyFeedbackPrismaRepository
         userId: data.userId,
         habitId: data.habitId,
         logId: data.logId,
-        rating: data.rating,
+        rating: data.rating.toUpperCase(),
         note: data.note ?? null,
         occurredAt: data.occurredAt,
       },
     });
-    return result as DifficultyFeedbackEntity;
+    return this.toEntity(result);
   }
 
   async findAllByHabitId(habitId: string): Promise<DifficultyFeedbackEntity[]> {
@@ -33,7 +33,7 @@ export class DifficultyFeedbackPrismaRepository
       where: { habitId },
       orderBy: { occurredAt: 'desc' },
     });
-    return results as DifficultyFeedbackEntity[];
+    return (results as any[]).map((r) => this.toEntity(r));
   }
 
   async findRecentByHabitId(
@@ -45,6 +45,10 @@ export class DifficultyFeedbackPrismaRepository
       orderBy: { occurredAt: 'desc' },
       take: limit,
     });
-    return results as DifficultyFeedbackEntity[];
+    return (results as any[]).map((r) => this.toEntity(r));
+  }
+
+  private toEntity(row: any): DifficultyFeedbackEntity {
+    return { ...row, rating: row.rating.toLowerCase() };
   }
 }

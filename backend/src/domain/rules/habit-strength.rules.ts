@@ -65,6 +65,7 @@ export interface HabitStrengthResult {
   habitId: string;
   totalLogs: number;
   doneCount: number;
+  partialCount: number;
   notDoneCount: number;
   doneRate: number;
   selfInitiatedRate: number;
@@ -110,6 +111,7 @@ export class HabitStrengthRules {
       habitId,
       totalLogs,
       doneCount,
+      partialCount: notDoneCount,
       notDoneCount,
       doneRate:
         totalLogs > 0 ? Math.round((doneCount / totalLogs) * 1000) / 1000 : 0,

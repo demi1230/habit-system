@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
-  ArrowLeft, User, ChevronRight, LogOut, Moon, Sun, Monitor,
-  Globe, Bell, Shield, HelpCircle, Info,
+  User, ChevronRight, LogOut, Moon, Sun, Monitor,
+  Bell, Shield, HelpCircle, Info,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { habitsApi } from '@/api/habits';
-import { useLang, setLang, type LangKey } from '@/lib/i18n';
-import { useTheme, setTheme, type ThemeKey } from '@/lib/theme-store';
+import { useLang, setLang} from '@/lib/i18n';
+import { useTheme, setTheme} from '@/lib/theme-store';
 import type { Habit } from '@/api/types';
 
 const THEME_OPTIONS: { key: ThemeKey; label: string; icon: React.ReactNode }[] = [
@@ -78,12 +78,7 @@ export function ProfilePage() {
       {/* HEADER */}
       <div className="sticky top-0 z-20 bg-background" style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
         <div className="flex items-center gap-3 px-5 pt-13 pb-3">
-          <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)}
-            className="w-9 h-9 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
-            <ArrowLeft className="w-4 h-4" style={{ color: '#474747' }} />
-          </motion.button>
-          <p style={{ fontSize: 17, fontWeight: 700 }} className="text-foreground">Профайл</p>
+          <p style={{ fontSize: 17, fontWeight: 600 }} className="text-foreground">Профайл</p>
         </div>
       </div>
 
@@ -96,21 +91,21 @@ export function ProfilePage() {
             style={{ backgroundColor: 'rgba(255,255,255,0.55)' }}>
             <User className="w-8 h-8" style={{ color: '#6C5CE7' }} />
           </div>
-          <p style={{ fontSize: 20, fontWeight: 800, color: '#202325' }}>{displayName || 'Хэрэглэгч'}</p>
+          <p style={{ fontSize: 20, fontWeight: 600, color: '#202325' }}>{displayName || 'Хэрэглэгч'}</p>
           <p style={{ fontSize: 12, color: 'rgba(0,0,0,0.5)', marginTop: 4 }}>ID: {userId?.slice(0, 8)}...</p>
           <div className="flex justify-center gap-6 mt-4">
             <div className="text-center">
-              <p style={{ fontSize: 22, fontWeight: 800, color: '#202325' }}>{activeCount}</p>
+              <p style={{ fontSize: 22, fontWeight: 600, color: '#202325' }}>{activeCount}</p>
               <p style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)', fontWeight: 500 }}>Идэвхтэй</p>
             </div>
             <div style={{ width: 1, backgroundColor: 'rgba(0,0,0,0.12)' }} />
             <div className="text-center">
-              <p style={{ fontSize: 22, fontWeight: 800, color: '#202325' }}>{archivedCount}</p>
+              <p style={{ fontSize: 22, fontWeight: 600, color: '#202325' }}>{archivedCount}</p>
               <p style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)', fontWeight: 500 }}>Архив</p>
             </div>
             <div style={{ width: 1, backgroundColor: 'rgba(0,0,0,0.12)' }} />
             <div className="text-center">
-              <p style={{ fontSize: 22, fontWeight: 800, color: '#202325' }}>{habits.length}</p>
+              <p style={{ fontSize: 22, fontWeight: 600, color: '#202325' }}>{habits.length}</p>
               <p style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)', fontWeight: 500 }}>Нийт</p>
             </div>
           </div>
@@ -118,7 +113,7 @@ export function ProfilePage() {
 
         {/* THEME SWITCHER */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 }}>
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}
+          <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: '0.06em' }}
             className="text-muted-foreground mb-2 pl-0.5">ХАРАГДАЦ</p>
           <Card>
             <div className="p-3 flex gap-2">
@@ -145,7 +140,7 @@ export function ProfilePage() {
 
         {/* LANGUAGE */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.07 }}>
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}
+          <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: '0.06em' }}
             className="text-muted-foreground mb-2 pl-0.5">ХЭЛ</p>
           <Card>
             <div className="p-3 flex gap-2">
@@ -172,7 +167,7 @@ export function ProfilePage() {
 
         {/* MENU */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.10 }}>
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}
+          <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: '0.06em' }}
             className="text-muted-foreground mb-2 pl-0.5">ЦЭС</p>
           <Card>
             <MenuItem icon={<Bell className="w-4 h-4 text-muted-foreground" />}

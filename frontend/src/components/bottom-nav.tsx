@@ -32,11 +32,11 @@ function LearnIcon({ active }: { active: boolean }) {
   );
 }
 
-function BellIcon({ active }: { active: boolean }) {
+function ProfileIcon({ active }: { active: boolean }) {
   return (
-    <svg width="18" height="22" viewBox="0 0 17.5 22" fill="none">
+    <svg width="20" height="22" viewBox="0 0 20 22" fill="none">
       <path
-        d="M8.75 22C9.85 22 10.75 21.1 10.75 20H6.75C6.75 21.1 7.65 22 8.75 22ZM14.75 16V11C14.75 7.93 13.12 5.36 10.25 4.68V4C10.25 3.17 9.58 2.5 8.75 2.5C7.92 2.5 7.25 3.17 7.25 4V4.68C4.39 5.36 2.75 7.92 2.75 11V16L0.75 18V19H16.75V18L14.75 16Z"
+        d="M10 11C12.21 11 14 9.21 14 7C14 4.79 12.21 3 10 3C7.79 3 6 4.79 6 7C6 9.21 7.79 11 10 11ZM10 13C7.33 13 2 14.34 2 17V19H18V17C18 14.34 12.67 13 10 13Z"
         fill={active ? 'var(--color-primary-foreground)' : 'var(--color-muted-foreground)'}
       />
     </svg>
@@ -51,7 +51,7 @@ export function BottomNav() {
     { path: '/dashboard', label: 'Нүүр', Icon: HomeIcon },
     { path: '/analytics', label: 'Ахиц', Icon: StatsIcon },
     { path: '/learn', label: 'Суръя', Icon: LearnIcon },
-    { path: '/reminders', label: 'Мэдэгдэл', Icon: BellIcon },
+    { path: '/profile', label: 'Профайл', Icon: ProfileIcon },
   ];
 
   return (

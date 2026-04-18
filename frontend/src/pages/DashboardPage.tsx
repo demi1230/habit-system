@@ -10,21 +10,7 @@ import type { HabitWithCueContext, HabitLog } from '@/api/types';
 
 const MN_DAYS = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
 
-const GOAL_TAG_MAP: Record<string, { emoji: string; name: string }> = {
-  mindfulness: { emoji: '🧘', name: 'Анхаарал' },
-  fitness: { emoji: '💪', name: 'Фитнес' },
-  health: { emoji: '❤️', name: 'Эрүүл мэнд' },
-  learning: { emoji: '📚', name: 'Суралцах' },
-  creativity: { emoji: '🎨', name: 'Бүтээлч байдал' },
-  productivity: { emoji: '⚡', name: 'Бүтээмж' },
-  social: { emoji: '🤝', name: 'Харилцаа' },
-  finance: { emoji: '💰', name: 'Санхүү' },
-};
 
-function getTagInfo(goalTag: string | null | undefined) {
-  if (!goalTag) return { emoji: '✨', name: '' };
-  return GOAL_TAG_MAP[goalTag] || { emoji: '✨', name: goalTag };
-}
 
 // ── Logged entry ────────────────────────────────────────────────
 interface LogEntry { value: number; status: 'partial' | 'done' }
@@ -53,13 +39,13 @@ function QuickLogSheet({ habit, onClose, onLog }: {
   onLog: (value: number) => void;
 }) {
   const [input, setInput] = useState('');
-  const color    = getHabitColor(habit.motivationProfile?.goalTag);
+  const color    = getHabitColor(habit.color);
   const numValue = parseFloat(input) || 0;
   const target   = habit.targetValue || 1;
   const min      = habit.minimumTarget ?? 1;
   const status   = calcStatus(habit, numValue);
   const pct      = calcProgress(habit, numValue);
-  const tag      = getTagInfo(habit.motivationProfile?.goalTag);
+  const habitIcon = habit.iconValue || '✨';
 
   const handleKey = (key: string) => {
     if (key === 'AC') { setInput(''); return; }
@@ -111,7 +97,7 @@ function QuickLogSheet({ habit, onClose, onLog }: {
           <div className="flex items-center gap-3 px-5 pb-4">
             <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
               style={{ backgroundColor: color.btn }}>
-              <span style={{ fontSize: 18 }}>{tag.emoji}</span>
+              <span style={{ fontSize: 18 }}>{habitIcon}</span>
             </div>
             <div>
               <p style={{ fontSize: 13, fontWeight: 600 }} className="text-foreground">{habit.title}</p>
@@ -318,14 +304,14 @@ function HabitCard({ habit, index, entry, onBadgeTap }: {
   onBadgeTap: () => void;
 }) {
   const navigate   = useNavigate();
-  const color      = getHabitColor(habit.motivationProfile?.goalTag);
-  const tag        = getTagInfo(habit.motivationProfile?.goalTag);
+  const color      = getHabitColor(habit.color);
+  const habitIcon  = habit.iconValue || '✨';
   const status     = entry?.status ?? 'none';
   const pct        = entry ? calcProgress(habit, entry.value) : 0;
 
   // Show cue chips from evaluated cue context
-  const timeCue = habit.cueContext?.find(c => c.type === 'TIME_WINDOW' && c.isActive);
-  const locationCue = habit.cueContext?.find(c => c.type === 'LOCATION' && c.isActive);
+  const timeCue = habit.cueContext?.find(c => (c.startTime || c.endTime) && c.isActive);
+  const locationCue = habit.cueContext?.find(c => c.coarseLocation && c.isActive);
 
   return (
     <motion.div
@@ -371,7 +357,7 @@ function HabitCard({ habit, index, entry, onBadgeTap }: {
                 backgroundColor: 'rgba(0,0,0,0.10)', fontSize: 26,
                 opacity: status === 'done' ? 0.55 : 1, transition: 'opacity 0.3s',
               }}>
-              {tag.emoji}
+              {habitIcon}
             </div>
           </div>
 
@@ -386,8 +372,8 @@ function HabitCard({ habit, index, entry, onBadgeTap }: {
               {habit.title}
             </p>
             <div className="flex items-center gap-2 flex-wrap">
-              {timeCue && <CueChip icon="time" text={timeCue.value} />}
-              {locationCue && <CueChip icon="location" text={locationCue.value} />}
+              {timeCue && <CueChip icon="time" text={[timeCue.startTime, timeCue.endTime].filter(Boolean).join(' – ')} />}
+              {locationCue && <CueChip icon="location" text={locationCue.coarseLocation!} />}
             </div>
           </div>
 

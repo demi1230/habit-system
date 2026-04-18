@@ -1,15 +1,18 @@
-\contentsline {table}{\numberline {4.1}{\ignorespaces Системээр дэмжих дадлын үндсэн бүлгүүд}}{20}{table.caption.2}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces Системийн үндсэн хэрэглэгчийн үүрэг}}{21}{table.caption.3}%
-\contentsline {table}{\numberline {4.5}{\ignorespaces Системийн үндсэн хэрэглээний тохиолдлууд}}{35}{table.caption.6}%
-\contentsline {table}{\numberline {4.6}{\ignorespaces Архитектурын давхаргууд}}{38}{table.caption.9}%
-\contentsline {table}{\numberline {4.7}{\ignorespaces Хэрэглээний логикийн үндсэн модулиуд}}{39}{table.caption.10}%
-\contentsline {table}{\numberline {4.8}{\ignorespaces Системийн үндсэн өгөгдлийн нэгжүүд (I)}}{40}{table.caption.11}%
-\contentsline {table}{\numberline {4.9}{\ignorespaces Системийн үндсэн өгөгдлийн нэгжүүд (II)}}{41}{table.caption.12}%
-\contentsline {table}{\numberline {4.10}{\ignorespaces Дадал төлөвшлийн мөчлөг ба системийн хэрэгжилтийн уялдаа}}{44}{table.caption.14}%
-\contentsline {table}{\numberline {4.11}{\ignorespaces Гүйцэтгэлийн эх үүсвэрийн ангилал}}{45}{table.caption.15}%
-\contentsline {table}{\numberline {4.12}{\ignorespaces Туршилтын загварын амжилтын шалгуур}}{47}{table.caption.16}%
-\contentsline {table}{\numberline {4.13}{\ignorespaces Хэмжигдэх үндсэн үзүүлэлтүүд}}{48}{table.caption.17}%
-\contentsline {table}{\numberline {A.1}{\ignorespaces Системийн функциональ шаардлагууд I}}{54}{table.A.1}%
-\contentsline {table}{\numberline {A.3}{\ignorespaces Системийн функциональ шаардлагууд II}}{55}{table.A.3}%
-\contentsline {table}{\numberline {A.5}{\ignorespaces Системийн функциональ бус шаардлагууд}}{57}{table.caption.18}%
-\contentsline {table}{\numberline {A.6}{\ignorespaces Хэмжигдэх үндсэн үзүүлэлтүүдийн дэлгэрэнгүй хүснэгт}}{65}{table.caption.28}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Системээр дэмжих дадлын үндсэн бүлгүүд}}{18}{table.caption.2}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Системийн үндсэн хэрэглэгчийн үүрэг}}{19}{table.caption.3}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Системийн үндсэн хэрэглээний тохиолдлууд}}{26}{table.caption.6}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces Архитектурын давхаргууд}}{29}{table.caption.9}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces Хэрэглээний логикийн үндсэн модулиуд}}{30}{table.caption.10}%
+\contentsline {table}{\numberline {4.7}{\ignorespaces Системийн үндсэн өгөгдлийн нэгжүүд (I)}}{31}{table.caption.11}%
+\contentsline {table}{\numberline {4.8}{\ignorespaces Системийн үндсэн өгөгдлийн нэгжүүд (II)}}{32}{table.caption.12}%
+\contentsline {table}{\numberline {4.9}{\ignorespaces Дадал төлөвшлийн мөчлөг ба системийн хэрэгжилтийн уялдаа}}{35}{table.caption.14}%
+\contentsline {table}{\numberline {4.10}{\ignorespaces Гүйцэтгэлийн эх үүсвэрийн ангилал}}{36}{table.caption.15}%
+\contentsline {table}{\numberline {4.11}{\ignorespaces Туршилтын загварын амжилтын шалгуур}}{38}{table.caption.16}%
+\contentsline {table}{\numberline {4.12}{\ignorespaces Хэмжигдэх үндсэн үзүүлэлтүүд}}{39}{table.caption.17}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Өгөгдлийн сангийн үндсэн хүснэгтүүд}}{46}{table.caption.18}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Фронтэндийн үндсэн дэлгэцүүд}}{54}{table.caption.22}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Системийн үндсэн API endpoint-ууд}}{59}{table.5.3}%
+\contentsline {table}{\numberline {A.1}{\ignorespaces Системийн функциональ шаардлагууд I}}{65}{table.A.1}%
+\contentsline {table}{\numberline {A.3}{\ignorespaces Системийн функциональ шаардлагууд II}}{66}{table.A.3}%
+\contentsline {table}{\numberline {A.5}{\ignorespaces Системийн функциональ бус шаардлагууд}}{68}{table.caption.28}%
+\contentsline {table}{\numberline {A.6}{\ignorespaces Хэмжигдэх үндсэн үзүүлэлтүүдийн дэлгэрэнгүй хүснэгт}}{76}{table.caption.39}%

@@ -99,6 +99,11 @@ export const HabitScalarFieldEnum = {
   userId: 'userId',
   title: 'title',
   description: 'description',
+  precedingRoutine: 'precedingRoutine',
+  color: 'color',
+  iconType: 'iconType',
+  iconValue: 'iconValue',
+  benefits: 'benefits',
   measurementUnit: 'measurementUnit',
   targetValue: 'targetValue',
   minimumTarget: 'minimumTarget',
@@ -141,6 +146,7 @@ export type HabitCueScalarFieldEnum = (typeof HabitCueScalarFieldEnum)[keyof typ
 export const HabitMotivationProfileScalarFieldEnum = {
   id: 'id',
   habitId: 'habitId',
+  goalTag: 'goalTag',
   reason: 'reason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

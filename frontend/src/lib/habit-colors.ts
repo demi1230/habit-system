@@ -1,5 +1,3 @@
-import type { Habit } from '../api/types';
-
 export const HABIT_COLORS = {
   lavender: {
     card: 'rgba(209,209,255,0.42)',
@@ -56,12 +54,14 @@ export const PASTEL_LIST = [
   { id: 'yellow'   as HabitColorKey, label: 'Шар' },
 ];
 
-export function getHabitColor(colorIdOrHabit?: string | Habit | null) {
-  const id =
-    typeof colorIdOrHabit === 'string'
-      ? colorIdOrHabit
-      : (colorIdOrHabit as Record<string, string> | null)?.habitColor;
-  return HABIT_COLORS[(id as HabitColorKey) ?? 'lavender'] ?? HABIT_COLORS.lavender;
+/** Resolve color palette from a stored color key (e.g. "lavender", "pink"). */
+export function getHabitColor(colorKey?: string | null) {
+  return HABIT_COLORS[(colorKey as HabitColorKey) ?? 'lavender'] ?? HABIT_COLORS.lavender;
+}
+
+/** Return the stored emoji/icon for a habit, with a safe fallback. */
+export function getHabitIcon(habit?: { iconValue?: string | null } | null): string {
+  return habit?.iconValue || '✨';
 }
 
 export const ALL_COLOR = {

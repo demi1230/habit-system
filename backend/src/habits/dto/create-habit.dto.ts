@@ -17,6 +17,7 @@ import { HabitLifecycleStatus } from '../../domain/enums/domain.enums';
 import { CreateHabitCueDto } from '../cues/dto/create-habit-cue.dto';
 import { CreateHabitMotivationProfileDto } from '../motivation/dto/create-habit-motivation-profile.dto';
 import { CreateHabitScheduleDayDto } from '../schedule/dto/create-habit-schedule-day.dto';
+import { ReminderSettingsDto } from './reminder-settings.dto';
 
 export class CreateHabitDto {
   @ApiProperty({ example: 'Morning Run', maxLength: 120 })
@@ -33,6 +34,58 @@ export class CreateHabitDto {
   @IsString()
   @MaxLength(500)
   description?: string;
+
+  @ApiPropertyOptional({
+    example: 'wake up',
+    maxLength: 150,
+    description: 'Routine that typically precedes this habit (top-level)',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(150)
+  precedingRoutine?: string;
+
+  @ApiPropertyOptional({
+    example: 'Өдрийг тайван эхлүүлэхийн тулд',
+    maxLength: 500,
+    description: 'Why the user wants this habit — stored in motivationProfile.reason',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  reason?: string;
+
+  @ApiPropertyOptional({
+    example: 'lavender',
+    maxLength: 30,
+    description: 'Color key or hex for the habit card',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(30)
+  color?: string;
+
+  @ApiPropertyOptional({ example: 'EMOJI', maxLength: 20 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  iconType?: string;
+
+  @ApiPropertyOptional({ example: '🧘', maxLength: 10 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(10)
+  iconValue?: string;
+
+  @ApiPropertyOptional({
+    example: ['Тайвшруулна', 'Төвлөрөл сайжруулна'],
+    description: 'List of benefits the user associates with this habit',
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @MaxLength(100, { each: true })
+  benefits?: string[];
 
   @ApiProperty({
     maxLength: 40,
@@ -125,4 +178,18 @@ export class CreateHabitDto {
   @ValidateNested()
   @Type(() => CreateHabitMotivationProfileDto)
   motivationProfile?: CreateHabitMotivationProfileDto;
+
+  @ApiPropertyOptional({
+    type: () => ReminderSettingsDto,
+    example: {
+      enabled: true,
+      timeWindows: [{ startTime: '07:00', endTime: '08:00' }],
+      locations: ['home'],
+    },
+    description: 'Structured reminder settings — converted to cues internally',
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => ReminderSettingsDto)
+  reminder?: ReminderSettingsDto;
 }

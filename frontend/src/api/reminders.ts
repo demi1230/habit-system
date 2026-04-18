@@ -1,15 +1,20 @@
 import { api } from './client';
 
-export type ReminderStatus = 'PENDING' | 'DONE' | 'SNOOZED' | 'CANCELLED' | 'EXPIRED';
+export type ReminderStatus = 'PENDING' | 'SENT' | 'ACTED' | 'EXPIRED' | 'CANCELLED';
 
 export interface Reminder {
   id: string;
   userId: string;
   habitId: string;
-  scheduledFor: string;
-  deliveredAt: string | null;
+  linkedCueId: string | null;
+  decisionReason: string;
   status: ReminderStatus;
-  triggerReason: string | null;
+  scheduledFor: string;
+  evaluatedAt: string;
+  sentAt: string | null;
+  deliveredAt: string | null;
+  effectiveUntil: string | null;
+  explanation: unknown;
   createdAt: string;
 }
 
@@ -20,11 +25,11 @@ export const remindersApi = {
   submitAction: (
     userId: string,
     reminderId: string,
-    action: 'DONE' | 'SNOOZE',
-    snoozedUntil?: string,
+    actionType: 'DONE' | 'SNOOZE',
+    snoozeMinutes?: number,
   ) =>
     api.post(`/users/${userId}/reminders/${reminderId}/actions`, {
-      action,
-      ...(snoozedUntil ? { snoozedUntil } : {}),
+      actionType,
+      ...(snoozeMinutes ? { snoozeMinutes } : {}),
     }),
 };

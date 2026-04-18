@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Plus, X, Sparkles, Bell, BellOff, Check } from 'lucide-react';
+import { ArrowLeft, Plus, X, Sparkles, Bell, BellOff, Check, MapPin } from 'lucide-react';
+import { LocationMapPicker } from '@/components/LocationMapPicker';
 import { getHabitColor, PASTEL_LIST, CTA_DARK } from '@/lib/habit-colors';
 import { useAuth } from '@/context/AuthContext';
 import { habitsApi, type CreateHabitPayload } from '@/api/habits';
@@ -10,19 +11,14 @@ import type { Weekday } from '@/api/types';
 const DAYS_MN = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
 const DAYS_EN: Weekday[] = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 const UNITS   = ['удаа', 'мин', 'хуудас', 'литр', 'км', 'шил', 'хэсэг'];
-const LOCATIONS  = ['Гэр 🏠', 'Оффис 💼', 'Сургууль 🏫', 'Биеийн тамир 💪', 'Гадаа 🌿'];
-const ROUTINES   = ['өглөөний цайгаа уусны дараа', 'унтахын өмнө', 'хичээл дуусаад', 'гэртээ ирэхдээ', 'үдийн хоолны дараа'];
-const TIME_SLOTS = ['06:00–08:00', '08:00–10:00', '12:00–14:00', '17:00–19:00', '19:00–21:00', '21:00–23:00'];
 
-const GOAL_TAGS = [
-  { id: 'mindfulness', name: 'Анхаарал', emoji: '🧘' },
-  { id: 'fitness', name: 'Фитнес', emoji: '💪' },
-  { id: 'health', name: 'Эрүүл мэнд', emoji: '❤️' },
-  { id: 'learning', name: 'Суралцах', emoji: '📚' },
-  { id: 'creativity', name: 'Бүтээлч байдал', emoji: '🎨' },
-  { id: 'productivity', name: 'Бүтээмж', emoji: '⚡' },
-  { id: 'social', name: 'Харилцаа', emoji: '🤝' },
-  { id: 'finance', name: 'Санхүү', emoji: '💰' },
+const ROUTINES   = ['өглөөний цайгаа уусны дараа', 'унтахын өмнө', 'хичээл дуусаад', 'гэртээ ирэхдээ', 'үдийн хоолны дараа', 'сэрэхдээ'];
+
+const EMOJIS = ['🧘', '💪', '❤️', '📚', '🎨', '⚡', '🤝', '💰', '🏃', '🎵', '🌿', '🍎', '💧', '✍️', '🧠', '😴'];
+
+const BENEFIT_SUGGESTIONS = [
+  'Тайвшруулна', 'Төвлөрөл сайжруулна', 'Эрч хүч нэмнэ',
+  'Эрүүл мэнд дэмжинэ', 'Өөрийгөө сайжруулна', 'Бүтээмж нэмэгдэнэ',
 ];
 
 // ── Section wrapper ────────────────────
@@ -121,6 +117,25 @@ function TagPill({ label, onRemove, color }: { label: string; onRemove: () => vo
   );
 }
 
+function InlineInput({ value, onChange, placeholder, accentColor }: {
+  value: string; onChange: (v: string) => void; placeholder: string; accentColor: string;
+}) {
+  return (
+    <input
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      placeholder={placeholder}
+      className="bg-transparent focus:outline-none"
+      style={{
+        fontSize: 14, fontWeight: 500,
+        borderBottom: `1.5px solid ${value ? accentColor + '60' : 'rgba(0,0,0,0.15)'}`,
+        paddingBottom: 1, width: Math.max(120, value.length * 9 + 20),
+        maxWidth: '70%', color: value ? undefined : 'rgba(0,0,0,0.3)',
+      }}
+    />
+  );
+}
+
 function Toggle({ value, onChange, accentColor }: {
   value: boolean; onChange: (v: boolean) => void; accentColor: string;
 }) {
@@ -144,20 +159,7 @@ function Toggle({ value, onChange, accentColor }: {
   );
 }
 
-function PreviewSentence({ sentence }: { sentence: Array<{ text: string; filled: boolean }> }) {
-  return (
-    <p style={{ fontSize: 13, lineHeight: 1.75, fontStyle: 'italic' }} className="text-foreground">
-      {sentence.map((part, i) => (
-        <span key={i} style={{
-          color: part.filled ? undefined : 'rgba(0,0,0,0.28)',
-          transition: 'color 0.2s',
-        }}>
-          {part.text}
-        </span>
-      ))}
-    </p>
-  );
-}
+
 
 // ── Main ───────────────────────────────────────────────────────
 export function CreateHabitPage() {
@@ -166,26 +168,33 @@ export function CreateHabitPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Core
+  // Core sentence fields
   const [title, setTitle]     = useState('');
-  const [colorId, setColorId] = useState('lavender');
-  const [goalTag, setGoalTag] = useState('mindfulness');
-
-  // Why
+  const [precedingRoutine, setPrecedingRoutine] = useState('');
   const [reason, setReason] = useState('');
+
+  // Appearance
+  const [colorId, setColorId] = useState('lavender');
+  const [selectedEmoji, setSelectedEmoji] = useState('🧘');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  // Benefits
+  const [benefits, setBenefits] = useState<string[]>([]);
+  const [benefitInput, setBenefitInput] = useState('');
 
   // Schedule
   const [selectedDays, setSelectedDays] = useState<Weekday[]>([...DAYS_EN]);
 
-  // Time window
-  const [selectedTime, setSelectedTime] = useState('');
-  const [showTimePicker, setShowTimePicker] = useState(false);
+  // Reminder settings
+  const [reminderEnabled, setReminderEnabled] = useState(false);
+  const [timeWindows, setTimeWindows] = useState<Array<{ start: string; end: string }>>([]);
+  const [selectedLocations, setSelectedLocations] = useState<Array<{ lat: number; lng: number; label: string }>>([]);
+  const [showMapPicker, setShowMapPicker] = useState(false);
 
-  // Cue context
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const [showLocPicker, setShowLocPicker] = useState(false);
-  const [selectedRoutine, setSelectedRoutine] = useState('');
-  const [showRoutinePicker, setShowRoutinePicker] = useState(false);
+  const addTimeWindow = () => setTimeWindows(p => [...p, { start: '08:00', end: '10:00' }]);
+  const removeTimeWindow = (i: number) => setTimeWindows(p => p.filter((_, idx) => idx !== i));
+  const updateTimeWindow = (i: number, field: 'start' | 'end', val: string) =>
+    setTimeWindows(p => p.map((tw, idx) => idx === i ? { ...tw, [field]: val } : tw));
 
   // Target
   const [habitType, setHabitType] = useState<'binary' | 'measurable'>('measurable');
@@ -194,75 +203,47 @@ export function CreateHabitPage() {
   const [targetUnit, setTargetUnit]   = useState('удаа');
   const [showUnitPicker, setShowUnitPicker] = useState(false);
 
-  // Reminder
-  const [reminderEnabled, setReminderEnabled] = useState(false);
-
   const color  = getHabitColor(colorId);
 
   const toggleDay = (day: Weekday) =>
     setSelectedDays(p => p.includes(day) ? p.filter(d => d !== day) : [...p, day]);
 
-  // ── Live sentence ────────────────────────────────────────────
-  const previewParts = useMemo(() => {
-    const titleStr = title.trim();
-    const reasonStr = reason.trim();
-    const cueStr = selectedRoutine || '';
-    const timeStr = selectedTime || '';
+  const removeLocation = (label: string) =>
+    setSelectedLocations(p => p.filter(l => l.label !== label));
 
-    const daysLabel =
-      selectedDays.length === 7 ? 'өдөр бүр' :
-      selectedDays.length === 0 ? 'ямар ч өдөр' :
-      selectedDays.length === 5 && !selectedDays.includes('SATURDAY') && !selectedDays.includes('SUNDAY')
-        ? 'ажлын өдрүүдэд' :
-      `долоо хоногт ${selectedDays.length} өдөр`;
+  const addBenefit = (b: string) => {
+    if (!benefits.includes(b)) setBenefits(p => [...p, b]);
+  };
+  const removeBenefit = (b: string) => setBenefits(p => p.filter(x => x !== b));
 
-    const targetLabel = habitType === 'binary'
-      ? '1 удаа'
-      : `${targetNum || '…'} ${targetUnit}`;
 
-    return [
-      { text: 'Би ', filled: true },
-      { text: titleStr || '(дадлын нэр)', filled: !!titleStr },
-      { text: ' хийнэ', filled: true },
-      { text: reasonStr ? ` — ${reasonStr} учраас` : ' — (яагаад?)', filled: !!reasonStr },
-      { text: '. ', filled: true },
-      { text: daysLabel.charAt(0).toUpperCase() + daysLabel.slice(1), filled: selectedDays.length > 0 },
-      { text: cueStr ? `, ${cueStr} дараа` : timeStr ? `, ${timeStr}` : '', filled: !!(cueStr || timeStr) },
-      { text: ' ', filled: true },
-      { text: targetLabel, filled: !!(targetNum && habitType) },
-      { text: ' хийхийг зорьж байна.', filled: true },
-    ].filter(p => p.text !== '');
-  }, [title, reason, selectedDays, selectedRoutine, selectedTime, habitType, targetNum, targetUnit]);
 
   const handleSave = async () => {
     if (!userId || saving) return;
     setSaving(true);
 
-    const cues: CreateHabitPayload['cues'] = [];
-    if (selectedTime) {
-      const [start, end] = selectedTime.split('–');
-      cues.push({ startTime: start, endTime: end, isActive: true });
-    }
-    if (selectedLocation) {
-      cues.push({ coarseLocation: selectedLocation, isActive: true });
-    }
-    if (selectedRoutine) {
-      cues.push({ precedingRoutine: selectedRoutine, isActive: true });
-    }
+    // Build reminder settings
+    const twPayload = timeWindows
+      .filter(tw => tw.start && tw.end)
+      .map(tw => ({ startTime: tw.start, endTime: tw.end }));
 
     const payload: CreateHabitPayload = {
       title: title.trim() || 'Шинэ дадал',
-      description: reason || undefined,
+      precedingRoutine: precedingRoutine || undefined,
+      reason: reason || undefined,
+      color: colorId,
+      iconType: 'EMOJI',
+      iconValue: selectedEmoji,
+      benefits: benefits.length > 0 ? benefits : undefined,
       measurementUnit: habitType === 'binary' ? 'удаа' : targetUnit,
       targetValue: habitType === 'binary' ? 1 : (parseFloat(targetNum) || 1),
       minimumTarget: (habitType === 'measurable' && minNum) ? parseFloat(minNum) : 1,
       startDate: new Date().toISOString().split('T')[0],
-      reminderEnabled,
       scheduleDays: selectedDays.map(weekday => ({ weekday })),
-      cues: cues.length > 0 ? cues : undefined,
-      motivationProfile: {
-        goalTag,
-        reason: reason || undefined,
+      reminder: {
+        enabled: reminderEnabled,
+        timeWindows: twPayload.length > 0 ? twPayload : undefined,
+        locations: selectedLocations.length > 0 ? selectedLocations.map(l => l.label) : undefined,
       },
     };
 
@@ -310,58 +291,109 @@ export function CreateHabitPage() {
       {/* Header */}
       <div className="sticky top-0 z-20 bg-background px-5 pt-13 pb-3"
         style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-        <div className="flex items-center gap-3">
-          <motion.button
-            whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)}
-            className="w-9 h-9 flex items-center justify-center rounded-full shrink-0"
-            style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}
-          >
-            <ArrowLeft className="w-4 h-4 text-muted-foreground" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <motion.button
+              whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)}
+              className="w-9 h-9 flex items-center justify-center rounded-full shrink-0"
+              style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}
+            >
+              <ArrowLeft className="w-4 h-4 text-muted-foreground" />
+            </motion.button>
+            <p className="text-foreground" style={{ fontSize: 16, fontWeight: 700, minWidth: 60, color: title.trim() ? undefined : 'rgba(0,0,0,0.3)' }}>
+              {title.trim() || 'Дадлын нэр'}
+            </p>
+          </div>
+          <motion.button whileTap={{ scale: 0.9 }}
+            onClick={() => setShowEmojiPicker(p => !p)}
+            className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+            style={{ backgroundColor: color.btn, fontSize: 18 }}>
+            {selectedEmoji}
           </motion.button>
-          <p style={{ fontSize: 16, fontWeight: 700 }} className="text-foreground">Шинэ дадал</p>
         </div>
       </div>
 
       <div className="flex flex-col gap-5 pt-5">
 
-        {/* Live preview */}
+        {/* Sentence builder — flat inline words */}
         <div className="mx-5">
           <motion.div
-            className="rounded-[20px] px-4 py-3.5"
-            animate={{ backgroundColor: color.btn + 'cc' }}
-            transition={{ duration: 0.4 }}
-            style={{ border: `1px solid ${color.accent}28` }}
+            className="rounded-[20px] bg-card px-4 py-4"
+            animate={{ boxShadow: `0 1px 10px ${color.accent}18` }}
+            style={{ border: `1.5px solid ${color.accent}30` }}
           >
-            <p style={{
-              fontSize: 10, fontWeight: 700, letterSpacing: '0.07em',
-              color: color.accent, marginBottom: 6, opacity: 0.9,
-            }}>
-              УРЬДЧИЛСАН ХАРАГДАЦ
+            <p style={{ fontSize: 14, lineHeight: 2.4 }} className="text-foreground">
+              <InlineInput
+                value={precedingRoutine}
+                onChange={setPrecedingRoutine}
+                placeholder="өмнөх үйлдэл"
+                accentColor={color.accent}
+              />
+              <span style={{ fontWeight: 700 }}> дараа </span>
+              <InlineInput
+                value={title}
+                onChange={setTitle}
+                placeholder="дадал"
+                accentColor={color.accent}
+              />
+              <span style={{ fontWeight: 700 }}> хийнэ.</span>
             </p>
-            <PreviewSentence sentence={previewParts} />
+            <p style={{ fontSize: 14, lineHeight: 2.4, marginTop: 2 }} className="text-foreground">
+              <span style={{ fontWeight: 700 }}>Ингэснээр би: </span>
+              <InlineInput
+                value={reason}
+                onChange={setReason}
+                placeholder="өдрийг тайван эхлүүлэхийн тулд"
+                accentColor={color.accent}
+              />
+            </p>
           </motion.div>
         </div>
 
-        {/* Section 1: ДАДАЛ */}
-        <FormSection label="ДАДАЛ">
-          <div className="px-4 py-3.5">
-            <input
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              placeholder="Дадлын нэр..."
-              className="w-full bg-transparent focus:outline-none text-foreground"
-              style={{ fontSize: 15, fontWeight: 600 }}
-              autoFocus
-            />
+        {/* Section 2: ХАРАГДАХ ТӨРХ */}
+        <FormSection label="ХАРАГДАХ ТӨРХ">
+          {/* Emoji */}
+          <div className="px-4 py-3">
+            <div className="flex items-center justify-between mb-2.5">
+              <p style={{ fontSize: 13, fontWeight: 500 }} className="text-foreground">Дүрс</p>
+              <motion.button whileTap={{ scale: 0.9 }}
+                onClick={() => setShowEmojiPicker(p => !p)}
+                className="w-10 h-10 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: color.btn, fontSize: 22 }}>
+                {selectedEmoji}
+              </motion.button>
+            </div>
+            <AnimatePresence>
+              {showEmojiPicker && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.16 }}
+                  className="overflow-hidden"
+                >
+                  <div className="flex flex-wrap gap-2 pb-2">
+                    {EMOJIS.map(e => (
+                      <motion.button key={e} whileTap={{ scale: 0.85 }}
+                        onClick={() => { setSelectedEmoji(e); setShowEmojiPicker(false); }}
+                        className="w-10 h-10 rounded-full flex items-center justify-center"
+                        style={{
+                          fontSize: 20,
+                          backgroundColor: selectedEmoji === e ? color.btn : 'rgba(0,0,0,0.04)',
+                          boxShadow: selectedEmoji === e ? `0 0 0 2px ${color.accent}60` : 'none',
+                        }}>
+                        {e}
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <Divider />
 
           {/* Color */}
           <div className="px-4 py-3">
-            <div className="flex items-center justify-between mb-2.5">
-              <p style={{ fontSize: 13, fontWeight: 500 }} className="text-foreground">Өнгө</p>
-            </div>
+            <p style={{ fontSize: 13, fontWeight: 500, marginBottom: 10 }} className="text-foreground">Өнгө</p>
             <div className="flex gap-3">
               {PASTEL_LIST.map(c => {
                 const clr = getHabitColor(c.id);
@@ -388,55 +420,64 @@ export function CreateHabitPage() {
               })}
             </div>
           </div>
+        </FormSection>
 
-          <Divider />
+        {/* Section 3: АШИГ ТУС */}
+        <FormSection label="АШИГ ТУС">
+          <div className="px-4 py-3 flex flex-col gap-3">
 
-          {/* Category */}
-          <div className="px-4 py-3">
-            <p style={{ fontSize: 13, fontWeight: 500, marginBottom: 10 }} className="text-foreground">Ангилал</p>
-            <div className="flex flex-wrap gap-2">
-              {GOAL_TAGS.map(tag => {
-                const isActive = goalTag === tag.id;
-                return (
-                  <motion.button key={tag.id} whileTap={{ scale: 0.9 }}
-                    onClick={() => setGoalTag(tag.id)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                    style={{
-                      backgroundColor: isActive ? color.btn : 'rgba(0,0,0,0.05)',
-                      boxShadow: isActive ? `0 0 0 1.5px ${color.accent}60` : 'none',
-                    }}
-                  >
-                    <span style={{ fontSize: 14 }}>{tag.emoji}</span>
-                    <span style={{
-                      fontSize: 12, fontWeight: isActive ? 600 : 400,
-                      color: isActive ? '#202325' : 'rgba(0,0,0,0.5)',
-                    }}>{tag.name}</span>
-                  </motion.button>
-                );
-              })}
+            {/* Custom text input */}
+            <div className="flex items-center gap-2">
+              <input
+                value={benefitInput}
+                onChange={e => setBenefitInput(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' && benefitInput.trim()) {
+                    addBenefit(benefitInput.trim());
+                    setBenefitInput('');
+                  }
+                }}
+                placeholder="Ашиг тус нэмэх..."
+                className="flex-1 bg-transparent focus:outline-none text-foreground"
+                style={{ fontSize: 13, borderBottom: '1.5px solid rgba(0,0,0,0.12)', paddingBottom: 4 }}
+              />
+              <motion.button whileTap={{ scale: 0.9 }}
+                onClick={() => {
+                  if (benefitInput.trim()) {
+                    addBenefit(benefitInput.trim());
+                    setBenefitInput('');
+                  }
+                }}
+                className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
+                style={{ backgroundColor: benefitInput.trim() ? color.btn : 'rgba(0,0,0,0.05)' }}>
+                <Plus className="w-3.5 h-3.5" style={{ color: benefitInput.trim() ? color.accent : 'rgba(0,0,0,0.25)' }} />
+              </motion.button>
             </div>
+
+            {/* Suggestions */}
+            <div className="flex flex-wrap gap-2">
+              {BENEFIT_SUGGESTIONS.filter(b => !benefits.includes(b)).map(b => (
+                <button key={b} onClick={() => addBenefit(b)}
+                  className="px-3 py-1.5 rounded-full"
+                  style={{ fontSize: 12, backgroundColor: 'rgba(0,0,0,0.05)', color: 'rgba(0,0,0,0.7)' }}>
+                  {b}
+                </button>
+              ))}
+            </div>
+
+            {/* Selected */}
+            {benefits.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {benefits.map(b => (
+                  <TagPill key={b} label={b} onRemove={() => removeBenefit(b)} color={color.btn} />
+                ))}
+              </div>
+            )}
           </div>
         </FormSection>
 
-        {/* Section 2: ЯАГААД */}
-        <FormSection label="ЯАГААД">
-          <div className="px-4 py-3.5">
-            <p style={{ fontSize: 11, marginBottom: 6, fontWeight: 500 }} className="text-muted-foreground">
-              Энэ дадлыг яагаад хэвшүүлэхийг хүсч байна вэ?
-            </p>
-            <textarea
-              value={reason}
-              onChange={e => setReason(e.target.value)}
-              placeholder="Жишээ: илүү эрч хүчтэй, эрүүл байхын тулд..."
-              rows={2}
-              className="w-full bg-transparent focus:outline-none resize-none text-foreground"
-              style={{ fontSize: 13, lineHeight: 1.6 }}
-            />
-          </div>
-        </FormSection>
-
-        {/* Section 3: ХУВААРЬ */}
-        <FormSection label="ХУВААРЬ">
+        {/* Section 4: ХИЙХ ӨДРҮҮД */}
+        <FormSection label="ХИЙХ ӨДРҮҮД">
           <div className="px-4 py-3">
             <div className="flex items-center justify-between mb-2.5">
               <p style={{ fontSize: 13, fontWeight: 500 }} className="text-foreground">Өдрүүд</p>
@@ -472,101 +513,120 @@ export function CreateHabitPage() {
               })}
             </div>
           </div>
-
-          <Divider />
-
-          {/* Time window */}
-          <div>
-            <div className="px-4 py-3 flex items-center justify-between">
-              <p style={{ fontSize: 13, fontWeight: 500 }} className="text-foreground">Цаг</p>
-              <div className="flex items-center gap-2">
-                {selectedTime ? (
-                  <TagPill label={selectedTime} onRemove={() => setSelectedTime('')} color={color.btn} />
-                ) : (
-                  <motion.button whileTap={{ scale: 0.9 }}
-                    onClick={() => setShowTimePicker(p => !p)}
-                    className="px-3 py-1.5 rounded-full"
-                    style={{ fontSize: 12, color: color.accent, fontWeight: 600, backgroundColor: color.btn }}>
-                    + Нэмэх
-                  </motion.button>
-                )}
-              </div>
-            </div>
-            <AnimatePresence>
-              {showTimePicker && (
-                <InlineOptions options={TIME_SLOTS}
-                  onSelect={v => { setSelectedTime(v); setShowTimePicker(false); }}
-                  onClose={() => setShowTimePicker(false)} />
-              )}
-            </AnimatePresence>
-          </div>
         </FormSection>
 
-        {/* Section 4: ДОХИО */}
-        <FormSection label="ДОХИО — КЕН ДАРАА ХИЙХ ВЭ">
-          {/* Location */}
-          <div>
-            <div className="px-4 py-3 flex items-center justify-between">
-              <div>
-                <p style={{ fontSize: 13, fontWeight: 500 }} className="text-foreground">Байршил</p>
-                <p style={{ fontSize: 11, marginTop: 1 }} className="text-muted-foreground">Хаана хийх вэ?</p>
-              </div>
-              <div>
-                {selectedLocation ? (
-                  <TagPill label={selectedLocation} onRemove={() => setSelectedLocation('')} color={color.btn} />
-                ) : (
-                  <motion.button whileTap={{ scale: 0.9 }}
-                    onClick={() => { setShowLocPicker(p => !p); setShowRoutinePicker(false); }}
-                    className="px-3 py-1.5 rounded-full"
-                    style={{ fontSize: 12, color: color.accent, fontWeight: 600, backgroundColor: color.btn }}>
-                    + Нэмэх
-                  </motion.button>
-                )}
-              </div>
+        {/* Section 5: САНУУЛГА */}
+        <FormSection label="САНУУЛГА">
+          <FormRow label="Сануулга идэвхтэй">
+            <div className="flex items-center gap-2">
+              {reminderEnabled
+                ? <Bell className="w-4 h-4" style={{ color: color.accent }} />
+                : <BellOff className="w-4 h-4 text-muted-foreground" />}
+              <Toggle value={reminderEnabled} onChange={setReminderEnabled} accentColor={color.accent} />
             </div>
-            <AnimatePresence>
-              {showLocPicker && (
-                <InlineOptions options={LOCATIONS}
-                  onSelect={v => { setSelectedLocation(v); setShowLocPicker(false); }}
-                  onClose={() => setShowLocPicker(false)} />
-              )}
-            </AnimatePresence>
-          </div>
+          </FormRow>
 
-          <Divider />
+          <AnimatePresence>
+            {reminderEnabled && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.18 }}
+                className="overflow-hidden"
+              >
+                {/* Time windows — multiple */}
+                <div className="px-4 py-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <p style={{ fontSize: 13, fontWeight: 500 }} className="text-foreground">Цаг</p>
+                    <motion.button whileTap={{ scale: 0.9 }} onClick={addTimeWindow}
+                      className="w-7 h-7 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: color.btn }}>
+                      <Plus className="w-3.5 h-3.5" style={{ color: color.accent }} />
+                    </motion.button>
+                  </div>
 
-          {/* Preceding routine */}
-          <div>
-            <div className="px-4 py-3 flex items-center justify-between">
-              <div>
-                <p style={{ fontSize: 13, fontWeight: 500 }} className="text-foreground">Өмнөх хэрэглүүр</p>
-                <p style={{ fontSize: 11, marginTop: 1 }} className="text-muted-foreground">Юуны дараа хийх вэ?</p>
-              </div>
-              <div>
-                {selectedRoutine ? (
-                  <TagPill label={selectedRoutine} onRemove={() => setSelectedRoutine('')} color={color.btn} />
-                ) : (
-                  <motion.button whileTap={{ scale: 0.9 }}
-                    onClick={() => { setShowRoutinePicker(p => !p); setShowLocPicker(false); }}
-                    className="px-3 py-1.5 rounded-full"
-                    style={{ fontSize: 12, color: color.accent, fontWeight: 600, backgroundColor: color.btn }}>
-                    + Нэмэх
-                  </motion.button>
-                )}
-              </div>
-            </div>
-            <AnimatePresence>
-              {showRoutinePicker && (
-                <InlineOptions options={ROUTINES}
-                  onSelect={v => { setSelectedRoutine(v); setShowRoutinePicker(false); }}
-                  onClose={() => setShowRoutinePicker(false)} />
-              )}
-            </AnimatePresence>
-          </div>
+                  {timeWindows.length === 0 && (
+                    <p className="text-muted-foreground" style={{ fontSize: 12 }}>
+                      + дарж цагийн хүрээ нэмнэ
+                    </p>
+                  )}
+
+                  <div className="flex flex-col gap-2">
+                    {timeWindows.map((tw, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <input type="time" value={tw.start}
+                          onChange={e => updateTimeWindow(i, 'start', e.target.value)}
+                          className="flex-1 rounded-xl px-3 py-1.5 bg-transparent text-foreground focus:outline-none"
+                          style={{ fontSize: 13, fontWeight: 600, border: '1px solid rgba(0,0,0,0.1)' }} />
+                        <span className="text-muted-foreground" style={{ fontSize: 12 }}>–</span>
+                        <input type="time" value={tw.end}
+                          onChange={e => updateTimeWindow(i, 'end', e.target.value)}
+                          className="flex-1 rounded-xl px-3 py-1.5 bg-transparent text-foreground focus:outline-none"
+                          style={{ fontSize: 13, fontWeight: 600, border: '1px solid rgba(0,0,0,0.1)' }} />
+                        <button onClick={() => removeTimeWindow(i)}
+                          className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
+                          style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}>
+                          <X className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <Divider />
+
+                {/* Map-based location picker */}
+                <div className="px-4 py-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <p style={{ fontSize: 13, fontWeight: 500 }} className="text-foreground">Байршил</p>
+                    <motion.button whileTap={{ scale: 0.9 }}
+                      onClick={() => setShowMapPicker(p => !p)}
+                      className="px-3 py-1.5 rounded-full"
+                      style={{ fontSize: 12, color: color.accent, fontWeight: 600, backgroundColor: color.btn }}>
+                      {showMapPicker ? 'Хаах' : '+ Газрын зургаас'}
+                    </motion.button>
+                  </div>
+
+                  {/* Selected locations */}
+                  {selectedLocations.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {selectedLocations.map(loc => (
+                        <div key={loc.label} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full"
+                          style={{ backgroundColor: color.btn, fontSize: 12, color: '#202325', fontWeight: 500 }}>
+                          <MapPin className="w-3 h-3" style={{ color: color.accent }} />
+                          {loc.label}
+                          <button onClick={() => removeLocation(loc.label)}
+                            className="w-3.5 h-3.5 rounded-full flex items-center justify-center"
+                            style={{ backgroundColor: 'rgba(0,0,0,0.12)' }}>
+                            <X className="w-2.5 h-2.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <AnimatePresence>
+                  {showMapPicker && (
+                    <LocationMapPicker
+                      accentColor={color.accent}
+                      btnColor={color.btn}
+                      onConfirm={(loc) => {
+                        if (!selectedLocations.find(l => l.label === loc.label)) {
+                          setSelectedLocations(p => [...p, loc]);
+                        }
+                        setShowMapPicker(false);
+                      }}
+                      onClose={() => setShowMapPicker(false)}
+                    />
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </FormSection>
 
-        {/* Section 5: ЗОРИЛТ */}
-        <FormSection label="ЗОРИЛТ">
+        {/* Section 6: ХЭМЖИЛТ */}
+        <FormSection label="ХЭМЖИЛТ">
           <FormRow label="Төрөл">
             <div className="flex gap-1.5">
               {(['binary', 'measurable'] as const).map(t => (
@@ -636,17 +696,6 @@ export function CreateHabitPage() {
           </AnimatePresence>
         </FormSection>
 
-        {/* Section 6: САНУУЛГА */}
-        <FormSection label="САНУУЛГА">
-          <FormRow label="Сануулга идэвхтэй" divider={false}>
-            <div className="flex items-center gap-2">
-              {reminderEnabled
-                ? <Bell className="w-4 h-4" style={{ color: color.accent }} />
-                : <BellOff className="w-4 h-4 text-muted-foreground" />}
-              <Toggle value={reminderEnabled} onChange={setReminderEnabled} accentColor={color.accent} />
-            </div>
-          </FormRow>
-        </FormSection>
       </div>
 
       {/* Save button */}

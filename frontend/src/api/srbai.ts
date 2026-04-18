@@ -18,7 +18,7 @@ export interface SrbaiCompositeScore {
   contextStabilityScore: number;
   selfInitiatedRate: number;
   finalScore: number;
-  stage: 'WEAK' | 'BUILDING' | 'STRONG';
+  stage: 'weak' | 'building' | 'strong';
   evaluatedAt: string;
 }
 

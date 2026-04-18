@@ -11,6 +11,11 @@ export interface CreateHabitData {
   userId: string;
   title: string;
   description?: string | null;
+  precedingRoutine?: string | null;
+  color?: string | null;
+  iconType?: string | null;
+  iconValue?: string | null;
+  benefits?: string[];
   measurementUnit: string;
   targetValue: number;
   minimumTarget: number;
@@ -26,6 +31,7 @@ export interface CreateHabitData {
     isActive: boolean;
   }>;
   motivationProfile?: {
+    goalTag?: string | null;
     reason?: string | null;
   } | null;
 }
@@ -33,6 +39,11 @@ export interface CreateHabitData {
 export interface UpdateHabitData {
   title?: string;
   description?: string | null;
+  precedingRoutine?: string | null;
+  color?: string | null;
+  iconType?: string | null;
+  iconValue?: string | null;
+  benefits?: string[];
   measurementUnit?: string;
   targetValue?: number;
   minimumTarget?: number;
@@ -52,6 +63,7 @@ export interface UpdateHabitData {
   }>;
   /** When provided, upserts the motivation profile. */
   motivationProfile?: {
+    goalTag?: string | null;
     reason?: string | null;
   } | null;
 }

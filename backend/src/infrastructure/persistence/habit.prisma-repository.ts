@@ -33,6 +33,7 @@ type PrismaHabit = Awaited<
   motivationProfile: {
     id: string;
     habitId: string;
+    goalTag: string | null;
     reason: string | null;
     createdAt: Date;
     updatedAt: Date;
@@ -53,6 +54,11 @@ export class HabitPrismaRepository implements IHabitRepository {
         userId: data.userId,
         title: data.title,
         description: data.description,
+        precedingRoutine: data.precedingRoutine,
+        color: data.color,
+        iconType: data.iconType,
+        iconValue: data.iconValue,
+        benefits: data.benefits ?? [],
         measurementUnit: data.measurementUnit,
         targetValue: data.targetValue,
         minimumTarget: data.minimumTarget,
@@ -121,6 +127,13 @@ export class HabitPrismaRepository implements IHabitRepository {
         ...(data.description !== undefined && {
           description: data.description,
         }),
+        ...(data.precedingRoutine !== undefined && {
+          precedingRoutine: data.precedingRoutine,
+        }),
+        ...(data.color !== undefined && { color: data.color }),
+        ...(data.iconType !== undefined && { iconType: data.iconType }),
+        ...(data.iconValue !== undefined && { iconValue: data.iconValue }),
+        ...(data.benefits !== undefined && { benefits: data.benefits }),
         ...(data.measurementUnit !== undefined && {
           measurementUnit: data.measurementUnit,
         }),

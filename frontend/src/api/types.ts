@@ -1,9 +1,10 @@
 // ── Enums (mirrors backend domain.enums) ─────────────────────────────────────
 
-export type HabitLifecycleStatus = 'ACTIVE' | 'ARCHIVED';
+export type HabitLifecycleStatus = 'ACTIVE' | 'PAUSED' | 'ARCHIVED';
 export type HabitLogStatus = 'DONE' | 'NOT_DONE';
-export type CompletionTriggerSource = 'SELF_INITIATED' | 'REMINDER_TRIGGERED' | 'MANUAL_ENTRY';
+export type CompletionTriggerSource = 'SELF_INITIATED' | 'REMINDER_TRIGGERED' | 'UNKNOWN';
 export type Weekday = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+export type DifficultyRating = 'very_easy' | 'easy' | 'moderate' | 'hard' | 'very_hard';
 
 // ── Entities ──────────────────────────────────────────────────────────────────
 
@@ -14,8 +15,10 @@ export interface HabitScheduleDay {
 export interface HabitCue {
   id: string;
   habitId: string;
-  type: string;
-  value: string;
+  startTime: string | null;
+  endTime: string | null;
+  coarseLocation: string | null;
+  precedingRoutine: string | null;
   isActive: boolean;
 }
 
@@ -29,6 +32,11 @@ export interface Habit {
   userId: string;
   title: string;
   description: string | null;
+  precedingRoutine: string | null;
+  color: string | null;
+  iconType: string | null;
+  iconValue: string | null;
+  benefits: string[];
   measurementUnit: string;
   targetValue: number;
   minimumTarget: number;
@@ -43,16 +51,17 @@ export interface Habit {
   updatedAt: string;
 }
 
-export interface CueEvaluationResult {
-  cueId: string;
-  type: string;
-  value: string;
+/** CueContext returned by GET /habits/today cueContext array */
+export interface CueContext {
   isActive: boolean;
-  isCurrentlyTriggered: boolean;
+  startTime: string | null;
+  endTime: string | null;
+  coarseLocation: string | null;
+  precedingRoutine: string | null;
 }
 
 export interface HabitWithCueContext extends Habit {
-  cueContext: CueEvaluationResult[];
+  cueContext: CueContext[];
 }
 
 export interface HabitLog {
@@ -71,6 +80,7 @@ export interface ProgressSummary {
   notDoneCount: number;
   lastLoggedAt: string | null;
   lastCompletedAt: string | null;
+  completionByTriggerSource: Record<string, number>;
   selfInitiatedCount: number;
   reminderTriggeredCount: number;
   unknownSourceCount: number;
@@ -83,8 +93,13 @@ export interface HabitStrengthSignals {
   habitId: string;
   totalLogs: number;
   doneCount: number;
+  partialCount: number;
+  notDoneCount: number;
   doneRate: number;
   selfInitiatedRate: number;
+  scheduledWeekdayCount: number;
+  hasCueConfiguration: boolean;
+  hasMotivationProfile: boolean;
   stage: 'insufficient_data' | 'early_stage' | 'building' | 'established';
   evaluatedAt: string;
 }
@@ -95,6 +110,6 @@ export interface CompositeScore {
   contextStabilityScore: number;
   selfInitiatedRate: number;
   finalScore: number;
-  stage: 'WEAK' | 'BUILDING' | 'STRONG';
+  stage: 'weak' | 'building' | 'strong';
   evaluatedAt: string;
 }

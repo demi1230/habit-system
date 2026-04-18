@@ -17,6 +17,11 @@ export class HabitEntity {
   userId!: string;
   title!: string;
   description!: string | null;
+  precedingRoutine!: string | null;
+  color!: string | null;
+  iconType!: string | null;
+  iconValue!: string | null;
+  benefits!: string[];
   measurementUnit!: string;
   targetValue!: number;
   minimumTarget!: number;

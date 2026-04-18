@@ -41,6 +41,10 @@ export type HabitMinAggregateOutputType = {
   userId: string | null
   title: string | null
   description: string | null
+  precedingRoutine: string | null
+  color: string | null
+  iconType: string | null
+  iconValue: string | null
   measurementUnit: string | null
   targetValue: number | null
   minimumTarget: number | null
@@ -57,6 +61,10 @@ export type HabitMaxAggregateOutputType = {
   userId: string | null
   title: string | null
   description: string | null
+  precedingRoutine: string | null
+  color: string | null
+  iconType: string | null
+  iconValue: string | null
   measurementUnit: string | null
   targetValue: number | null
   minimumTarget: number | null
@@ -73,6 +81,11 @@ export type HabitCountAggregateOutputType = {
   userId: number
   title: number
   description: number
+  precedingRoutine: number
+  color: number
+  iconType: number
+  iconValue: number
+  benefits: number
   measurementUnit: number
   targetValue: number
   minimumTarget: number
@@ -101,6 +114,10 @@ export type HabitMinAggregateInputType = {
   userId?: true
   title?: true
   description?: true
+  precedingRoutine?: true
+  color?: true
+  iconType?: true
+  iconValue?: true
   measurementUnit?: true
   targetValue?: true
   minimumTarget?: true
@@ -117,6 +134,10 @@ export type HabitMaxAggregateInputType = {
   userId?: true
   title?: true
   description?: true
+  precedingRoutine?: true
+  color?: true
+  iconType?: true
+  iconValue?: true
   measurementUnit?: true
   targetValue?: true
   minimumTarget?: true
@@ -133,6 +154,11 @@ export type HabitCountAggregateInputType = {
   userId?: true
   title?: true
   description?: true
+  precedingRoutine?: true
+  color?: true
+  iconType?: true
+  iconValue?: true
+  benefits?: true
   measurementUnit?: true
   targetValue?: true
   minimumTarget?: true
@@ -236,6 +262,11 @@ export type HabitGroupByOutputType = {
   userId: string
   title: string
   description: string | null
+  precedingRoutine: string | null
+  color: string | null
+  iconType: string | null
+  iconValue: string | null
+  benefits: string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -275,6 +306,11 @@ export type HabitWhereInput = {
   userId?: Prisma.UuidFilter<"Habit"> | string
   title?: Prisma.StringFilter<"Habit"> | string
   description?: Prisma.StringNullableFilter<"Habit"> | string | null
+  precedingRoutine?: Prisma.StringNullableFilter<"Habit"> | string | null
+  color?: Prisma.StringNullableFilter<"Habit"> | string | null
+  iconType?: Prisma.StringNullableFilter<"Habit"> | string | null
+  iconValue?: Prisma.StringNullableFilter<"Habit"> | string | null
+  benefits?: Prisma.StringNullableListFilter<"Habit">
   measurementUnit?: Prisma.StringFilter<"Habit"> | string
   targetValue?: Prisma.FloatFilter<"Habit"> | number
   minimumTarget?: Prisma.FloatFilter<"Habit"> | number
@@ -301,6 +337,11 @@ export type HabitOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  precedingRoutine?: Prisma.SortOrderInput | Prisma.SortOrder
+  color?: Prisma.SortOrderInput | Prisma.SortOrder
+  iconType?: Prisma.SortOrderInput | Prisma.SortOrder
+  iconValue?: Prisma.SortOrderInput | Prisma.SortOrder
+  benefits?: Prisma.SortOrder
   measurementUnit?: Prisma.SortOrder
   targetValue?: Prisma.SortOrder
   minimumTarget?: Prisma.SortOrder
@@ -330,6 +371,11 @@ export type HabitWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.UuidFilter<"Habit"> | string
   title?: Prisma.StringFilter<"Habit"> | string
   description?: Prisma.StringNullableFilter<"Habit"> | string | null
+  precedingRoutine?: Prisma.StringNullableFilter<"Habit"> | string | null
+  color?: Prisma.StringNullableFilter<"Habit"> | string | null
+  iconType?: Prisma.StringNullableFilter<"Habit"> | string | null
+  iconValue?: Prisma.StringNullableFilter<"Habit"> | string | null
+  benefits?: Prisma.StringNullableListFilter<"Habit">
   measurementUnit?: Prisma.StringFilter<"Habit"> | string
   targetValue?: Prisma.FloatFilter<"Habit"> | number
   minimumTarget?: Prisma.FloatFilter<"Habit"> | number
@@ -356,6 +402,11 @@ export type HabitOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  precedingRoutine?: Prisma.SortOrderInput | Prisma.SortOrder
+  color?: Prisma.SortOrderInput | Prisma.SortOrder
+  iconType?: Prisma.SortOrderInput | Prisma.SortOrder
+  iconValue?: Prisma.SortOrderInput | Prisma.SortOrder
+  benefits?: Prisma.SortOrder
   measurementUnit?: Prisma.SortOrder
   targetValue?: Prisma.SortOrder
   minimumTarget?: Prisma.SortOrder
@@ -380,6 +431,11 @@ export type HabitScalarWhereWithAggregatesInput = {
   userId?: Prisma.UuidWithAggregatesFilter<"Habit"> | string
   title?: Prisma.StringWithAggregatesFilter<"Habit"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Habit"> | string | null
+  precedingRoutine?: Prisma.StringNullableWithAggregatesFilter<"Habit"> | string | null
+  color?: Prisma.StringNullableWithAggregatesFilter<"Habit"> | string | null
+  iconType?: Prisma.StringNullableWithAggregatesFilter<"Habit"> | string | null
+  iconValue?: Prisma.StringNullableWithAggregatesFilter<"Habit"> | string | null
+  benefits?: Prisma.StringNullableListFilter<"Habit">
   measurementUnit?: Prisma.StringWithAggregatesFilter<"Habit"> | string
   targetValue?: Prisma.FloatWithAggregatesFilter<"Habit"> | number
   minimumTarget?: Prisma.FloatWithAggregatesFilter<"Habit"> | number
@@ -395,6 +451,11 @@ export type HabitCreateInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -421,6 +482,11 @@ export type HabitUncheckedCreateInput = {
   userId: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -445,6 +511,11 @@ export type HabitUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -471,6 +542,11 @@ export type HabitUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -496,6 +572,11 @@ export type HabitCreateManyInput = {
   userId: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -511,6 +592,11 @@ export type HabitUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -527,6 +613,11 @@ export type HabitUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -548,11 +639,24 @@ export type HabitOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
 export type HabitCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  precedingRoutine?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  iconType?: Prisma.SortOrder
+  iconValue?: Prisma.SortOrder
+  benefits?: Prisma.SortOrder
   measurementUnit?: Prisma.SortOrder
   targetValue?: Prisma.SortOrder
   minimumTarget?: Prisma.SortOrder
@@ -574,6 +678,10 @@ export type HabitMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  precedingRoutine?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  iconType?: Prisma.SortOrder
+  iconValue?: Prisma.SortOrder
   measurementUnit?: Prisma.SortOrder
   targetValue?: Prisma.SortOrder
   minimumTarget?: Prisma.SortOrder
@@ -590,6 +698,10 @@ export type HabitMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  precedingRoutine?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  iconType?: Prisma.SortOrder
+  iconValue?: Prisma.SortOrder
   measurementUnit?: Prisma.SortOrder
   targetValue?: Prisma.SortOrder
   minimumTarget?: Prisma.SortOrder
@@ -651,6 +763,15 @@ export type HabitUncheckedUpdateManyWithoutUserNestedInput = {
   update?: Prisma.HabitUpdateWithWhereUniqueWithoutUserInput | Prisma.HabitUpdateWithWhereUniqueWithoutUserInput[]
   updateMany?: Prisma.HabitUpdateManyWithWhereWithoutUserInput | Prisma.HabitUpdateManyWithWhereWithoutUserInput[]
   deleteMany?: Prisma.HabitScalarWhereInput | Prisma.HabitScalarWhereInput[]
+}
+
+export type HabitCreatebenefitsInput = {
+  set: string[]
+}
+
+export type HabitUpdatebenefitsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type FloatFieldUpdateOperationsInput = {
@@ -803,6 +924,11 @@ export type HabitCreateWithoutUserInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -827,6 +953,11 @@ export type HabitUncheckedCreateWithoutUserInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -881,6 +1012,11 @@ export type HabitScalarWhereInput = {
   userId?: Prisma.UuidFilter<"Habit"> | string
   title?: Prisma.StringFilter<"Habit"> | string
   description?: Prisma.StringNullableFilter<"Habit"> | string | null
+  precedingRoutine?: Prisma.StringNullableFilter<"Habit"> | string | null
+  color?: Prisma.StringNullableFilter<"Habit"> | string | null
+  iconType?: Prisma.StringNullableFilter<"Habit"> | string | null
+  iconValue?: Prisma.StringNullableFilter<"Habit"> | string | null
+  benefits?: Prisma.StringNullableListFilter<"Habit">
   measurementUnit?: Prisma.StringFilter<"Habit"> | string
   targetValue?: Prisma.FloatFilter<"Habit"> | number
   minimumTarget?: Prisma.FloatFilter<"Habit"> | number
@@ -896,6 +1032,11 @@ export type HabitCreateWithoutScheduleDaysInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -921,6 +1062,11 @@ export type HabitUncheckedCreateWithoutScheduleDaysInput = {
   userId: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -960,6 +1106,11 @@ export type HabitUpdateWithoutScheduleDaysInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -985,6 +1136,11 @@ export type HabitUncheckedUpdateWithoutScheduleDaysInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1008,6 +1164,11 @@ export type HabitCreateWithoutCuesInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1033,6 +1194,11 @@ export type HabitUncheckedCreateWithoutCuesInput = {
   userId: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1072,6 +1238,11 @@ export type HabitUpdateWithoutCuesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1097,6 +1268,11 @@ export type HabitUncheckedUpdateWithoutCuesInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1120,6 +1296,11 @@ export type HabitCreateWithoutMotivationProfileInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1145,6 +1326,11 @@ export type HabitUncheckedCreateWithoutMotivationProfileInput = {
   userId: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1184,6 +1370,11 @@ export type HabitUpdateWithoutMotivationProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1209,6 +1400,11 @@ export type HabitUncheckedUpdateWithoutMotivationProfileInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1232,6 +1428,11 @@ export type HabitCreateWithoutLogsInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1257,6 +1458,11 @@ export type HabitUncheckedCreateWithoutLogsInput = {
   userId: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1296,6 +1502,11 @@ export type HabitUpdateWithoutLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1321,6 +1532,11 @@ export type HabitUncheckedUpdateWithoutLogsInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1344,6 +1560,11 @@ export type HabitCreateWithoutDifficultyFeedbackInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1369,6 +1590,11 @@ export type HabitUncheckedCreateWithoutDifficultyFeedbackInput = {
   userId: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1408,6 +1634,11 @@ export type HabitUpdateWithoutDifficultyFeedbackInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1433,6 +1664,11 @@ export type HabitUncheckedUpdateWithoutDifficultyFeedbackInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1456,6 +1692,11 @@ export type HabitCreateWithoutReflectionsInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1481,6 +1722,11 @@ export type HabitUncheckedCreateWithoutReflectionsInput = {
   userId: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1520,6 +1766,11 @@ export type HabitUpdateWithoutReflectionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1545,6 +1796,11 @@ export type HabitUncheckedUpdateWithoutReflectionsInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1568,6 +1824,11 @@ export type HabitCreateWithoutRemindersInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1593,6 +1854,11 @@ export type HabitUncheckedCreateWithoutRemindersInput = {
   userId: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1632,6 +1898,11 @@ export type HabitUpdateWithoutRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1657,6 +1928,11 @@ export type HabitUncheckedUpdateWithoutRemindersInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1680,6 +1956,11 @@ export type HabitCreateWithoutSrbaiAssessmentsInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1705,6 +1986,11 @@ export type HabitUncheckedCreateWithoutSrbaiAssessmentsInput = {
   userId: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1744,6 +2030,11 @@ export type HabitUpdateWithoutSrbaiAssessmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1769,6 +2060,11 @@ export type HabitUncheckedUpdateWithoutSrbaiAssessmentsInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1792,6 +2088,11 @@ export type HabitCreateWithoutReminderPolicyInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1817,6 +2118,11 @@ export type HabitUncheckedCreateWithoutReminderPolicyInput = {
   userId: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1856,6 +2162,11 @@ export type HabitUpdateWithoutReminderPolicyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1881,6 +2192,11 @@ export type HabitUncheckedUpdateWithoutReminderPolicyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1904,6 +2220,11 @@ export type HabitCreateManyUserInput = {
   id?: string
   title: string
   description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
   measurementUnit: string
   targetValue: number
   minimumTarget: number
@@ -1919,6 +2240,11 @@ export type HabitUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1943,6 +2269,11 @@ export type HabitUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1967,6 +2298,11 @@ export type HabitUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
   measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
   targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
   minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2068,6 +2404,11 @@ export type HabitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   userId?: boolean
   title?: boolean
   description?: boolean
+  precedingRoutine?: boolean
+  color?: boolean
+  iconType?: boolean
+  iconValue?: boolean
+  benefits?: boolean
   measurementUnit?: boolean
   targetValue?: boolean
   minimumTarget?: boolean
@@ -2095,6 +2436,11 @@ export type HabitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   userId?: boolean
   title?: boolean
   description?: boolean
+  precedingRoutine?: boolean
+  color?: boolean
+  iconType?: boolean
+  iconValue?: boolean
+  benefits?: boolean
   measurementUnit?: boolean
   targetValue?: boolean
   minimumTarget?: boolean
@@ -2112,6 +2458,11 @@ export type HabitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   userId?: boolean
   title?: boolean
   description?: boolean
+  precedingRoutine?: boolean
+  color?: boolean
+  iconType?: boolean
+  iconValue?: boolean
+  benefits?: boolean
   measurementUnit?: boolean
   targetValue?: boolean
   minimumTarget?: boolean
@@ -2129,6 +2480,11 @@ export type HabitSelectScalar = {
   userId?: boolean
   title?: boolean
   description?: boolean
+  precedingRoutine?: boolean
+  color?: boolean
+  iconType?: boolean
+  iconValue?: boolean
+  benefits?: boolean
   measurementUnit?: boolean
   targetValue?: boolean
   minimumTarget?: boolean
@@ -2140,7 +2496,7 @@ export type HabitSelectScalar = {
   updatedAt?: boolean
 }
 
-export type HabitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "description" | "measurementUnit" | "targetValue" | "minimumTarget" | "startDate" | "status" | "reminderEnabled" | "archivedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["habit"]>
+export type HabitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "description" | "precedingRoutine" | "color" | "iconType" | "iconValue" | "benefits" | "measurementUnit" | "targetValue" | "minimumTarget" | "startDate" | "status" | "reminderEnabled" | "archivedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["habit"]>
 export type HabitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   scheduleDays?: boolean | Prisma.Habit$scheduleDaysArgs<ExtArgs>
@@ -2180,6 +2536,11 @@ export type $HabitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     userId: string
     title: string
     description: string | null
+    precedingRoutine: string | null
+    color: string | null
+    iconType: string | null
+    iconValue: string | null
+    benefits: string[]
     measurementUnit: string
     targetValue: number
     minimumTarget: number
@@ -2626,6 +2987,11 @@ export interface HabitFieldRefs {
   readonly userId: Prisma.FieldRef<"Habit", 'String'>
   readonly title: Prisma.FieldRef<"Habit", 'String'>
   readonly description: Prisma.FieldRef<"Habit", 'String'>
+  readonly precedingRoutine: Prisma.FieldRef<"Habit", 'String'>
+  readonly color: Prisma.FieldRef<"Habit", 'String'>
+  readonly iconType: Prisma.FieldRef<"Habit", 'String'>
+  readonly iconValue: Prisma.FieldRef<"Habit", 'String'>
+  readonly benefits: Prisma.FieldRef<"Habit", 'String[]'>
   readonly measurementUnit: Prisma.FieldRef<"Habit", 'String'>
   readonly targetValue: Prisma.FieldRef<"Habit", 'Float'>
   readonly minimumTarget: Prisma.FieldRef<"Habit", 'Float'>

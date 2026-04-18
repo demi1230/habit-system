@@ -18,16 +18,6 @@ const DAYS_MAP: Record<string, string> = {
 };
 const ALL_DAYS: Weekday[] = ['MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY'];
 
-const GOAL_TAG_MAP: Record<string, { name: string; emoji: string }> = {
-  mindfulness: { name: 'ÐÐ½Ñ…Ð°Ð°Ñ€Ð°Ð»', emoji: 'ðŸ§˜' },
-  fitness:     { name: 'Ð¤Ð¸Ñ‚Ð½ÐµÑ', emoji: 'ðŸ’ª' },
-  health:      { name: 'Ð­Ñ€Ò¯Ò¯Ð» Ð¼ÑÐ½Ð´', emoji: 'â¤ï¸' },
-  learning:    { name: 'Ð¡ÑƒÑ€Ð°Ð»Ñ†Ð°Ñ…', emoji: 'ðŸ“š' },
-  creativity:  { name: 'Ð‘Ò¯Ñ‚ÑÑÐ»Ñ‡ Ð±Ð°Ð¹Ð´Ð°Ð»', emoji: 'ðŸŽ¨' },
-  productivity:{ name: 'Ð‘Ò¯Ñ‚ÑÑÐ¼Ð¶', emoji: 'âš¡' },
-  social:      { name: 'Ð¥Ð°Ñ€Ð¸Ð»Ñ†Ð°Ð°', emoji: 'ðŸ¤' },
-  finance:     { name: 'Ð¡Ð°Ð½Ñ…Ò¯Ò¯', emoji: 'ðŸ’°' },
-};
 
 function isBinaryHabit(h: Habit) {
   return h.targetValue === 1 && ['ÑƒÐ´Ð°Ð°', 'times', 'boolean'].includes(h.measurementUnit);
@@ -46,7 +36,7 @@ function getLast28Days() {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}
+    <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: '0.06em' }}
        className="text-muted-foreground mb-2 pl-0.5">{children}</p>
   );
 }
@@ -63,7 +53,7 @@ function StrengthBar({ label, value, color }: { label: string; value: number; co
     <div className="mb-3 last:mb-0">
       <div className="flex justify-between mb-1.5">
         <span style={{ fontSize: 12, fontWeight: 500 }} className="text-muted-foreground">{label}</span>
-        <span style={{ fontSize: 12, fontWeight: 700, color }}>{value}%</span>
+        <span style={{ fontSize: 12, fontWeight: 600, color }}>{value}%</span>
       </div>
       <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(0,0,0,0.07)' }}>
         <motion.div initial={{ width: 0 }} animate={{ width: `${value}%` }}
@@ -118,14 +108,14 @@ function QuickLogWidget({ habit, logs, color, onLogged }: {
               style={{ backgroundColor: color.btn }}>
               <Check className="w-5 h-5" style={{ color: color.accent }} strokeWidth={2.5} />
             </div>
-            <span style={{ fontSize: 14, fontWeight: 600, color: color.accent }}>Ó¨Ð½Ó©Ó©Ð´Ó©Ñ€ Ð´ÑƒÑƒÑÑÐ°Ð½</span>
+            <span style={{ fontSize: 14, fontWeight: 500, color: color.accent }}>Ó¨Ð½Ó©Ó©Ð´Ó©Ñ€ Ð´ÑƒÑƒÑÑÐ°Ð½</span>
           </motion.div>
         ) : (
           <motion.button whileTap={{ scale: 0.96 }} onClick={handleLog} disabled={saving}
             className="w-full py-3.5 rounded-[16px] flex items-center justify-center gap-2 disabled:opacity-50"
             style={{ backgroundColor: CTA_DARK.bg, boxShadow: CTA_DARK.shadow }}>
             <Check className="w-4 h-4 text-white" strokeWidth={2.5} />
-            <span style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>{saving ? '...' : 'Ó¨Ð½Ó©Ó©Ð´Ó©Ñ€ Ñ…Ð¸Ð¹Ð»ÑÑ'}</span>
+            <span style={{ fontSize: 14, fontWeight: 500, color: '#fff' }}>{saving ? '...' : 'Ó¨Ð½Ó©Ó©Ð´Ó©Ñ€ Ñ…Ð¸Ð¹Ð»ÑÑ'}</span>
           </motion.button>
         )}
       </div>
@@ -147,7 +137,7 @@ function QuickLogWidget({ habit, logs, color, onLogged }: {
           <Minus className="w-4 h-4" style={{ color: '#474747' }} />
         </motion.button>
         <div className="flex-1 text-center">
-          <span style={{ fontSize: 32, fontWeight: 700, color: statusColor, letterSpacing: '-1px' }}>{value}</span>
+          <span style={{ fontSize: 32, fontWeight: 600, color: statusColor, letterSpacing: '-1px' }}>{value}</span>
           <span style={{ fontSize: 14, color: 'rgba(0,0,0,0.4)', marginLeft: 4 }}>{habit.measurementUnit}</span>
         </div>
         <motion.button whileTap={{ scale: 0.86 }}
@@ -157,7 +147,7 @@ function QuickLogWidget({ habit, logs, color, onLogged }: {
           <Plus className="w-4 h-4" style={{ color: color.accent }} />
         </motion.button>
       </div>
-      <p className="text-center mb-3" style={{ fontSize: 12, color: statusColor, fontWeight: 600 }}>{statusLabel}</p>
+      <p className="text-center mb-3" style={{ fontSize: 12, color: statusColor, fontWeight: 500 }}>{statusLabel}</p>
       <motion.button whileTap={{ scale: 0.96 }} onClick={handleLog}
         disabled={status === 'none' || saving}
         className="w-full py-3.5 rounded-[16px] flex items-center justify-center gap-2 disabled:opacity-50"
@@ -166,7 +156,7 @@ function QuickLogWidget({ habit, logs, color, onLogged }: {
           boxShadow: status !== 'none' ? CTA_DARK.shadow : 'none',
         }}>
         <Check className="w-4 h-4" style={{ color: status !== 'none' ? '#fff' : '#9ca3af' }} strokeWidth={2.5} />
-        <span style={{ fontSize: 14, fontWeight: 600, color: status !== 'none' ? '#fff' : '#9ca3af' }}>
+        <span style={{ fontSize: 14, fontWeight: 500, color: status !== 'none' ? '#fff' : '#9ca3af' }}>
           {saving ? '...' : isAlreadyDone ? 'Ð”Ð°Ñ…Ð¸Ð½ Ð±Ò¯Ñ€Ñ‚Ð³ÑÑ…' : 'Ð‘Ò¯Ñ€Ñ‚Ð³ÑÑ…'}
         </span>
       </motion.button>
@@ -196,7 +186,7 @@ function HistoryGrid({ habit, logs, color }: {
   return (
     <div className="grid gap-1.5" style={{ gridTemplateColumns: 'repeat(7, 1fr)' }}>
       {['Ð”Ð°','ÐœÑ','Ð›Ñ…','ÐŸÒ¯','Ð‘Ð°','Ð‘Ñ','ÐÑ'].map(d => (
-        <div key={d} className="text-center" style={{ fontSize: 10, color: 'rgba(0,0,0,0.32)', fontWeight: 600, paddingBottom: 2 }}>{d}</div>
+        <div key={d} className="text-center" style={{ fontSize: 10, color: 'rgba(0,0,0,0.32)', fontWeight: 500, paddingBottom: 2 }}>{d}</div>
       ))}
       {days.map(dateStr => {
         const log = logMap[dateStr];
@@ -211,7 +201,7 @@ function HistoryGrid({ habit, logs, color }: {
             style={{ aspectRatio: '1', borderRadius: 8, backgroundColor: bg,
               border: isToday ? `1.5px solid ${color.accent}` : 'none' }}>
             {log?.partial && !log?.done && (
-              <span style={{ fontSize: 8, color: color.accent, fontWeight: 700 }}>~</span>
+              <span style={{ fontSize: 8, color: color.accent, fontWeight: 500 }}>~</span>
             )}
           </div>
         );
@@ -264,11 +254,11 @@ export function HabitDetailPage() {
       <div className="min-h-screen bg-background flex items-center justify-center px-6">
         <div className="text-center">
           <p style={{ fontSize: 48 }}>ðŸ”</p>
-          <p style={{ fontSize: 17, fontWeight: 700, marginTop: 12 }} className="text-foreground">Ð”Ð°Ð´Ð°Ð» Ð¾Ð»Ð´ÑÐ¾Ð½Ð³Ò¯Ð¹</p>
+          <p style={{ fontSize: 17, fontWeight: 600, marginTop: 12 }} className="text-foreground">Ð”Ð°Ð´Ð°Ð» Ð¾Ð»Ð´ÑÐ¾Ð½Ð³Ò¯Ð¹</p>
           <p style={{ fontSize: 13, marginTop: 6 }} className="text-muted-foreground">Ð­Ð½Ñ Ð´Ð°Ð´Ð°Ð» ÑƒÑÑ‚Ð³Ð°Ð³Ð´ÑÐ°Ð½ Ð±Ð°Ð¹Ð¶ Ð±Ð¾Ð»Ð·Ð¾ÑˆÐ³Ò¯Ð¹</p>
           <button onClick={() => navigate('/dashboard')}
             className="mt-6 px-8 py-3 rounded-full"
-            style={{ backgroundColor: CTA_DARK.bg, color: CTA_DARK.text, fontSize: 14, fontWeight: 600, boxShadow: CTA_DARK.shadow }}>
+            style={{ backgroundColor: CTA_DARK.bg, color: CTA_DARK.text, fontSize: 14, fontWeight: 500, boxShadow: CTA_DARK.shadow }}>
             ÐÒ¯Ò¯Ñ€ Ñ…ÑƒÑƒÐ´Ð°Ñ Ñ€ÑƒÑƒ
           </button>
         </div>
@@ -276,9 +266,8 @@ export function HabitDetailPage() {
     );
   }
 
-  const goalTag = habit.motivationProfile?.goalTag;
-  const tag = goalTag ? GOAL_TAG_MAP[goalTag] : null;
-  const color = getHabitColor(goalTag ?? 'lavender');
+  const color = getHabitColor(habit.color);
+  const habitIcon = habit.iconValue || '✨';
   const binary = isBinaryHabit(habit);
 
   const doneCount = progress?.doneCount ?? logs.filter(l => l.status === 'DONE').length;
@@ -303,9 +292,9 @@ export function HabitDetailPage() {
   const todayStatusColor =
     todayStatus === 'done' ? color.accent : todayStatus === 'partial' ? color.ring : 'rgba(0,0,0,0.38)';
 
-  const timeCue = habit.cues.find(c => c.type === 'TIME_WINDOW');
-  const locationCue = habit.cues.find(c => c.type === 'LOCATION');
-  const routineCue = habit.cues.find(c => c.type === 'PRECEDING_ROUTINE');
+  const timeCue = habit.cues.find(c => c.startTime || c.endTime);
+  const locationCue = habit.cues.find(c => c.coarseLocation);
+  const routineCue = habit.cues.find(c => c.precedingRoutine);
 
   const handleArchive = async () => {
     if (!userId || !id) return;
@@ -325,7 +314,7 @@ export function HabitDetailPage() {
             style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
             <ArrowLeft className="w-4 h-4" style={{ color: '#474747' }} />
           </motion.button>
-          <p style={{ fontSize: 15, fontWeight: 700 }} className="truncate mx-3 flex-1 text-center text-foreground">{habit.title}</p>
+          <p style={{ fontSize: 15, fontWeight: 600 }} className="truncate mx-3 flex-1 text-center text-foreground">{habit.title}</p>
           <motion.button whileTap={{ scale: 0.9 }} onClick={() => setShowArchiveConfirm(true)}
             className="w-9 h-9 rounded-full flex items-center justify-center"
             style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
@@ -344,16 +333,10 @@ export function HabitDetailPage() {
           <div className="relative flex items-center gap-4 mb-4">
             <div className="w-14 h-14 rounded-[18px] flex items-center justify-center shrink-0"
               style={{ backgroundColor: 'rgba(255,255,255,0.55)' }}>
-              <span style={{ fontSize: 28 }}>{tag?.emoji || 'âœ¨'}</span>
+              <span style={{ fontSize: 28 }}>{habitIcon}</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p style={{ fontSize: 17, fontWeight: 700, color: '#202325', lineHeight: 1.3 }}>{habit.title}</p>
-              {tag && (
-                <span className="mt-1.5 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full"
-                  style={{ backgroundColor: 'rgba(255,255,255,0.6)', fontSize: 11, color: '#202325', fontWeight: 600 }}>
-                  {tag.emoji} {tag.name}
-                </span>
-              )}
+              <p style={{ fontSize: 17, fontWeight: 600, color: '#202325', lineHeight: 1.3 }}>{habit.title}</p>
             </div>
           </div>
           <div className="relative flex gap-2.5">
@@ -364,12 +347,32 @@ export function HabitDetailPage() {
             ].map(item => (
               <div key={item.label} className="flex-1 rounded-[14px] py-2 px-2 text-center"
                 style={{ backgroundColor: 'rgba(255,255,255,0.55)' }}>
-                <p style={{ fontSize: 15, fontWeight: 700, color: '#202325', letterSpacing: '-0.3px' }}>
+                <p style={{ fontSize: 15, fontWeight: 600, color: '#202325', letterSpacing: '-0.3px' }}>
                   {item.value}<span style={{ fontSize: 10, fontWeight: 500, opacity: 0.6 }}>{item.suffix}</span>
                 </p>
-                <p style={{ fontSize: 9, color: 'rgba(0,0,0,0.45)', marginTop: 1, fontWeight: 600 }}>{item.label}</p>
+                <p style={{ fontSize: 9, color: 'rgba(0,0,0,0.45)', marginTop: 1, fontWeight: 500 }}>{item.label}</p>
               </div>
             ))}
+          </div>
+        </motion.div>
+
+        {/* HABIT SENTENCE */}
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.035 }}>
+          <div className="rounded-[20px] px-4 py-4"
+            style={{ backgroundColor: color.card, border: `1.5px solid ${color.accent}30`, boxShadow: `0 1px 10px ${color.accent}18` }}>
+            <p style={{ fontSize: 15, lineHeight: 2.0 }} className="text-foreground">
+              {habit.precedingRoutine && (
+                <><span style={{ color: 'rgba(0,0,0,0.5)' }}>{habit.precedingRoutine} </span><span style={{ fontWeight: 500 }}>дараа </span></>
+              )}
+              <span style={{ fontWeight: 500 }}>{habit.title}</span>
+              <span style={{ fontWeight: 500 }}> дадлыг хийнэ.</span>
+            </p>
+            {habit.motivationProfile?.reason && (
+              <p style={{ fontSize: 14, lineHeight: 1.7, marginTop: 4 }} className="text-foreground">
+                <span style={{ fontWeight: 500 }}>Ингэснээр би: </span>
+                <span style={{ color: 'rgba(0,0,0,0.6)' }}>{habit.motivationProfile.reason}</span>
+              </p>
+            )}
           </div>
         </motion.div>
 
@@ -382,7 +385,7 @@ export function HabitDetailPage() {
                 <p style={{ fontSize: 12, fontWeight: 500, marginBottom: 3 }} className="text-muted-foreground">
                   {new Date().toLocaleDateString('mn-MN', { month: 'long', day: 'numeric', weekday: 'short' })}
                 </p>
-                <p style={{ fontSize: 15, fontWeight: 700, color: todayStatusColor }}>{todayStatusLabel}</p>
+                <p style={{ fontSize: 15, fontWeight: 600, color: todayStatusColor }}>{todayStatusLabel}</p>
               </div>
               <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
                 style={{ backgroundColor: todayStatus === 'done' ? color.accent : todayStatus === 'partial' ? color.btn : 'rgba(0,0,0,0.07)' }}>
@@ -396,7 +399,7 @@ export function HabitDetailPage() {
                 <div style={{ height: 0.5, backgroundColor: 'rgba(0,0,0,0.07)', marginLeft: 16 }} />
                 <div className="px-4 py-2.5 flex items-center justify-between">
                   <span style={{ fontSize: 12 }} className="text-muted-foreground">Ð—Ð¾Ñ€Ð¸Ð»Ñ‚</span>
-                  <span style={{ fontSize: 12, fontWeight: 600 }} className="text-foreground">
+                  <span style={{ fontSize: 12, fontWeight: 500 }} className="text-foreground">
                     {habit.targetValue} {habit.measurementUnit}
                     {habit.minimumTarget > 1 ? ` Â· Ñ…Ð°Ð¼Ð³Ð¸Ð¹Ð½ Ð±Ð°Ð³Ð° ${habit.minimumTarget}` : ''}
                   </span>
@@ -414,7 +417,7 @@ export function HabitDetailPage() {
               style={{ backgroundColor: color.btn + 'bb', border: `1px solid ${color.accent}20`, boxShadow: '0 1px 6px rgba(0,0,0,0.05)' }}>
               <div className="flex items-center gap-2 mb-2.5">
                 <Heart className="w-3.5 h-3.5" style={{ color: color.accent }} />
-                <span style={{ fontSize: 11, fontWeight: 700, color: color.accent, letterSpacing: '0.04em' }}>ÐœÐ˜ÐÐ˜Ð™ Ð¨ÐÐ›Ð¢Ð“ÐÐÐ</span>
+                <span style={{ fontSize: 11, fontWeight: 500, color: color.accent, letterSpacing: '0.04em' }}>ÐœÐ˜ÐÐ˜Ð™ Ð¨ÐÐ›Ð¢Ð“ÐÐÐ</span>
               </div>
               <p style={{ fontSize: 14, lineHeight: 1.65 }} className="text-foreground">{habit.motivationProfile.reason}</p>
             </div>
@@ -452,7 +455,7 @@ export function HabitDetailPage() {
                   <Clock className="w-3.5 h-3.5" style={{ color: color.accent }} />
                 </div>
                 <span style={{ fontSize: 13, fontWeight: 500, flex: 1 }} className="text-foreground">Ð¦Ð°Ð³Ð¸Ð¹Ð½ Ñ…Ò¯Ñ€ÑÑ</span>
-                <span style={{ fontSize: 13 }} className="text-muted-foreground">{timeCue.value}</span>
+                <span style={{ fontSize: 13 }} className="text-muted-foreground">{[timeCue.startTime, timeCue.endTime].filter(Boolean).join(' – ')}</span>
               </div>
             )}
             {locationCue && (
@@ -463,7 +466,7 @@ export function HabitDetailPage() {
                     <MapPin className="w-3.5 h-3.5" style={{ color: color.accent }} />
                   </div>
                   <span style={{ fontSize: 13, fontWeight: 500, flex: 1 }} className="text-foreground">Ð‘Ð°Ð¹Ñ€ÑˆÐ¸Ð»</span>
-                  <span style={{ fontSize: 13 }} className="text-muted-foreground">{locationCue.value}</span>
+                  <span style={{ fontSize: 13 }} className="text-muted-foreground">{locationCue.coarseLocation}</span>
                 </div>
               </>
             )}
@@ -475,7 +478,7 @@ export function HabitDetailPage() {
                     <ChevronRight className="w-3.5 h-3.5" style={{ color: color.accent }} />
                   </div>
                   <span style={{ fontSize: 13, fontWeight: 500, flex: 1 }} className="text-foreground">Ó¨Ð¼Ð½Ó©Ñ… Ñ…ÑÑ€ÑÐ³Ð»Ò¯Ò¯Ñ€</span>
-                  <span style={{ fontSize: 13 }} className="text-muted-foreground">{routineCue.value}</span>
+                  <span style={{ fontSize: 13 }} className="text-muted-foreground">{routineCue.precedingRoutine}</span>
                 </div>
               </>
             )}
@@ -498,10 +501,10 @@ export function HabitDetailPage() {
               style={{ borderBottom: '0.5px solid rgba(0,0,0,0.07)' }}>
               <div className="flex items-center gap-2">
                 <Shield className="w-4 h-4" style={{ color: color.accent }} />
-                <span style={{ fontSize: 13, fontWeight: 600 }} className="text-foreground">ÐÐ¸Ð¹Ñ‚ Ñ…Ò¯Ñ‡</span>
+                <span style={{ fontSize: 13, fontWeight: 500 }} className="text-foreground">ÐÐ¸Ð¹Ñ‚ Ñ…Ò¯Ñ‡</span>
               </div>
               <div className="flex items-end gap-1">
-                <span style={{ fontSize: 26, fontWeight: 800, color: color.accent, letterSpacing: '-1px' }}>{strengthTotal}</span>
+                <span style={{ fontSize: 26, fontWeight: 600, color: color.accent, letterSpacing: '-1px' }}>{strengthTotal}</span>
                 <span style={{ fontSize: 13, paddingBottom: 3 }} className="text-muted-foreground">/100</span>
               </div>
             </div>
@@ -587,7 +590,7 @@ export function HabitDetailPage() {
                 <TrendingUp className="w-3.5 h-3.5" style={{ color: color.accent }} />
               </div>
               <span style={{ fontSize: 13, fontWeight: 500, flex: 1 }} className="text-foreground">ÐÐ¸Ð¹Ñ‚ Ð±Ò¯Ñ€Ñ‚Ð³ÑÐ»</span>
-              <span style={{ fontSize: 13, fontWeight: 600 }} className="text-foreground">{totalLogs} ÑƒÐ´Ð°Ð°</span>
+              <span style={{ fontSize: 13, fontWeight: 500 }} className="text-foreground">{totalLogs} ÑƒÐ´Ð°Ð°</span>
             </div>
             <div style={{ height: 0.5, backgroundColor: 'rgba(0,0,0,0.07)', marginLeft: 16 }} />
             <motion.button whileTap={{ scale: 0.98 }} onClick={() => setShowArchiveConfirm(true)}
@@ -618,7 +621,7 @@ export function HabitDetailPage() {
                 <div className="w-9 h-[3px] rounded-full mx-auto mb-5" style={{ backgroundColor: 'rgba(0,0,0,0.12)' }} />
                 <div className="text-center mb-6">
                   <p style={{ fontSize: 40 }}>ðŸ—‚ï¸</p>
-                  <p style={{ fontSize: 18, fontWeight: 700, marginTop: 12 }} className="text-foreground">Ð”Ð°Ð´Ð»Ð°Ð° Ð°Ñ€Ñ…Ð¸Ð²Ð»Ð°Ñ… ÑƒÑƒ?</p>
+                  <p style={{ fontSize: 18, fontWeight: 600, marginTop: 12 }} className="text-foreground">Ð”Ð°Ð´Ð»Ð°Ð° Ð°Ñ€Ñ…Ð¸Ð²Ð»Ð°Ñ… ÑƒÑƒ?</p>
                   <p className="mt-2 text-muted-foreground" style={{ fontSize: 13, lineHeight: 1.6 }}>
                     ÐÑ€Ñ…Ð¸Ð²Ð»Ð°ÑÐ°Ð½ Ð´Ð°Ð´Ð°Ð» Ñ…ÑÐ½Ð°Ð»Ñ‚Ñ‹Ð½ ÑÐ°Ð¼Ð±Ð°Ñ€Ð°Ð°Ñ Ð½ÑƒÑƒÐ³Ð´Ð°Ð½Ð°,<br/>Ñ…Ð°Ñ€Ð¸Ð½ Ð³Ò¯Ð¹Ñ†ÑÑ‚Ð³ÑÐ»Ð¸Ð¹Ð½ Ñ‚Ò¯Ò¯Ñ… Ñ…Ð°Ð´Ð³Ð°Ð»Ð°Ð³Ð´Ð°Ð½Ð°.
                   </p>
@@ -626,7 +629,7 @@ export function HabitDetailPage() {
                 <div className="flex flex-col gap-2.5">
                   <motion.button whileTap={{ scale: 0.97 }} onClick={handleArchive}
                     className="w-full py-3.5 rounded-full"
-                    style={{ backgroundColor: CTA_DARK.bg, color: CTA_DARK.text, fontSize: 15, fontWeight: 600, boxShadow: CTA_DARK.shadow }}>
+                    style={{ backgroundColor: CTA_DARK.bg, color: CTA_DARK.text, fontSize: 15, fontWeight: 500, boxShadow: CTA_DARK.shadow }}>
                     Ð¢Ð¸Ð¹Ð¼, Ð°Ñ€Ñ…Ð¸Ð²Ð»Ð°Ñ…
                   </motion.button>
                   <motion.button whileTap={{ scale: 0.97 }} onClick={() => setShowArchiveConfirm(false)}

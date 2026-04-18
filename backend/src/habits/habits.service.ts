@@ -33,23 +33,42 @@ export class HabitsService {
     await this.authService.ensureUserExists(userId);
     this.validateHabitConfiguration(createHabitDto);
 
+    // Derive reminderEnabled: explicit field or from reminder.enabled
+    const reminderEnabled =
+      createHabitDto.reminderEnabled ??
+      createHabitDto.reminder?.enabled ??
+      false;
+
+    // Build cues: prefer explicit cues[], otherwise derive from reminder settings
+    const cues = createHabitDto.cues?.map((c) => this.buildCuePayload(c))
+      ?? this.buildCuesFromReminder(createHabitDto.reminder);
+
+    // Build motivation profile: merge top-level reason into motivationProfile
+    const motivationProfile = this.mergeMotivationProfile(
+      createHabitDto.motivationProfile,
+      createHabitDto.reason,
+    );
+
     const habit = await this.habitRepo.create({
       userId,
       title: createHabitDto.title,
       description: createHabitDto.description,
+      precedingRoutine: createHabitDto.precedingRoutine ?? null,
+      color: createHabitDto.color ?? null,
+      iconType: createHabitDto.iconType ?? null,
+      iconValue: createHabitDto.iconValue ?? null,
+      benefits: createHabitDto.benefits ?? [],
       measurementUnit: createHabitDto.measurementUnit,
       targetValue: createHabitDto.targetValue,
       minimumTarget: createHabitDto.minimumTarget,
       startDate: new Date(createHabitDto.startDate),
       status: createHabitDto.status ?? HabitLifecycleStatus.ACTIVE,
-      reminderEnabled: createHabitDto.reminderEnabled ?? false,
+      reminderEnabled,
       scheduleDays: createHabitDto.scheduleDays?.map((d) => ({
         weekday: d.weekday,
       })),
-      cues: createHabitDto.cues?.map((c) => this.buildCuePayload(c)),
-      motivationProfile: createHabitDto.motivationProfile
-        ? this.buildMotivationProfilePayload(createHabitDto.motivationProfile)
-        : null,
+      cues,
+      motivationProfile,
     });
 
     await this.analyticsService.recordActivity(userId, 'habit_created');
@@ -95,9 +114,28 @@ export class HabitsService {
         existingHabit.scheduleDays.map((d) => ({ weekday: d.weekday })),
     });
 
+    const reminderEnabled =
+      updateHabitDto.reminderEnabled ??
+      updateHabitDto.reminder?.enabled;
+
+    const cues = updateHabitDto.cues?.map((c) => this.buildCuePayload(c))
+      ?? (updateHabitDto.reminder
+        ? this.buildCuesFromReminder(updateHabitDto.reminder)
+        : undefined);
+
+    const motivationProfile =
+      updateHabitDto.motivationProfile !== undefined || updateHabitDto.reason !== undefined
+        ? this.mergeMotivationProfile(updateHabitDto.motivationProfile, updateHabitDto.reason)
+        : undefined;
+
     const updatedHabit = await this.habitRepo.update(habitId, {
       title: updateHabitDto.title,
       description: updateHabitDto.description,
+      precedingRoutine: updateHabitDto.precedingRoutine,
+      color: updateHabitDto.color,
+      iconType: updateHabitDto.iconType,
+      iconValue: updateHabitDto.iconValue,
+      benefits: updateHabitDto.benefits,
       measurementUnit: updateHabitDto.measurementUnit,
       targetValue: updateHabitDto.targetValue,
       minimumTarget: updateHabitDto.minimumTarget,
@@ -114,15 +152,12 @@ export class HabitsService {
           : updateHabitDto.status
             ? null
             : undefined,
-      reminderEnabled: updateHabitDto.reminderEnabled,
+      reminderEnabled,
       scheduleDays: updateHabitDto.scheduleDays?.map((d) => ({
         weekday: d.weekday,
       })),
-      cues: updateHabitDto.cues?.map((c) => this.buildCuePayload(c)),
-      motivationProfile:
-        updateHabitDto.motivationProfile !== undefined
-          ? this.buildMotivationProfilePayload(updateHabitDto.motivationProfile)
-          : undefined,
+      cues,
+      motivationProfile,
     });
 
     await this.analyticsService.recordActivity(userId, 'habit_updated');
@@ -197,7 +232,55 @@ export class HabitsService {
     motivationProfile: CreateHabitMotivationProfileDto,
   ) {
     return {
+      goalTag: motivationProfile.goalTag ?? null,
       reason: motivationProfile.reason ?? null,
+    };
+  }
+
+  /** Convert structured reminder settings → cue rows for internal storage. */
+  private buildCuesFromReminder(
+    reminder?: { timeWindows?: Array<{ startTime: string; endTime: string }>; locations?: string[] },
+  ) {
+    if (!reminder) return undefined;
+    const cues: Array<{
+      startTime: string | null;
+      endTime: string | null;
+      coarseLocation: string | null;
+      precedingRoutine: string | null;
+      isActive: boolean;
+    }> = [];
+
+    for (const tw of reminder.timeWindows ?? []) {
+      cues.push({
+        startTime: tw.startTime,
+        endTime: tw.endTime,
+        coarseLocation: null,
+        precedingRoutine: null,
+        isActive: true,
+      });
+    }
+    for (const loc of reminder.locations ?? []) {
+      cues.push({
+        startTime: null,
+        endTime: null,
+        coarseLocation: loc,
+        precedingRoutine: null,
+        isActive: true,
+      });
+    }
+
+    return cues.length > 0 ? cues : undefined;
+  }
+
+  /** Merge top-level reason into motivationProfile. */
+  private mergeMotivationProfile(
+    profile?: CreateHabitMotivationProfileDto | null,
+    reason?: string,
+  ) {
+    if (!profile && !reason) return null;
+    return {
+      goalTag: profile?.goalTag ?? null,
+      reason: reason ?? profile?.reason ?? null,
     };
   }
 }

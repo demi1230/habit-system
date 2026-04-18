@@ -19,6 +19,12 @@ export interface CreateHabitLogPayload {
 export interface CreateHabitPayload {
   title: string;
   description?: string;
+  precedingRoutine?: string;
+  reason?: string;
+  color?: string;
+  iconType?: string;
+  iconValue?: string;
+  benefits?: string[];
   measurementUnit: string;
   targetValue: number;
   minimumTarget: number;
@@ -37,13 +43,19 @@ export interface CreateHabitPayload {
     goalTag?: string;
     reason?: string;
   };
+  reminder?: {
+    enabled?: boolean;
+    timeWindows?: Array<{ startTime: string; endTime: string }>;
+    locations?: string[];
+  };
 }
 
 export interface AdaptationRecommendation {
-  action: 'keep_going' | 'consider_simplifying' | 'consider_adjusting_cue' | 'celebrate_consistency';
+  focus: 'reduce_reminders' | 'maintain' | 'increase_support' | 'review_difficulty' | 'celebrate_consistency';
   summary: string;
-  details: string;
+  suggestedPolicyMode: string | null;
   milestoneReached: boolean;
+  evaluatedAt: string;
 }
 
 export const habitsApi = {
