@@ -47,10 +47,13 @@ export class HabitsController {
    */
   @Get('today')
   @ApiOperation({
-    summary: 'Get habits scheduled for today with cue context',
+    summary: 'Get habits scheduled for today (or a given date) with cue context',
   })
-  getTodayHabits(@Param('userId', new ParseUUIDPipe()) userId: string) {
-    return this.habitsService.getTodayHabits(userId);
+  getTodayHabits(
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Query('date') date?: string,
+  ) {
+    return this.habitsService.getTodayHabits(userId, date);
   }
 
   @Get(':habitId')

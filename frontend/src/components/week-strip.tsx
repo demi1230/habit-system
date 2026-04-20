@@ -8,6 +8,10 @@ interface WeekStripProps {
   logs: HabitLog[];
 }
 
+function toLocalDate(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 export function WeekStrip({ habits, logs }: WeekStripProps) {
   const today = new Date();
   const todayDow = today.getDay(); // 0=Sun
@@ -19,7 +23,7 @@ export function WeekStrip({ habits, logs }: WeekStripProps) {
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
-    const dateStr = d.toISOString().split('T')[0];
+    const dateStr = toLocalDate(d);
 
     const completedCount = habits.filter((h) =>
       logs.some((l) => l.habitId === h.id && l.completedAt.startsWith(dateStr) && l.status === 'DONE')
@@ -42,7 +46,7 @@ export function WeekStrip({ habits, logs }: WeekStripProps) {
           transition={{ delay: i * 0.04 }}
           className="flex flex-col items-center gap-1"
         >
-          <span style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(0,0,0,0.4)' }}>
+          <span style={{ fontSize: '12px', fontWeight: 500, color: 'rgba(0,0,0,0.4)' }}>
             {day.label}
           </span>
           <div

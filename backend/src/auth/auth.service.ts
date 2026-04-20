@@ -52,7 +52,7 @@ export class AuthService {
     const payload: JwtPayload = { sub: user.id, email: user.email };
     const accessToken = this.jwtService.sign(payload);
 
-    return { accessToken };
+    return { accessToken, displayName: user.displayName ?? null };
   }
 
   async ensureUserExists(userId: string) {

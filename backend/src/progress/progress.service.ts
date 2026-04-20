@@ -1,4 +1,4 @@
-﻿import { Inject, Injectable } from '@nestjs/common';
+﻿import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { CompletionTriggerSource } from '../domain/enums/domain.enums';
 import type { IHabitLogRepository } from '../domain/repositories/habit-log.repository';
@@ -6,6 +6,7 @@ import { HABIT_LOG_REPOSITORY } from '../domain/repositories/habit-log.repositor
 import { HabitStrengthRules } from '../domain/rules/habit-strength.rules';
 import { HabitsService } from '../habits/habits.service';
 import { CreateHabitLogDto } from './dto/create-habit-log.dto';
+import { UpdateHabitLogDto } from './dto/update-habit-log.dto';
 import {
   ProgressSummary,
 } from './interfaces/progress-summary.interface';
@@ -35,6 +36,34 @@ export class ProgressService {
 
     await this.analyticsService.recordActivity(userId, 'habit_logged');
     return habitLog;
+  }
+
+  async updateHabitLog(
+    userId: string,
+    habitId: string,
+    logId: string,
+    dto: UpdateHabitLogDto,
+  ) {
+    const habit = await this.habitsService.getOwnedHabitOrThrow(userId, habitId);
+    const log = await this.habitLogRepo.findById(logId);
+    if (!log || log.habitId !== habitId) {
+      throw new NotFoundException('Log not found');
+    }
+    const status = dto.actualValue >= habit.minimumTarget ? 'DONE' as const : 'NOT_DONE' as const;
+    return this.habitLogRepo.update(logId, { status, actualValue: dto.actualValue });
+  }
+
+  async deleteHabitLog(
+    userId: string,
+    habitId: string,
+    logId: string,
+  ) {
+    await this.habitsService.getOwnedHabitOrThrow(userId, habitId);
+    const log = await this.habitLogRepo.findById(logId);
+    if (!log || log.habitId !== habitId) {
+      throw new NotFoundException('Log not found');
+    }
+    await this.habitLogRepo.delete(logId);
   }
 
   async listHabitLogs(userId: string, habitId: string) {
@@ -131,6 +160,14 @@ export class ProgressService {
     createHabitLogDto: CreateHabitLogDto,
   ) {
     const completedAt = new Date(createHabitLogDto.completedAt);
+
+    // Reject future-dated logs
+    const now = new Date();
+    const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+    if (completedAt > endOfToday) {
+      throw new BadRequestException('Cannot log habits for future dates');
+    }
+
     const loggedAt = createHabitLogDto.loggedAt
       ? new Date(createHabitLogDto.loggedAt)
       : new Date();

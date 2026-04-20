@@ -8,7 +8,12 @@ import { AnalyticsService } from '../analytics/analytics.service';
 import { HabitLifecycleStatus } from '../domain/enums/domain.enums';
 import type { IHabitRepository } from '../domain/repositories/habit.repository';
 import { HABIT_REPOSITORY } from '../domain/repositories/habit.repository';
+import type { IHabitLogRepository } from '../domain/repositories/habit-log.repository';
+import { HABIT_LOG_REPOSITORY } from '../domain/repositories/habit-log.repository';
+import type { ISrbaiAssessmentRepository } from '../domain/repositories/srbai-assessment.repository';
+import { SRBAI_ASSESSMENT_REPOSITORY } from '../domain/repositories/srbai-assessment.repository';
 import { CueScheduleRules } from '../domain/rules/cue-schedule.rules';
+import { HabitStrengthRules } from '../domain/rules/habit-strength.rules';
 import {
   ReminderDecisionRules,
   ReminderDecisionResult,
@@ -25,6 +30,8 @@ import { AuthService } from '../auth/auth.service';
 export class HabitsService {
   constructor(
     @Inject(HABIT_REPOSITORY) private readonly habitRepo: IHabitRepository,
+    @Inject(HABIT_LOG_REPOSITORY) private readonly habitLogRepo: IHabitLogRepository,
+    @Inject(SRBAI_ASSESSMENT_REPOSITORY) private readonly srbaiRepo: ISrbaiAssessmentRepository,
     private readonly authService: AuthService,
     private readonly analyticsService: AnalyticsService,
   ) {}
@@ -164,19 +171,93 @@ export class HabitsService {
     return updatedHabit;
   }
 
-  async getTodayHabits(userId: string) {
+  async getTodayHabits(userId: string, date?: string) {
     await this.authService.ensureUserExists(userId);
 
-    const todayWeekday = CueScheduleRules.todayWeekday();
+    const targetDate = date ? new Date(date + 'T00:00:00') : new Date();
+    targetDate.setHours(0, 0, 0, 0);
+
+    const weekday = date
+      ? CueScheduleRules.weekdayOf(date)
+      : CueScheduleRules.todayWeekday();
     const habits = await this.habitRepo.findActiveByUserId(userId);
-    const todayHabits = habits.filter((habit) =>
-      habit.isScheduledOn(todayWeekday),
+    const todayHabits = habits.filter(
+      (habit) =>
+        habit.isScheduledOn(weekday) &&
+        new Date(habit.startDate).setHours(0, 0, 0, 0) <= targetDate.getTime(),
     );
 
-    return todayHabits.map((habit) => ({
-      ...habit,
-      cueContext: habit.cues.map((cue) => CueScheduleRules.evaluateCue(cue)),
-    }));
+    return Promise.all(
+      todayHabits.map(async (habit) => {
+        const logs = await this.habitLogRepo.findSummaryByHabitId(habit.id);
+
+        // Current streak: count consecutive scheduled days with a DONE log
+        let currentStreak = 0;
+        const scheduledWds = new Set(habit.scheduleDays.map((d) => d.weekday));
+        const logDateSet = new Map<string, string>(); // dateStr → status
+        for (const log of logs) {
+          if (log.completedAt) {
+            const d = new Date(log.completedAt);
+            const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            logDateSet.set(key, log.status);
+          }
+        }
+        const cursor = new Date();
+        cursor.setHours(0, 0, 0, 0);
+        for (let i = 0; i < 365; i++) {
+          const wd = CueScheduleRules.weekdayOf(cursor);
+          if (scheduledWds.size === 0 || scheduledWds.has(wd)) {
+            const key = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`;
+            const status = logDateSet.get(key);
+            if (status === 'DONE') {
+              currentStreak++;
+            } else {
+              // Today with no log yet doesn't break streak
+              if (i === 0 && !status) { /* skip today */ }
+              else break;
+            }
+          }
+          cursor.setDate(cursor.getDate() - 1);
+        }
+
+        // Composite strength score — same formula as /habit-strength/composite
+        const [latestSrbai, contextSnapshots] = await Promise.all([
+          this.srbaiRepo.findLatestByHabitId(habit.id),
+          this.habitLogRepo.findContextSnapshotsByHabitId(habit.id, 20),
+        ]);
+
+        const strength = HabitStrengthRules.compute({
+          habitId: habit.id,
+          logs,
+          scheduledWeekdayCount: habit.scheduleDays.length,
+          hasCueConfiguration: habit.cues.length > 0,
+          hasMotivationProfile: habit.motivationProfile !== null,
+        });
+
+        const srbaiScore = latestSrbai?.normalizedScore100 ?? 0;
+        const maturity = Math.min(strength.totalLogs / 21, 1);
+        const consistencyScore =
+          Math.round(strength.doneRate * maturity * 100 * 100) / 100;
+        const contextStabilityScore =
+          HabitStrengthRules.computeContextStability(contextSnapshots);
+
+        const composite = HabitStrengthRules.computeComposite({
+          srbaiScore,
+          consistencyScore,
+          contextStabilityScore,
+          selfInitiatedRate: strength.selfInitiatedRate,
+        });
+
+        const strengthScore = Math.round(composite.finalScore);
+
+        return {
+          ...habit,
+          cueContext: habit.cues.map((cue) => CueScheduleRules.evaluateCue(cue)),
+          currentStreak,
+          strengthScore,
+        };
+      }),
+    );
   }
 
   async getReminderDecision(

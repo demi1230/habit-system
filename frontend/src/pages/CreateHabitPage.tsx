@@ -26,7 +26,7 @@ function FormSection({ label, children }: { label: string; children: React.React
   return (
     <div className="mx-5">
       <p style={{
-        fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+        fontSize: 11, fontWeight: 500, letterSpacing: '0.06em',
         marginBottom: 8, paddingLeft: 2,
       }} className="text-muted-foreground">
         {label}
@@ -238,7 +238,7 @@ export function CreateHabitPage() {
       measurementUnit: habitType === 'binary' ? 'удаа' : targetUnit,
       targetValue: habitType === 'binary' ? 1 : (parseFloat(targetNum) || 1),
       minimumTarget: (habitType === 'measurable' && minNum) ? parseFloat(minNum) : 1,
-      startDate: new Date().toISOString().split('T')[0],
+      startDate: (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })(),
       scheduleDays: selectedDays.map(weekday => ({ weekday })),
       reminder: {
         enabled: reminderEnabled,
@@ -274,7 +274,7 @@ export function CreateHabitPage() {
           >
             <Sparkles className="w-9 h-9" style={{ color: color.accent }} />
           </motion.div>
-          <p style={{ fontSize: 20, fontWeight: 700 }} className="text-foreground">
+          <p style={{ fontSize: 20, fontWeight: 500 }} className="text-foreground">
             Дадал нэмэгдлээ! 🌱
           </p>
           <p style={{ fontSize: 13, marginTop: 6 }} className="text-muted-foreground">
@@ -300,7 +300,7 @@ export function CreateHabitPage() {
             >
               <ArrowLeft className="w-4 h-4 text-muted-foreground" />
             </motion.button>
-            <p className="text-foreground" style={{ fontSize: 16, fontWeight: 700, minWidth: 60, color: title.trim() ? undefined : 'rgba(0,0,0,0.3)' }}>
+            <p className="text-foreground" style={{ fontSize: 18, fontWeight: 600, minWidth: 60, color: title.trim() ? undefined : 'rgba(0,0,0,0.3)' }}>
               {title.trim() || 'Дадлын нэр'}
             </p>
           </div>
@@ -329,17 +329,17 @@ export function CreateHabitPage() {
                 placeholder="өмнөх үйлдэл"
                 accentColor={color.accent}
               />
-              <span style={{ fontWeight: 700 }}> дараа </span>
+              <span style={{ fontWeight: 500 }}> дараа </span>
               <InlineInput
                 value={title}
                 onChange={setTitle}
                 placeholder="дадал"
                 accentColor={color.accent}
               />
-              <span style={{ fontWeight: 700 }}> хийнэ.</span>
+              <span style={{ fontWeight: 500 }}> дадлыг хийнэ.</span>
             </p>
             <p style={{ fontSize: 14, lineHeight: 2.4, marginTop: 2 }} className="text-foreground">
-              <span style={{ fontWeight: 700 }}>Ингэснээр би: </span>
+              <span style={{ fontWeight: 500 }}>Ингэснээр би: </span>
               <InlineInput
                 value={reason}
                 onChange={setReason}
@@ -411,7 +411,7 @@ export function CreateHabitPage() {
                         <Check className="w-3 h-3" style={{ color: clr.accent }} strokeWidth={3} />
                       )}
                     </div>
-                    <span style={{ fontSize: 9, fontWeight: colorId === c.id ? 600 : 400 }}
+                    <span style={{ fontSize: 10, fontWeight: colorId === c.id ? 600 : 400 }}
                       className="text-muted-foreground">
                       {c.label}
                     </span>
@@ -483,7 +483,7 @@ export function CreateHabitPage() {
               <p style={{ fontSize: 13, fontWeight: 500 }} className="text-foreground">Өдрүүд</p>
               <div className="flex gap-2">
                 <button onClick={() => setSelectedDays([...DAYS_EN])}
-                  style={{ fontSize: 11, color: color.accent, fontWeight: 600 }}>
+                  style={{ fontSize: 11, color: color.accent, fontWeight: 500 }}>
                   Бүгд
                 </button>
                 <span style={{ fontSize: 11 }} className="text-muted-foreground">·</span>
@@ -504,7 +504,7 @@ export function CreateHabitPage() {
                     style={{
                       backgroundColor: active ? color.btn : 'rgba(0,0,0,0.04)',
                       boxShadow: active ? `0 0 0 1.5px ${color.accent}50` : 'none',
-                      fontSize: 11, fontWeight: active ? 700 : 400,
+                      fontSize: 11, fontWeight: active ? 600 : 400,
                       color: active ? '#202325' : 'rgba(0,0,0,0.38)',
                     }}>
                     {mn}
@@ -556,12 +556,12 @@ export function CreateHabitPage() {
                         <input type="time" value={tw.start}
                           onChange={e => updateTimeWindow(i, 'start', e.target.value)}
                           className="flex-1 rounded-xl px-3 py-1.5 bg-transparent text-foreground focus:outline-none"
-                          style={{ fontSize: 13, fontWeight: 600, border: '1px solid rgba(0,0,0,0.1)' }} />
+                          style={{ fontSize: 13, fontWeight: 500, border: '1px solid rgba(0,0,0,0.1)' }} />
                         <span className="text-muted-foreground" style={{ fontSize: 12 }}>–</span>
                         <input type="time" value={tw.end}
                           onChange={e => updateTimeWindow(i, 'end', e.target.value)}
                           className="flex-1 rounded-xl px-3 py-1.5 bg-transparent text-foreground focus:outline-none"
-                          style={{ fontSize: 13, fontWeight: 600, border: '1px solid rgba(0,0,0,0.1)' }} />
+                          style={{ fontSize: 13, fontWeight: 500, border: '1px solid rgba(0,0,0,0.1)' }} />
                         <button onClick={() => removeTimeWindow(i)}
                           className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
                           style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}>
@@ -581,7 +581,7 @@ export function CreateHabitPage() {
                     <motion.button whileTap={{ scale: 0.9 }}
                       onClick={() => setShowMapPicker(p => !p)}
                       className="px-3 py-1.5 rounded-full"
-                      style={{ fontSize: 12, color: color.accent, fontWeight: 600, backgroundColor: color.btn }}>
+                      style={{ fontSize: 12, color: color.accent, fontWeight: 500, backgroundColor: color.btn }}>
                       {showMapPicker ? 'Хаах' : '+ Газрын зургаас'}
                     </motion.button>
                   </div>
@@ -656,7 +656,7 @@ export function CreateHabitPage() {
                         value={targetNum}
                         onChange={e => setTargetNum(e.target.value)}
                         className="bg-transparent focus:outline-none text-center w-full text-foreground"
-                        style={{ fontSize: 14, fontWeight: 600 }}
+                        style={{ fontSize: 14, fontWeight: 500 }}
                       />
                     </div>
                     <motion.button whileTap={{ scale: 0.92 }}
@@ -687,7 +687,7 @@ export function CreateHabitPage() {
                       onChange={e => setMinNum(e.target.value)}
                       placeholder="—"
                       className="bg-transparent focus:outline-none text-center w-full text-foreground"
-                      style={{ fontSize: 14, fontWeight: 600 }}
+                      style={{ fontSize: 14, fontWeight: 500 }}
                     />
                   </div>
                 </FormRow>
@@ -707,7 +707,7 @@ export function CreateHabitPage() {
           className="flex items-center justify-center gap-2 px-10 py-3.5 rounded-full disabled:opacity-50"
           style={{ backgroundColor: CTA_DARK.bg, boxShadow: CTA_DARK.shadow, minWidth: 200 }}
         >
-          <span style={{ fontSize: 15, fontWeight: 600, color: CTA_DARK.text }}>
+          <span style={{ fontSize: 15, fontWeight: 500, color: CTA_DARK.text }}>
             {saving ? '...' : 'Хадгалах'}
           </span>
         </motion.button>

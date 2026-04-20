@@ -41,7 +41,21 @@ function daysAgoDate(n: number): Date {
 }
 
 function isoDate(d: Date): string {
-  return d.toISOString().slice(0, 10);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/** Format Date to local ISO-like string (YYYY-MM-DDTHH:mm:ss) without UTC shift */
+function localISOString(d: Date): string {
+  const y = d.getFullYear();
+  const mo = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const h = String(d.getHours()).padStart(2, '0');
+  const mi = String(d.getMinutes()).padStart(2, '0');
+  const s = String(d.getSeconds()).padStart(2, '0');
+  return `${y}-${mo}-${day}T${h}:${mi}:${s}`;
 }
 
 const ALL_DAYS: Weekday[] = [
@@ -223,8 +237,8 @@ function generateLogs(
         habitId: habit.id,
         status: done ? 'DONE' : 'NOT_DONE',
         actualValue: actualVal,
-        completedAt: logDate.toISOString(),
-        loggedAt: logDate.toISOString(),
+        completedAt: localISOString(logDate),
+        loggedAt: localISOString(logDate),
         triggerSource: done ? sources[Math.floor(rand() * sources.length)] : null,
       });
     }
@@ -358,24 +372,58 @@ export function computeAdaptation(habitId: string): AdaptationRecommendation {
 
 // ── Today's Context ───────────────────────────────────────────────────────────
 
-export function getTodayHabits(): HabitWithCueContext[] {
-  const todayWd = jsToWeekday(new Date().getDay());
+export function getTodayHabits(date?: string): HabitWithCueContext[] {
+  const target = date ? new Date(date + 'T00:00:00') : new Date();
+  const wd = jsToWeekday(target.getDay());
   return habits
-    .filter((h) => h.status === 'ACTIVE' && h.scheduleDays.some((d) => d.weekday === todayWd))
-    .map((h) => ({
-      ...h,
-      cueContext: h.cues.map((c) => ({
-        cueId: c.id,
-        type: c.type,
-        value: c.value,
-        isActive: c.isActive,
-        isCurrentlyTriggered: c.type === 'TIME'
-          ? isNearTime(c.value)
-          : c.type === 'PRECEDING_ROUTINE'
-            ? true
-            : false,
-      })),
-    }));
+    .filter((h) => h.status === 'ACTIVE' && h.scheduleDays.some((d) => d.weekday === wd))
+    .map((h) => {
+      const str = computeStrength(h.id);
+      const logs = logsMap[h.id] ?? [];
+      // streak: consecutive scheduled days with DONE log
+      const scheduledWds = new Set(h.scheduleDays.map((d) => d.weekday));
+      const doneSet = new Set<string>();
+      const allLogDates = new Set<string>();
+      for (const l of logs) {
+        const d = new Date(l.completedAt);
+        const key = isoDate(d);
+        allLogDates.add(key);
+        if (l.status === 'DONE') doneSet.add(key);
+      }
+      let currentStreak = 0;
+      const cursor = new Date();
+      cursor.setHours(0, 0, 0, 0);
+      for (let i = 0; i < 365; i++) {
+        const curWd = jsToWeekday(cursor.getDay());
+        if (scheduledWds.size === 0 || scheduledWds.has(curWd)) {
+          const key = isoDate(cursor);
+          if (doneSet.has(key)) {
+            currentStreak++;
+          } else {
+            if (i === 0 && !allLogDates.has(key)) { /* today not logged yet */ }
+            else break;
+          }
+        }
+        cursor.setDate(cursor.getDate() - 1);
+      }
+      const maturity = Math.min(str.totalLogs / 30, 1);
+      return {
+        ...h,
+        currentStreak,
+        strengthScore: Math.round(str.doneRate * maturity * 100),
+        cueContext: h.cues.map((c) => ({
+          cueId: c.id,
+          type: c.type,
+          value: c.value,
+          isActive: c.isActive,
+          isCurrentlyTriggered: c.type === 'TIME'
+            ? isNearTime(c.value)
+            : c.type === 'PRECEDING_ROUTINE'
+              ? true
+              : false,
+        })),
+      };
+    });
 }
 
 function isNearTime(timeStr: string): boolean {

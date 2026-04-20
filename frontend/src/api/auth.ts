@@ -2,6 +2,7 @@ import { api } from './client';
 
 export interface LoginResponse {
   accessToken: string;
+  displayName: string | null;
 }
 
 export interface RegisterResponse {

@@ -31,7 +31,7 @@ function ArticleCard({ title, summary, readMin, color, delay }: {
       style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
-          <p style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.4, marginBottom: 6 }} className="text-foreground">{title}</p>
+          <p style={{ fontSize: 14, fontWeight: 500, lineHeight: 1.4, marginBottom: 6 }} className="text-foreground">{title}</p>
           <p style={{ fontSize: 12, lineHeight: 1.6, color: 'rgba(0,0,0,0.52)' }}>{summary}</p>
           <div className="flex items-center gap-1.5 mt-3">
             <Clock className="w-3 h-3" style={{ color: 'rgba(0,0,0,0.3)' }} />
@@ -59,7 +59,7 @@ export function LearnPage() {
         <div className="flex items-center gap-3 px-5 pt-13 pb-3">
           <div className="flex items-center gap-2">
             <BookOpen className="w-4.5 h-4.5 text-primary" />
-            <p style={{ fontSize: 17, fontWeight: 600 }} className="text-foreground">Суралцах</p>
+            <p style={{ fontSize: 18, fontWeight: 600 }} className="text-foreground">Суралцах</p>
           </div>
         </div>
       </div>
@@ -76,7 +76,7 @@ export function LearnPage() {
                 style={{
                   backgroundColor: isActive ? cat.color + '22' : 'rgba(0,0,0,0.05)',
                   border: isActive ? `1.5px solid ${cat.color}44` : '1.5px solid transparent',
-                  fontSize: 13, fontWeight: isActive ? 700 : 500,
+                  fontSize: 13, fontWeight: isActive ? 600 : 500,
                   color: isActive ? cat.color : 'rgba(0,0,0,0.5)',
                 }}>
                 <span>{cat.emoji}</span>

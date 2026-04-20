@@ -22,12 +22,23 @@ describe('HabitsService', () => {
     recordActivity: jest.fn(),
   };
 
+  const habitLogRepo = {
+    findSummaryByHabitId: jest.fn().mockResolvedValue([]),
+    findContextSnapshotsByHabitId: jest.fn().mockResolvedValue([]),
+  };
+
+  const srbaiRepo = {
+    findLatestByHabitId: jest.fn().mockResolvedValue(null),
+  };
+
   let habitsService: HabitsService;
 
   beforeEach(() => {
     jest.clearAllMocks();
     habitsService = new HabitsService(
       habitRepo as never,
+      habitLogRepo as never,
+      srbaiRepo as never,
       authService as never,
       analyticsService as never,
     );

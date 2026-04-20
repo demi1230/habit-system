@@ -151,7 +151,7 @@ export function LocationMapPicker({ accentColor, btnColor, onConfirm, onClose }:
             <motion.button whileTap={{ scale: 0.95 }}
               onClick={() => onConfirm({ lat: position.lat, lng: position.lng, label })}
               className="px-4 py-1.5 rounded-full"
-              style={{ fontSize: 12, fontWeight: 600, color: accentColor, backgroundColor: btnColor }}>
+              style={{ fontSize: 12, fontWeight: 500, color: accentColor, backgroundColor: btnColor }}>
               Сонгох
             </motion.button>
           )}

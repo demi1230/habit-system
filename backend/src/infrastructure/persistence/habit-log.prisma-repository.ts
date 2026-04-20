@@ -3,6 +3,7 @@ import { HabitLogEntity } from '../../domain/entities/habit-log.entity';
 import {
   IHabitLogRepository,
   CreateHabitLogData,
+  UpdateHabitLogData,
 } from '../../domain/repositories/habit-log.repository';
 import { CompletionTriggerSource } from '../../domain/enums/domain.enums';
 import { PrismaService } from '../prisma/prisma.service';
@@ -31,6 +32,26 @@ export class HabitLogPrismaRepository implements IHabitLogRepository {
       },
     });
     return result as unknown as HabitLogEntity;
+  }
+
+  async findById(id: string): Promise<HabitLogEntity | null> {
+    const result = await this.prisma.habitLog.findUnique({ where: { id } });
+    return result as unknown as HabitLogEntity | null;
+  }
+
+  async update(id: string, data: UpdateHabitLogData): Promise<HabitLogEntity> {
+    const result = await this.prisma.habitLog.update({
+      where: { id },
+      data: {
+        status: data.status,
+        actualValue: data.actualValue,
+      },
+    });
+    return result as unknown as HabitLogEntity;
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.habitLog.delete({ where: { id } });
   }
 
   async findAllByHabitId(habitId: string): Promise<HabitLogEntity[]> {

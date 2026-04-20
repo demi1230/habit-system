@@ -78,7 +78,7 @@ export function ProfilePage() {
       {/* HEADER */}
       <div className="sticky top-0 z-20 bg-background" style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
         <div className="flex items-center gap-3 px-5 pt-13 pb-3">
-          <p style={{ fontSize: 17, fontWeight: 600 }} className="text-foreground">Профайл</p>
+          <p style={{ fontSize: 18, fontWeight: 600 }} className="text-foreground">Профайл</p>
         </div>
       </div>
 
@@ -91,21 +91,21 @@ export function ProfilePage() {
             style={{ backgroundColor: 'rgba(255,255,255,0.55)' }}>
             <User className="w-8 h-8" style={{ color: '#6C5CE7' }} />
           </div>
-          <p style={{ fontSize: 20, fontWeight: 600, color: '#202325' }}>{displayName || 'Хэрэглэгч'}</p>
+          <p style={{ fontSize: 20, fontWeight: 500, color: '#202325' }}>{displayName || 'Хэрэглэгч'}</p>
           <p style={{ fontSize: 12, color: 'rgba(0,0,0,0.5)', marginTop: 4 }}>ID: {userId?.slice(0, 8)}...</p>
           <div className="flex justify-center gap-6 mt-4">
             <div className="text-center">
-              <p style={{ fontSize: 22, fontWeight: 600, color: '#202325' }}>{activeCount}</p>
+              <p style={{ fontSize: 20, fontWeight: 500, color: '#202325' }}>{activeCount}</p>
               <p style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)', fontWeight: 500 }}>Идэвхтэй</p>
             </div>
             <div style={{ width: 1, backgroundColor: 'rgba(0,0,0,0.12)' }} />
             <div className="text-center">
-              <p style={{ fontSize: 22, fontWeight: 600, color: '#202325' }}>{archivedCount}</p>
+              <p style={{ fontSize: 20, fontWeight: 500, color: '#202325' }}>{archivedCount}</p>
               <p style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)', fontWeight: 500 }}>Архив</p>
             </div>
             <div style={{ width: 1, backgroundColor: 'rgba(0,0,0,0.12)' }} />
             <div className="text-center">
-              <p style={{ fontSize: 22, fontWeight: 600, color: '#202325' }}>{habits.length}</p>
+              <p style={{ fontSize: 20, fontWeight: 500, color: '#202325' }}>{habits.length}</p>
               <p style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)', fontWeight: 500 }}>Нийт</p>
             </div>
           </div>
@@ -154,7 +154,7 @@ export function ProfilePage() {
                       backgroundColor: active ? '#6C5CE7' + '20' : 'rgba(0,0,0,0.05)',
                       border: active ? '1.5px solid #6C5CE744' : '1.5px solid transparent',
                       color: active ? '#6C5CE7' : 'rgba(0,0,0,0.5)',
-                      fontSize: 13, fontWeight: active ? 700 : 500,
+                      fontSize: 13, fontWeight: active ? 600 : 500,
                     }}>
                     <span>{opt.flag}</span>
                     {opt.label}

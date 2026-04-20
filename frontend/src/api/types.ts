@@ -62,6 +62,8 @@ export interface CueContext {
 
 export interface HabitWithCueContext extends Habit {
   cueContext: CueContext[];
+  currentStreak: number;
+  strengthScore: number;
 }
 
 export interface HabitLog {

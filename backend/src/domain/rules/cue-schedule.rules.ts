@@ -32,6 +32,12 @@ export class CueScheduleRules {
     return JS_DAY_TO_WEEKDAY[new Date().getDay()];
   }
 
+  /** Returns the weekday enum for a given date (YYYY-MM-DD string or Date). */
+  static weekdayOf(date: Date | string): Weekday {
+    const d = typeof date === 'string' ? new Date(date + 'T00:00:00') : date;
+    return JS_DAY_TO_WEEKDAY[d.getDay()];
+  }
+
   /** A habit with an empty schedule is treated as a daily habit. */
   static isScheduledToday(scheduleDays: Array<{ weekday: Weekday }>): boolean {
     if (scheduleDays.length === 0) return true;

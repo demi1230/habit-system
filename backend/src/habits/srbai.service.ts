@@ -103,8 +103,9 @@ export class SrbaiService {
 
     const srbaiScore = latestSrbai?.normalizedScore100 ?? 0;
 
-    // consistencyScore = doneRate * 100
-    const consistencyScore = Math.round(signals.doneRate * 100 * 100) / 100;
+    // consistencyScore = doneRate * maturity * 100  (maturity ramps 0→1 over 21 logs)
+    const maturity = Math.min(signals.totalLogs / 21, 1);
+    const consistencyScore = Math.round(signals.doneRate * maturity * 100 * 100) / 100;
 
     // contextStabilityScore: derived from per-log context snapshots (hour, location, routine)
     const contextStabilityScore =

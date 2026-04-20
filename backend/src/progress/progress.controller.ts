@@ -1,15 +1,19 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateHabitLogDto } from './dto/create-habit-log.dto';
+import { UpdateHabitLogDto } from './dto/update-habit-log.dto';
 import { SubmitDifficultyDto } from './dto/submit-difficulty.dto';
 import { SubmitReflectionDto } from './dto/submit-reflection.dto';
 import { ProgressService } from './progress.service';
@@ -44,6 +48,28 @@ export class ProgressController {
     @Param('habitId', new ParseUUIDPipe()) habitId: string,
   ) {
     return this.progressService.listHabitLogs(userId, habitId);
+  }
+
+  @Patch('logs/:logId')
+  @ApiOperation({ summary: 'Update a habit log (edit actual value)' })
+  updateHabitLog(
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Param('habitId', new ParseUUIDPipe()) habitId: string,
+    @Param('logId', new ParseUUIDPipe()) logId: string,
+    @Body() dto: UpdateHabitLogDto,
+  ) {
+    return this.progressService.updateHabitLog(userId, habitId, logId, dto);
+  }
+
+  @Delete('logs/:logId')
+  @HttpCode(204)
+  @ApiOperation({ summary: 'Delete a habit log (undo)' })
+  deleteHabitLog(
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Param('habitId', new ParseUUIDPipe()) habitId: string,
+    @Param('logId', new ParseUUIDPipe()) logId: string,
+  ) {
+    return this.progressService.deleteHabitLog(userId, habitId, logId);
   }
 
   @Get('progress-summary')

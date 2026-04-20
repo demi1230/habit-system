@@ -58,7 +58,7 @@ export async function mockRequest<T>(
   // ── Auth ────────────────────────────────────────────────────────────────
 
   if (path === '/auth/login' && method === 'POST') {
-    return { accessToken: createMockToken() } as T;
+    return { accessToken: createMockToken(), displayName: MOCK_DISPLAY_NAME } as T;
   }
 
   if (path === '/auth/register' && method === 'POST') {
@@ -74,7 +74,8 @@ export async function mockRequest<T>(
 
   p = match('/users/:userId/habits/today', path);
   if (p && method === 'GET') {
-    return getTodayHabits() as T;
+    const dateMatch = path.match(/[?&]date=(\d{4}-\d{2}-\d{2})/);
+    return getTodayHabits(dateMatch?.[1]) as T;
   }
 
   // ── Habits: SRBAI assessments (must match BEFORE generic /habits/:id/*) ─
@@ -130,6 +131,31 @@ export async function mockRequest<T>(
     return computeAdaptation(p.habitId) as T;
   }
 
+  // ── Habits: single log (PATCH / DELETE) ──────────────────────────────────
+
+  p = match('/users/:userId/habits/:habitId/logs/:logId', path);
+  if (p && method === 'PATCH') {
+    const logs = logsMap[p.habitId] ?? [];
+    const idx = logs.findIndex((l) => l.id === (p as { logId: string }).logId);
+    if (idx === -1) throw mockError(404, 'Log not found');
+    const habit = habits.find((h) => h.id === p!.habitId);
+    const minTarget = habit?.minimumTarget ?? 1;
+    const val = body.actualValue ?? logs[idx].actualValue ?? 0;
+    logs[idx] = {
+      ...logs[idx],
+      actualValue: val,
+      status: val >= minTarget ? 'DONE' : 'NOT_DONE',
+    };
+    return logs[idx] as T;
+  }
+  if (p && method === 'DELETE') {
+    const logs = logsMap[p.habitId] ?? [];
+    const idx = logs.findIndex((l) => l.id === (p as { logId: string }).logId);
+    if (idx === -1) throw mockError(404, 'Log not found');
+    logs.splice(idx, 1);
+    return undefined as T;
+  }
+
   // ── Habits: logs ────────────────────────────────────────────────────────
 
   p = match('/users/:userId/habits/:habitId/logs', path);
@@ -137,13 +163,19 @@ export async function mockRequest<T>(
     return (logsMap[p.habitId] ?? []) as T;
   }
   if (p && method === 'POST') {
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const localNow = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    const habit = habits.find((h) => h.id === p!.habitId);
+    const minTarget = habit?.minimumTarget ?? 1;
+    const val = body.actualValue ?? 0;
     const log: HabitLog = {
       id: `log-${Date.now()}`,
       habitId: p.habitId,
-      status: (body.actualValue ?? 0) > 0 ? 'DONE' : 'NOT_DONE',
+      status: val >= minTarget ? 'DONE' : val > 0 ? 'NOT_DONE' : 'NOT_DONE',
       actualValue: body.actualValue ?? null,
-      completedAt: body.completedAt ?? new Date().toISOString(),
-      loggedAt: body.loggedAt ?? new Date().toISOString(),
+      completedAt: body.completedAt ?? localNow,
+      loggedAt: body.loggedAt ?? localNow,
       triggerSource: body.triggerSource ?? 'SELF_INITIATED',
     };
     if (!logsMap[p.habitId]) logsMap[p.habitId] = [];

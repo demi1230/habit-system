@@ -40,7 +40,7 @@ function ReminderCard({ reminder, delay }: { reminder: Reminder; delay: number }
           <Bell className="w-4 h-4" style={{ color: statusColor }} />
         </div>
         <div className="flex-1 min-w-0">
-          <p style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.3, marginBottom: 3 }} className="text-foreground">
+          <p style={{ fontSize: 14, fontWeight: 500, lineHeight: 1.3, marginBottom: 3 }} className="text-foreground">
             Сануулга
           </p>
           {reminder.decisionReason && (
@@ -104,7 +104,7 @@ export function RemindersPage() {
         <div className="flex items-center gap-3 px-5 pt-13 pb-3">
           <div className="flex items-center gap-2">
             <Bell className="w-4.5 h-4.5 text-primary" />
-            <p style={{ fontSize: 17, fontWeight: 600 }} className="text-foreground">Сануулга</p>
+            <p style={{ fontSize: 18, fontWeight: 600 }} className="text-foreground">Сануулга</p>
           </div>
         </div>
       </div>
@@ -126,7 +126,7 @@ export function RemindersPage() {
               style={{ backgroundColor: 'rgba(0,0,0,0.04)' }}>
               <BellOff className="w-8 h-8" style={{ color: 'rgba(0,0,0,0.2)' }} />
             </div>
-            <p style={{ fontSize: 17, fontWeight: 600, marginTop: 16 }} className="text-foreground">
+            <p style={{ fontSize: 16, fontWeight: 500, marginTop: 16 }} className="text-foreground">
               Сануулга байхгүй
             </p>
             <p style={{ fontSize: 13, marginTop: 6, lineHeight: 1.6 }} className="text-muted-foreground">

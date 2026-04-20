@@ -21,11 +21,19 @@ export interface CreateHabitLogData {
   precedingRoutine?: string | null;
 }
 
+export interface UpdateHabitLogData {
+  status: HabitLogStatus;
+  actualValue: number;
+}
+
 /**
  * Repository port (interface) for HabitLogEntity persistence.
  */
 export interface IHabitLogRepository {
   create(data: CreateHabitLogData): Promise<HabitLogEntity>;
+  findById(id: string): Promise<HabitLogEntity | null>;
+  update(id: string, data: UpdateHabitLogData): Promise<HabitLogEntity>;
+  delete(id: string): Promise<void>;
   findAllByHabitId(habitId: string): Promise<HabitLogEntity[]>;
   /** Lightweight projection used by habit-strength and progress-summary reads. */
   findSummaryByHabitId(

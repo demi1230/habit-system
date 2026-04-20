@@ -59,8 +59,10 @@ export interface AdaptationRecommendation {
 }
 
 export const habitsApi = {
-  listToday: (userId: string) =>
-    api.get<HabitWithCueContext[]>(`/users/${userId}/habits/today`),
+  listToday: (userId: string, date?: string) =>
+    api.get<HabitWithCueContext[]>(
+      `/users/${userId}/habits/today${date ? `?date=${date}` : ''}`,
+    ),
 
   list: (userId: string, includeArchived?: boolean) =>
     api.get<Habit[]>(
@@ -87,6 +89,12 @@ export const habitsApi = {
 
   getStrengthSignals: (userId: string, habitId: string) =>
     api.get<HabitStrengthSignals>(`/users/${userId}/habits/${habitId}/habit-strength`),
+
+  updateLog: (userId: string, habitId: string, logId: string, data: { actualValue: number }) =>
+    api.patch<HabitLog>(`/users/${userId}/habits/${habitId}/logs/${logId}`, data),
+
+  deleteLog: (userId: string, habitId: string, logId: string) =>
+    api.del<void>(`/users/${userId}/habits/${habitId}/logs/${logId}`),
 
   getAdaptationRecommendation: (userId: string, habitId: string) =>
     api.get<AdaptationRecommendation>(`/users/${userId}/habits/${habitId}/adaptation-recommendation`),

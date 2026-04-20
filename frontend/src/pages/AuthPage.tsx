@@ -27,12 +27,12 @@ export function AuthPage() {
     try {
       if (isLogin) {
         const res = await authApi.login(email, password);
-        login(res.accessToken);
+        login(res.accessToken, res.displayName);
         navigate('/dashboard');
       } else {
         await authApi.register(email, password, name);
         const res = await authApi.login(email, password);
-        login(res.accessToken, name);
+        login(res.accessToken, res.displayName ?? name);
         navigate('/dashboard');
       }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
