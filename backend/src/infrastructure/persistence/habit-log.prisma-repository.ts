@@ -62,6 +62,67 @@ export class HabitLogPrismaRepository implements IHabitLogRepository {
     return results as unknown as HabitLogEntity[];
   }
 
+  async findLatestByHabitIdsForDate(
+    habitIds: string[],
+    date: Date,
+  ): Promise<
+    Array<
+      Pick<
+        HabitLogEntity,
+        'id' | 'habitId' | 'status' | 'actualValue' | 'completedAt' | 'loggedAt'
+      >
+    >
+  > {
+    if (habitIds.length === 0) return [];
+
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const results = await this.prisma.habitLog.findMany({
+      where: {
+        habitId: { in: habitIds },
+        completedAt: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+      },
+      select: {
+        id: true,
+        habitId: true,
+        status: true,
+        actualValue: true,
+        completedAt: true,
+        loggedAt: true,
+      },
+      orderBy: [{ habitId: 'asc' }, { completedAt: 'desc' }, { loggedAt: 'desc' }],
+    });
+
+    const latestByHabitId = new Map<
+      string,
+      Pick<
+        HabitLogEntity,
+        'id' | 'habitId' | 'status' | 'actualValue' | 'completedAt' | 'loggedAt'
+      >
+    >();
+
+    for (const result of results) {
+      if (!latestByHabitId.has(result.habitId)) {
+        latestByHabitId.set(
+          result.habitId,
+          result as Pick<
+            HabitLogEntity,
+            'id' | 'habitId' | 'status' | 'actualValue' | 'completedAt' | 'loggedAt'
+          >,
+        );
+      }
+    }
+
+    return Array.from(latestByHabitId.values());
+  }
+
   async findSummaryByHabitId(
     habitId: string,
   ): Promise<

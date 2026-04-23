@@ -70,6 +70,18 @@ const habitsService = {
 };
 
 const analyticsService = { recordActivity: jest.fn() };
+const reminderMessageBuilder = {
+  build: jest.fn().mockReturnValue({
+    title: 'Дадлын сануулга',
+    body: 'Morning run дадлаа хийгээрэй.',
+    contentParts: {
+      cue: null,
+      habit: 'Morning run',
+      reason: null,
+      benefits: [],
+    },
+  }),
+};
 
 // ─── Suite ───────────────────────────────────────────────────────────────────
 
@@ -85,6 +97,7 @@ describe('ReminderExecutionService', () => {
       policyRepo as never,
       habitsService as never,
       analyticsService as never,
+      reminderMessageBuilder as never,
     );
   });
 

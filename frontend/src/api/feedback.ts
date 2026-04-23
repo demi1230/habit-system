@@ -34,6 +34,11 @@ export const feedbackApi = {
       `/users/${userId}/habits/${habitId}/difficulty-ratings`,
     ),
 
+  listReflections: (userId: string, habitId: string) =>
+    api.get<ReflectionResponse[]>(
+      `/users/${userId}/habits/${habitId}/reflections`,
+    ),
+
   submitReflection: (
     userId: string,
     habitId: string,

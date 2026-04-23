@@ -10,8 +10,11 @@ import { HabitLogPrismaRepository } from '../infrastructure/persistence/habit-lo
 import { ReminderPrismaRepository } from '../infrastructure/persistence/reminder.prisma-repository';
 import { ReminderActionPrismaRepository } from '../infrastructure/persistence/reminder-action.prisma-repository';
 import { ReminderPolicyPrismaRepository } from '../infrastructure/persistence/reminder-policy.prisma-repository';
-import { StubNotificationGateway } from './notification/stub-notification.gateway';
+import { PushModule } from '../push/push.module';
+import { WebPushNotificationGateway } from '../push/web-push-notification.gateway';
 import { ReminderExecutionService } from './reminder-execution.service';
+import { ReminderMessageBuilder } from './reminder-message.builder';
+import { ReminderSchedulerService } from './reminder-scheduler.service';
 import { RemindersService } from './reminders.service';
 import { RemindersController } from './reminders.controller';
 
@@ -23,11 +26,13 @@ import { RemindersController } from './reminders.controller';
  * Thesis mapping: "Сануулга модуль · Reminders module"
  */
 @Module({
-  imports: [HabitsModule, AnalyticsModule],
+  imports: [HabitsModule, AnalyticsModule, PushModule],
   controllers: [RemindersController],
   providers: [
     ReminderExecutionService,
     RemindersService,
+    ReminderMessageBuilder,
+    ReminderSchedulerService,
     { provide: REMINDER_REPOSITORY, useClass: ReminderPrismaRepository },
     {
       provide: REMINDER_ACTION_REPOSITORY,
@@ -38,7 +43,7 @@ import { RemindersController } from './reminders.controller';
       useClass: ReminderPolicyPrismaRepository,
     },
     { provide: HABIT_LOG_REPOSITORY, useClass: HabitLogPrismaRepository },
-    { provide: NOTIFICATION_GATEWAY, useClass: StubNotificationGateway },
+    { provide: NOTIFICATION_GATEWAY, useClass: WebPushNotificationGateway },
   ],
   exports: [RemindersService],
 })

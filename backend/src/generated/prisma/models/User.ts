@@ -20,8 +20,18 @@ export type UserModel = runtime.Types.Result.DefaultSelection<Prisma.$UserPayloa
 
 export type AggregateUser = {
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
+}
+
+export type UserAvgAggregateOutputType = {
+  totalXp: number | null
+}
+
+export type UserSumAggregateOutputType = {
+  totalXp: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -29,6 +39,7 @@ export type UserMinAggregateOutputType = {
   email: string | null
   passwordHash: string | null
   displayName: string | null
+  totalXp: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -38,6 +49,7 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   passwordHash: string | null
   displayName: string | null
+  totalXp: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -47,17 +59,27 @@ export type UserCountAggregateOutputType = {
   email: number
   passwordHash: number
   displayName: number
+  totalXp: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
 
+export type UserAvgAggregateInputType = {
+  totalXp?: true
+}
+
+export type UserSumAggregateInputType = {
+  totalXp?: true
+}
+
 export type UserMinAggregateInputType = {
   id?: true
   email?: true
   passwordHash?: true
   displayName?: true
+  totalXp?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -67,6 +89,7 @@ export type UserMaxAggregateInputType = {
   email?: true
   passwordHash?: true
   displayName?: true
+  totalXp?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -76,6 +99,7 @@ export type UserCountAggregateInputType = {
   email?: true
   passwordHash?: true
   displayName?: true
+  totalXp?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -119,6 +143,18 @@ export type UserAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: UserAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: UserSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: UserMinAggregateInputType
@@ -149,6 +185,8 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: UserCountAggregateInputType | true
+  _avg?: UserAvgAggregateInputType
+  _sum?: UserSumAggregateInputType
   _min?: UserMinAggregateInputType
   _max?: UserMaxAggregateInputType
 }
@@ -158,9 +196,12 @@ export type UserGroupByOutputType = {
   email: string
   passwordHash: string
   displayName: string | null
+  totalXp: number
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
 }
@@ -188,6 +229,7 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   passwordHash?: Prisma.StringFilter<"User"> | string
   displayName?: Prisma.StringNullableFilter<"User"> | string | null
+  totalXp?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   habits?: Prisma.HabitListRelationFilter
@@ -196,6 +238,11 @@ export type UserWhereInput = {
   reminderActions?: Prisma.ReminderActionListRelationFilter
   difficultyFeedback?: Prisma.DifficultyFeedbackListRelationFilter
   reflections?: Prisma.ReflectionListRelationFilter
+  adaptationRecommendations?: Prisma.AdaptationRecommendationListRelationFilter
+  articleInteractions?: Prisma.ArticleInteractionListRelationFilter
+  recommendationInteractions?: Prisma.RecommendationInteractionListRelationFilter
+  pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
+  badges?: Prisma.UserBadgeListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -203,6 +250,7 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalXp?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   habits?: Prisma.HabitOrderByRelationAggregateInput
@@ -211,6 +259,11 @@ export type UserOrderByWithRelationInput = {
   reminderActions?: Prisma.ReminderActionOrderByRelationAggregateInput
   difficultyFeedback?: Prisma.DifficultyFeedbackOrderByRelationAggregateInput
   reflections?: Prisma.ReflectionOrderByRelationAggregateInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationOrderByRelationAggregateInput
+  articleInteractions?: Prisma.ArticleInteractionOrderByRelationAggregateInput
+  recommendationInteractions?: Prisma.RecommendationInteractionOrderByRelationAggregateInput
+  pushSubscriptions?: Prisma.PushSubscriptionOrderByRelationAggregateInput
+  badges?: Prisma.UserBadgeOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -221,6 +274,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   passwordHash?: Prisma.StringFilter<"User"> | string
   displayName?: Prisma.StringNullableFilter<"User"> | string | null
+  totalXp?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   habits?: Prisma.HabitListRelationFilter
@@ -229,6 +283,11 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   reminderActions?: Prisma.ReminderActionListRelationFilter
   difficultyFeedback?: Prisma.DifficultyFeedbackListRelationFilter
   reflections?: Prisma.ReflectionListRelationFilter
+  adaptationRecommendations?: Prisma.AdaptationRecommendationListRelationFilter
+  articleInteractions?: Prisma.ArticleInteractionListRelationFilter
+  recommendationInteractions?: Prisma.RecommendationInteractionListRelationFilter
+  pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
+  badges?: Prisma.UserBadgeListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -236,11 +295,14 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalXp?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
+  _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
+  _sum?: Prisma.UserSumOrderByAggregateInput
 }
 
 export type UserScalarWhereWithAggregatesInput = {
@@ -251,6 +313,7 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   passwordHash?: Prisma.StringWithAggregatesFilter<"User"> | string
   displayName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  totalXp?: Prisma.IntWithAggregatesFilter<"User"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -260,6 +323,7 @@ export type UserCreateInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -268,6 +332,11 @@ export type UserCreateInput = {
   reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -275,6 +344,7 @@ export type UserUncheckedCreateInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -283,6 +353,11 @@ export type UserUncheckedCreateInput = {
   reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -290,6 +365,7 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -298,6 +374,11 @@ export type UserUpdateInput = {
   reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -305,6 +386,7 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -313,6 +395,11 @@ export type UserUncheckedUpdateInput = {
   reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -320,6 +407,7 @@ export type UserCreateManyInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -329,6 +417,7 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -338,6 +427,7 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -347,8 +437,13 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  totalXp?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type UserAvgOrderByAggregateInput = {
+  totalXp?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -356,6 +451,7 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  totalXp?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -365,8 +461,13 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  totalXp?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type UserSumOrderByAggregateInput = {
+  totalXp?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -380,6 +481,14 @@ export type StringFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -470,11 +579,82 @@ export type UserUpdateOneRequiredWithoutReminderActionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReminderActionsInput, Prisma.UserUpdateWithoutReminderActionsInput>, Prisma.UserUncheckedUpdateWithoutReminderActionsInput>
 }
 
+export type UserCreateNestedOneWithoutAdaptationRecommendationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAdaptationRecommendationsInput, Prisma.UserUncheckedCreateWithoutAdaptationRecommendationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAdaptationRecommendationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAdaptationRecommendationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAdaptationRecommendationsInput, Prisma.UserUncheckedCreateWithoutAdaptationRecommendationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAdaptationRecommendationsInput
+  upsert?: Prisma.UserUpsertWithoutAdaptationRecommendationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAdaptationRecommendationsInput, Prisma.UserUpdateWithoutAdaptationRecommendationsInput>, Prisma.UserUncheckedUpdateWithoutAdaptationRecommendationsInput>
+}
+
+export type UserCreateNestedOneWithoutArticleInteractionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutArticleInteractionsInput, Prisma.UserUncheckedCreateWithoutArticleInteractionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutArticleInteractionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutArticleInteractionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutArticleInteractionsInput, Prisma.UserUncheckedCreateWithoutArticleInteractionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutArticleInteractionsInput
+  upsert?: Prisma.UserUpsertWithoutArticleInteractionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutArticleInteractionsInput, Prisma.UserUpdateWithoutArticleInteractionsInput>, Prisma.UserUncheckedUpdateWithoutArticleInteractionsInput>
+}
+
+export type UserCreateNestedOneWithoutRecommendationInteractionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRecommendationInteractionsInput, Prisma.UserUncheckedCreateWithoutRecommendationInteractionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRecommendationInteractionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRecommendationInteractionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRecommendationInteractionsInput, Prisma.UserUncheckedCreateWithoutRecommendationInteractionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRecommendationInteractionsInput
+  upsert?: Prisma.UserUpsertWithoutRecommendationInteractionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRecommendationInteractionsInput, Prisma.UserUpdateWithoutRecommendationInteractionsInput>, Prisma.UserUncheckedUpdateWithoutRecommendationInteractionsInput>
+}
+
+export type UserCreateNestedOneWithoutPushSubscriptionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPushSubscriptionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPushSubscriptionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPushSubscriptionsInput
+  upsert?: Prisma.UserUpsertWithoutPushSubscriptionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPushSubscriptionsInput, Prisma.UserUpdateWithoutPushSubscriptionsInput>, Prisma.UserUncheckedUpdateWithoutPushSubscriptionsInput>
+}
+
+export type UserCreateNestedOneWithoutBadgesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBadgesInput, Prisma.UserUncheckedCreateWithoutBadgesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBadgesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBadgesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBadgesInput, Prisma.UserUncheckedCreateWithoutBadgesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBadgesInput
+  upsert?: Prisma.UserUpsertWithoutBadgesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBadgesInput, Prisma.UserUpdateWithoutBadgesInput>, Prisma.UserUncheckedUpdateWithoutBadgesInput>
+}
+
 export type UserCreateWithoutHabitsInput = {
   id?: string
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
@@ -482,6 +662,11 @@ export type UserCreateWithoutHabitsInput = {
   reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutHabitsInput = {
@@ -489,6 +674,7 @@ export type UserUncheckedCreateWithoutHabitsInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
@@ -496,6 +682,11 @@ export type UserUncheckedCreateWithoutHabitsInput = {
   reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutHabitsInput = {
@@ -519,6 +710,7 @@ export type UserUpdateWithoutHabitsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
@@ -526,6 +718,11 @@ export type UserUpdateWithoutHabitsInput = {
   reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutHabitsInput = {
@@ -533,6 +730,7 @@ export type UserUncheckedUpdateWithoutHabitsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
@@ -540,6 +738,11 @@ export type UserUncheckedUpdateWithoutHabitsInput = {
   reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDifficultyFeedbackInput = {
@@ -547,6 +750,7 @@ export type UserCreateWithoutDifficultyFeedbackInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -554,6 +758,11 @@ export type UserCreateWithoutDifficultyFeedbackInput = {
   reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
   reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDifficultyFeedbackInput = {
@@ -561,6 +770,7 @@ export type UserUncheckedCreateWithoutDifficultyFeedbackInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -568,6 +778,11 @@ export type UserUncheckedCreateWithoutDifficultyFeedbackInput = {
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
   reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDifficultyFeedbackInput = {
@@ -591,6 +806,7 @@ export type UserUpdateWithoutDifficultyFeedbackInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -598,6 +814,11 @@ export type UserUpdateWithoutDifficultyFeedbackInput = {
   reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
   reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDifficultyFeedbackInput = {
@@ -605,6 +826,7 @@ export type UserUncheckedUpdateWithoutDifficultyFeedbackInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -612,6 +834,11 @@ export type UserUncheckedUpdateWithoutDifficultyFeedbackInput = {
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
   reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReflectionsInput = {
@@ -619,6 +846,7 @@ export type UserCreateWithoutReflectionsInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -626,6 +854,11 @@ export type UserCreateWithoutReflectionsInput = {
   reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
   reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReflectionsInput = {
@@ -633,6 +866,7 @@ export type UserUncheckedCreateWithoutReflectionsInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -640,6 +874,11 @@ export type UserUncheckedCreateWithoutReflectionsInput = {
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
   reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReflectionsInput = {
@@ -663,6 +902,7 @@ export type UserUpdateWithoutReflectionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -670,6 +910,11 @@ export type UserUpdateWithoutReflectionsInput = {
   reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
   reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReflectionsInput = {
@@ -677,6 +922,7 @@ export type UserUncheckedUpdateWithoutReflectionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -684,6 +930,11 @@ export type UserUncheckedUpdateWithoutReflectionsInput = {
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
   reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutActivityLogsInput = {
@@ -691,6 +942,7 @@ export type UserCreateWithoutActivityLogsInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -698,6 +950,11 @@ export type UserCreateWithoutActivityLogsInput = {
   reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActivityLogsInput = {
@@ -705,6 +962,7 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -712,6 +970,11 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActivityLogsInput = {
@@ -735,6 +998,7 @@ export type UserUpdateWithoutActivityLogsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -742,6 +1006,11 @@ export type UserUpdateWithoutActivityLogsInput = {
   reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivityLogsInput = {
@@ -749,6 +1018,7 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -756,6 +1026,11 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRemindersInput = {
@@ -763,6 +1038,7 @@ export type UserCreateWithoutRemindersInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -770,6 +1046,11 @@ export type UserCreateWithoutRemindersInput = {
   reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRemindersInput = {
@@ -777,6 +1058,7 @@ export type UserUncheckedCreateWithoutRemindersInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -784,6 +1066,11 @@ export type UserUncheckedCreateWithoutRemindersInput = {
   reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRemindersInput = {
@@ -807,6 +1094,7 @@ export type UserUpdateWithoutRemindersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -814,6 +1102,11 @@ export type UserUpdateWithoutRemindersInput = {
   reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRemindersInput = {
@@ -821,6 +1114,7 @@ export type UserUncheckedUpdateWithoutRemindersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -828,6 +1122,11 @@ export type UserUncheckedUpdateWithoutRemindersInput = {
   reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReminderActionsInput = {
@@ -835,6 +1134,7 @@ export type UserCreateWithoutReminderActionsInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -842,6 +1142,11 @@ export type UserCreateWithoutReminderActionsInput = {
   reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReminderActionsInput = {
@@ -849,6 +1154,7 @@ export type UserUncheckedCreateWithoutReminderActionsInput = {
   email: string
   passwordHash: string
   displayName?: string | null
+  totalXp?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -856,6 +1162,11 @@ export type UserUncheckedCreateWithoutReminderActionsInput = {
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReminderActionsInput = {
@@ -879,6 +1190,7 @@ export type UserUpdateWithoutReminderActionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -886,6 +1198,11 @@ export type UserUpdateWithoutReminderActionsInput = {
   reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReminderActionsInput = {
@@ -893,6 +1210,7 @@ export type UserUncheckedUpdateWithoutReminderActionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -900,6 +1218,491 @@ export type UserUncheckedUpdateWithoutReminderActionsInput = {
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAdaptationRecommendationsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  totalXp?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAdaptationRecommendationsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  totalXp?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAdaptationRecommendationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAdaptationRecommendationsInput, Prisma.UserUncheckedCreateWithoutAdaptationRecommendationsInput>
+}
+
+export type UserUpsertWithoutAdaptationRecommendationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAdaptationRecommendationsInput, Prisma.UserUncheckedUpdateWithoutAdaptationRecommendationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAdaptationRecommendationsInput, Prisma.UserUncheckedCreateWithoutAdaptationRecommendationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAdaptationRecommendationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAdaptationRecommendationsInput, Prisma.UserUncheckedUpdateWithoutAdaptationRecommendationsInput>
+}
+
+export type UserUpdateWithoutAdaptationRecommendationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAdaptationRecommendationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutArticleInteractionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  totalXp?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutArticleInteractionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  totalXp?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutArticleInteractionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutArticleInteractionsInput, Prisma.UserUncheckedCreateWithoutArticleInteractionsInput>
+}
+
+export type UserUpsertWithoutArticleInteractionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutArticleInteractionsInput, Prisma.UserUncheckedUpdateWithoutArticleInteractionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutArticleInteractionsInput, Prisma.UserUncheckedCreateWithoutArticleInteractionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutArticleInteractionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutArticleInteractionsInput, Prisma.UserUncheckedUpdateWithoutArticleInteractionsInput>
+}
+
+export type UserUpdateWithoutArticleInteractionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutArticleInteractionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutRecommendationInteractionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  totalXp?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutRecommendationInteractionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  totalXp?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutRecommendationInteractionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRecommendationInteractionsInput, Prisma.UserUncheckedCreateWithoutRecommendationInteractionsInput>
+}
+
+export type UserUpsertWithoutRecommendationInteractionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRecommendationInteractionsInput, Prisma.UserUncheckedUpdateWithoutRecommendationInteractionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRecommendationInteractionsInput, Prisma.UserUncheckedCreateWithoutRecommendationInteractionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRecommendationInteractionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRecommendationInteractionsInput, Prisma.UserUncheckedUpdateWithoutRecommendationInteractionsInput>
+}
+
+export type UserUpdateWithoutRecommendationInteractionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRecommendationInteractionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPushSubscriptionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  totalXp?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  totalXp?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedCreateNestedManyWithoutUserInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPushSubscriptionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+}
+
+export type UserUpsertWithoutPushSubscriptionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPushSubscriptionsInput, Prisma.UserUncheckedUpdateWithoutPushSubscriptionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPushSubscriptionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPushSubscriptionsInput, Prisma.UserUncheckedUpdateWithoutPushSubscriptionsInput>
+}
+
+export type UserUpdateWithoutPushSubscriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedUpdateManyWithoutUserNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutBadgesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  totalXp?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutBadgesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  displayName?: string | null
+  totalXp?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  reminderActions?: Prisma.ReminderActionUncheckedCreateNestedManyWithoutUserInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutUserInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutUserInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutUserInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutUserInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutBadgesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBadgesInput, Prisma.UserUncheckedCreateWithoutBadgesInput>
+}
+
+export type UserUpsertWithoutBadgesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBadgesInput, Prisma.UserUncheckedUpdateWithoutBadgesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBadgesInput, Prisma.UserUncheckedCreateWithoutBadgesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBadgesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBadgesInput, Prisma.UserUncheckedUpdateWithoutBadgesInput>
+}
+
+export type UserUpdateWithoutBadgesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBadgesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  reminderActions?: Prisma.ReminderActionUncheckedUpdateManyWithoutUserNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutUserNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutUserNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutUserNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutUserNestedInput
+  recommendationInteractions?: Prisma.RecommendationInteractionUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -914,6 +1717,11 @@ export type UserCountOutputType = {
   reminderActions: number
   difficultyFeedback: number
   reflections: number
+  adaptationRecommendations: number
+  articleInteractions: number
+  recommendationInteractions: number
+  pushSubscriptions: number
+  badges: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -923,6 +1731,11 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   reminderActions?: boolean | UserCountOutputTypeCountReminderActionsArgs
   difficultyFeedback?: boolean | UserCountOutputTypeCountDifficultyFeedbackArgs
   reflections?: boolean | UserCountOutputTypeCountReflectionsArgs
+  adaptationRecommendations?: boolean | UserCountOutputTypeCountAdaptationRecommendationsArgs
+  articleInteractions?: boolean | UserCountOutputTypeCountArticleInteractionsArgs
+  recommendationInteractions?: boolean | UserCountOutputTypeCountRecommendationInteractionsArgs
+  pushSubscriptions?: boolean | UserCountOutputTypeCountPushSubscriptionsArgs
+  badges?: boolean | UserCountOutputTypeCountBadgesArgs
 }
 
 /**
@@ -977,12 +1790,48 @@ export type UserCountOutputTypeCountReflectionsArgs<ExtArgs extends runtime.Type
   where?: Prisma.ReflectionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAdaptationRecommendationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AdaptationRecommendationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountArticleInteractionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ArticleInteractionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRecommendationInteractionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RecommendationInteractionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPushSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PushSubscriptionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBadgesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserBadgeWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   email?: boolean
   passwordHash?: boolean
   displayName?: boolean
+  totalXp?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   habits?: boolean | Prisma.User$habitsArgs<ExtArgs>
@@ -991,6 +1840,11 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   reminderActions?: boolean | Prisma.User$reminderActionsArgs<ExtArgs>
   difficultyFeedback?: boolean | Prisma.User$difficultyFeedbackArgs<ExtArgs>
   reflections?: boolean | Prisma.User$reflectionsArgs<ExtArgs>
+  adaptationRecommendations?: boolean | Prisma.User$adaptationRecommendationsArgs<ExtArgs>
+  articleInteractions?: boolean | Prisma.User$articleInteractionsArgs<ExtArgs>
+  recommendationInteractions?: boolean | Prisma.User$recommendationInteractionsArgs<ExtArgs>
+  pushSubscriptions?: boolean | Prisma.User$pushSubscriptionsArgs<ExtArgs>
+  badges?: boolean | Prisma.User$badgesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -999,6 +1853,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   passwordHash?: boolean
   displayName?: boolean
+  totalXp?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1008,6 +1863,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   passwordHash?: boolean
   displayName?: boolean
+  totalXp?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1017,11 +1873,12 @@ export type UserSelectScalar = {
   email?: boolean
   passwordHash?: boolean
   displayName?: boolean
+  totalXp?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "displayName" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "displayName" | "totalXp" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habits?: boolean | Prisma.User$habitsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.User$activityLogsArgs<ExtArgs>
@@ -1029,6 +1886,11 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reminderActions?: boolean | Prisma.User$reminderActionsArgs<ExtArgs>
   difficultyFeedback?: boolean | Prisma.User$difficultyFeedbackArgs<ExtArgs>
   reflections?: boolean | Prisma.User$reflectionsArgs<ExtArgs>
+  adaptationRecommendations?: boolean | Prisma.User$adaptationRecommendationsArgs<ExtArgs>
+  articleInteractions?: boolean | Prisma.User$articleInteractionsArgs<ExtArgs>
+  recommendationInteractions?: boolean | Prisma.User$recommendationInteractionsArgs<ExtArgs>
+  pushSubscriptions?: boolean | Prisma.User$pushSubscriptionsArgs<ExtArgs>
+  badges?: boolean | Prisma.User$badgesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1043,12 +1905,18 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     reminderActions: Prisma.$ReminderActionPayload<ExtArgs>[]
     difficultyFeedback: Prisma.$DifficultyFeedbackPayload<ExtArgs>[]
     reflections: Prisma.$ReflectionPayload<ExtArgs>[]
+    adaptationRecommendations: Prisma.$AdaptationRecommendationPayload<ExtArgs>[]
+    articleInteractions: Prisma.$ArticleInteractionPayload<ExtArgs>[]
+    recommendationInteractions: Prisma.$RecommendationInteractionPayload<ExtArgs>[]
+    pushSubscriptions: Prisma.$PushSubscriptionPayload<ExtArgs>[]
+    badges: Prisma.$UserBadgePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     email: string
     passwordHash: string
     displayName: string | null
+    totalXp: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1451,6 +2319,11 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   reminderActions<T extends Prisma.User$reminderActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reminderActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReminderActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   difficultyFeedback<T extends Prisma.User$difficultyFeedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$difficultyFeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DifficultyFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reflections<T extends Prisma.User$reflectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reflectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReflectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  adaptationRecommendations<T extends Prisma.User$adaptationRecommendationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$adaptationRecommendationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AdaptationRecommendationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  articleInteractions<T extends Prisma.User$articleInteractionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$articleInteractionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArticleInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  recommendationInteractions<T extends Prisma.User$recommendationInteractionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$recommendationInteractionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RecommendationInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  pushSubscriptions<T extends Prisma.User$pushSubscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pushSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PushSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  badges<T extends Prisma.User$badgesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$badgesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1484,6 +2357,7 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly displayName: Prisma.FieldRef<"User", 'String'>
+  readonly totalXp: Prisma.FieldRef<"User", 'Int'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -2020,6 +2894,126 @@ export type User$reflectionsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.ReflectionScalarFieldEnum | Prisma.ReflectionScalarFieldEnum[]
+}
+
+/**
+ * User.adaptationRecommendations
+ */
+export type User$adaptationRecommendationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AdaptationRecommendation
+   */
+  select?: Prisma.AdaptationRecommendationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AdaptationRecommendation
+   */
+  omit?: Prisma.AdaptationRecommendationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdaptationRecommendationInclude<ExtArgs> | null
+  where?: Prisma.AdaptationRecommendationWhereInput
+  orderBy?: Prisma.AdaptationRecommendationOrderByWithRelationInput | Prisma.AdaptationRecommendationOrderByWithRelationInput[]
+  cursor?: Prisma.AdaptationRecommendationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AdaptationRecommendationScalarFieldEnum | Prisma.AdaptationRecommendationScalarFieldEnum[]
+}
+
+/**
+ * User.articleInteractions
+ */
+export type User$articleInteractionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ArticleInteraction
+   */
+  select?: Prisma.ArticleInteractionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ArticleInteraction
+   */
+  omit?: Prisma.ArticleInteractionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArticleInteractionInclude<ExtArgs> | null
+  where?: Prisma.ArticleInteractionWhereInput
+  orderBy?: Prisma.ArticleInteractionOrderByWithRelationInput | Prisma.ArticleInteractionOrderByWithRelationInput[]
+  cursor?: Prisma.ArticleInteractionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ArticleInteractionScalarFieldEnum | Prisma.ArticleInteractionScalarFieldEnum[]
+}
+
+/**
+ * User.recommendationInteractions
+ */
+export type User$recommendationInteractionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RecommendationInteraction
+   */
+  select?: Prisma.RecommendationInteractionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RecommendationInteraction
+   */
+  omit?: Prisma.RecommendationInteractionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RecommendationInteractionInclude<ExtArgs> | null
+  where?: Prisma.RecommendationInteractionWhereInput
+  orderBy?: Prisma.RecommendationInteractionOrderByWithRelationInput | Prisma.RecommendationInteractionOrderByWithRelationInput[]
+  cursor?: Prisma.RecommendationInteractionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RecommendationInteractionScalarFieldEnum | Prisma.RecommendationInteractionScalarFieldEnum[]
+}
+
+/**
+ * User.pushSubscriptions
+ */
+export type User$pushSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PushSubscription
+   */
+  select?: Prisma.PushSubscriptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PushSubscription
+   */
+  omit?: Prisma.PushSubscriptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PushSubscriptionInclude<ExtArgs> | null
+  where?: Prisma.PushSubscriptionWhereInput
+  orderBy?: Prisma.PushSubscriptionOrderByWithRelationInput | Prisma.PushSubscriptionOrderByWithRelationInput[]
+  cursor?: Prisma.PushSubscriptionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PushSubscriptionScalarFieldEnum | Prisma.PushSubscriptionScalarFieldEnum[]
+}
+
+/**
+ * User.badges
+ */
+export type User$badgesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserBadge
+   */
+  select?: Prisma.UserBadgeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserBadge
+   */
+  omit?: Prisma.UserBadgeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserBadgeInclude<ExtArgs> | null
+  where?: Prisma.UserBadgeWhereInput
+  orderBy?: Prisma.UserBadgeOrderByWithRelationInput | Prisma.UserBadgeOrderByWithRelationInput[]
+  cursor?: Prisma.UserBadgeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserBadgeScalarFieldEnum | Prisma.UserBadgeScalarFieldEnum[]
 }
 
 /**

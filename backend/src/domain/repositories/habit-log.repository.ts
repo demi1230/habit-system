@@ -35,6 +35,21 @@ export interface IHabitLogRepository {
   update(id: string, data: UpdateHabitLogData): Promise<HabitLogEntity>;
   delete(id: string): Promise<void>;
   findAllByHabitId(habitId: string): Promise<HabitLogEntity[]>;
+  /**
+   * Returns the latest log on a specific calendar day for each habit id.
+   * Used by dashboard/today views to avoid one HTTP + DB call per habit.
+   */
+  findLatestByHabitIdsForDate(
+    habitIds: string[],
+    date: Date,
+  ): Promise<
+    Array<
+      Pick<
+        HabitLogEntity,
+        'id' | 'habitId' | 'status' | 'actualValue' | 'completedAt' | 'loggedAt'
+      >
+    >
+  >;
   /** Lightweight projection used by habit-strength and progress-summary reads. */
   findSummaryByHabitId(
     habitId: string,

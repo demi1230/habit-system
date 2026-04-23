@@ -1,4 +1,9 @@
-﻿import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+﻿import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { CompletionTriggerSource } from '../domain/enums/domain.enums';
 import type { IHabitLogRepository } from '../domain/repositories/habit-log.repository';
@@ -7,10 +12,12 @@ import { HabitStrengthRules } from '../domain/rules/habit-strength.rules';
 import { HabitsService } from '../habits/habits.service';
 import { CreateHabitLogDto } from './dto/create-habit-log.dto';
 import { UpdateHabitLogDto } from './dto/update-habit-log.dto';
-import {
-  ProgressSummary,
-} from './interfaces/progress-summary.interface';
+import { ProgressSummary } from './interfaces/progress-summary.interface';
 import { HabitStrengthSignals } from './foundation/habit-strength/habit-strength.interface';
+import {
+  ENGAGEMENT_SERVICE,
+  type IEngagementService,
+} from '../engagement/engagement.constants';
 
 @Injectable()
 export class ProgressService {
@@ -19,6 +26,8 @@ export class ProgressService {
     private readonly habitLogRepo: IHabitLogRepository,
     private readonly habitsService: HabitsService,
     private readonly analyticsService: AnalyticsService,
+    @Inject(ENGAGEMENT_SERVICE)
+    private readonly engagementService: IEngagementService,
   ) {}
 
   async createHabitLog(
@@ -34,6 +43,15 @@ export class ProgressService {
 
     const habitLog = await this.habitLogRepo.create({ habitId, ...logData });
 
+    if (habitLog.status === 'DONE') {
+      await this.engagementService.awardCompletionRewards({
+        userId,
+        habitId,
+        completedAt: habitLog.completedAt,
+        logId: habitLog.id,
+      });
+    }
+
     await this.analyticsService.recordActivity(userId, 'habit_logged');
     return habitLog;
   }
@@ -44,20 +62,36 @@ export class ProgressService {
     logId: string,
     dto: UpdateHabitLogDto,
   ) {
-    const habit = await this.habitsService.getOwnedHabitOrThrow(userId, habitId);
+    const habit = await this.habitsService.getOwnedHabitOrThrow(
+      userId,
+      habitId,
+    );
     const log = await this.habitLogRepo.findById(logId);
     if (!log || log.habitId !== habitId) {
       throw new NotFoundException('Log not found');
     }
-    const status = dto.actualValue >= habit.minimumTarget ? 'DONE' as const : 'NOT_DONE' as const;
-    return this.habitLogRepo.update(logId, { status, actualValue: dto.actualValue });
+    const status =
+      dto.actualValue >= habit.minimumTarget
+        ? ('DONE' as const)
+        : ('NOT_DONE' as const);
+    const updatedLog = await this.habitLogRepo.update(logId, {
+      status,
+      actualValue: dto.actualValue,
+    });
+
+    if (log.status !== 'DONE' && updatedLog.status === 'DONE') {
+      await this.engagementService.awardCompletionRewards({
+        userId,
+        habitId,
+        completedAt: updatedLog.completedAt,
+        logId: updatedLog.id,
+      });
+    }
+
+    return updatedLog;
   }
 
-  async deleteHabitLog(
-    userId: string,
-    habitId: string,
-    logId: string,
-  ) {
+  async deleteHabitLog(userId: string, habitId: string, logId: string) {
     await this.habitsService.getOwnedHabitOrThrow(userId, habitId);
     const log = await this.habitLogRepo.findById(logId);
     if (!log || log.habitId !== habitId) {
@@ -163,7 +197,15 @@ export class ProgressService {
 
     // Reject future-dated logs
     const now = new Date();
-    const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+    const endOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      23,
+      59,
+      59,
+      999,
+    );
     if (completedAt > endOfToday) {
       throw new BadRequestException('Cannot log habits for future dates');
     }
@@ -173,13 +215,15 @@ export class ProgressService {
       : new Date();
 
     return {
-      status: createHabitLogDto.actualValue >= habit.minimumTarget
-        ? 'DONE' as const
-        : 'NOT_DONE' as const,
+      status:
+        createHabitLogDto.actualValue >= habit.minimumTarget
+          ? ('DONE' as const)
+          : ('NOT_DONE' as const),
       actualValue: createHabitLogDto.actualValue,
       completedAt,
       loggedAt,
-      triggerSource: createHabitLogDto.triggerSource ?? CompletionTriggerSource.UNKNOWN,
+      triggerSource:
+        createHabitLogDto.triggerSource ?? CompletionTriggerSource.UNKNOWN,
     };
   }
 }

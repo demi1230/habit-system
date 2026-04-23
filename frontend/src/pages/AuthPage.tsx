@@ -5,6 +5,7 @@ import { ArrowLeft, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { useAuth } from '@/context/AuthContext';
 import { authApi } from '@/api/auth';
+import { TYPOGRAPHY, buttonStyles } from '@/shared/design';
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export function AuthPage() {
 
   return (
     <div className="min-h-screen bg-background px-6 py-8 flex flex-col">
-      <button onClick={() => navigate(-1)} className="mb-6 self-start">
+      <button onClick={() => navigate(-1)} className={`mb-6 self-start ${buttonStyles({ variant: 'nav', size: 'icon' })}`}>
         <ArrowLeft className="w-5 h-5 text-foreground" />
       </button>
 
@@ -61,9 +62,9 @@ export function AuthPage() {
       >
         <div className="flex items-center gap-2 mb-2">
           <Sparkles className="w-5 h-5 text-primary" />
-          <h2>{title}</h2>
+          <h2 style={TYPOGRAPHY.pageTitle}>{title}</h2>
         </div>
-        <p className="text-muted-foreground mb-8">{subtitle}</p>
+        <p className="text-muted-foreground mb-8" style={TYPOGRAPHY.bodySm}>{subtitle}</p>
 
         {error && (
           <div className="mb-4 p-3 rounded-xl bg-destructive/10 text-destructive text-sm">
@@ -111,7 +112,7 @@ export function AuthPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                className={`absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground ${buttonStyles({ variant: 'ghost', size: 'iconSm' })}`}
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -121,7 +122,7 @@ export function AuthPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-primary text-primary-foreground rounded-2xl mt-4 hover:opacity-90 transition-opacity disabled:opacity-50"
+            className={`w-full mt-4 ${buttonStyles({ variant: 'default', size: 'lg' })}`}
           >
             {loading
               ? '...'
@@ -135,14 +136,14 @@ export function AuthPage() {
           {isLogin ? (
             <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
               {t('auth.noAccount', 'Бүртгэл байхгүй юу?')}{' '}
-              <button onClick={() => navigate('/signup')} className="text-primary">
+              <button onClick={() => navigate('/signup')} className={buttonStyles({ variant: 'link', size: 'inline' })}>
                 {t('auth.signUp', 'Бүртгүүлэх')}
               </button>
             </p>
           ) : (
             <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
               {t('auth.hasAccount', 'Бүртгэлтэй юу?')}{' '}
-              <button onClick={() => navigate('/login')} className="text-primary">
+              <button onClick={() => navigate('/login')} className={buttonStyles({ variant: 'link', size: 'inline' })}>
                 {t('auth.signInLink', 'Нэвтрэх')}
               </button>
             </p>

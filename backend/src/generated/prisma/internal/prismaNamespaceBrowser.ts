@@ -53,6 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Habit: 'Habit',
+  HabitStep: 'HabitStep',
   HabitScheduleDay: 'HabitScheduleDay',
   HabitCue: 'HabitCue',
   HabitMotivationProfile: 'HabitMotivationProfile',
@@ -63,7 +64,12 @@ export const ModelName = {
   Reminder: 'Reminder',
   ReminderAction: 'ReminderAction',
   SrbaiAssessment: 'SrbaiAssessment',
-  ReminderPolicy: 'ReminderPolicy'
+  ReminderPolicy: 'ReminderPolicy',
+  AdaptationRecommendation: 'AdaptationRecommendation',
+  ArticleInteraction: 'ArticleInteraction',
+  RecommendationInteraction: 'RecommendationInteraction',
+  PushSubscription: 'PushSubscription',
+  UserBadge: 'UserBadge'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -87,6 +93,7 @@ export const UserScalarFieldEnum = {
   email: 'email',
   passwordHash: 'passwordHash',
   displayName: 'displayName',
+  totalXp: 'totalXp',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -116,6 +123,18 @@ export const HabitScalarFieldEnum = {
 } as const
 
 export type HabitScalarFieldEnum = (typeof HabitScalarFieldEnum)[keyof typeof HabitScalarFieldEnum]
+
+
+export const HabitStepScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  title: 'title',
+  orderIndex: 'orderIndex',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitStepScalarFieldEnum = (typeof HabitStepScalarFieldEnum)[keyof typeof HabitStepScalarFieldEnum]
 
 
 export const HabitScheduleDayScalarFieldEnum = {
@@ -274,6 +293,80 @@ export const ReminderPolicyScalarFieldEnum = {
 } as const
 
 export type ReminderPolicyScalarFieldEnum = (typeof ReminderPolicyScalarFieldEnum)[keyof typeof ReminderPolicyScalarFieldEnum]
+
+
+export const AdaptationRecommendationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  recommendationCode: 'recommendationCode',
+  reasonCode: 'reasonCode',
+  title: 'title',
+  message: 'message',
+  priority: 'priority',
+  status: 'status',
+  articleIds: 'articleIds',
+  metadata: 'metadata',
+  generatedAt: 'generatedAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdaptationRecommendationScalarFieldEnum = (typeof AdaptationRecommendationScalarFieldEnum)[keyof typeof AdaptationRecommendationScalarFieldEnum]
+
+
+export const ArticleInteractionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  articleId: 'articleId',
+  sourceType: 'sourceType',
+  sourceId: 'sourceId',
+  interactionType: 'interactionType',
+  occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ArticleInteractionScalarFieldEnum = (typeof ArticleInteractionScalarFieldEnum)[keyof typeof ArticleInteractionScalarFieldEnum]
+
+
+export const RecommendationInteractionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  recommendationId: 'recommendationId',
+  interactionType: 'interactionType',
+  occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type RecommendationInteractionScalarFieldEnum = (typeof RecommendationInteractionScalarFieldEnum)[keyof typeof RecommendationInteractionScalarFieldEnum]
+
+
+export const PushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PushSubscriptionScalarFieldEnum = (typeof PushSubscriptionScalarFieldEnum)[keyof typeof PushSubscriptionScalarFieldEnum]
+
+
+export const UserBadgeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  badgeCode: 'badgeCode',
+  awardedAt: 'awardedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type UserBadgeScalarFieldEnum = (typeof UserBadgeScalarFieldEnum)[keyof typeof UserBadgeScalarFieldEnum]
 
 
 export const SortOrder = {

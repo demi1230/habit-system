@@ -23,6 +23,10 @@ export interface CreateHabitData {
   status: HabitLifecycleStatus;
   reminderEnabled: boolean;
   scheduleDays?: Array<{ weekday: Weekday }>;
+  steps?: Array<{
+    title: string;
+    orderIndex: number;
+  }>;
   cues?: Array<{
     startTime?: string | null;
     endTime?: string | null;
@@ -53,6 +57,11 @@ export interface UpdateHabitData {
   reminderEnabled?: boolean;
   /** When provided (even as empty array), replaces all schedule days. */
   scheduleDays?: Array<{ weekday: Weekday }>;
+  /** When provided (even as empty array), replaces all tiny steps. */
+  steps?: Array<{
+    title: string;
+    orderIndex: number;
+  }>;
   /** When provided (even as empty array), replaces all cues. */
   cues?: Array<{
     startTime?: string | null;

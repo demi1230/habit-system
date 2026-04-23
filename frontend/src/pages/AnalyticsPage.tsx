@@ -1,85 +1,37 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  BarChart3, ChevronLeft, ChevronRight, Flame, Calendar,
-  Target, Zap, Brain, MapPin, Clock, TrendingUp,
-  ChevronDown, Shield, Sparkles, X, Info,
+  BarChart3, Calendar,
+  Target, Brain, MapPin, Clock,
+  ChevronDown, Sparkles, X, Info,
 } from 'lucide-react';
 import { getHabitColor } from '@/lib/habit-colors';
+import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
+import { svgPaths } from '@/lib/svg-paths';
 import { useAuth } from '@/context/AuthContext';
 import { habitsApi } from '@/api/habits';
 import { srbaiApi } from '@/api/srbai';
 import type { Habit, HabitLog, ProgressSummary } from '@/api/types';
 import type { SrbaiAssessment, SrbaiCompositeScore } from '@/api/srbai';
-import type { AdaptationRecommendation } from '@/api/habits';
+import { feedbackApi } from '@/api/feedback';
+import type { DifficultyFeedback, ReflectionResponse } from '@/api/feedback';
+
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useRecommendations, useRefreshRecommendations, useLogRecommendationInteraction, useLogArticleInteraction } from '@/features/learning/hooks/useRecommendations';
+import { RecommendationCard } from '@/features/learning/components/RecommendationCard';
+import type { RecommendationItem } from '@/features/learning/model/recommendation.types';
+
 import { BottomNav } from '@/components/bottom-nav';
+import { MonthCalendar } from '@/components/month-calendar';
+import { computeScheduledStreakFromLogs, countCompletedDays, getLatestLogsByDay } from '@/lib/habit-log-days';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
-
-const WEEKDAY_LABELS = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
-
-function toLocalDateStr(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-function getDaysInMonth(y: number, m: number) { return new Date(y, m + 1, 0).getDate(); }
-function getFirstDayOfMonth(y: number, m: number) { const d = new Date(y, m, 1).getDay(); return d === 0 ? 6 : d - 1; }
-
-const JS_TO_WD: Record<number, string> = {
-  0: 'SUNDAY', 1: 'MONDAY', 2: 'TUESDAY', 3: 'WEDNESDAY',
-  4: 'THURSDAY', 5: 'FRIDAY', 6: 'SATURDAY',
-};
-
-// ── Month Calendar ──────────────────────────────────────────────────────────
-
-function MonthCalendar({ logs, accent }: { logs: HabitLog[]; accent: string }) {
-  const [offset, setOffset] = useState(0);
-  const now = new Date();
-  const month = new Date(now.getFullYear(), now.getMonth() + offset, 1);
-  const year = month.getFullYear(); const m = month.getMonth();
-  const daysCount = getDaysInMonth(year, m);
-  const firstDay = getFirstDayOfMonth(year, m);
-
-  const logDates = useMemo(() => {
-    const s = new Set<string>();
-    for (const l of logs) { if (l.status === 'DONE') s.add(toLocalDateStr(new Date(l.completedAt))); }
-    return s;
-  }, [logs]);
-
-  const today = toLocalDateStr(now);
-  const monthLabel = month.toLocaleDateString('mn-MN', { year: 'numeric', month: 'long' });
-
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-3">
-        <motion.button whileTap={{ scale: 0.9 }} onClick={() => setOffset(o => o - 1)}
-          className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
-          <ChevronLeft className="w-4 h-4" style={{ color: '#474747' }} />
-        </motion.button>
-        <p style={{ fontSize: 14, fontWeight: 500, textTransform: 'capitalize' }} className="text-foreground">{monthLabel}</p>
-        <motion.button whileTap={{ scale: 0.9 }} onClick={() => setOffset(o => Math.min(o + 1, 0))} disabled={offset >= 0}
-          className="w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-30" style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
-          <ChevronRight className="w-4 h-4" style={{ color: '#474747' }} />
-        </motion.button>
-      </div>
-      <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(7,1fr)' }}>
-        {WEEKDAY_LABELS.map(d => (
-          <div key={d} className="text-center" style={{ fontSize: 11, fontWeight: 500, color: 'rgba(0,0,0,0.3)', paddingBottom: 2 }}>{d}</div>
-        ))}
-        {Array.from({ length: firstDay }).map((_, i) => <div key={`e-${i}`} />)}
-        {Array.from({ length: daysCount }, (_, i) => {
-          const dateStr = `${year}-${String(m + 1).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`;
-          const done = logDates.has(dateStr);
-          const isToday = dateStr === today;
-          return (
-            <div key={dateStr} className="flex items-center justify-center"
-              style={{ aspectRatio: '1', borderRadius: 10, backgroundColor: done ? accent + '22' : 'transparent', border: isToday ? `1.5px solid ${accent}` : 'none' }}>
-              <span style={{ fontSize: 11, fontWeight: done || isToday ? 600 : 400, color: done ? accent : isToday ? accent : 'rgba(0,0,0,0.45)' }}>{i + 1}</span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+function withAlpha(color: string, alpha: number) {
+  if (color.startsWith('#')) {
+    const hex = Math.round(alpha * 255).toString(16).padStart(2, '0');
+    return `${color}${hex}`;
+  }
+  return `color-mix(in srgb, ${color} ${Math.round(alpha * 100)}%, transparent)`;
 }
 
 // ── Reusable Components ─────────────────────────────────────────────────────
@@ -93,7 +45,7 @@ function ProgressRing({ value, size = 120, strokeWidth = 8, color, children }: {
   return (
     <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth={strokeWidth} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--surface-border-soft)" strokeWidth={strokeWidth} />
         <motion.circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={strokeWidth}
           strokeLinecap="round" strokeDasharray={circ} initial={{ strokeDashoffset: circ }}
           animate={{ strokeDashoffset: off }} transition={{ duration: 0.8, ease: 'easeOut' }} />
@@ -106,7 +58,7 @@ function ProgressRing({ value, size = 120, strokeWidth = 8, color, children }: {
 function SectionCard({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
-      className={`rounded-[20px] p-4 bg-card ${className}`} style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
+      className={`rounded-[20px] p-4 bg-card ${className}`} style={{ boxShadow: SHADOW.card }}>
       {children}
     </motion.div>
   );
@@ -116,7 +68,7 @@ function SectionLabel({ icon, label }: { icon: React.ReactNode; label: string })
   return (
     <div className="flex items-center gap-2 mb-3">
       {icon}
-      <span style={{ fontSize: 13, fontWeight: 600 }} className="text-foreground">{label}</span>
+      <span style={TYPOGRAPHY.sectionTitle} className="text-foreground">{label}</span>
     </div>
   );
 }
@@ -125,24 +77,24 @@ function BarSegment({ label, value, max, color }: { label: string; value: number
   const pct = max > 0 ? Math.round((value / max) * 100) : 0;
   return (
     <div className="flex items-center gap-3">
-      <span style={{ fontSize: 11, fontWeight: 500, width: 60 }} className="text-muted-foreground shrink-0">{label}</span>
-      <div className="flex-1 h-2.5 rounded-full" style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}>
+      <span style={{ ...TYPOGRAPHY.micro, width: 60 }} className="text-muted-foreground shrink-0">{label}</span>
+      <div className="flex-1 h-2.5 rounded-full" style={{ backgroundColor: 'var(--surface-border-soft)' }}>
         <motion.div className="h-full rounded-full" style={{ backgroundColor: color }}
           initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.6, ease: 'easeOut' }} />
       </div>
-      <span style={{ fontSize: 11, fontWeight: 600, width: 32, textAlign: 'right' }} className="text-foreground">{pct}%</span>
+      <span style={{ ...TYPOGRAPHY.micro, fontWeight: 600, width: 32, textAlign: 'right' }} className="text-foreground">{pct}%</span>
     </div>
   );
 }
 
 function StatMini({ label, value, icon, color }: { label: string; value: string; icon: React.ReactNode; color: string }) {
   return (
-    <div className="rounded-[16px] p-3.5 bg-card" style={{ boxShadow: '0 1px 6px rgba(0,0,0,0.06)' }}>
-      <div className="w-8 h-8 rounded-[12px] flex items-center justify-center mb-2" style={{ backgroundColor: color + '18' }}>
+    <div className="rounded-[16px] p-3.5 bg-card" style={{ boxShadow: SHADOW.card }}>
+      <div className="w-8 h-8 rounded-[12px] flex items-center justify-center mb-2" style={{ backgroundColor: withAlpha(color, 0.1) }}>
         {icon}
       </div>
-      <p style={{ fontSize: 18, fontWeight: 500, letterSpacing: '-0.5px' }} className="text-foreground">{value}</p>
-      <p style={{ fontSize: 11, marginTop: 2, fontWeight: 500 }} className="text-muted-foreground">{label}</p>
+      <p style={TYPOGRAPHY.statLg} className="text-foreground">{value}</p>
+      <p style={{ ...TYPOGRAPHY.micro, marginTop: 2 }} className="text-muted-foreground">{label}</p>
     </div>
   );
 }
@@ -171,27 +123,27 @@ function SrbaiModal({ onSubmit, onClose, accent }: {
         className="w-full max-w-[430px] bg-card rounded-t-[24px] px-5 pt-5 pb-8"
         onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <p style={{ fontSize: 16, fontWeight: 600 }} className="text-foreground">SRBAI Үнэлгээ</p>
-          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
+          <p style={TYPOGRAPHY.cardTitle} className="text-foreground">SRBAI Үнэлгээ</p>
+          <button onClick={onClose} className={buttonStyles({ variant: 'nav', size: 'iconSm' })} style={{ backgroundColor: 'var(--surface-subtle)' }}>
             <X className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
-        <p style={{ fontSize: 12, lineHeight: 1.5 }} className="text-muted-foreground mb-4">
+        <p style={{ ...TYPOGRAPHY.caption, lineHeight: 1.5 }} className="text-muted-foreground mb-4">
           1 (огт үгүй) — 7 (бүрэн зөвшөөрч байна) хооронд үнэлнэ үү
         </p>
         <div className="flex flex-col gap-4">
           {SRBAI_QUESTIONS.map((q, qi) => (
             <div key={qi}>
-              <p style={{ fontSize: 13, fontWeight: 500 }} className="text-foreground mb-2">{qi + 1}. {q}</p>
+              <p style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground mb-2">{qi + 1}. {q}</p>
               <div className="flex gap-1.5">
                 {[1, 2, 3, 4, 5, 6, 7].map(v => (
                   <motion.button key={v} whileTap={{ scale: 0.9 }}
                     onClick={() => setAnswers(prev => { const n = [...prev]; n[qi] = v; return n; })}
-                    className="flex-1 h-9 rounded-xl flex items-center justify-center transition-all"
+                    className={`flex-1 h-9 rounded-xl flex items-center justify-center transition-all ${buttonStyles({ variant: 'chip', size: 'sm' })}`}
                     style={{
-                      backgroundColor: answers[qi] === v ? accent : 'rgba(0,0,0,0.05)',
-                      color: answers[qi] === v ? '#fff' : 'rgba(0,0,0,0.5)',
-                      fontSize: 13, fontWeight: answers[qi] === v ? 600 : 400,
+                      backgroundColor: answers[qi] === v ? accent : 'var(--surface-subtle)',
+                      color: answers[qi] === v ? '#fff' : 'var(--text-soft)',
+                      fontSize: 13, fontWeight: answers[qi] === v ? 550 : 400,
                     }}>
                     {v}
                   </motion.button>
@@ -202,11 +154,11 @@ function SrbaiModal({ onSubmit, onClose, accent }: {
         </div>
         <motion.button whileTap={{ scale: 0.97 }}
           onClick={() => allAnswered && onSubmit(answers as [number, number, number, number])}
-          className="w-full mt-5 rounded-2xl py-3.5 flex items-center justify-center"
+          className={`w-full mt-5 ${buttonStyles({ variant: allAnswered ? 'accent' : 'secondary', size: 'lg' })}`}
           style={{
-            backgroundColor: allAnswered ? accent : 'rgba(0,0,0,0.08)',
-            color: allAnswered ? '#fff' : 'rgba(0,0,0,0.3)',
-            fontSize: 14, fontWeight: 600,
+            backgroundColor: allAnswered ? accent : 'var(--surface-strong)',
+            color: allAnswered ? '#fff' : 'var(--text-placeholder)',
+            fontSize: 14, fontWeight: 550,
           }}>
           Үнэлгээ өгөх
         </motion.button>
@@ -215,28 +167,19 @@ function SrbaiModal({ onSubmit, onClose, accent }: {
   );
 }
 
-// ── Adaptation Labels ───────────────────────────────────────────────────────
-
-const ADAPTATION_MAP: Record<string, { icon: React.ReactNode; label: string; description: string; color: string }> = {
-  reduce_reminders: { icon: <Sparkles className="w-4 h-4" />, label: 'Сануулга бууруулах', description: 'Дадал бэхжиж байна — сануулга автоматаар багасна.', color: '#18A68A' },
-  maintain: { icon: <Shield className="w-4 h-4" />, label: 'Тогтвортой', description: 'Одоогийн ахиц маш сайн — үргэлжлүүлээрэй!', color: '#3B8FD4' },
-  increase_support: { icon: <TrendingUp className="w-4 h-4" />, label: 'Дэмжлэг нэмэх', description: 'Арай хүндрэлтэй байна — дохио, сануулгаа шалгаарай.', color: '#E8A87C' },
-  review_difficulty: { icon: <Target className="w-4 h-4" />, label: 'Хүндрэл шалгах', description: 'Зорилтоо бага зэрэг бууруулж, жижиг алхамаар эхлээрэй.', color: '#D94F6E' },
-  celebrate_consistency: { icon: <Flame className="w-4 h-4" />, label: 'Баяр хүргэе! 🎉', description: 'Тууштай байдал маш өндөр — дадал тань бэхэжиж байна!', color: '#303437' },
-};
-
 // ── All Habits Overview (Бүгд) ──────────────────────────────────────────────
 
-function AllHabitsOverview({ habits, logs, composites, adaptations, loading }: {
+function AllHabitsOverview({ habits, logs, composites, loading }: {
   habits: Habit[];
   logs: HabitLog[];
   composites: (SrbaiCompositeScore & { habitId: string })[];
-  adaptations: AdaptationRecommendation[];
   loading: boolean;
 }) {
-  const doneLogs = logs.filter(l => l.status === 'DONE');
-  const totalLogs = logs.length;
-  const completionRate = totalLogs > 0 ? Math.round((doneLogs.length / totalLogs) * 100) : 0;
+  const completedDays = countCompletedDays(logs);
+  const attemptedDays = getLatestLogsByDay(logs).size;
+  const completionRate = attemptedDays > 0
+    ? Math.round((completedDays / attemptedDays) * 100)
+    : 0;
 
   // Average composite score
   const avgScore = composites.length > 0
@@ -244,7 +187,7 @@ function AllHabitsOverview({ habits, logs, composites, adaptations, loading }: {
     : 0;
 
   const avgStage = avgScore >= 70 ? 'strong' : avgScore >= 40 ? 'building' : 'weak';
-  const stageLabel = avgStage === 'strong' ? 'Хүчтэй 💪' : avgStage === 'building' ? 'Хөгжиж буй 🌱' : 'Сул';
+  const stageLabel = avgStage === 'strong' ? 'Хүчтэй' : avgStage === 'building' ? 'Хөгжиж буй' : 'Сул';
   const stageColor = avgStage === 'strong' ? '#18A68A' : avgStage === 'building' ? '#E8A87C' : '#D94F6E';
 
   // Per-habit strength for the breakdown list
@@ -252,13 +195,6 @@ function AllHabitsOverview({ habits, logs, composites, adaptations, loading }: {
     const comp = composites.find(c => c.habitId === h.id);
     return { habit: h, score: Math.round(comp?.finalScore ?? 0), stage: comp?.stage ?? 'weak' };
   });
-
-  // Most common adaptation focus
-  const focusCounts = adaptations.reduce<Record<string, number>>((acc, a) => {
-    acc[a.focus] = (acc[a.focus] ?? 0) + 1; return acc;
-  }, {});
-  const topFocus = Object.entries(focusCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'maintain';
-  const topAdapt = ADAPTATION_MAP[topFocus] ?? ADAPTATION_MAP['maintain'];
 
   if (loading) {
     return (
@@ -271,12 +207,12 @@ function AllHabitsOverview({ habits, logs, composites, adaptations, loading }: {
 
   return (
     <>
-      <p style={{ fontSize: 13, fontWeight: 500 }} className="text-muted-foreground -mb-1">Бүх дадлын тойм</p>
+      <p style={TYPOGRAPHY.bodySm} className="text-muted-foreground -mb-1">Бүх дадлын тойм</p>
 
       {/* Calendar — all habits combined */}
       <SectionCard delay={0}>
-        <SectionLabel icon={<Calendar className="w-4 h-4" style={{ color: '#303437' }} />} label="Хуанли" />
-        <MonthCalendar logs={logs} accent="#303437" />
+        <SectionLabel icon={<Calendar className="w-4 h-4" style={{ color: 'var(--foreground)' }} />} label="Хуанли" />
+        <MonthCalendar logs={logs} accent="var(--foreground)" />
       </SectionCard>
 
       {/* Overall Strength Ring */}
@@ -287,48 +223,34 @@ function AllHabitsOverview({ habits, logs, composites, adaptations, loading }: {
               <span style={{ fontSize: 28, fontWeight: 600, color: stageColor }}>{avgScore}%</span>
             </div>
           </ProgressRing>
-          <p style={{ fontSize: 13, fontWeight: 500 }} className="text-muted-foreground">дадлын хүч</p>
+          <p style={TYPOGRAPHY.bodySm} className="text-muted-foreground">дадлын хүч</p>
           <div className="flex items-center gap-1.5 mt-1">
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: stageColor }} />
-            <span style={{ fontSize: 12, fontWeight: 600, color: stageColor }}>{stageLabel}</span>
+            <span style={{ ...TYPOGRAPHY.caption, color: stageColor }}>{stageLabel}</span>
           </div>
         </div>
       </SectionCard>
 
-      {/* Advice */}
-      <SectionCard delay={0.06}>
-        <SectionLabel icon={<Sparkles className="w-4 h-4" style={{ color: topAdapt.color }} />} label="Зөвлөгөө" />
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0"
-            style={{ backgroundColor: topAdapt.color + '18' }}>
-            <div style={{ color: topAdapt.color }}>{topAdapt.icon}</div>
-          </div>
-          <div>
-            <p style={{ fontSize: 14, fontWeight: 600 }} className="text-foreground">{topAdapt.label}</p>
-            <p style={{ fontSize: 12, lineHeight: 1.5, marginTop: 2 }} className="text-muted-foreground">{topAdapt.description}</p>
-          </div>
-        </div>
-      </SectionCard>
+
 
       {/* Per-habit breakdown */}
       <SectionCard delay={0.09}>
-        <SectionLabel icon={<Target className="w-4 h-4" style={{ color: '#303437' }} />} label="Дадал тус бүрийн хүч" />
+        <SectionLabel icon={<Target className="w-4 h-4" style={{ color: 'var(--foreground)' }} />} label="Дадал тус бүрийн хүч" />
         <div className="flex flex-col gap-2.5">
           {habitScores.map(({ habit, score, stage }) => {
-            const c = getHabitColor(habit.color);
             const sc = stage === 'strong' ? '#18A68A' : stage === 'building' ? '#E8A87C' : '#D94F6E';
             return (
               <div key={habit.id} className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: c.card }}>
+                  style={{ backgroundColor: 'var(--surface-subtle)' }}>
                   <span style={{ fontSize: 14 }}>{habit.iconValue || '✨'}</span>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span style={{ fontSize: 12, fontWeight: 500 }} className="text-foreground truncate">{habit.title}</span>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: sc }}>{score}</span>
+                    <span style={{ ...TYPOGRAPHY.caption, fontWeight: 500 }} className="text-foreground truncate">{habit.title}</span>
+                    <span style={{ ...TYPOGRAPHY.caption, fontWeight: 600, color: sc }}>{score}</span>
                   </div>
-                  <div className="h-2 rounded-full" style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}>
+                  <div className="h-2 rounded-full" style={{ backgroundColor: 'var(--surface-border-soft)' }}>
                     <motion.div className="h-full rounded-full" style={{ backgroundColor: sc }}
                       initial={{ width: 0 }} animate={{ width: `${Math.min(score, 100)}%` }}
                       transition={{ duration: 0.6, ease: 'easeOut' }} />
@@ -346,13 +268,109 @@ function AllHabitsOverview({ habits, logs, composites, adaptations, loading }: {
         <StatMini icon={<Target className="w-4 h-4" style={{ color: '#18A68A' }} />}
           label="Нийт биелэлт" value={`${completionRate}%`} color="#18A68A" />
         <StatMini icon={<Calendar className="w-4 h-4" style={{ color: '#3B8FD4' }} />}
-          label="Нийт бүртгэл" value={`${doneLogs.length}`} color="#3B8FD4" />
-        <StatMini icon={<Zap className="w-4 h-4" style={{ color: stageColor }} />}
+          label="Нийт биелсэн" value={`${completedDays}`} color="#3B8FD4" />
+        <StatMini icon={<svg width="20" height="20" viewBox="0 0 26 25.0006" fill="none"><path d={svgPaths.p2eaaee80} fill={stageColor} /></svg>}
           label="Дундаж хүч" value={`${avgScore}`} color={stageColor} />
-        <StatMini icon={<BarChart3 className="w-4 h-4" style={{ color: '#303437' }} />}
-          label="Нийт дадал" value={`${habits.length}`} color="#303437" />
+        <StatMini icon={<BarChart3 className="w-4 h-4" style={{ color: 'var(--foreground)' }} />}
+          label="Нийт дадал" value={`${habits.length}`} color="var(--foreground)" />
       </motion.div>
     </>
+  );
+}
+
+// ── Performance Insight Section ─────────────────────────────────────────────
+
+const DIFFICULTY_SCORE: Record<string, number> = {
+  very_easy: 1, easy: 2, moderate: 3, hard: 4, very_hard: 5,
+};
+const DIFFICULTY_LABEL: Record<string, string> = {
+  very_easy: 'Маш амархан', easy: 'Амархан', moderate: 'Дунд зэрэг', hard: 'Хэцүү', very_hard: 'Маш хэцүү',
+};
+
+function PerformanceInsightSection({ difficulties, reflections, showAllReflections, onToggleReflections, accent }: {
+  difficulties: DifficultyFeedback[];
+  reflections: ReflectionResponse[];
+  showAllReflections: boolean;
+  onToggleReflections: () => void;
+  accent: string;
+}) {
+  // Average difficulty score 1-5
+  const avgScore = difficulties.length > 0
+    ? difficulties.reduce((s, d) => s + (DIFFICULTY_SCORE[d.rating] ?? 3), 0) / difficulties.length
+    : null;
+
+  // Trend: compare last 7 days avg vs overall avg
+  const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const recent = difficulties.filter(d => new Date(d.occurredAt) >= sevenDaysAgo);
+  const recentAvg = recent.length > 0
+    ? recent.reduce((s, d) => s + (DIFFICULTY_SCORE[d.rating] ?? 3), 0) / recent.length
+    : null;
+  const trend = avgScore !== null && recentAvg !== null
+    ? recentAvg > avgScore + 0.3 ? 'up' : recentAvg < avgScore - 0.3 ? 'down' : 'stable'
+    : 'stable';
+  const trendLabel = trend === 'up' ? 'Сүүлд арай хэцүү болсон' : trend === 'down' ? 'Сүүлд арай амар болсон' : 'Тогтвортой';
+  const trendColor = trend === 'up' ? '#E8A87C' : trend === 'down' ? '#18A68A' : '#3B8FD4';
+
+  // difficulty scale label
+  const avgLabel = avgScore !== null
+    ? avgScore <= 1.5 ? 'Амархан' : avgScore <= 2.5 ? 'Амар–Дунд' : avgScore <= 3.5 ? 'Дунд зэрэг' : avgScore <= 4.5 ? 'Хэцүү' : 'Маш хэцүү'
+    : null;
+
+  const visibleReflections = showAllReflections ? reflections : reflections.slice(0, 2);
+
+  return (
+    <SectionCard delay={0.12}>
+      <SectionLabel icon={<Brain className="w-4 h-4" style={{ color: accent }} />} label="Сүүлийн дүгнэлт" />
+      <div className="flex gap-3">
+        {/* Left: Difficulty */}
+        {difficulties.length > 0 && (
+          <div className="flex-1 rounded-2xl p-3" style={{ backgroundColor: 'var(--surface-muted)', border: '1px solid var(--surface-border-faint)' }}>
+            <p style={{ ...TYPOGRAPHY.micro, fontWeight: 600, color: 'var(--text-muted-soft)', marginBottom: 6 }}>Хэцүү байдал</p>
+            {/* 5-dot scale */}
+            <div className="flex gap-1 mb-2">
+              {[1, 2, 3, 4, 5].map(v => (
+                <div key={v} className="flex-1 h-1.5 rounded-full" style={{
+                  backgroundColor: avgScore !== null && v <= Math.round(avgScore)
+                    ? (Math.round(avgScore) >= 4 ? '#E8A87C' : Math.round(avgScore) <= 2 ? '#18A68A' : '#3B8FD4')
+                    : 'var(--surface-strong)',
+                }} />
+              ))}
+            </div>
+            <p style={{ ...TYPOGRAPHY.caption, fontWeight: 600 }} className="text-foreground">{avgLabel}</p>
+            <p style={{ ...TYPOGRAPHY.micro, fontSize: 10, marginTop: 2, color: trendColor }}>{trendLabel}</p>
+          </div>
+        )}
+        {/* Right: Reflections */}
+        {reflections.length > 0 && (
+          <div className="flex-1 rounded-2xl p-3" style={{ backgroundColor: 'var(--surface-muted)', border: '1px solid var(--surface-border-faint)' }}>
+            <p style={{ ...TYPOGRAPHY.micro, fontWeight: 600, color: 'var(--text-muted-soft)', marginBottom: 6 }}>Эргэцүүлэмж</p>
+            <div className="flex flex-col gap-1.5">
+              {visibleReflections.map(r => (
+                <p key={r.id} style={{ fontSize: 11, lineHeight: 1.45, fontStyle: 'italic', color: 'var(--text-soft)' }}>
+                  "{r.text.length > 60 ? r.text.slice(0, 57) + '…' : r.text}"
+                </p>
+              ))}
+            </div>
+            {reflections.length > 2 && (
+              <button onClick={onToggleReflections} className={buttonStyles({ variant: 'link', size: 'inline' })} style={{ fontSize: 10, fontWeight: 600, color: accent, marginTop: 6 }}>
+                {showAllReflections ? 'Хураах' : `+${reflections.length - 2} дэлгэрэнгүй`}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+      {/* difficulty notes */}
+      {difficulties.some(d => d.note) && (
+        <div className="mt-3 flex flex-col gap-1" style={{ borderTop: '1px solid var(--surface-border-faint)', paddingTop: 10 }}>
+          <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-faint)', marginBottom: 2 }}>Тэмдэглэл</p>
+          {difficulties.filter(d => d.note).slice(0, 3).map(d => (
+            <p key={d.id} style={{ fontSize: 11, fontStyle: 'italic', color: 'var(--text-muted-soft)', lineHeight: 1.4 }}>
+              "{d.note}" <span style={{ fontStyle: 'normal', color: 'var(--text-placeholder)' }}>· {DIFFICULTY_LABEL[d.rating]}</span>
+            </p>
+          ))}
+        </div>
+      )}
+    </SectionCard>
   );
 }
 
@@ -360,22 +378,25 @@ function AllHabitsOverview({ habits, logs, composites, adaptations, loading }: {
 
 export function AnalyticsPage() {
   const { userId } = useAuth();
+  const [searchParams] = useSearchParams();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [selectedIdx, setSelectedIdx] = useState(-1);          // -1 = "Бүгд"
   const [logs, setLogs] = useState<HabitLog[]>([]);
   const [progress, setProgress] = useState<ProgressSummary | null>(null);
   const [composite, setComposite] = useState<SrbaiCompositeScore | null>(null);
   const [srbaiLatest, setSrbaiLatest] = useState<SrbaiAssessment | null>(null);
-  const [adaptation, setAdaptation] = useState<AdaptationRecommendation | null>(null);
   const [loading, setLoading] = useState(true);
   const [showSrbai, setShowSrbai] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [showFormulaInfo, setShowFormulaInfo] = useState(false);
+  const [difficulties, setDifficulties] = useState<DifficultyFeedback[]>([]);
+  const [reflections, setReflections] = useState<ReflectionResponse[]>([]);
+  const [showAllReflections, setShowAllReflections] = useState(false);
 
   // ── Aggregate state for "Бүгд" ──
   const [allLogs, setAllLogs] = useState<HabitLog[]>([]);
   const [allComposites, setAllComposites] = useState<(SrbaiCompositeScore & { habitId: string })[]>([]);
-  const [allAdaptations, setAllAdaptations] = useState<AdaptationRecommendation[]>([]);
+
   const [allLoading, setAllLoading] = useState(false);
 
   const isAllMode = selectedIdx === -1;
@@ -383,19 +404,29 @@ export function AnalyticsPage() {
 
   useEffect(() => {
     if (!userId) return;
-    habitsApi.list(userId).then(h => { setHabits(h); setLoading(false); }).catch(() => setLoading(false));
-  }, [userId]);
+    habitsApi.list(userId).then(h => {
+      setHabits(h);
+      setLoading(false);
+      const targetId = searchParams.get('habitId');
+      if (targetId) {
+        const idx = h.findIndex(hab => hab.id === targetId);
+        if (idx !== -1) setSelectedIdx(idx);
+      }
+    }).catch(() => setLoading(false));
+  }, [userId, searchParams]);
 
   const loadHabitData = useCallback(async () => {
     if (!userId || !selected) return;
-    const [l, p, c, s, a] = await Promise.all([
+    const [l, p, c, s, diffs, refs] = await Promise.all([
       habitsApi.listLogs(userId, selected.id),
       habitsApi.getProgressSummary(userId, selected.id).catch(() => null),
       srbaiApi.getCompositeScore(userId, selected.id).catch(() => null),
       srbaiApi.getLatest(userId, selected.id).catch(() => null),
-      habitsApi.getAdaptationRecommendation(userId, selected.id).catch(() => null),
+      feedbackApi.listDifficultyRatings(userId, selected.id).catch(() => [] as DifficultyFeedback[]),
+      feedbackApi.listReflections(userId, selected.id).catch(() => [] as ReflectionResponse[]),
     ]);
-    setLogs(l); setProgress(p); setComposite(c); setSrbaiLatest(s); setAdaptation(a);
+    setLogs(l); setProgress(p); setComposite(c); setSrbaiLatest(s);
+    setDifficulties(diffs); setReflections(refs); setShowAllReflections(false);
   }, [userId, selected?.id]);
 
   useEffect(() => { loadHabitData(); }, [loadHabitData]);
@@ -407,51 +438,50 @@ export function AnalyticsPage() {
     try {
       const results = await Promise.all(
         habits.map(async (h) => {
-          const [logs, comp, adapt] = await Promise.all([
+          const [logs, comp] = await Promise.all([
             habitsApi.listLogs(userId, h.id).catch(() => [] as HabitLog[]),
             srbaiApi.getCompositeScore(userId, h.id).catch(() => null),
-            habitsApi.getAdaptationRecommendation(userId, h.id).catch(() => null),
           ]);
-          return { habitId: h.id, logs, comp, adapt };
+          return { habitId: h.id, logs, comp };
         }),
       );
       setAllLogs(results.flatMap(r => r.logs));
       // Tag composites with habitId for per-habit breakdown
       setAllComposites(results.map(r => r.comp ? { ...r.comp, habitId: r.habitId } : null).filter((c): c is SrbaiCompositeScore & { habitId: string } => c !== null));
-      setAllAdaptations(results.map(r => r.adapt).filter((a): a is AdaptationRecommendation => a !== null));
     } catch { /* ignore */ }
     setAllLoading(false);
   }, [userId, habits]);
 
   useEffect(() => { if (isAllMode) loadAllData(); }, [isAllMode, loadAllData]);
 
+  const navigate = useNavigate();
   const color = getHabitColor(selected?.color);
-  const doneLogs = logs.filter(l => l.status === 'DONE');
-  const completionRate = logs.length > 0 ? Math.round((doneLogs.length / logs.length) * 100) : 0;
 
-  // Streak
-  const scheduledWds = new Set(selected?.scheduleDays?.map(s => s.weekday) ?? []);
-  const doneSet = new Set(doneLogs.map(l => toLocalDateStr(new Date(l.completedAt))));
-  const allLogDates = new Set(logs.map(l => toLocalDateStr(new Date(l.completedAt))));
-  let streak = 0;
-  const cur = new Date(); cur.setHours(0, 0, 0, 0);
-  for (let i = 0; i < 365; i++) {
-    const wd = JS_TO_WD[cur.getDay()];
-    if (scheduledWds.size === 0 || scheduledWds.has(wd)) {
-      const key = toLocalDateStr(cur);
-      if (doneSet.has(key)) streak++;
-      else { if (i === 0 && !allLogDates.has(key)) { /* today no log yet */ } else break; }
+  // ── Learning recommendations for selected habit ──
+  const { data: habitRecommendations } = useRecommendations(
+    userId ?? undefined,
+    selected?.id,
+  );
+  const refreshRecommendations = useRefreshRecommendations(userId ?? '');
+  const logRecInteraction = useLogRecommendationInteraction(userId ?? '');
+  const logArticleInteraction2 = useLogArticleInteraction(userId ?? '');
+
+  // Auto-generate recommendations whenever a habit is selected
+  useEffect(() => {
+    if (userId && selected?.id) {
+      refreshRecommendations.mutate(selected.id);
     }
-    cur.setDate(cur.getDate() - 1);
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, selected?.id]);
+  const streak = computeScheduledStreakFromLogs(logs, selected?.scheduleDays);
+  const completedDays = countCompletedDays(logs);
 
   // Always use composite score (backend computes even without SRBAI)
   const displayScore = Math.round(composite?.finalScore ?? 0);
   const stage = composite?.stage ?? 'weak';
-  const stageLabel = stage === 'strong' ? 'Хүчтэй 💪' : stage === 'building' ? 'Хөгжиж буй 🌱' : 'Сул';
+  const stageLabel = stage === 'strong' ? 'Хүчтэй' : stage === 'building' ? 'Хөгжиж буй' : 'Сул';
   const stageColor = stage === 'strong' ? '#18A68A' : stage === 'building' ? '#E8A87C' : '#D94F6E';
   const selfRate = progress ? Math.round(progress.selfInitiatedRate * 100) : 0;
-  const reminderRate = progress ? Math.round(progress.reminderDependenceRate * 100) : 0;
 
   const handleSrbaiSubmit = async (items: [number, number, number, number]) => {
     if (!userId || !selected) return;
@@ -459,8 +489,6 @@ export function AnalyticsPage() {
     setShowSrbai(false);
     loadHabitData();
   };
-
-  const adaptInfo = adaptation ? ADAPTATION_MAP[adaptation.focus] ?? null : null;
 
   if (loading) {
     return (
@@ -473,45 +501,56 @@ export function AnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      {/* Header */}
-      <div className="sticky top-0 z-20 bg-background" style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-        <div className="flex items-center gap-2 px-5 pt-13 pb-3">
-          <BarChart3 className="w-4.5 h-4.5 text-primary" />
-          <p style={{ fontSize: 18, fontWeight: 600 }} className="text-foreground">Шинжилгээ</p>
-        </div>
-      </div>
-
-      <div className="px-5 pt-5 flex flex-col gap-4">
-        {/* Habit Selector */}
+      {/* Header + Habit Selector — single sticky block */}
+      <div className="sticky top-0 z-20 bg-background" style={{ borderBottom: '1px solid var(--surface-border-faint)' }}>
         {habits.length > 0 && (
-          <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
-            {/* "Бүгд" (All) tab */}
-            <motion.button whileTap={{ scale: 0.95 }} onClick={() => setSelectedIdx(-1)}
-              className="flex flex-col items-center gap-1 shrink-0" style={{ minWidth: 60 }}>
-              <div className="w-12 h-12 rounded-[16px] flex items-center justify-center transition-all"
-                style={{ backgroundColor: isAllMode ? '#303437' : 'rgba(0,0,0,0.05)', border: isAllMode ? '2px solid #303437' : '2px solid transparent' }}>
-                <BarChart3 className="w-5 h-5" style={{ color: isAllMode ? '#fff' : 'rgba(0,0,0,0.35)' }} />
+          <div className="flex items-center gap-3 overflow-x-auto px-5 pt-14 pb-3"
+            style={{ scrollbarWidth: 'none' }}>
+            {/* "Бүгд" — all habits */}
+            <button
+              className={`${buttonStyles({ variant: 'plain', size: 'bare' })} flex flex-col items-center gap-1 shrink-0`}
+              onClick={() => setSelectedIdx(-1)}
+            >
+              <div className="w-12 h-12 rounded-full flex items-center justify-center transition-all"
+                style={{
+                  backgroundColor: isAllMode ? 'var(--foreground)' : 'var(--surface-subtle)',
+                  boxShadow: isAllMode
+                    ? '0 0 0 3px var(--background), 0 0 0 5px var(--foreground)'
+                    : '0 2px 8px var(--surface-border-soft)',
+                }}>
+                <span style={{ fontSize: 22 }}>🏆</span>
               </div>
-              <span style={{ fontSize: 11, fontWeight: isAllMode ? 600 : 400, color: isAllMode ? '#303437' : 'rgba(0,0,0,0.45)' }}
-                className="truncate text-center">Бүгд</span>
-            </motion.button>
+              <span style={{ ...TYPOGRAPHY.micro, color: isAllMode ? 'var(--foreground)' : 'var(--text-faint)', fontWeight: isAllMode ? 700 : 400, maxWidth: 48, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>
+                Бүгд
+              </span>
+            </button>
             {habits.map((h, i) => {
               const active = i === selectedIdx;
               const c = getHabitColor(h.color);
               return (
-                <motion.button key={h.id} whileTap={{ scale: 0.95 }} onClick={() => setSelectedIdx(i)}
-                  className="flex flex-col items-center gap-1 shrink-0" style={{ minWidth: 60 }}>
-                  <div className="w-12 h-12 rounded-[16px] flex items-center justify-center transition-all"
-                    style={{ backgroundColor: active ? c.card : 'rgba(0,0,0,0.05)', border: active ? `2px solid ${c.accent}` : '2px solid transparent' }}>
-                    <span style={{ fontSize: 20 }}>{h.iconValue || '✨'}</span>
+                <button
+                  key={h.id}
+                  className={`${buttonStyles({ variant: 'plain', size: 'bare' })} flex flex-col items-center gap-1 shrink-0`}
+                  onClick={() => setSelectedIdx(i)}
+                >
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center transition-all"
+                    style={{
+                      backgroundColor: c.btn,
+                      boxShadow: active
+                        ? `0 0 0 3px var(--background), 0 0 0 5px ${c.accent}`
+                        : '0 2px 8px var(--surface-border-soft)',
+                    }}>
+                    <span style={{ fontSize: 22 }}>{h.iconValue || '✨'}</span>
                   </div>
-                  <span style={{ fontSize: 11, fontWeight: active ? 600 : 400, maxWidth: 60, color: active ? c.accent : 'rgba(0,0,0,0.45)' }}
-                    className="truncate text-center">{h.title}</span>
-                </motion.button>
+                  <span style={{ ...TYPOGRAPHY.micro, color: active ? c.accent : 'var(--text-faint)', fontWeight: active ? 700 : 400, maxWidth: 48, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{h.title}</span>
+                </button>
               );
             })}
           </div>
         )}
+      </div>
+
+      <div className="px-5 pt-5 flex flex-col gap-4">
 
         {habits.length === 0 ? (
           <div className="text-center py-20">
@@ -523,100 +562,132 @@ export function AnalyticsPage() {
             habits={habits}
             logs={allLogs}
             composites={allComposites}
-            adaptations={allAdaptations}
             loading={allLoading}
           />
         ) : !selected ? null : (
           <>
-            {/* Habit full name */}
-            <div className="-mb-1">
-              <p style={{ fontSize: 13, fontWeight: 500 }} className="text-muted-foreground">{selected.title}</p>
-              {selected.precedingRoutine && (
-                <p style={{ fontSize: 11, lineHeight: 1.4, marginTop: 2 }} className="text-muted-foreground/60">
-                  {selected.precedingRoutine}
+            {/* Habit definition sentence */}
+            <div className="rounded-[20px] bg-card px-4 py-4" style={{ boxShadow: SHADOW.card }}>
+              <p style={{ ...TYPOGRAPHY.sectionTitle, lineHeight: 1.75 }} className="text-foreground">
+                {selected.precedingRoutine ? (
+                  <>
+                    <span style={{ }}>{selected.precedingRoutine} </span>
+                    <span style={{ fontWeight: 500 }}>дараа </span>
+                  </>
+                ) : null}
+                <span style={{ ...TYPOGRAPHY.sectionTitle }}>{selected.title}</span>
+                <span style={{ fontWeight: 500 }}> дадлыг хийнэ.</span>
+              </p>
+              {selected.motivationProfile?.reason && (
+                <p style={{ ...TYPOGRAPHY.body, lineHeight: 1.65, marginTop: 8 }} className="text-foreground">
+                  <span style={{ fontWeight: 500 }}>Ингэснээр би: </span>
+                  <span style={{...TYPOGRAPHY.sectionTitle }}>{selected.motivationProfile.reason}</span>
                 </p>
               )}
             </div>
 
             {/* ═══ 1. Composite Strength Score (with SRBAI inline) ═══ */}
             <SectionCard delay={0}>
-              <SectionLabel icon={<Zap className="w-4 h-4" style={{ color: color.accent }} />} label="Дадлын хүч" />
-              <div className="relative">
-                <div className="flex items-center gap-1.5 mb-2.5">
-                  <p style={{ fontSize: 11, lineHeight: 1.4 }} className="text-muted-foreground">
-                    Оноо = автоматжилт + тууштай байдал + контекст
-                  </p>
-                  <button onClick={() => setShowFormulaInfo(f => !f)} className="shrink-0">
-                    <Info className="w-3.5 h-3.5" style={{ color: showFormulaInfo ? color.accent : 'rgba(0,0,0,0.25)' }} />
-                  </button>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <svg width="20" height="20" viewBox="0 0 26 25.0006" fill="none"><path d={svgPaths.p2eaaee80} fill={color.accent} /></svg>
+                  <span style={TYPOGRAPHY.sectionTitle} className="text-foreground">Дадлын хүч</span>
                 </div>
-                <AnimatePresence>
-                  {showFormulaInfo && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
-                      className="rounded-2xl px-3.5 py-3 mb-3"
-                      style={{ backgroundColor: 'rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.06)' }}>
-                      <p style={{ fontSize: 11, fontWeight: 600, marginBottom: 6 }} className="text-foreground">Томъёо</p>
+                <button onClick={() => setShowFormulaInfo(f => !f)} className={`${buttonStyles({ variant: 'ghost', size: 'iconSm' })} shrink-0 -mr-0.5`}>
+                  <Info className="w-4 h-4" style={{ color: showFormulaInfo ? color.accent : 'var(--text-disabled)' }} />
+                </button>
+              </div>
+              {/* ── Main: big ring with habit icon + motivation text ── */}
+              <div className="flex items-center gap-4">
+                <ProgressRing value={displayScore} size={116} strokeWidth={8} color={color.accent}>
+                  <span style={{ fontSize: 38, lineHeight: 1 }}>{selected.iconValue ?? '✅'}</span>
+                </ProgressRing>
+                <div className="flex-1 flex flex-col gap-1.5 min-w-0">
+                  <div className="flex items-baseline gap-1">
+                    <span style={{ fontSize: 30, fontWeight: 700, lineHeight: 1, color: color.accent }}>{displayScore}</span>
+                    <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 600, color: color.accent }}>/100</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: stageColor }} />
+                    <span style={{ ...TYPOGRAPHY.caption, fontWeight: 600, color: stageColor }}>{stageLabel}</span>
+                  </div>
+                  {selected.motivationProfile?.reason && (
+                    <p style={{ ...TYPOGRAPHY.caption, lineHeight: 1.5, marginTop: 2 }} className="text-muted-foreground">
+                      <span style={{ fontWeight: 600 }} className="text-foreground">Энэ дадлыг хийснээр: </span>
+                      {selected.motivationProfile.reason}
+                    </p>
+                  )}
+                  {composite && (
+                    <span style={{ fontSize: 11, color: 'var(--text-placeholder)', marginTop: 2 }}>
+                      Үнэлсэн: {new Date(composite.evaluatedAt).toLocaleDateString('mn-MN')}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* ── Expandable detail (i button) ── */}
+              <AnimatePresence initial={false}>
+                {showFormulaInfo && (
+                  <motion.div
+                    key="formula-panel"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+                    style={{ overflow: 'hidden' }}>
+                    <div className="mt-3 pt-3 flex flex-col gap-2.5" style={{ borderTop: '1px solid var(--surface-border-soft)' }}>
+                      <BarSegment label="SRBAI" value={composite?.srbaiScore ?? 0} max={100} color="var(--foreground)" />
+                      <BarSegment label="Тууштай" value={composite?.consistencyScore ?? 0} max={100} color="#18A68A" />
+                      <BarSegment label="Контекст" value={composite?.contextStabilityScore ?? 0} max={100} color="#3B8FD4" />
+                    </div>
+                    <div className="rounded-2xl px-3.5 py-3 mt-3"
+                      style={{ backgroundColor: 'var(--surface-muted)', border: '1px solid var(--surface-border-soft)' }}>
+                      <p style={{ ...TYPOGRAPHY.caption, fontWeight: 600, marginBottom: 4 }} className="text-foreground">Дадлын хүч гэж юу вэ?</p>
+                      <p style={{ ...TYPOGRAPHY.micro, lineHeight: 1.55, marginBottom: 10 }} className="text-muted-foreground">
+                        Дадлын хүч нь таны дадлын автоматжилт, тууштай байдал, контекст тогтворжилтыг нэгтгэсэн цогц оноо юм. Энэ оноо таны дадал хэр бэхжсэнийг харуулна.
+                      </p>
+                      <p style={{ ...TYPOGRAPHY.micro, fontWeight: 600, marginBottom: 6 }} className="text-foreground">Томъёо</p>
                       <div className="flex flex-col gap-1.5">
                         <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#303437' }} />
-                          <p style={{ fontSize: 10.5, lineHeight: 1.4 }} className="text-muted-foreground">
+                          <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: 'var(--foreground)' }} />
+                          <p style={{ ...TYPOGRAPHY.micro, lineHeight: 1.4 }} className="text-muted-foreground">
                             <span className="font-semibold text-foreground">SRBAI (60%)</span> — SRBAI асуулгаар хэмжсэн автоматжилтын түвшин
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#18A68A' }} />
-                          <p style={{ fontSize: 10.5, lineHeight: 1.4 }} className="text-muted-foreground">
+                          <p style={{ ...TYPOGRAPHY.micro, lineHeight: 1.4 }} className="text-muted-foreground">
                             <span className="font-semibold text-foreground">Тууштай (25%)</span> — биелэлтийн хувь × дата бэлэн байдал
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#3B8FD4' }} />
-                          <p style={{ fontSize: 10.5, lineHeight: 1.4 }} className="text-muted-foreground">
+                          <p style={{ ...TYPOGRAPHY.micro, lineHeight: 1.4 }} className="text-muted-foreground">
                             <span className="font-semibold text-foreground">Контекст (15%)</span> — ижил цаг, газар, дараалалд хийсэн байдал
                           </p>
                         </div>
                       </div>
-                      <div className="mt-2.5 pt-2" style={{ borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-                        <p style={{ fontSize: 10, lineHeight: 1.5 }} className="text-muted-foreground">
+                      <div className="mt-2.5 pt-2" style={{ borderTop: '1px solid var(--surface-border-soft)' }}>
+                        <p style={{ ...TYPOGRAPHY.micro, lineHeight: 1.5 }} className="text-muted-foreground">
                           0–39 Сул · 40–69 Хөгжиж буй · 70–100 Хүчтэй
                         </p>
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-              <div className="flex items-center gap-5">
-                <ProgressRing value={displayScore} size={100} strokeWidth={7} color={color.accent}>
-                  <span style={{ fontSize: 26, fontWeight: 600, color: color.accent }}>{displayScore}</span>
-                </ProgressRing>
-                <div className="flex-1 flex flex-col gap-2.5">
-                  <BarSegment label="SRBAI" value={composite?.srbaiScore ?? 0} max={100} color="#303437" />
-                  <BarSegment label="Тууштай" value={composite?.consistencyScore ?? 0} max={100} color="#18A68A" />
-                  <BarSegment label="Контекст" value={composite?.contextStabilityScore ?? 0} max={100} color="#3B8FD4" />
-                </div>
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: stageColor }} />
-                  <span style={{ fontSize: 12, fontWeight: 600, color: stageColor }}>{stageLabel}</span>
-                </div>
-                <span style={{ fontSize: 11, color: 'rgba(0,0,0,0.35)' }}>
-                  {composite ? `Үнэлсэн: ${new Date(composite.evaluatedAt).toLocaleDateString('mn-MN')}` : ''}
-                </span>
-              </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* SRBAI expandable detail */}
-              <div className="mt-3" style={{ borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-                <button className="w-full pt-3" onClick={() => setExpandedSection(expandedSection === 'srbai' ? null : 'srbai')}>
+              <div className="mt-3" style={{ borderTop: '1px solid var(--surface-border-soft)' }}>
+                <button className={`w-full pt-3 ${buttonStyles({ variant: 'ghost', size: 'inline' })}`} onClick={() => setExpandedSection(expandedSection === 'srbai' ? null : 'srbai')}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Brain className="w-3.5 h-3.5" style={{ color: '#303437' }} />
-                      <span style={{ fontSize: 12, fontWeight: 600 }} className="text-foreground">Автоматжилт (SRBAI)</span>
+                      <Brain className="w-3.5 h-3.5" style={{ color: 'var(--foreground)' }} />
+                      <span style={{ ...TYPOGRAPHY.caption, fontWeight: 600 }} className="text-foreground">Автоматжилт (SRBAI)</span>
                     </div>
                     <div className="flex items-center gap-2">
                       {srbaiLatest && (
-                        <span style={{ fontSize: 12, fontWeight: 600, color: '#303437' }}>{Math.round(srbaiLatest.normalizedScore100)}/100</span>
+                        <span style={{ ...TYPOGRAPHY.caption, fontWeight: 600, color: 'var(--foreground)' }}>{Math.round(srbaiLatest.normalizedScore100)}/100</span>
                       )}
                       <ChevronDown className="w-3.5 h-3.5 text-muted-foreground transition-transform"
                         style={{ transform: expandedSection === 'srbai' ? 'rotate(180deg)' : 'rotate(0deg)' }} />
@@ -631,27 +702,27 @@ export function AnalyticsPage() {
                         {srbaiLatest ? (
                           <div className="flex items-center justify-between">
                             <div>
-                              <p style={{ fontSize: 11, marginTop: 2 }} className="text-muted-foreground">
+                              <p style={{ ...TYPOGRAPHY.micro, marginTop: 2 }} className="text-muted-foreground">
                                 Дундаж: {srbaiLatest.rawAverage.toFixed(1)} / 7
                               </p>
-                              <p style={{ fontSize: 10, marginTop: 4 }} className="text-muted-foreground">
+                              <p style={{ ...TYPOGRAPHY.micro, marginTop: 4 }} className="text-muted-foreground">
                                 {new Date(srbaiLatest.assessedAt).toLocaleDateString('mn-MN')}
                               </p>
                             </div>
                             <motion.button whileTap={{ scale: 0.95 }} onClick={() => setShowSrbai(true)}
-                              className="rounded-2xl px-4 py-2"
-                              style={{ backgroundColor: '#303437', color: '#fff', fontSize: 11, fontWeight: 600 }}>
+                              className={buttonStyles({ variant: 'default', size: 'sm' })}
+                              style={{ ...TYPOGRAPHY.micro, backgroundColor: 'var(--foreground)', color: 'var(--background)', fontWeight: 600 }}>
                               Дахин үнэлэх
                             </motion.button>
                           </div>
                         ) : (
                           <div className="flex items-center justify-between">
-                            <p style={{ fontSize: 12, lineHeight: 1.5 }} className="text-muted-foreground">
+                            <p style={{ ...TYPOGRAPHY.caption, lineHeight: 1.5 }} className="text-muted-foreground">
                               Үнэлгээ өгөөгүй байна
                             </p>
                             <motion.button whileTap={{ scale: 0.95 }} onClick={() => setShowSrbai(true)}
-                              className="rounded-2xl px-4 py-2"
-                              style={{ backgroundColor: '#303437', color: '#fff', fontSize: 11, fontWeight: 600 }}>
+                              className={buttonStyles({ variant: 'default', size: 'sm' })}
+                              style={{ ...TYPOGRAPHY.micro, backgroundColor: 'var(--foreground)', color: 'var(--background)', fontWeight: 600 }}>
                               Үнэлгээ өгөх
                             </motion.button>
                           </div>
@@ -663,67 +734,57 @@ export function AnalyticsPage() {
               </div>
             </SectionCard>
 
-            {/* ═══ 2. Completion stats (compact rows) ═══ */}
-            <SectionCard delay={0.03}>
-              <SectionLabel icon={<Target className="w-4 h-4" style={{ color: color.accent }} />} label="Биелэлт" />
-              <div className="flex flex-col gap-0">
-                {[
-                  { label: 'Биелсэн', value: `${progress?.doneCount ?? doneLogs.length} / ${progress?.totalLogs ?? logs.length}`, sub: `${completionRate}%` },
-                  { label: 'Дараалал', value: `${streak} өдөр` },
-                  { label: 'Өөрөө эхлүүлсэн', value: `${selfRate}%` },
-                ].map((row, i) => (
-                  <div key={row.label} className="flex items-center justify-between py-2.5"
-                    style={i > 0 ? { borderTop: '1px solid rgba(0,0,0,0.05)' } : undefined}>
-                    <span style={{ fontSize: 12, fontWeight: 500 }} className="text-muted-foreground">{row.label}</span>
-                    <div className="flex items-center gap-2">
-                      {row.sub && <span style={{ fontSize: 11 }} className="text-muted-foreground">{row.sub}</span>}
-                      <span style={{ fontSize: 13, fontWeight: 600 }} className="text-foreground">{row.value}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            {/* ═══ 2. Stats Grid ═══ */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 }}
+              className="grid grid-cols-2 gap-3">
+              <StatMini icon={<svg width="18" height="18" viewBox="0 0 23 24" fill="none"><path d={svgPaths.p29fc8c00} fill={color.accent} fillRule="evenodd" clipRule="evenodd" /></svg>}
+                label="Дараалал (streak)" value={`${streak} өдөр`} color={color.accent} />
+              <StatMini icon={<Calendar className="w-[18px] h-[18px]" style={{ color: color.accent }} />}
+                label="Нийт биелсэн" value={`${completedDays}`} color={color.accent} />
+              <StatMini icon={<MapPin className="w-[18px] h-[18px]" style={{ color: color.accent }} />}
+                label="Контекст тогтвортой" value={`${Math.round(composite?.contextStabilityScore ?? 0)}%`} color={color.accent} />
+              <StatMini icon={<Clock className="w-[18px] h-[18px]" style={{ color: color.accent }} />}
+                label="Бие даасан байдал" value={`${selfRate}%`} color={color.accent} />
+            </motion.div>
+
+            {/* ═══ 3. Calendar Heatmap ═══ */}
+            <SectionCard delay={0.06}>
+              <SectionLabel icon={<Calendar className="w-4 h-4" style={{ color: color.accent }} />} label="Хуанли" />
+              <MonthCalendar logs={logs} accent={color.accent} scheduleDays={selected?.scheduleDays?.map(s => s.weekday)} startDate={selected?.startDate} />
             </SectionCard>
 
-            {/* ═══ 3. Adaptation Recommendation ═══ */}
-            {adaptInfo && (
-              <SectionCard delay={0.06}>
-                <SectionLabel icon={<Sparkles className="w-4 h-4" style={{ color: adaptInfo.color }} />} label="Зөвлөмж" />
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: adaptInfo.color + '18' }}>
-                    <div style={{ color: adaptInfo.color }}>{adaptInfo.icon}</div>
-                  </div>
-                  <div>
-                    <p style={{ fontSize: 14, fontWeight: 600 }} className="text-foreground">{adaptInfo.label}</p>
-                    <p style={{ fontSize: 12, lineHeight: 1.5, marginTop: 2 }} className="text-muted-foreground">{adaptInfo.description}</p>
-                  </div>
+            {/* ═══ 4. Recommendations ═══ */}
+            {Array.isArray(habitRecommendations) && habitRecommendations.length > 0 && (
+              <SectionCard delay={0.09}>
+                <SectionLabel icon={<Sparkles className="w-4 h-4" style={{ color: 'var(--foreground)' }} />} label="Зөвлөмж" />
+                <div className="flex flex-col">
+                  {(habitRecommendations as RecommendationItem[]).map((rec, i) => (
+                    <div key={rec.id}>
+                      {i > 0 && <div style={{ height: 1, backgroundColor: 'var(--surface-border-faint)', margin: '0 0 12px' }} />}
+                      <RecommendationCard
+                        rec={rec}
+                        onNavigate={(articleId, recId) => {
+                          logArticleInteraction2.mutate({ articleId, interactionType: 'OPENED', sourceType: 'ANALYTICS_PAGE', sourceId: recId });
+                          logRecInteraction.mutate({ recommendationId: recId, interactionType: 'CLICKED' });
+                          navigate(`/learn/articles/${articleId}`);
+                        }}
+                      />
+                    </div>
+                  ))}
                 </div>
-                {adaptation?.milestoneReached && (
-                  <div className="mt-3 rounded-xl px-3 py-2" style={{ backgroundColor: '#30343720' }}>
-                    <p style={{ fontSize: 12, fontWeight: 600, color: '#303437' }}>🎯 Milestone-д хүрлээ!</p>
-                  </div>
-                )}
               </SectionCard>
             )}
 
-            {/* ═══ 4. Calendar Heatmap ═══ */}
-            <SectionCard delay={0.09}>
-              <SectionLabel icon={<Calendar className="w-4 h-4" style={{ color: color.accent }} />} label="Хуанли" />
-              <MonthCalendar logs={logs} accent={color.accent} />
-            </SectionCard>
-
-            {/* ═══ 5. Stats Grid ═══ */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}
-              className="grid grid-cols-2 gap-3">
-              <StatMini icon={<Flame className="w-4 h-4" style={{ color: '#EF4444' }} />}
-                label="Дараалал (streak)" value={`${streak} өдөр`} color="#EF4444" />
-              <StatMini icon={<Calendar className="w-4 h-4" style={{ color: color.accent }} />}
-                label="Нийт биелсэн" value={`${doneLogs.length}`} color={color.accent} />
-              <StatMini icon={<MapPin className="w-4 h-4" style={{ color: '#3B8FD4' }} />}
-                label="Контекст тогтвортой" value={`${Math.round(composite?.contextStabilityScore ?? 0)}%`} color="#3B8FD4" />
-              <StatMini icon={<Clock className="w-4 h-4" style={{ color: '#E8A87C' }} />}
-                label="Бие даасан байдал" value={`${selfRate}%`} color="#E8A87C" />
-            </motion.div>
+            {/* ═══ 5. Performance Insight ═══ */}
+            {(difficulties.length > 0 || reflections.length > 0) && (
+              <PerformanceInsightSection
+                difficulties={difficulties}
+                reflections={reflections}
+                showAllReflections={showAllReflections}
+                onToggleReflections={() => setShowAllReflections(v => !v)}
+                accent={color.accent}
+              />
+            )}
           </>
         )}
       </div>

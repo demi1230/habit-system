@@ -565,14 +565,6 @@ export type SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput = {
   deleteMany?: Prisma.SrbaiAssessmentScalarWhereInput | Prisma.SrbaiAssessmentScalarWhereInput[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type SrbaiAssessmentCreateWithoutHabitInput = {
   id?: string
   userId: string

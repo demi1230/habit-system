@@ -205,6 +205,10 @@ export class RemindersService {
       metadata: { snoozeMinutes },
     });
 
+    await this.reminderRepo.update(reminder.id, {
+      status: ReminderStatus.CANCELLED,
+    });
+
     // Create a follow-up PENDING reminder at snoozedUntil
     const followUp = await this.reminderRepo.create({
       userId,
@@ -220,6 +224,10 @@ export class RemindersService {
 
     await this.analyticsService.recordActivity(userId, 'reminder_snooze');
 
-    return { reminder, action, followUpReminder: followUp };
+    return {
+      reminder: { ...reminder, status: ReminderStatus.CANCELLED },
+      action,
+      followUpReminder: followUp,
+    };
   }
 }

@@ -77,3 +77,10 @@ export const CTA_DARK = {
   shadow: '0 4px 14px rgba(48,52,55,0.28)',
   text:   '#F8FAFC',
 };
+
+// ── Shared design tokens (now in src/shared/design/) ────────────────────────
+export {
+  TYPOGRAPHY, FONT, SHADOW, SURFACE,
+  getTextStyle,
+  type TypographyKey,
+} from '@/shared/design';

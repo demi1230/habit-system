@@ -2,6 +2,7 @@ import { Check, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Habit } from '@/api/types';
 import { getHabitColor } from '@/lib/habit-colors';
+import { TYPOGRAPHY, buttonStyles } from '@/shared/design';
 
 interface HabitCardProps {
   habit: Habit;
@@ -25,9 +26,9 @@ export function HabitCard({ habit, onQuickComplete, todayCompleted, currentValue
             e.stopPropagation();
             onQuickComplete?.(habit.id);
           }}
-          className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition-all ${
+          className={`shrink-0 transition-all ${buttonStyles({ variant: todayCompleted ? 'default' : 'outline', size: 'iconLg' })} ${
             todayCompleted
-              ? 'bg-primary text-primary-foreground'
+              ? ''
               : 'border-2 border-border hover:border-primary'
           }`}
         >
@@ -45,7 +46,7 @@ export function HabitCard({ habit, onQuickComplete, todayCompleted, currentValue
           </div>
           <div className="flex items-center gap-2 mt-1">
             {habit.targetValue > 0 && habit.measurementUnit !== 'boolean' && (
-              <span className="text-muted-foreground" style={{ fontSize: '12px' }}>
+              <span className="text-muted-foreground" style={TYPOGRAPHY.caption}>
                 {habit.targetValue} {habit.measurementUnit}
               </span>
             )}

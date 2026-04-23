@@ -74,6 +74,7 @@ export class HabitsService {
       scheduleDays: createHabitDto.scheduleDays?.map((d) => ({
         weekday: d.weekday,
       })),
+      steps: this.normalizeSteps(createHabitDto.steps),
       cues,
       motivationProfile,
     });
@@ -119,6 +120,12 @@ export class HabitsService {
       scheduleDays:
         updateHabitDto.scheduleDays ??
         existingHabit.scheduleDays.map((d) => ({ weekday: d.weekday })),
+      steps:
+        updateHabitDto.steps ??
+        existingHabit.steps.map((step) => ({
+          title: step.title,
+          orderIndex: step.orderIndex,
+        })),
     });
 
     const reminderEnabled =
@@ -163,6 +170,10 @@ export class HabitsService {
       scheduleDays: updateHabitDto.scheduleDays?.map((d) => ({
         weekday: d.weekday,
       })),
+      steps:
+        updateHabitDto.steps !== undefined
+          ? this.normalizeSteps(updateHabitDto.steps)
+          : undefined,
       cues,
       motivationProfile,
     });
@@ -186,6 +197,13 @@ export class HabitsService {
         habit.isScheduledOn(weekday) &&
         new Date(habit.startDate).setHours(0, 0, 0, 0) <= targetDate.getTime(),
     );
+    const todayLogs = await this.habitLogRepo.findLatestByHabitIdsForDate(
+      todayHabits.map((habit) => habit.id),
+      targetDate,
+    );
+    const todayLogByHabitId = new Map(
+      todayLogs.map((log) => [log.habitId, log]),
+    );
 
     return Promise.all(
       todayHabits.map(async (habit) => {
@@ -194,12 +212,14 @@ export class HabitsService {
         // Current streak: count consecutive scheduled days with a DONE log
         let currentStreak = 0;
         const scheduledWds = new Set(habit.scheduleDays.map((d) => d.weekday));
-        const logDateSet = new Map<string, string>(); // dateStr → status
+        const logDateSet = new Map<string, string>(); // dateStr → latest status
         for (const log of logs) {
           if (log.completedAt) {
             const d = new Date(log.completedAt);
             const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-            logDateSet.set(key, log.status);
+            if (!logDateSet.has(key)) {
+              logDateSet.set(key, log.status);
+            }
           }
         }
         const cursor = new Date();
@@ -255,6 +275,7 @@ export class HabitsService {
           cueContext: habit.cues.map((cue) => CueScheduleRules.evaluateCue(cue)),
           currentStreak,
           strengthScore,
+          todayLog: todayLogByHabitId.get(habit.id) ?? null,
         };
       }),
     );
@@ -280,6 +301,7 @@ export class HabitsService {
     minimumTarget: number;
     targetValue: number;
     scheduleDays?: CreateHabitScheduleDayDto[];
+    steps?: Array<{ title: string; orderIndex: number }>;
   }) {
     if (habitConfig.scheduleDays) {
       const uniqueWeekdays = new Set(
@@ -296,6 +318,20 @@ export class HabitsService {
       throw new BadRequestException(
         'minimumTarget must be less than or equal to targetValue.',
       );
+    }
+
+    if (habitConfig.steps) {
+      if (habitConfig.steps.length > 5) {
+        throw new BadRequestException('A habit can have at most 5 tiny steps.');
+      }
+      const uniqueOrderIndexes = new Set(
+        habitConfig.steps.map((step) => step.orderIndex),
+      );
+      if (uniqueOrderIndexes.size !== habitConfig.steps.length) {
+        throw new BadRequestException(
+          'Each tiny step must have a unique orderIndex.',
+        );
+      }
     }
   }
 
@@ -363,5 +399,19 @@ export class HabitsService {
       goalTag: profile?.goalTag ?? null,
       reason: reason ?? profile?.reason ?? null,
     };
+  }
+
+  private normalizeSteps(
+    steps?: Array<{ title: string; orderIndex: number }>,
+  ) {
+    if (!steps) return undefined;
+
+    return [...steps]
+      .map((step) => ({
+        title: step.title.trim(),
+        orderIndex: step.orderIndex,
+      }))
+      .filter((step) => step.title.length > 0)
+      .sort((a, b) => a.orderIndex - b.orderIndex);
   }
 }

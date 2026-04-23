@@ -2,14 +2,50 @@ import { BottomNav } from '@/components/bottom-nav';
 import { useState, useMemo, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Delete, Check, Flame, Zap, Pencil, Undo2 } from 'lucide-react';
+import { Delete, Check, Pencil, Undo2 } from 'lucide-react';
 import { getHabitColor, CTA_DARK } from '@/lib/habit-colors';
+import { TYPOGRAPHY, SHADOW, buttonStyles, AppPlusIcon } from '@/shared/design';
+import { svgPaths } from '@/lib/svg-paths';
 import { useAuth } from '@/context/AuthContext';
 import { habitsApi } from '@/api/habits';
-import { feedbackApi } from '@/api/feedback';
-import type { HabitWithCueContext, DifficultyRating } from '@/api/types';
+import type { HabitWithCueContext } from '@/api/types';
+import { CelebrationSheet, CelebrationFullScreen, decideCelebration } from '@/features/celebration';
+import type { CelebrationContext } from '@/features/celebration';
+
+const PASTEL_CARD_INK = 'var(--pastel-card-ink)';
+const PASTEL_CARD_MUTED = 'var(--pastel-card-muted)';
+const PASTEL_CARD_SUBTLE = 'var(--pastel-card-subtle)';
+const PASTEL_CARD_PILL_BG = 'var(--pastel-card-pill-bg)';
+const PASTEL_CARD_ICON_BG = 'var(--pastel-card-icon-bg)';
+const PASTEL_CARD_ACTION_BG = 'var(--pastel-card-action-bg)';
 
 const MN_DAYS = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
+
+// ── Habit Tag Pill ─────────────────────────────────────────────
+function HabitTag({ value, icon }: { value: string | number; icon: 'dumbbell' | 'flame' }) {
+  return (
+    <div
+      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
+      style={{ backgroundColor: PASTEL_CARD_PILL_BG, border: `1px solid ${PASTEL_CARD_SUBTLE}`, height: 30 }}>
+      <svg
+        width="16"
+        height="16"
+        viewBox={icon === 'dumbbell' ? '0 0 26 25.0006' : '0 0 23 24'}
+        fill="none"
+        style={{ flexShrink: 0 }}>
+        <path
+          d={icon === 'dumbbell' ? svgPaths.p2eaaee80 : svgPaths.p29fc8c00}
+          fill={PASTEL_CARD_INK}
+          fillRule={icon === 'flame' ? 'evenodd' : undefined}
+          clipRule={icon === 'flame' ? 'evenodd' : undefined}
+        />
+      </svg>
+      <span style={{ ...TYPOGRAPHY.caption, fontWeight: 600, color: PASTEL_CARD_INK }}>
+        {typeof value === 'number' ? Math.min(100, Math.max(0, value)) : value}
+      </span>
+    </div>
+  );
+}
 
 /** Local ISO string (YYYY-MM-DDTHH:mm:ss) — avoids UTC shift from toISOString */
 function toLocalISO(d: Date): string {
@@ -71,7 +107,7 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0 }: {
     `Зорилт: ${target} ${habit.measurementUnit || ''}`;
 
   const statusColor =
-    status === 'done' ? color.accent : status === 'partial' ? color.ring : 'rgba(0,0,0,0.35)';
+    status === 'done' ? color.accent : status === 'partial' ? color.ring : 'var(--text-placeholder)';
 
   const keys = [
     ['1','2','3','AC'],
@@ -107,8 +143,8 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0 }: {
               <span style={{ fontSize: 18 }}>{habitIcon}</span>
             </div>
             <div>
-              <p style={{ fontSize: 13, fontWeight: 600 }} className="text-foreground">{habit.title}</p>
-              <p style={{ fontSize: 11 }} className="text-muted-foreground">
+              <p style={TYPOGRAPHY.cardTitle} className="text-foreground">{habit.title}</p>
+              <p style={TYPOGRAPHY.micro} className="text-muted-foreground">
                 {currentValue > 0 ? `Одоогийн: ${currentValue} ${habit.measurementUnit || ''} · Нэмэх` : 'Хурдан бүртгэл'}
               </p>
             </div>
@@ -131,7 +167,7 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0 }: {
               )}
             </div>
             {currentValue > 0 && addValue > 0 && (
-              <p style={{ fontSize: 12, marginTop: 4 }} className="text-muted-foreground">
+              <p style={{ ...TYPOGRAPHY.caption, marginTop: 4 }} className="text-muted-foreground">
                 {currentValue} + {addValue}
               </p>
             )}
@@ -147,7 +183,7 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0 }: {
               </div>
               <div className="flex justify-between mt-1.5">
                 {min > 0 && min < target && (
-                  <span style={{ fontSize: 11, color: 'rgba(0,0,0,0.32)' }}>min {min}</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-placeholder)' }}>min {min}</span>
                 )}
                 <span style={{ fontSize: 11, color: statusColor, fontWeight: 600, marginLeft: 'auto' }}>
                   {statusLabel}
@@ -196,112 +232,6 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0 }: {
 
           <div style={{ height: 'max(20px, env(safe-area-inset-bottom))' }} />
         </div>
-      </motion.div>
-    </>
-  );
-}
-
-// ── Post-completion Feedback Sheet ─────────────────────────────
-const DIFFICULTY_OPTIONS: { value: DifficultyRating; emoji: string; label: string }[] = [
-  { value: 'very_easy', emoji: '😎', label: 'Амархан' },
-  { value: 'easy',      emoji: '🙂', label: 'Хөнгөн' },
-  { value: 'moderate',  emoji: '😐', label: 'Дунд' },
-  { value: 'hard',      emoji: '😤', label: 'Хэцүү' },
-  { value: 'very_hard', emoji: '🥵', label: 'Маш хэцүү' },
-];
-
-function FeedbackSheet({ habit, logId, userId, onClose }: {
-  habit: HabitWithCueContext;
-  logId: string;
-  userId: string;
-  onClose: () => void;
-}) {
-  const [selected, setSelected] = useState<DifficultyRating | null>(null);
-  const [reflection, setReflection] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const color = getHabitColor(habit.color);
-
-  const handleSubmit = async () => {
-    if (!selected) return;
-    setSubmitting(true);
-    try {
-      await feedbackApi.submitDifficulty(userId, habit.id, logId, selected);
-      if (reflection.trim()) {
-        await feedbackApi.submitReflection(userId, habit.id, logId, reflection.trim());
-      }
-    } catch (err) {
-      console.error('Failed to submit feedback:', err);
-    }
-    onClose();
-  };
-
-  return (
-    <>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50" style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}
-        onClick={onClose} />
-      <motion.div
-        initial={{ y: 320, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 320, opacity: 0 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-        className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-[24px] px-5 pt-5 pb-6"
-        style={{ boxShadow: '0 -4px 24px rgba(0,0,0,0.1)' }}>
-
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <span style={{ fontSize: 18 }}>{habit.iconValue || '✨'}</span>
-            <p style={{ fontSize: 14, fontWeight: 600 }} className="text-foreground">Хэр хэцүү байсан бэ?</p>
-          </div>
-          <button onClick={onClose} style={{ fontSize: 12, color: 'rgba(0,0,0,0.35)', fontWeight: 500 }}>
-            Алгасах
-          </button>
-        </div>
-
-        {/* Difficulty emoji row */}
-        <div className="flex gap-2 mb-4">
-          {DIFFICULTY_OPTIONS.map(opt => {
-            const active = selected === opt.value;
-            return (
-              <motion.button key={opt.value} whileTap={{ scale: 0.9 }}
-                onClick={() => setSelected(opt.value)}
-                className="flex-1 flex flex-col items-center gap-1 py-2.5 rounded-2xl transition-all"
-                style={{
-                  backgroundColor: active ? color.accent + '18' : 'rgba(0,0,0,0.04)',
-                  border: active ? `1.5px solid ${color.accent}` : '1.5px solid transparent',
-                }}>
-                <span style={{ fontSize: 22 }}>{opt.emoji}</span>
-                <span style={{ fontSize: 9.5, fontWeight: active ? 600 : 400, color: active ? color.accent : 'rgba(0,0,0,0.45)' }}>
-                  {opt.label}
-                </span>
-              </motion.button>
-            );
-          })}
-        </div>
-
-        {/* Reflection text (optional) */}
-        <textarea
-          value={reflection}
-          onChange={e => setReflection(e.target.value.slice(0, 200))}
-          placeholder="Тэмдэглэл бичих... (заавал биш)"
-          className="w-full rounded-2xl px-4 py-3 text-foreground placeholder:text-muted-foreground resize-none"
-          style={{ fontSize: 13, backgroundColor: 'rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.06)', outline: 'none', minHeight: 60, maxHeight: 80 }}
-          rows={2}
-        />
-
-        {/* Submit button */}
-        <motion.button whileTap={{ scale: 0.97 }}
-          onClick={handleSubmit}
-          disabled={!selected || submitting}
-          className="w-full mt-4 rounded-2xl py-3 flex items-center justify-center transition-all"
-          style={{
-            backgroundColor: selected ? color.accent : 'rgba(0,0,0,0.08)',
-            color: selected ? '#fff' : 'rgba(0,0,0,0.3)',
-            fontSize: 14, fontWeight: 600,
-            opacity: submitting ? 0.6 : 1,
-          }}>
-          {submitting ? 'Илгээж байна...' : 'Хадгалах'}
-        </motion.button>
-
-        <div style={{ height: 'max(8px, env(safe-area-inset-bottom))' }} />
       </motion.div>
     </>
   );
@@ -442,7 +372,7 @@ function WeekStrip({ selectedDate, onSelectDate }: {
       {/* Month label */}
       {visibleMonth && (
         <p className="text-muted-foreground px-5 mb-2"
-          style={{ fontSize: 11, fontWeight: 600 }}>
+          style={{ ...TYPOGRAPHY.micro, fontWeight: 600 }}>
           {visibleMonth}
         </p>
       )}
@@ -462,7 +392,7 @@ function WeekStrip({ selectedDate, onSelectDate }: {
               {days.map((day, di) => (
                 <div key={di} className="flex flex-col items-center gap-[5px] cursor-pointer"
                   onClick={() => onSelectDate(day.fullDate)}>
-                  <span style={{ fontSize: 11, fontWeight: 500 }}
+                  <span style={TYPOGRAPHY.micro}
                     className={day.isSelected ? 'text-foreground' : 'text-muted-foreground/50'}>
                     {day.label}
                   </span>
@@ -481,8 +411,8 @@ function WeekStrip({ selectedDate, onSelectDate }: {
                       {day.date}
                     </span>
                   </motion.div>
-                  {day.isToday && !day.isSelected && (
-                    <div className="w-1 h-1 rounded-full" style={{ backgroundColor: '#303437', marginTop: -2 }} />
+                  {day.isToday && (
+                    <div className="w-1 h-1 rounded-full" style={{ backgroundColor: day.isSelected ? '#fff' : '#303437', marginTop: -2 }} />
                   )}
                 </div>
               ))}
@@ -516,8 +446,7 @@ function StatusBadge({ habit, entry, onTap, color, disabled }: {
     <div className="flex flex-col items-center gap-1.5 shrink-0"
       style={{ width: 72, opacity: disabled ? 0.35 : 1 }}
       onClick={e => { e.stopPropagation(); if (!disabled) onTap(); }}>
-      <span style={{ fontSize: 11, fontWeight: 500, whiteSpace: 'nowrap', textAlign: 'center', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 72 }}
-        className="text-muted-foreground">
+      <span style={{ ...TYPOGRAPHY.micro, whiteSpace: 'nowrap', textAlign: 'center', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 72, color: PASTEL_CARD_MUTED }}>
         {countLabel}
       </span>
 
@@ -531,7 +460,7 @@ function StatusBadge({ habit, entry, onTap, color, disabled }: {
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
           className="w-10 h-10 relative flex items-center justify-center cursor-pointer">
           <svg width="40" height="40" viewBox="0 0 40 40" style={{ transform: 'rotate(-90deg)', position: 'absolute' }}>
-            <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(0,0,0,0.10)" strokeWidth="3.5" />
+            <circle cx="20" cy="20" r="16" fill="none" stroke="var(--surface-strong)" strokeWidth="3.5" />
             <motion.circle
               cx="20" cy="20" r="16" fill="none"
               stroke={color.accent} strokeWidth="3.5" strokeLinecap="round"
@@ -541,13 +470,13 @@ function StatusBadge({ habit, entry, onTap, color, disabled }: {
               transition={{ duration: 0.4 }}
             />
           </svg>
-          <Plus className="absolute w-3.5 h-3.5" style={{ color: color.accent }} strokeWidth={2.5} />
+          <AppPlusIcon className="absolute w-3.5 h-3.5" style={{ color: color.accent }} />
         </motion.div>
       ) : (
         <motion.button whileTap={{ scale: 0.86 }}
           className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer"
-          style={{ backgroundColor: color.btn, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}>
-          <Plus className="w-4 h-4" style={{ color: color.accent }} strokeWidth={2.5} />
+          style={{ backgroundColor: PASTEL_CARD_ACTION_BG, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}>
+          <AppPlusIcon className="w-4 h-4" style={{ color: color.accent }} />
         </motion.button>
       )}
     </div>
@@ -576,7 +505,7 @@ function HabitCard({ habit, index, entry, onBadgeTap, disabled }: {
     >
       <div
         className="rounded-[24px] overflow-hidden cursor-pointer active:scale-[0.98] transition-transform relative"
-        style={{ backgroundColor: color.card, boxShadow: '0px 2px 14px rgba(0,0,0,0.08)' }}
+        style={{ backgroundColor: color.card, boxShadow: SHADOW.card, border: `1px solid ${PASTEL_CARD_SUBTLE}` }}
         onClick={() => navigate(`/habit/${habit.id}`)}
       >
         {/* Progress fill layer */}
@@ -587,21 +516,11 @@ function HabitCard({ habit, index, entry, onBadgeTap, disabled }: {
           transition={{ duration: 0.6, ease: 'easeOut' }}
           style={{
             background: pct > 0
-              ? `linear-gradient(90deg, ${color.accent}30 0%, ${color.accent}18 ${pct < 100 ? '85%' : '100%'}, transparent 100%)`
+              ? `linear-gradient(135deg, ${color.accent}88 0%, ${color.accent}66 100%)`
               : 'transparent',
+            boxShadow: pct > 0 ? `inset -1px 0 0 ${color.accent}22` : 'none',
           }}
         />
-
-        {/* Right-edge progress line */}
-        {pct > 0 && pct < 100 && (
-          <motion.div
-            className="absolute top-4 bottom-4 w-[2px] rounded-full pointer-events-none"
-            animate={{ left: `${pct}%` }}
-            initial={{ left: '0%' }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            style={{ backgroundColor: color.accent + '55', transform: 'translateX(-1px)' }}
-          />
-        )}
 
         {/* Card content */}
         <div className="relative z-10 flex items-center justify-between px-4 py-4 gap-3">
@@ -609,7 +528,7 @@ function HabitCard({ habit, index, entry, onBadgeTap, disabled }: {
           <div className="shrink-0">
             <div className="w-[50px] h-[50px] rounded-2xl flex items-center justify-center"
               style={{
-                backgroundColor: 'rgba(0,0,0,0.10)', fontSize: 26,
+                backgroundColor: PASTEL_CARD_ICON_BG, fontSize: 26,
                 opacity: status === 'done' ? 0.55 : 1, transition: 'opacity 0.3s',
               }}>
               {habitIcon}
@@ -619,26 +538,19 @@ function HabitCard({ habit, index, entry, onBadgeTap, disabled }: {
           {/* Info */}
           <div className="flex flex-col flex-1 min-w-0 gap-2">
             <p style={{
-              fontSize: 13, fontWeight: 600, lineHeight: 1.35,
+              ...TYPOGRAPHY.cardTitle, fontSize: 13, fontWeight: 600, lineHeight: 1.35,
+              color: PASTEL_CARD_INK,
               textDecoration: status === 'done' ? 'line-through' : 'none',
               opacity: status === 'done' ? 0.5 : 1,
               transition: 'opacity 0.3s',
-            }} className="text-foreground">
+            }}>
               {habit.title}
             </p>
             <div className="flex items-center gap-2 flex-wrap">
               {habit.currentStreak > 0 && (
-                <div className="flex items-center gap-1 px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}>
-                  <Flame className="w-2.5 h-2.5" style={{ color: '#ef6c00' }} />
-                  <span style={{ fontSize: 11, fontWeight: 500 }} className="text-muted-foreground">{habit.currentStreak} streak</span>
-                </div>
+                <HabitTag icon="flame" value={`${habit.currentStreak} өдөр`} />
               )}
-              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full"
-                style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}>
-                <Zap className="w-2.5 h-2.5" style={{ color: color.accent }} />
-                <span style={{ fontSize: 11, fontWeight: 500 }} className="text-muted-foreground">{habit.strengthScore}/100</span>
-              </div>
+              <HabitTag icon="dumbbell" value={habit.strengthScore} />
             </div>
           </div>
 
@@ -682,29 +594,29 @@ function SwipeableHabitCard({ habit, index, entry, onBadgeTap, onEdit, onUndo, d
       >
         <motion.button
           onClick={(e) => { e.stopPropagation(); setOpen(false); onEdit(); }}
-          className="flex flex-col items-center justify-center gap-1 rounded-2xl"
-          style={{ width: 56, height: 64, backgroundColor: 'rgba(0,0,0,0.05)' }}
+          className={`flex flex-col items-center justify-center gap-1 ${buttonStyles({ variant: 'secondary', size: 'default' })}`}
+          style={{ width: 56, height: 64, backgroundColor: 'var(--surface-muted)' }}
           initial={{ scale: 0.7, opacity: 0 }}
           animate={open ? { scale: 1, opacity: 1 } : { scale: 0.7, opacity: 0 }}
           transition={{ delay: open ? 0.05 : 0, duration: 0.2 }}
         >
-          <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.07)' }}>
-            <Pencil className="w-3 h-3" style={{ color: 'rgba(0,0,0,0.45)' }} strokeWidth={2} />
+          <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--surface-border-soft)' }}>
+            <Pencil className="w-3 h-3" style={{ color: 'var(--text-muted-soft)' }} strokeWidth={2} />
           </div>
-          <span style={{ fontSize: 10, fontWeight: 500, color: 'rgba(0,0,0,0.4)' }}>Засах</span>
+          <span style={{ ...TYPOGRAPHY.micro, fontSize: 10, color: 'var(--text-muted-soft)' }}>Засах</span>
         </motion.button>
         <motion.button
           onClick={(e) => { e.stopPropagation(); setOpen(false); onUndo(); }}
-          className="flex flex-col items-center justify-center gap-1 rounded-2xl"
-          style={{ width: 56, height: 64, backgroundColor: 'rgba(239,68,68,0.06)' }}
+          className={`flex flex-col items-center justify-center gap-1 ${buttonStyles({ variant: 'destructive', size: 'default' })}`}
+          style={{ width: 56, height: 64, backgroundColor: 'rgba(239,68,68,0.10)' }}
           initial={{ scale: 0.7, opacity: 0 }}
           animate={open ? { scale: 1, opacity: 1 } : { scale: 0.7, opacity: 0 }}
           transition={{ delay: open ? 0.1 : 0, duration: 0.2 }}
         >
-          <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(239,68,68,0.08)' }}>
-            <Undo2 className="w-3 h-3" style={{ color: 'rgba(239,68,68,0.6)' }} strokeWidth={2} />
+          <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(239,68,68,0.14)' }}>
+            <Undo2 className="w-3 h-3" style={{ color: 'rgba(239,68,68,0.82)' }} strokeWidth={2} />
           </div>
-          <span style={{ fontSize: 10, fontWeight: 500, color: 'rgba(239,68,68,0.5)' }}>Буцаах</span>
+          <span style={{ ...TYPOGRAPHY.micro, fontSize: 10, color: 'rgba(239,68,68,0.86)' }}>Буцаах</span>
         </motion.button>
       </motion.div>
 
@@ -743,7 +655,7 @@ export function DashboardPage() {
   const [logMap, setLogMap]       = useState<Map<string, LogEntry>>(new Map());
   const [logTarget, setLogTarget] = useState<HabitWithCueContext | null>(null);
   const [editMode, setEditMode]   = useState(false);
-  const [feedbackTarget, setFeedbackTarget] = useState<{ habit: HabitWithCueContext; logId: string } | null>(null);
+  const [celebrationTarget, setCelebrationTarget] = useState<{ habit: HabitWithCueContext; logId: string; ctx: CelebrationContext } | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   /** Format Date as YYYY-MM-DD for the API */
@@ -766,28 +678,20 @@ export function DashboardPage() {
       const data = await habitsApi.listToday(userId, dateParam);
       setHabits(data);
 
-      // Fetch existing logs for each habit and populate logMap for the selected date
-      const dateKey = toDateStr(selectedDate);
       const newLogMap = new Map<string, LogEntry>();
-      await Promise.all(
-        data.map(async (habit) => {
-          try {
-            const logs = await habitsApi.listLogs(userId, habit.id);
-            // Find the LAST log for the selected date (latest cumulative value)
-            const dayLogs = logs.filter((l) => l.completedAt?.startsWith(dateKey));
-            if (dayLogs.length > 0) {
-              const lastLog = dayLogs[dayLogs.length - 1];
-              const val = lastLog.actualValue ?? 0;
-              if (val > 0) {
-                const status = calcStatus(habit, val);
-                if (status !== 'none') {
-                  newLogMap.set(habit.id, { value: val, status, logId: lastLog.id });
-                }
-              }
-            }
-          } catch { /* ignore per-habit fetch errors */ }
-        }),
-      );
+      for (const habit of data) {
+        const val = habit.todayLog?.actualValue ?? 0;
+        if (val > 0 && habit.todayLog) {
+          const status = calcStatus(habit, val);
+          if (status !== 'none') {
+            newLogMap.set(habit.id, {
+              value: val,
+              status,
+              logId: habit.todayLog.id,
+            });
+          }
+        }
+      }
       setLogMap(newLogMap);
     } catch (err) {
       console.error('Failed to load habits:', err);
@@ -843,9 +747,10 @@ export function DashboardPage() {
           return m;
         });
       }
-      // Show feedback sheet when newly done
+      // Show celebration when newly done
       if (status === 'done' && !wasDone && logId) {
-        setFeedbackTarget({ habit, logId });
+        const ctx = decideCelebration(habit.currentStreak, 0, 'SELF_INITIATED');
+        setCelebrationTarget({ habit, logId, ctx });
       }
     } catch (err) {
       console.error('Failed to log:', err);
@@ -870,11 +775,11 @@ export function DashboardPage() {
     });
 
     try {
-      // Delete ALL logs for this habit on the selected date (cleans up old duplicates too)
-      const dateKey = toDateStr(selectedDate);
-      const allLogs = await habitsApi.listLogs(userId, habit.id);
-      const dayLogs = allLogs.filter((l) => l.completedAt?.startsWith(dateKey));
-      await Promise.all(dayLogs.map((l) => habitsApi.deleteLog(userId, habit.id, l.id)));
+      // Delete exactly the log currently represented by this card.
+      // Matching by date-string was removing the wrong records around day boundaries.
+      await habitsApi.deleteLog(userId, habit.id, entry.logId);
+      // Re-fetch habits so streak / strength score reflect the removal
+      await loadHabits();
     } catch (err) {
       console.error('Failed to undo log:', err);
       // Rollback on failure
@@ -911,9 +816,10 @@ export function DashboardPage() {
           return m;
         });
       }
-      // Show feedback sheet when newly done
+      // Show celebration when newly done
       if (status === 'done' && !wasDone && logId) {
-        setFeedbackTarget({ habit, logId });
+        const ctx = decideCelebration(habit.currentStreak, 0, 'SELF_INITIATED');
+        setCelebrationTarget({ habit, logId, ctx });
       }
     } catch (err) {
       console.error('Failed to update log:', err);
@@ -938,10 +844,10 @@ export function DashboardPage() {
       >
         <div className="flex items-start justify-between">
           <div>
-            <p style={{ fontSize: 12, fontWeight: 500, marginBottom: 2 }} className="text-muted-foreground">
+            <p style={{ ...TYPOGRAPHY.caption, marginBottom: 2 }} className="text-muted-foreground">
               {dateStr}
             </p>
-            <p style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.3px' }} className="text-foreground">
+            <p style={TYPOGRAPHY.pageTitle} className="text-foreground">
               {displayName ? `${displayName}, ${greeting}` : greeting}
             </p>
           </div>
@@ -950,11 +856,11 @@ export function DashboardPage() {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => navigate('/create')}
-              className="flex items-center gap-1.5 rounded-full px-3.5 py-2"
+              className={`${buttonStyles({ variant: 'default', size: 'default' })} flex items-center gap-1.5`}
               style={{ backgroundColor: CTA_DARK.bg, boxShadow: '0 3px 10px rgba(48,52,55,0.25)' }}
             >
-              <Plus className="w-4 h-4" style={{ color: '#fff' }} strokeWidth={2.5} />
-              <span style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>Дадал</span>
+              <AppPlusIcon className="w-4 h-4" style={{ color: '#fff' }} />
+              <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 600, color: '#fff' }}>Дадал</span>
             </motion.button>
           </div>
         </div>
@@ -970,10 +876,10 @@ export function DashboardPage() {
 
       {/* Section label */}
       <div className="px-5 mb-3 flex items-center justify-between">
-        <p style={{ fontSize: 12, fontWeight: 400 }} className="text-muted-foreground">
+        <p style={TYPOGRAPHY.caption} className="text-muted-foreground">
           {isToday ? 'Өнөөдрийн дадлууд' : `${formatMnShort(selectedDate)}-н дадлууд`}
         </p>
-        <p style={{ fontSize: 12 }} className="text-muted-foreground">
+        <p style={TYPOGRAPHY.caption} className="text-muted-foreground">
           {doneCount}/{totalCount} дадал
         </p>
       </div>
@@ -989,26 +895,27 @@ export function DashboardPage() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center py-16 text-center">
               <span style={{ fontSize: 52 }} className="mb-4">🌱</span>
-              <p style={{ fontSize: 16, fontWeight: 600 }} className="text-foreground mb-2">
+              <p style={TYPOGRAPHY.cardTitle} className="text-foreground mb-2">
                 Дадал байхгүй байна
               </p>
-              <p style={{ fontSize: 13, lineHeight: 1.6 }} className="text-muted-foreground mb-8 max-w-[210px]">
+              <p style={{ ...TYPOGRAPHY.bodySm, lineHeight: 1.6 }} className="text-muted-foreground mb-8 max-w-[210px]">
                 Анхны дадлаа нэмж, хувийн өөрчлөлтийн аялалаа эхэлцгээе!
               </p>
               <motion.button whileTap={{ scale: 0.95 }} onClick={() => navigate('/create')}
-                className="rounded-full px-6 py-3"
+                className={buttonStyles({ variant: 'default', size: 'lg' })}
                 style={{ backgroundColor: CTA_DARK.bg, fontSize: 14, fontWeight: 600, color: '#fff', boxShadow: CTA_DARK.shadow }}>
-                + Дадал нэмэх
+                <AppPlusIcon className="w-4 h-4" style={{ color: '#fff' }} />
+                <span>Дадал нэмэх</span>
               </motion.button>
             </motion.div>
           ) : (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center py-16 text-center">
               <span style={{ fontSize: 44 }} className="mb-4">📭</span>
-              <p style={{ fontSize: 15, fontWeight: 600 }} className="text-foreground mb-1">
+              <p style={TYPOGRAPHY.navTitle} className="text-foreground mb-1">
                 Энэ өдөр дадал байхгүй
               </p>
-              <p style={{ fontSize: 12, lineHeight: 1.5 }} className="text-muted-foreground max-w-[200px]">
+              <p style={{ ...TYPOGRAPHY.caption, lineHeight: 1.5 }} className="text-muted-foreground max-w-[200px]">
                 Тухайн өдөр хуваарилагдсан дадал олдсонгүй
               </p>
             </motion.div>
@@ -1048,20 +955,32 @@ export function DashboardPage() {
         )}
       </AnimatePresence>
 
-      {/* Post-completion Feedback Sheet */}
+      {/* Post-completion Celebration */}
       <AnimatePresence>
-        {feedbackTarget && userId && (
-          <FeedbackSheet
-            key={feedbackTarget.logId}
-            habit={feedbackTarget.habit}
-            logId={feedbackTarget.logId}
-            userId={userId}
-            onClose={() => setFeedbackTarget(null)}
-          />
+        {celebrationTarget && userId && (
+          celebrationTarget.ctx.mode === 'milestone' ? (
+            <CelebrationFullScreen
+              key={celebrationTarget.logId}
+              habit={celebrationTarget.habit}
+              logId={celebrationTarget.logId}
+              userId={userId}
+              ctx={celebrationTarget.ctx}
+              onClose={() => setCelebrationTarget(null)}
+            />
+          ) : (
+            <CelebrationSheet
+              key={celebrationTarget.logId}
+              habit={celebrationTarget.habit}
+              logId={celebrationTarget.logId}
+              userId={userId}
+              ctx={celebrationTarget.ctx}
+              onClose={() => setCelebrationTarget(null)}
+            />
+          )
         )}
       </AnimatePresence>
 
-      {!logTarget && !feedbackTarget && <BottomNav />}
+      {!logTarget && !celebrationTarget && <BottomNav />}
     </div>
   );
 }

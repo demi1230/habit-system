@@ -75,14 +75,20 @@ model User {
   email        String            @unique
   passwordHash String            @map("password_hash")
   displayName  String?           @map("display_name")
+  totalXp      Int               @default(0) @map("total_xp")
   createdAt    DateTime          @default(now()) @map("created_at")
   updatedAt    DateTime          @updatedAt @map("updated_at")
-  habits             Habit[]
-  activityLogs       UserActivityLog[]
-  reminders          Reminder[]
-  reminderActions    ReminderAction[]
-  difficultyFeedback DifficultyFeedback[]
-  reflections        Reflection[]
+  habits                       Habit[]
+  activityLogs                 UserActivityLog[]
+  reminders                    Reminder[]
+  reminderActions              ReminderAction[]
+  difficultyFeedback           DifficultyFeedback[]
+  reflections                  Reflection[]
+  adaptationRecommendations    AdaptationRecommendation[]
+  articleInteractions          ArticleInteraction[]
+  recommendationInteractions   RecommendationInteraction[]
+  pushSubscriptions            PushSubscription[]
+  badges                       UserBadge[]
 
   @@map("users")
 }
@@ -116,10 +122,28 @@ model Habit {
   reminderPolicy         ReminderPolicy?
   difficultyFeedback     DifficultyFeedback[]
   reflections            Reflection[]
+  adaptationRecommendations AdaptationRecommendation[]
+  articleInteractions    ArticleInteraction[]
+  steps                  HabitStep[]
+  badges                 UserBadge[]
 
   @@index([userId])
   @@index([status])
   @@map("habits")
+}
+
+model HabitStep {
+  id         String   @id @default(uuid()) @db.Uuid
+  habitId     String   @map("habit_id") @db.Uuid
+  title       String
+  orderIndex  Int      @map("order_index")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  habit       Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@index([habitId])
+  @@unique([habitId, orderIndex])
+  @@map("habit_steps")
 }
 
 model HabitScheduleDay {
@@ -336,4 +360,176 @@ model ReminderPolicy {
   habit           Habit              @relation(fields: [habitId], references: [id], onDelete: Cascade)
 
   @@map("reminder_policies")
+}
+
+// ─── Learning & Recommendations enums ────────────────────────────────────────
+
+enum RecommendationCode {
+  SIMPLIFY_HABIT
+  ADJUST_CUE
+  REDUCE_TARGET
+  INCREASE_SUPPORT
+  REVIEW_REMINDER_DEPENDENCE
+  BUILD_CONSISTENCY
+  CELEBRATE_CONSISTENCY
+
+  @@map("recommendation_code")
+}
+
+enum ReasonCode {
+  LOW_CONSISTENCY
+  HIGH_DIFFICULTY
+  HIGH_REMINDER_DEPENDENCE
+  LOW_CONTEXT_STABILITY
+  LOW_SELF_INITIATED_RATE
+  PLATEAUED_HABIT_STRENGTH
+  MILESTONE_REACHED
+
+  @@map("reason_code")
+}
+
+enum RecommendationStatus {
+  ACTIVE
+  DISMISSED
+  APPLIED
+  EXPIRED
+
+  @@map("recommendation_status")
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+
+  @@map("priority")
+}
+
+enum ArticleInteractionType {
+  OPENED
+  COMPLETED
+  BOOKMARKED
+  UNBOOKMARKED
+
+  @@map("article_interaction_type")
+}
+
+enum SourceType {
+  LEARNING_PAGE
+  RECOMMENDATION
+  HABIT_DETAIL
+  ANALYTICS_PAGE
+
+  @@map("source_type")
+}
+
+enum RecommendationInteractionType {
+  SHOWN
+  CLICKED
+  DISMISSED
+  APPLIED
+
+  @@map("recommendation_interaction_type")
+}
+
+enum BadgeCode {
+  FIRST_DONE
+  STREAK_7
+  STREAK_21
+  TOTAL_30
+
+  @@map("badge_code")
+}
+
+// ─── Learning & Recommendations models ──────────────────────────────────────
+
+model AdaptationRecommendation {
+  id                 String                 @id @default(uuid()) @db.Uuid
+  userId             String                 @map("user_id") @db.Uuid
+  habitId            String                 @map("habit_id") @db.Uuid
+  recommendationCode RecommendationCode     @map("recommendation_code")
+  reasonCode         ReasonCode             @map("reason_code")
+  title              String
+  message            String
+  priority           Priority
+  status             RecommendationStatus   @default(ACTIVE)
+  articleIds         String[]               @default([]) @map("article_ids")
+  metadata           Json?
+  generatedAt        DateTime               @map("generated_at")
+  expiresAt          DateTime?              @map("expires_at")
+  createdAt          DateTime               @default(now()) @map("created_at")
+  updatedAt          DateTime               @updatedAt @map("updated_at")
+  user               User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habit              Habit                  @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  interactions       RecommendationInteraction[]
+
+  @@index([userId, status])
+  @@index([habitId, status])
+  @@index([userId, generatedAt])
+  @@map("adaptation_recommendations")
+}
+
+model ArticleInteraction {
+  id         String                  @id @default(uuid()) @db.Uuid
+  userId     String                  @map("user_id") @db.Uuid
+  habitId    String?                 @map("habit_id") @db.Uuid
+  articleId  String                  @map("article_id")
+  sourceType SourceType              @map("source_type")
+  sourceId   String?                 @map("source_id")
+  interactionType ArticleInteractionType @map("interaction_type")
+  occurredAt DateTime                @map("occurred_at")
+  createdAt  DateTime                @default(now()) @map("created_at")
+  user       User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habit      Habit?                  @relation(fields: [habitId], references: [id], onDelete: SetNull)
+
+  @@index([userId, occurredAt])
+  @@index([habitId, occurredAt])
+  @@index([articleId, occurredAt])
+  @@index([sourceType, sourceId])
+  @@map("article_interactions")
+}
+
+model RecommendationInteraction {
+  id              String                        @id @default(uuid()) @db.Uuid
+  userId          String                        @map("user_id") @db.Uuid
+  recommendationId String                       @map("recommendation_id") @db.Uuid
+  interactionType RecommendationInteractionType @map("interaction_type")
+  occurredAt      DateTime                      @map("occurred_at")
+  createdAt       DateTime                      @default(now()) @map("created_at")
+  user            User                          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recommendation  AdaptationRecommendation      @relation(fields: [recommendationId], references: [id], onDelete: Cascade)
+
+  @@index([recommendationId])
+  @@index([userId, occurredAt])
+  @@map("recommendation_interactions")
+}
+
+model PushSubscription {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  endpoint   String   @unique
+  p256dh     String
+  auth       String
+  userAgent  String?  @map("user_agent")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscriptions")
+}
+
+model UserBadge {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  habitId    String?   @map("habit_id") @db.Uuid
+  badgeCode  BadgeCode @map("badge_code")
+  awardedAt  DateTime  @default(now()) @map("awarded_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habit      Habit?    @relation(fields: [habitId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, badgeCode])
+  @@index([userId, awardedAt])
+  @@map("user_badges")
 }

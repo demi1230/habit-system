@@ -12,6 +12,12 @@ export interface HabitScheduleDay {
   weekday: Weekday;
 }
 
+export interface HabitStep {
+  id?: string;
+  title: string;
+  orderIndex: number;
+}
+
 export interface HabitCue {
   id: string;
   habitId: string;
@@ -45,6 +51,7 @@ export interface Habit {
   reminderEnabled: boolean;
   archivedAt: string | null;
   scheduleDays: HabitScheduleDay[];
+  steps?: HabitStep[];
   cues: HabitCue[];
   motivationProfile: MotivationProfile | null;
   createdAt: string;
@@ -64,6 +71,10 @@ export interface HabitWithCueContext extends Habit {
   cueContext: CueContext[];
   currentStreak: number;
   strengthScore: number;
+  todayLog?: Pick<
+    HabitLog,
+    'id' | 'habitId' | 'status' | 'actualValue' | 'completedAt' | 'loggedAt'
+  > | null;
 }
 
 export interface HabitLog {
@@ -114,4 +125,39 @@ export interface CompositeScore {
   finalScore: number;
   stage: 'weak' | 'building' | 'strong';
   evaluatedAt: string;
+}
+
+export interface PushSubscriptionRecord {
+  id: string;
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  userAgent: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EngagementBadge {
+  id: string;
+  badgeCode: string;
+  awardedAt: string;
+  habitId: string | null;
+  habitTitle: string | null;
+  habitIcon: string | null;
+  habitColor: string | null;
+}
+
+export interface EngagementSummary {
+  totalXp: number;
+  unlockedBadgeCount: number;
+  subscriptionCount: number;
+  badges: EngagementBadge[];
+  latestAchievements: Array<{
+    id: string;
+    type: string;
+    badgeCode: string;
+    awardedAt: string;
+    habitId: string | null;
+    habitTitle: string | null;
+  }>;
 }

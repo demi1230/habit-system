@@ -330,6 +330,10 @@ export type HabitWhereInput = {
   reminderPolicy?: Prisma.XOR<Prisma.ReminderPolicyNullableScalarRelationFilter, Prisma.ReminderPolicyWhereInput> | null
   difficultyFeedback?: Prisma.DifficultyFeedbackListRelationFilter
   reflections?: Prisma.ReflectionListRelationFilter
+  adaptationRecommendations?: Prisma.AdaptationRecommendationListRelationFilter
+  articleInteractions?: Prisma.ArticleInteractionListRelationFilter
+  steps?: Prisma.HabitStepListRelationFilter
+  badges?: Prisma.UserBadgeListRelationFilter
 }
 
 export type HabitOrderByWithRelationInput = {
@@ -361,6 +365,10 @@ export type HabitOrderByWithRelationInput = {
   reminderPolicy?: Prisma.ReminderPolicyOrderByWithRelationInput
   difficultyFeedback?: Prisma.DifficultyFeedbackOrderByRelationAggregateInput
   reflections?: Prisma.ReflectionOrderByRelationAggregateInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationOrderByRelationAggregateInput
+  articleInteractions?: Prisma.ArticleInteractionOrderByRelationAggregateInput
+  steps?: Prisma.HabitStepOrderByRelationAggregateInput
+  badges?: Prisma.UserBadgeOrderByRelationAggregateInput
 }
 
 export type HabitWhereUniqueInput = Prisma.AtLeast<{
@@ -395,6 +403,10 @@ export type HabitWhereUniqueInput = Prisma.AtLeast<{
   reminderPolicy?: Prisma.XOR<Prisma.ReminderPolicyNullableScalarRelationFilter, Prisma.ReminderPolicyWhereInput> | null
   difficultyFeedback?: Prisma.DifficultyFeedbackListRelationFilter
   reflections?: Prisma.ReflectionListRelationFilter
+  adaptationRecommendations?: Prisma.AdaptationRecommendationListRelationFilter
+  articleInteractions?: Prisma.ArticleInteractionListRelationFilter
+  steps?: Prisma.HabitStepListRelationFilter
+  badges?: Prisma.UserBadgeListRelationFilter
 }, "id">
 
 export type HabitOrderByWithAggregationInput = {
@@ -475,6 +487,10 @@ export type HabitCreateInput = {
   reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateInput = {
@@ -505,6 +521,10 @@ export type HabitUncheckedCreateInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUpdateInput = {
@@ -535,6 +555,10 @@ export type HabitUpdateInput = {
   reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateInput = {
@@ -565,6 +589,10 @@ export type HabitUncheckedUpdateInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateManyInput = {
@@ -723,6 +751,11 @@ export type HabitScalarRelationFilter = {
   isNot?: Prisma.HabitWhereInput
 }
 
+export type HabitNullableScalarRelationFilter = {
+  is?: Prisma.HabitWhereInput | null
+  isNot?: Prisma.HabitWhereInput | null
+}
+
 export type HabitCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.HabitCreateWithoutUserInput, Prisma.HabitUncheckedCreateWithoutUserInput> | Prisma.HabitCreateWithoutUserInput[] | Prisma.HabitUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.HabitCreateOrConnectWithoutUserInput | Prisma.HabitCreateOrConnectWithoutUserInput[]
@@ -792,6 +825,20 @@ export type BoolFieldUpdateOperationsInput = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type HabitCreateNestedOneWithoutStepsInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutStepsInput, Prisma.HabitUncheckedCreateWithoutStepsInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutStepsInput
+  connect?: Prisma.HabitWhereUniqueInput
+}
+
+export type HabitUpdateOneRequiredWithoutStepsNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutStepsInput, Prisma.HabitUncheckedCreateWithoutStepsInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutStepsInput
+  upsert?: Prisma.HabitUpsertWithoutStepsInput
+  connect?: Prisma.HabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitUpdateToOneWithWhereWithoutStepsInput, Prisma.HabitUpdateWithoutStepsInput>, Prisma.HabitUncheckedUpdateWithoutStepsInput>
 }
 
 export type HabitCreateNestedOneWithoutScheduleDaysInput = {
@@ -920,6 +967,52 @@ export type HabitUpdateOneRequiredWithoutReminderPolicyNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.HabitUpdateToOneWithWhereWithoutReminderPolicyInput, Prisma.HabitUpdateWithoutReminderPolicyInput>, Prisma.HabitUncheckedUpdateWithoutReminderPolicyInput>
 }
 
+export type HabitCreateNestedOneWithoutAdaptationRecommendationsInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutAdaptationRecommendationsInput, Prisma.HabitUncheckedCreateWithoutAdaptationRecommendationsInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutAdaptationRecommendationsInput
+  connect?: Prisma.HabitWhereUniqueInput
+}
+
+export type HabitUpdateOneRequiredWithoutAdaptationRecommendationsNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutAdaptationRecommendationsInput, Prisma.HabitUncheckedCreateWithoutAdaptationRecommendationsInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutAdaptationRecommendationsInput
+  upsert?: Prisma.HabitUpsertWithoutAdaptationRecommendationsInput
+  connect?: Prisma.HabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitUpdateToOneWithWhereWithoutAdaptationRecommendationsInput, Prisma.HabitUpdateWithoutAdaptationRecommendationsInput>, Prisma.HabitUncheckedUpdateWithoutAdaptationRecommendationsInput>
+}
+
+export type HabitCreateNestedOneWithoutArticleInteractionsInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutArticleInteractionsInput, Prisma.HabitUncheckedCreateWithoutArticleInteractionsInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutArticleInteractionsInput
+  connect?: Prisma.HabitWhereUniqueInput
+}
+
+export type HabitUpdateOneWithoutArticleInteractionsNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutArticleInteractionsInput, Prisma.HabitUncheckedCreateWithoutArticleInteractionsInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutArticleInteractionsInput
+  upsert?: Prisma.HabitUpsertWithoutArticleInteractionsInput
+  disconnect?: Prisma.HabitWhereInput | boolean
+  delete?: Prisma.HabitWhereInput | boolean
+  connect?: Prisma.HabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitUpdateToOneWithWhereWithoutArticleInteractionsInput, Prisma.HabitUpdateWithoutArticleInteractionsInput>, Prisma.HabitUncheckedUpdateWithoutArticleInteractionsInput>
+}
+
+export type HabitCreateNestedOneWithoutBadgesInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutBadgesInput, Prisma.HabitUncheckedCreateWithoutBadgesInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutBadgesInput
+  connect?: Prisma.HabitWhereUniqueInput
+}
+
+export type HabitUpdateOneWithoutBadgesNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutBadgesInput, Prisma.HabitUncheckedCreateWithoutBadgesInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutBadgesInput
+  upsert?: Prisma.HabitUpsertWithoutBadgesInput
+  disconnect?: Prisma.HabitWhereInput | boolean
+  delete?: Prisma.HabitWhereInput | boolean
+  connect?: Prisma.HabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitUpdateToOneWithWhereWithoutBadgesInput, Prisma.HabitUpdateWithoutBadgesInput>, Prisma.HabitUncheckedUpdateWithoutBadgesInput>
+}
+
 export type HabitCreateWithoutUserInput = {
   id?: string
   title: string
@@ -947,6 +1040,10 @@ export type HabitCreateWithoutUserInput = {
   reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutUserInput = {
@@ -976,6 +1073,10 @@ export type HabitUncheckedCreateWithoutUserInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutUserInput = {
@@ -1028,6 +1129,154 @@ export type HabitScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Habit"> | Date | string
 }
 
+export type HabitCreateWithoutStepsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutHabitsInput
+  scheduleDays?: Prisma.HabitScheduleDayCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
+}
+
+export type HabitUncheckedCreateWithoutStepsInput = {
+  id?: string
+  userId: string
+  title: string
+  description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type HabitCreateOrConnectWithoutStepsInput = {
+  where: Prisma.HabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitCreateWithoutStepsInput, Prisma.HabitUncheckedCreateWithoutStepsInput>
+}
+
+export type HabitUpsertWithoutStepsInput = {
+  update: Prisma.XOR<Prisma.HabitUpdateWithoutStepsInput, Prisma.HabitUncheckedUpdateWithoutStepsInput>
+  create: Prisma.XOR<Prisma.HabitCreateWithoutStepsInput, Prisma.HabitUncheckedCreateWithoutStepsInput>
+  where?: Prisma.HabitWhereInput
+}
+
+export type HabitUpdateToOneWithWhereWithoutStepsInput = {
+  where?: Prisma.HabitWhereInput
+  data: Prisma.XOR<Prisma.HabitUpdateWithoutStepsInput, Prisma.HabitUncheckedUpdateWithoutStepsInput>
+}
+
+export type HabitUpdateWithoutStepsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
+  scheduleDays?: Prisma.HabitScheduleDayUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitUncheckedUpdateWithoutStepsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
+}
+
 export type HabitCreateWithoutScheduleDaysInput = {
   id?: string
   title: string
@@ -1055,6 +1304,10 @@ export type HabitCreateWithoutScheduleDaysInput = {
   reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutScheduleDaysInput = {
@@ -1084,6 +1337,10 @@ export type HabitUncheckedCreateWithoutScheduleDaysInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutScheduleDaysInput = {
@@ -1129,6 +1386,10 @@ export type HabitUpdateWithoutScheduleDaysInput = {
   reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutScheduleDaysInput = {
@@ -1158,6 +1419,10 @@ export type HabitUncheckedUpdateWithoutScheduleDaysInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateWithoutCuesInput = {
@@ -1187,6 +1452,10 @@ export type HabitCreateWithoutCuesInput = {
   reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutCuesInput = {
@@ -1216,6 +1485,10 @@ export type HabitUncheckedCreateWithoutCuesInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutCuesInput = {
@@ -1261,6 +1534,10 @@ export type HabitUpdateWithoutCuesInput = {
   reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutCuesInput = {
@@ -1290,6 +1567,10 @@ export type HabitUncheckedUpdateWithoutCuesInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateWithoutMotivationProfileInput = {
@@ -1319,6 +1600,10 @@ export type HabitCreateWithoutMotivationProfileInput = {
   reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutMotivationProfileInput = {
@@ -1348,6 +1633,10 @@ export type HabitUncheckedCreateWithoutMotivationProfileInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutMotivationProfileInput = {
@@ -1393,6 +1682,10 @@ export type HabitUpdateWithoutMotivationProfileInput = {
   reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutMotivationProfileInput = {
@@ -1422,6 +1715,10 @@ export type HabitUncheckedUpdateWithoutMotivationProfileInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateWithoutLogsInput = {
@@ -1451,6 +1748,10 @@ export type HabitCreateWithoutLogsInput = {
   reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutLogsInput = {
@@ -1480,6 +1781,10 @@ export type HabitUncheckedCreateWithoutLogsInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutLogsInput = {
@@ -1525,6 +1830,10 @@ export type HabitUpdateWithoutLogsInput = {
   reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutLogsInput = {
@@ -1554,6 +1863,10 @@ export type HabitUncheckedUpdateWithoutLogsInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateWithoutDifficultyFeedbackInput = {
@@ -1583,6 +1896,10 @@ export type HabitCreateWithoutDifficultyFeedbackInput = {
   srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
   reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutDifficultyFeedbackInput = {
@@ -1612,6 +1929,10 @@ export type HabitUncheckedCreateWithoutDifficultyFeedbackInput = {
   srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
   reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutDifficultyFeedbackInput = {
@@ -1657,6 +1978,10 @@ export type HabitUpdateWithoutDifficultyFeedbackInput = {
   srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
   reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutDifficultyFeedbackInput = {
@@ -1686,6 +2011,10 @@ export type HabitUncheckedUpdateWithoutDifficultyFeedbackInput = {
   srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
   reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateWithoutReflectionsInput = {
@@ -1715,6 +2044,10 @@ export type HabitCreateWithoutReflectionsInput = {
   srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
   reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutReflectionsInput = {
@@ -1744,6 +2077,10 @@ export type HabitUncheckedCreateWithoutReflectionsInput = {
   srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
   reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutReflectionsInput = {
@@ -1789,6 +2126,10 @@ export type HabitUpdateWithoutReflectionsInput = {
   srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
   reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutReflectionsInput = {
@@ -1818,6 +2159,10 @@ export type HabitUncheckedUpdateWithoutReflectionsInput = {
   srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
   reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateWithoutRemindersInput = {
@@ -1847,6 +2192,10 @@ export type HabitCreateWithoutRemindersInput = {
   reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutRemindersInput = {
@@ -1876,6 +2225,10 @@ export type HabitUncheckedCreateWithoutRemindersInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutRemindersInput = {
@@ -1921,6 +2274,10 @@ export type HabitUpdateWithoutRemindersInput = {
   reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutRemindersInput = {
@@ -1950,6 +2307,10 @@ export type HabitUncheckedUpdateWithoutRemindersInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateWithoutSrbaiAssessmentsInput = {
@@ -1979,6 +2340,10 @@ export type HabitCreateWithoutSrbaiAssessmentsInput = {
   reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutSrbaiAssessmentsInput = {
@@ -2008,6 +2373,10 @@ export type HabitUncheckedCreateWithoutSrbaiAssessmentsInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutSrbaiAssessmentsInput = {
@@ -2053,6 +2422,10 @@ export type HabitUpdateWithoutSrbaiAssessmentsInput = {
   reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutSrbaiAssessmentsInput = {
@@ -2082,6 +2455,10 @@ export type HabitUncheckedUpdateWithoutSrbaiAssessmentsInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateWithoutReminderPolicyInput = {
@@ -2111,6 +2488,10 @@ export type HabitCreateWithoutReminderPolicyInput = {
   srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
 }
 
 export type HabitUncheckedCreateWithoutReminderPolicyInput = {
@@ -2140,6 +2521,10 @@ export type HabitUncheckedCreateWithoutReminderPolicyInput = {
   srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type HabitCreateOrConnectWithoutReminderPolicyInput = {
@@ -2185,6 +2570,10 @@ export type HabitUpdateWithoutReminderPolicyInput = {
   srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutReminderPolicyInput = {
@@ -2214,6 +2603,454 @@ export type HabitUncheckedUpdateWithoutReminderPolicyInput = {
   srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitCreateWithoutAdaptationRecommendationsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutHabitsInput
+  scheduleDays?: Prisma.HabitScheduleDayCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
+}
+
+export type HabitUncheckedCreateWithoutAdaptationRecommendationsInput = {
+  id?: string
+  userId: string
+  title: string
+  description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type HabitCreateOrConnectWithoutAdaptationRecommendationsInput = {
+  where: Prisma.HabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitCreateWithoutAdaptationRecommendationsInput, Prisma.HabitUncheckedCreateWithoutAdaptationRecommendationsInput>
+}
+
+export type HabitUpsertWithoutAdaptationRecommendationsInput = {
+  update: Prisma.XOR<Prisma.HabitUpdateWithoutAdaptationRecommendationsInput, Prisma.HabitUncheckedUpdateWithoutAdaptationRecommendationsInput>
+  create: Prisma.XOR<Prisma.HabitCreateWithoutAdaptationRecommendationsInput, Prisma.HabitUncheckedCreateWithoutAdaptationRecommendationsInput>
+  where?: Prisma.HabitWhereInput
+}
+
+export type HabitUpdateToOneWithWhereWithoutAdaptationRecommendationsInput = {
+  where?: Prisma.HabitWhereInput
+  data: Prisma.XOR<Prisma.HabitUpdateWithoutAdaptationRecommendationsInput, Prisma.HabitUncheckedUpdateWithoutAdaptationRecommendationsInput>
+}
+
+export type HabitUpdateWithoutAdaptationRecommendationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
+  scheduleDays?: Prisma.HabitScheduleDayUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitUncheckedUpdateWithoutAdaptationRecommendationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitCreateWithoutArticleInteractionsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutHabitsInput
+  scheduleDays?: Prisma.HabitScheduleDayCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeCreateNestedManyWithoutHabitInput
+}
+
+export type HabitUncheckedCreateWithoutArticleInteractionsInput = {
+  id?: string
+  userId: string
+  title: string
+  description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+  badges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type HabitCreateOrConnectWithoutArticleInteractionsInput = {
+  where: Prisma.HabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitCreateWithoutArticleInteractionsInput, Prisma.HabitUncheckedCreateWithoutArticleInteractionsInput>
+}
+
+export type HabitUpsertWithoutArticleInteractionsInput = {
+  update: Prisma.XOR<Prisma.HabitUpdateWithoutArticleInteractionsInput, Prisma.HabitUncheckedUpdateWithoutArticleInteractionsInput>
+  create: Prisma.XOR<Prisma.HabitCreateWithoutArticleInteractionsInput, Prisma.HabitUncheckedCreateWithoutArticleInteractionsInput>
+  where?: Prisma.HabitWhereInput
+}
+
+export type HabitUpdateToOneWithWhereWithoutArticleInteractionsInput = {
+  where?: Prisma.HabitWhereInput
+  data: Prisma.XOR<Prisma.HabitUpdateWithoutArticleInteractionsInput, Prisma.HabitUncheckedUpdateWithoutArticleInteractionsInput>
+}
+
+export type HabitUpdateWithoutArticleInteractionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
+  scheduleDays?: Prisma.HabitScheduleDayUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitUncheckedUpdateWithoutArticleInteractionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitCreateWithoutBadgesInput = {
+  id?: string
+  title: string
+  description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutHabitsInput
+  scheduleDays?: Prisma.HabitScheduleDayCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepCreateNestedManyWithoutHabitInput
+}
+
+export type HabitUncheckedCreateWithoutBadgesInput = {
+  id?: string
+  userId: string
+  title: string
+  description?: string | null
+  precedingRoutine?: string | null
+  color?: string | null
+  iconType?: string | null
+  iconValue?: string | null
+  benefits?: Prisma.HabitCreatebenefitsInput | string[]
+  measurementUnit: string
+  targetValue: number
+  minimumTarget: number
+  startDate: Date | string
+  status?: $Enums.HabitLifecycleStatus
+  reminderEnabled?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedCreateNestedManyWithoutHabitInput
+  cues?: Prisma.HabitCueUncheckedCreateNestedManyWithoutHabitInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedCreateNestedOneWithoutHabitInput
+  logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutHabitInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedCreateNestedManyWithoutHabitInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedCreateNestedOneWithoutHabitInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutHabitInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedCreateNestedManyWithoutHabitInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedCreateNestedManyWithoutHabitInput
+  steps?: Prisma.HabitStepUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type HabitCreateOrConnectWithoutBadgesInput = {
+  where: Prisma.HabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitCreateWithoutBadgesInput, Prisma.HabitUncheckedCreateWithoutBadgesInput>
+}
+
+export type HabitUpsertWithoutBadgesInput = {
+  update: Prisma.XOR<Prisma.HabitUpdateWithoutBadgesInput, Prisma.HabitUncheckedUpdateWithoutBadgesInput>
+  create: Prisma.XOR<Prisma.HabitCreateWithoutBadgesInput, Prisma.HabitUncheckedCreateWithoutBadgesInput>
+  where?: Prisma.HabitWhereInput
+}
+
+export type HabitUpdateToOneWithWhereWithoutBadgesInput = {
+  where?: Prisma.HabitWhereInput
+  data: Prisma.XOR<Prisma.HabitUpdateWithoutBadgesInput, Prisma.HabitUncheckedUpdateWithoutBadgesInput>
+}
+
+export type HabitUpdateWithoutBadgesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
+  scheduleDays?: Prisma.HabitScheduleDayUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitUncheckedUpdateWithoutBadgesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconValue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.HabitUpdatebenefitsInput | string[]
+  measurementUnit?: Prisma.StringFieldUpdateOperationsInput | string
+  targetValue?: Prisma.FloatFieldUpdateOperationsInput | number
+  minimumTarget?: Prisma.FloatFieldUpdateOperationsInput | number
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumHabitLifecycleStatusFieldUpdateOperationsInput | $Enums.HabitLifecycleStatus
+  reminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scheduleDays?: Prisma.HabitScheduleDayUncheckedUpdateManyWithoutHabitNestedInput
+  cues?: Prisma.HabitCueUncheckedUpdateManyWithoutHabitNestedInput
+  motivationProfile?: Prisma.HabitMotivationProfileUncheckedUpdateOneWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutHabitNestedInput
+  srbaiAssessments?: Prisma.SrbaiAssessmentUncheckedUpdateManyWithoutHabitNestedInput
+  reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
+  difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitCreateManyUserInput = {
@@ -2263,6 +3100,10 @@ export type HabitUpdateWithoutUserInput = {
   reminderPolicy?: Prisma.ReminderPolicyUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateWithoutUserInput = {
@@ -2292,6 +3133,10 @@ export type HabitUncheckedUpdateWithoutUserInput = {
   reminderPolicy?: Prisma.ReminderPolicyUncheckedUpdateOneWithoutHabitNestedInput
   difficultyFeedback?: Prisma.DifficultyFeedbackUncheckedUpdateManyWithoutHabitNestedInput
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutHabitNestedInput
+  adaptationRecommendations?: Prisma.AdaptationRecommendationUncheckedUpdateManyWithoutHabitNestedInput
+  articleInteractions?: Prisma.ArticleInteractionUncheckedUpdateManyWithoutHabitNestedInput
+  steps?: Prisma.HabitStepUncheckedUpdateManyWithoutHabitNestedInput
+  badges?: Prisma.UserBadgeUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type HabitUncheckedUpdateManyWithoutUserInput = {
@@ -2327,6 +3172,10 @@ export type HabitCountOutputType = {
   srbaiAssessments: number
   difficultyFeedback: number
   reflections: number
+  adaptationRecommendations: number
+  articleInteractions: number
+  steps: number
+  badges: number
 }
 
 export type HabitCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2337,6 +3186,10 @@ export type HabitCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   srbaiAssessments?: boolean | HabitCountOutputTypeCountSrbaiAssessmentsArgs
   difficultyFeedback?: boolean | HabitCountOutputTypeCountDifficultyFeedbackArgs
   reflections?: boolean | HabitCountOutputTypeCountReflectionsArgs
+  adaptationRecommendations?: boolean | HabitCountOutputTypeCountAdaptationRecommendationsArgs
+  articleInteractions?: boolean | HabitCountOutputTypeCountArticleInteractionsArgs
+  steps?: boolean | HabitCountOutputTypeCountStepsArgs
+  badges?: boolean | HabitCountOutputTypeCountBadgesArgs
 }
 
 /**
@@ -2398,6 +3251,34 @@ export type HabitCountOutputTypeCountReflectionsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.ReflectionWhereInput
 }
 
+/**
+ * HabitCountOutputType without action
+ */
+export type HabitCountOutputTypeCountAdaptationRecommendationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AdaptationRecommendationWhereInput
+}
+
+/**
+ * HabitCountOutputType without action
+ */
+export type HabitCountOutputTypeCountArticleInteractionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ArticleInteractionWhereInput
+}
+
+/**
+ * HabitCountOutputType without action
+ */
+export type HabitCountOutputTypeCountStepsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HabitStepWhereInput
+}
+
+/**
+ * HabitCountOutputType without action
+ */
+export type HabitCountOutputTypeCountBadgesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserBadgeWhereInput
+}
+
 
 export type HabitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2428,6 +3309,10 @@ export type HabitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reminderPolicy?: boolean | Prisma.Habit$reminderPolicyArgs<ExtArgs>
   difficultyFeedback?: boolean | Prisma.Habit$difficultyFeedbackArgs<ExtArgs>
   reflections?: boolean | Prisma.Habit$reflectionsArgs<ExtArgs>
+  adaptationRecommendations?: boolean | Prisma.Habit$adaptationRecommendationsArgs<ExtArgs>
+  articleInteractions?: boolean | Prisma.Habit$articleInteractionsArgs<ExtArgs>
+  steps?: boolean | Prisma.Habit$stepsArgs<ExtArgs>
+  badges?: boolean | Prisma.Habit$badgesArgs<ExtArgs>
   _count?: boolean | Prisma.HabitCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["habit"]>
 
@@ -2508,6 +3393,10 @@ export type HabitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   reminderPolicy?: boolean | Prisma.Habit$reminderPolicyArgs<ExtArgs>
   difficultyFeedback?: boolean | Prisma.Habit$difficultyFeedbackArgs<ExtArgs>
   reflections?: boolean | Prisma.Habit$reflectionsArgs<ExtArgs>
+  adaptationRecommendations?: boolean | Prisma.Habit$adaptationRecommendationsArgs<ExtArgs>
+  articleInteractions?: boolean | Prisma.Habit$articleInteractionsArgs<ExtArgs>
+  steps?: boolean | Prisma.Habit$stepsArgs<ExtArgs>
+  badges?: boolean | Prisma.Habit$badgesArgs<ExtArgs>
   _count?: boolean | Prisma.HabitCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type HabitIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2530,6 +3419,10 @@ export type $HabitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     reminderPolicy: Prisma.$ReminderPolicyPayload<ExtArgs> | null
     difficultyFeedback: Prisma.$DifficultyFeedbackPayload<ExtArgs>[]
     reflections: Prisma.$ReflectionPayload<ExtArgs>[]
+    adaptationRecommendations: Prisma.$AdaptationRecommendationPayload<ExtArgs>[]
+    articleInteractions: Prisma.$ArticleInteractionPayload<ExtArgs>[]
+    steps: Prisma.$HabitStepPayload<ExtArgs>[]
+    badges: Prisma.$UserBadgePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2954,6 +3847,10 @@ export interface Prisma__HabitClient<T, Null = never, ExtArgs extends runtime.Ty
   reminderPolicy<T extends Prisma.Habit$reminderPolicyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$reminderPolicyArgs<ExtArgs>>): Prisma.Prisma__ReminderPolicyClient<runtime.Types.Result.GetResult<Prisma.$ReminderPolicyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   difficultyFeedback<T extends Prisma.Habit$difficultyFeedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$difficultyFeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DifficultyFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reflections<T extends Prisma.Habit$reflectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$reflectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReflectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  adaptationRecommendations<T extends Prisma.Habit$adaptationRecommendationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$adaptationRecommendationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AdaptationRecommendationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  articleInteractions<T extends Prisma.Habit$articleInteractionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$articleInteractionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArticleInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  steps<T extends Prisma.Habit$stepsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$stepsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  badges<T extends Prisma.Habit$badgesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$badgesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3605,6 +4502,102 @@ export type Habit$reflectionsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.ReflectionScalarFieldEnum | Prisma.ReflectionScalarFieldEnum[]
+}
+
+/**
+ * Habit.adaptationRecommendations
+ */
+export type Habit$adaptationRecommendationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AdaptationRecommendation
+   */
+  select?: Prisma.AdaptationRecommendationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AdaptationRecommendation
+   */
+  omit?: Prisma.AdaptationRecommendationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdaptationRecommendationInclude<ExtArgs> | null
+  where?: Prisma.AdaptationRecommendationWhereInput
+  orderBy?: Prisma.AdaptationRecommendationOrderByWithRelationInput | Prisma.AdaptationRecommendationOrderByWithRelationInput[]
+  cursor?: Prisma.AdaptationRecommendationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AdaptationRecommendationScalarFieldEnum | Prisma.AdaptationRecommendationScalarFieldEnum[]
+}
+
+/**
+ * Habit.articleInteractions
+ */
+export type Habit$articleInteractionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ArticleInteraction
+   */
+  select?: Prisma.ArticleInteractionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ArticleInteraction
+   */
+  omit?: Prisma.ArticleInteractionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArticleInteractionInclude<ExtArgs> | null
+  where?: Prisma.ArticleInteractionWhereInput
+  orderBy?: Prisma.ArticleInteractionOrderByWithRelationInput | Prisma.ArticleInteractionOrderByWithRelationInput[]
+  cursor?: Prisma.ArticleInteractionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ArticleInteractionScalarFieldEnum | Prisma.ArticleInteractionScalarFieldEnum[]
+}
+
+/**
+ * Habit.steps
+ */
+export type Habit$stepsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the HabitStep
+   */
+  select?: Prisma.HabitStepSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the HabitStep
+   */
+  omit?: Prisma.HabitStepOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.HabitStepInclude<ExtArgs> | null
+  where?: Prisma.HabitStepWhereInput
+  orderBy?: Prisma.HabitStepOrderByWithRelationInput | Prisma.HabitStepOrderByWithRelationInput[]
+  cursor?: Prisma.HabitStepWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.HabitStepScalarFieldEnum | Prisma.HabitStepScalarFieldEnum[]
+}
+
+/**
+ * Habit.badges
+ */
+export type Habit$badgesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserBadge
+   */
+  select?: Prisma.UserBadgeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserBadge
+   */
+  omit?: Prisma.UserBadgeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserBadgeInclude<ExtArgs> | null
+  where?: Prisma.UserBadgeWhereInput
+  orderBy?: Prisma.UserBadgeOrderByWithRelationInput | Prisma.UserBadgeOrderByWithRelationInput[]
+  cursor?: Prisma.UserBadgeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserBadgeScalarFieldEnum | Prisma.UserBadgeScalarFieldEnum[]
 }
 
 /**

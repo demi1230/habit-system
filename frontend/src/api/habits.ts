@@ -3,6 +3,7 @@ import type {
   Habit,
   HabitWithCueContext,
   HabitLog,
+  HabitStep,
   CompletionTriggerSource,
   ProgressSummary,
   HabitStrengthSignals,
@@ -32,6 +33,7 @@ export interface CreateHabitPayload {
   status?: 'ACTIVE' | 'ARCHIVED';
   reminderEnabled?: boolean;
   scheduleDays?: Array<{ weekday: Weekday }>;
+  steps?: HabitStep[];
   cues?: Array<{
     startTime?: string;
     endTime?: string;

@@ -13,6 +13,7 @@ import { ReminderEntity } from '../domain/entities/reminder.entity';
 import { HabitsService } from '../habits/habits.service';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { EvaluateAndCreateReminderDto } from './dto/evaluate-and-create-reminder.dto';
+import { ReminderMessageBuilder } from './reminder-message.builder';
 
 /** Default cooldown (minutes) when no ReminderPolicy exists for the habit. */
 const DEFAULT_COOLDOWN_MINUTES = 60;
@@ -43,6 +44,7 @@ export class ReminderExecutionService {
     private readonly policyRepo: IReminderPolicyRepository,
     private readonly habitsService: HabitsService,
     private readonly analyticsService: AnalyticsService,
+    private readonly reminderMessageBuilder: ReminderMessageBuilder,
   ) {}
 
   /**
@@ -107,6 +109,7 @@ export class ReminderExecutionService {
 
     const scheduledFor = now;
     const effectiveUntil = new Date(now.getTime() + cooldownMinutes * 60_000);
+    const message = this.reminderMessageBuilder.build(habit);
 
     // Persist PENDING reminder
     let reminder = await this.reminderRepo.create({
@@ -121,6 +124,7 @@ export class ReminderExecutionService {
       explanation: {
         isScheduledToday: decision.isScheduledToday,
         activeCueCount: decision.activeCueCount,
+        contentParts: message.contentParts,
       },
     });
 
@@ -130,8 +134,8 @@ export class ReminderExecutionService {
         userId,
         habitId,
         reminderId: reminder.id,
-        title: `Time for "${habit.title}"`,
-        body: 'Tap to log your habit or snooze.',
+        title: message.title,
+        body: message.body,
         scheduledFor,
       });
 

@@ -131,6 +131,15 @@ export class ProgressController {
     return this.feedbackService.submitReflection(userId, habitId, logId, dto);
   }
 
+  @Get('reflections')
+  @ApiOperation({ summary: 'List all reflections for a habit' })
+  listReflections(
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Param('habitId', new ParseUUIDPipe()) habitId: string,
+  ) {
+    return this.feedbackService.listReflections(userId, habitId);
+  }
+
   // ── Phase 4C: Adaptation recommendation ───────────────────────────────────
 
   @Get('adaptation-recommendation')

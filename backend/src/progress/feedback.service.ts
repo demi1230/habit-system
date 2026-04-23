@@ -128,6 +128,17 @@ export class FeedbackService {
     };
   }
 
+  async listReflections(userId: string, habitId: string) {
+    await this.habitsService.getOwnedHabitOrThrow(userId, habitId);
+    const entries = await this.reflectionRepo.findAllByHabitId(habitId);
+    return entries.map((e) => ({
+      id: e.id,
+      logId: e.logId,
+      text: e.text,
+      occurredAt: e.occurredAt.toISOString(),
+    }));
+  }
+
   // ── Adaptation recommendation (fully server-side) ─────────────────────────
 
   /**

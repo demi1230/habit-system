@@ -28,6 +28,11 @@ export type User = Prisma.UserModel
  */
 export type Habit = Prisma.HabitModel
 /**
+ * Model HabitStep
+ * 
+ */
+export type HabitStep = Prisma.HabitStepModel
+/**
  * Model HabitScheduleDay
  * 
  */
@@ -82,3 +87,28 @@ export type SrbaiAssessment = Prisma.SrbaiAssessmentModel
  * 
  */
 export type ReminderPolicy = Prisma.ReminderPolicyModel
+/**
+ * Model AdaptationRecommendation
+ * 
+ */
+export type AdaptationRecommendation = Prisma.AdaptationRecommendationModel
+/**
+ * Model ArticleInteraction
+ * 
+ */
+export type ArticleInteraction = Prisma.ArticleInteractionModel
+/**
+ * Model RecommendationInteraction
+ * 
+ */
+export type RecommendationInteraction = Prisma.RecommendationInteractionModel
+/**
+ * Model PushSubscription
+ * 
+ */
+export type PushSubscription = Prisma.PushSubscriptionModel
+/**
+ * Model UserBadge
+ * 
+ */
+export type UserBadge = Prisma.UserBadgeModel

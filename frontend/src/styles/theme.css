@@ -39,6 +39,16 @@
   --sidebar-accent-foreground: #202325;
   --sidebar-border: rgba(0,0,0,0.07);
   --sidebar-ring: #303437;
+  --surface-subtle: rgba(0, 0, 0, 0.05);
+  --surface-muted: rgba(0, 0, 0, 0.04);
+  --surface-strong: rgba(0, 0, 0, 0.08);
+  --surface-border-soft: rgba(0, 0, 0, 0.07);
+  --surface-border-faint: rgba(0, 0, 0, 0.05);
+  --text-soft: rgba(32, 35, 37, 0.7);
+  --text-muted-soft: rgba(32, 35, 37, 0.52);
+  --text-faint: rgba(32, 35, 37, 0.4);
+  --text-placeholder: rgba(32, 35, 37, 0.3);
+  --text-disabled: rgba(32, 35, 37, 0.22);
 
   --pastel-purple: rgba(179, 179, 253, 0.35);
   --pastel-pink: rgba(255, 192, 204, 0.45);
@@ -46,6 +56,12 @@
   --pastel-blue: rgba(163, 210, 255, 0.45);
   --pastel-yellow: rgba(255, 225, 150, 0.45);
   --pastel-peach: rgba(249, 196, 163, 0.45);
+  --pastel-card-ink: #303437;
+  --pastel-card-muted: rgba(48, 52, 55, 0.62);
+  --pastel-card-subtle: rgba(48, 52, 55, 0.12);
+  --pastel-card-pill-bg: rgba(255, 255, 255, 0.72);
+  --pastel-card-icon-bg: rgba(255, 255, 255, 0.16);
+  --pastel-card-action-bg: rgba(255, 255, 255, 0.28);
 }
 
 .dark {
@@ -85,6 +101,16 @@
   --sidebar-accent-foreground: #E8E5F0;
   --sidebar-border: rgba(255,255,255,0.09);
   --sidebar-ring: #8A9299;
+  --surface-subtle: rgba(255, 255, 255, 0.07);
+  --surface-muted: rgba(255, 255, 255, 0.05);
+  --surface-strong: rgba(255, 255, 255, 0.12);
+  --surface-border-soft: rgba(255, 255, 255, 0.09);
+  --surface-border-faint: rgba(255, 255, 255, 0.07);
+  --text-soft: rgba(232, 229, 240, 0.78);
+  --text-muted-soft: rgba(232, 229, 240, 0.62);
+  --text-faint: rgba(232, 229, 240, 0.46);
+  --text-placeholder: rgba(232, 229, 240, 0.34);
+  --text-disabled: rgba(232, 229, 240, 0.24);
 
   --pastel-purple: rgba(99, 102, 241, 0.2);
   --pastel-pink: rgba(244, 114, 182, 0.18);
@@ -92,6 +118,12 @@
   --pastel-blue: rgba(96, 165, 250, 0.15);
   --pastel-yellow: rgba(251, 191, 36, 0.15);
   --pastel-peach: rgba(251, 146, 60, 0.15);
+  --pastel-card-ink: rgba(248, 250, 252, 0.96);
+  --pastel-card-muted: rgba(232, 229, 240, 0.84);
+  --pastel-card-subtle: rgba(255, 255, 255, 0.16);
+  --pastel-card-pill-bg: rgba(255, 255, 255, 0.14);
+  --pastel-card-icon-bg: rgba(255, 255, 255, 0.12);
+  --pastel-card-action-bg: rgba(255, 255, 255, 0.18);
 }
 
 @theme inline {

@@ -46,7 +46,7 @@ export function WeekStrip({ habits, logs }: WeekStripProps) {
           transition={{ delay: i * 0.04 }}
           className="flex flex-col items-center gap-1"
         >
-          <span style={{ fontSize: '12px', fontWeight: 500, color: 'rgba(0,0,0,0.4)' }}>
+          <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-faint)' }}>
             {day.label}
           </span>
           <div
@@ -62,7 +62,7 @@ export function WeekStrip({ habits, logs }: WeekStripProps) {
               style={{
                 fontSize: '14px',
                 fontWeight: day.isToday || (day.allDone && day.isPast) ? 600 : 400,
-                color: day.isToday || (day.allDone && day.isPast) ? '#fff' : '#202325',
+                color: day.isToday || (day.allDone && day.isPast) ? '#fff' : 'var(--foreground)',
               }}
             >
               {day.date}

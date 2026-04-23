@@ -15,6 +15,7 @@ import {
 } from 'class-validator';
 import { HabitLifecycleStatus } from '../../domain/enums/domain.enums';
 import { CreateHabitCueDto } from '../cues/dto/create-habit-cue.dto';
+import { HabitStepDto } from './habit-step.dto';
 import { CreateHabitMotivationProfileDto } from '../motivation/dto/create-habit-motivation-profile.dto';
 import { CreateHabitScheduleDayDto } from '../schedule/dto/create-habit-schedule-day.dto';
 import { ReminderSettingsDto } from './reminder-settings.dto';
@@ -134,6 +135,20 @@ export class UpdateHabitDto {
   @ValidateNested({ each: true })
   @Type(() => CreateHabitScheduleDayDto)
   scheduleDays?: CreateHabitScheduleDayDto[];
+
+  @ApiPropertyOptional({
+    type: [HabitStepDto],
+    example: [
+      { title: 'Усны саваа дүүргэх', orderIndex: 0 },
+      { title: 'Ширээн дээрээ тавих', orderIndex: 1 },
+    ],
+    description: 'Replaces the full steps list.',
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => HabitStepDto)
+  steps?: HabitStepDto[];
 
   @ApiPropertyOptional({
     type: [CreateHabitCueDto],

@@ -11,6 +11,11 @@ import { PrismaService } from '../prisma/prisma.service';
 /** Prisma include shape used for all habit queries. */
 const HABIT_INCLUDE = {
   scheduleDays: true,
+  steps: {
+    orderBy: {
+      orderIndex: 'asc',
+    },
+  },
   cues: true,
   motivationProfile: true,
 } as const;
@@ -19,6 +24,14 @@ type PrismaHabit = Awaited<
   ReturnType<PrismaService['habit']['findFirstOrThrow']>
 > & {
   scheduleDays: Array<{ id: string; habitId: string; weekday: string }>;
+  steps: Array<{
+    id: string;
+    habitId: string;
+    title: string;
+    orderIndex: number;
+    createdAt: Date;
+    updatedAt: Date;
+  }>;
   cues: Array<{
     id: string;
     habitId: string;
@@ -67,6 +80,14 @@ export class HabitPrismaRepository implements IHabitRepository {
         reminderEnabled: data.reminderEnabled,
         scheduleDays: data.scheduleDays?.length
           ? { create: data.scheduleDays.map((d) => ({ weekday: d.weekday })) }
+          : undefined,
+        steps: data.steps?.length
+          ? {
+              create: data.steps.map((step) => ({
+                title: step.title,
+                orderIndex: step.orderIndex,
+              })),
+            }
           : undefined,
         cues: data.cues?.length
           ? { create: data.cues.map((c) => ({ ...c })) }
@@ -154,6 +175,15 @@ export class HabitPrismaRepository implements IHabitRepository {
             deleteMany: {},
             create: data.scheduleDays.map((d) => ({
               weekday: d.weekday,
+            })),
+          },
+        }),
+        ...(data.steps !== undefined && {
+          steps: {
+            deleteMany: {},
+            create: data.steps.map((step) => ({
+              title: step.title,
+              orderIndex: step.orderIndex,
             })),
           },
         }),

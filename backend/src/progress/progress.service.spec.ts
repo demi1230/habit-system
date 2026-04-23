@@ -24,6 +24,10 @@ describe('ProgressService', () => {
     recordActivity: jest.fn(),
   };
 
+  const engagementService = {
+    awardCompletionRewards: jest.fn(),
+  };
+
   let progressService: ProgressService;
 
   beforeEach(() => {
@@ -40,6 +44,7 @@ describe('ProgressService', () => {
       habitLogRepo as never,
       habitsService as never,
       analyticsService as never,
+      engagementService as never,
     );
   });
 

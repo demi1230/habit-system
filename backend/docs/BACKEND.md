@@ -22,6 +22,7 @@
    - 6.4 Progress
    - 6.5 Reminders
    - 6.6 Action Audit Logs
+   - 6.7 Learning & Recommendations
 7. [Infrastructure Layer](#7-infrastructure-layer)
 8. [Testing](#8-testing)
 9. [Development Guide](#9-development-guide)
@@ -87,8 +88,9 @@ backend/
 │       ├── 20260412000000_phase6_drop_goaltag/
 │       ├── 20260412000001_phase6_rename_trigger_unknown/
 │       ├── 20260412151446_phase6_cleanup/
-│       └── 20260412200000_phase7_trigger_source_non_null/
-├── src/
+│       └── 20260412200000_phase7_trigger_source_non_null/│       ├── 20260415000000_restore_goaltag/
+│       ├── 20260415152303_add_habit_preceding_color_icon_benefits/
+│       └── 20260421042849_add_learning_recommendations/├── src/
 │   ├── main.ts                 # Bootstrap: ValidationPipe, Swagger, CORS
 │   ├── app.module.ts           # Root module — imports all feature modules
 │   ├── auth/                   # JWT authentication
@@ -96,6 +98,7 @@ backend/
 │   ├── progress/               # Habit log creation, summary, difficulty feedback
 │   ├── reminders/              # Reminder evaluation, delivery, action handling
 │   ├── analytics/              # Internal activity logging
+│   ├── learning/               # Recommendations, article interactions
 │   ├── domain/
 │   │   ├── entities/           # TypeScript entity interfaces
 │   │   ├── enums/              # Canonical enum definitions (domain.enums.ts)
@@ -266,6 +269,51 @@ Internal audit trail for analytics.
 | `activityType` | String | e.g. "habit_created", "srbai_submitted" |
 | `occurredAt` | DateTime | |
 
+#### `AdaptationRecommendation`
+Personalised, persistent learning recommendation generated from habit signals.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | UUID PK | |
+| `userId` / `habitId` | UUID FKs | |
+| `recommendationCode` | Enum | `BUILD_CONSISTENCY`, `SIMPLIFY_HABIT`, `REVIEW_REMINDER_DEPENDENCE`, `CELEBRATE_CONSISTENCY`, `REDUCE_TARGET`, `ADJUST_CUE`, `INCREASE_SUPPORT` |
+| `reasonCode` | Enum | Why this recommendation was generated |
+| `title` | String | Mongolian-language short title |
+| `message` | String | Detailed guidance |
+| `priority` | Enum | `LOW` / `MEDIUM` / `HIGH` |
+| `status` | Enum | `ACTIVE` / `DISMISSED` / `APPLIED` / `EXPIRED` (default: `ACTIVE`) |
+| `articleIds` | String[] | IDs of related articles on the frontend |
+| `metadata` | JSON? | Optional extra context |
+| `generatedAt` | DateTime | When the recommendation was computed |
+| `expiresAt` | DateTime? | Optional expiry |
+
+Indexed by `(userId, status)`, `(habitId, status)`, `(userId, generatedAt)`.
+
+#### `ArticleInteraction`
+Audit record of a user opening, completing, or bookmarking a learning article.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | UUID PK | |
+| `userId` | UUID FK | |
+| `habitId` | UUID FK? | Optional — which habit prompted the article |
+| `articleId` | String | Frontend article identifier (e.g. `"build-consistency"`) |
+| `sourceType` | Enum | `LEARNING_PAGE` / `RECOMMENDATION` / `HABIT_DETAIL` / `ANALYTICS_PAGE` |
+| `sourceId` | String? | e.g. recommendation UUID that linked here |
+| `interactionType` | Enum | `OPENED` / `COMPLETED` / `BOOKMARKED` / `UNBOOKMARKED` |
+| `occurredAt` | DateTime | Client-supplied timestamp |
+
+#### `RecommendationInteraction`
+Tracks how users interact with individual recommendations.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | UUID PK | |
+| `userId` | UUID FK | |
+| `recommendationId` | UUID FK | Cascades on delete |
+| `interactionType` | Enum | `SHOWN` / `CLICKED` / `DISMISSED` / `APPLIED` |
+| `occurredAt` | DateTime | |
+
 ---
 
 ### Migration History
@@ -281,6 +329,9 @@ Internal audit trail for analytics.
 | 7 | `20260412000001_phase6_rename_trigger_unknown` | Renames `MANUAL_ENTRY` → `UNKNOWN` in `completion_trigger_source` enum |
 | 8 | `20260412151446_phase6_cleanup` | Prisma-auto-generated: resolved pre-existing schema drift (context snapshot columns on `habit_logs`, `difficulty_feedbacks`/`reflections` tables, FK constraints, index rename) |
 | 9 | `20260412200000_phase7_trigger_source_non_null` | Back-fills any NULL `trigger_source` rows to `UNKNOWN`; adds `NOT NULL` + `DEFAULT 'UNKNOWN'` to the column |
+| 10 | `20260415000000_restore_goaltag` | Restores `goal_tag` column to `habit_motivation_profiles` |
+| 11 | `20260415152303_add_habit_preceding_color_icon_benefits` | Adds `preceding_activity`, `color`, `icon`, `benefits` columns to `habits` |
+| 12 | `20260421042849_add_learning_recommendations` | Adds `adaptation_recommendations`, `article_interactions`, `recommendation_interactions` tables; adds new enums `RecommendationCode`, `ReasonCode`, `RecommendationStatus`, `Priority`, `ArticleInteractionType`, `SourceType`, `RecommendationInteractionType` |
 
 ---
 
@@ -301,6 +352,13 @@ The domain layer (`src/domain/`) contains zero NestJS decorators and zero databa
 | `ReminderActionType` | `DONE`, `SNOOZE` | `DISMISS` does **not** exist in code |
 | `ReminderPolicyMode` | `FULL_SUPPORT`, `MODERATE_SUPPORT`, `FADE_OUT`, `MINIMAL` | |
 | `DifficultyRating` | `VERY_EASY`, `EASY`, `MODERATE`, `HARD`, `VERY_HARD` | |
+| `RecommendationCode` | `BUILD_CONSISTENCY`, `SIMPLIFY_HABIT`, `REVIEW_REMINDER_DEPENDENCE`, `CELEBRATE_CONSISTENCY`, `REDUCE_TARGET`, `ADJUST_CUE`, `INCREASE_SUPPORT` | What action the recommendation suggests |
+| `ReasonCode` | `LOW_CONSISTENCY`, `HIGH_DIFFICULTY`, `HIGH_REMINDER_DEPENDENCE`, `LOW_CONTEXT_STABILITY`, `LOW_SELF_INITIATED_RATE`, `PLATEAUED_HABIT_STRENGTH`, `MILESTONE_REACHED` | Why the recommendation was triggered |
+| `RecommendationStatus` | `ACTIVE`, `DISMISSED`, `APPLIED`, `EXPIRED` | Lifecycle of a recommendation |
+| `Priority` | `LOW`, `MEDIUM`, `HIGH` | |
+| `ArticleInteractionType` | `OPENED`, `COMPLETED`, `BOOKMARKED`, `UNBOOKMARKED` | |
+| `SourceType` | `LEARNING_PAGE`, `RECOMMENDATION`, `HABIT_DETAIL`, `ANALYTICS_PAGE` | Where the user accessed an article from |
+| `RecommendationInteractionType` | `SHOWN`, `CLICKED`, `DISMISSED`, `APPLIED` | |
 
 ### 5.2 Repository Interfaces (`src/domain/repositories/`)
 
@@ -318,6 +376,9 @@ Each interface defines only what the application services need. Prisma implement
 | `IDifficultyFeedbackRepository` | `create`, `findByLogId` |
 | `IReflectionRepository` | `create`, `findByLogId` |
 | `IUserActivityLogRepository` | `create`, `findAllByUserId` |
+| `IAdaptationRecommendationRepository` | `create`, `update`, `findById`, `findActiveByUser`, `findActiveByUserAndHabit`, `findByUserHabitAndCode` |
+| `IArticleInteractionRepository` | `create`, `findByUserId` |
+| `IRecommendationInteractionRepository` | `create`, `findByRecommendationId` |
 
 ### 5.3 Business Rules
 
@@ -607,6 +668,60 @@ Provides an internal action audit trail for thesis evaluation. Records key behav
 
 ---
 
+### 6.7 Learning & Recommendations Module (`src/learning/`)
+
+This module surfaces the recommendation engine to the frontend and tracks user engagement with learning articles. It is backed by three new database tables and integrates with `RecommendationGenerationService` (in `src/progress/`) which runs the rule engine.
+
+**Routes — Recommendations (`/users/:userId/recommendations`):**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/users/:userId/recommendations` | Get all `ACTIVE` recommendations; optional `?habitId=` filter |
+| `POST` | `/users/:userId/recommendations/refresh` | Regenerate recommendations for `?habitId=` using current signals |
+| `GET` | `/users/:userId/recommendations/:recommendationId` | Get a single recommendation |
+| `POST` | `/users/:userId/recommendations/:recommendationId/interactions` | Log a `SHOWN`/`CLICKED`/`DISMISSED`/`APPLIED` interaction |
+| `POST` | `/users/:userId/recommendations/:recommendationId/dismiss` | Dismiss a recommendation (sets status to `DISMISSED`, logs interaction) |
+
+**Routes — Articles (`/users/:userId/articles`):**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/users/:userId/articles/:articleId/interactions` | Log `OPENED`/`COMPLETED`/`BOOKMARKED`/`UNBOOKMARKED` |
+| `GET` | `/users/:userId/articles/interactions` | Get article interaction history; optional `?limit=` (default 20) |
+
+**`POST .../interactions` — LogRecommendationInteractionDto:**
+
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `interactionType` | `RecommendationInteractionType` | ✓ | `SHOWN` / `CLICKED` / `DISMISSED` / `APPLIED` |
+| `occurredAt` | string (ISO 8601) | | Defaults to server time |
+
+**`POST .../articles/:articleId/interactions` — LogArticleInteractionDto:**
+
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `articleId` | string | ✓ | Frontend article identifier |
+| `sourceType` | `SourceType` | ✓ | `LEARNING_PAGE` / `RECOMMENDATION` / `HABIT_DETAIL` / `ANALYTICS_PAGE` |
+| `interactionType` | `ArticleInteractionType` | ✓ | `OPENED` / `COMPLETED` / `BOOKMARKED` / `UNBOOKMARKED` |
+| `sourceId` | string | | e.g. recommendation UUID |
+| `habitId` | string | | Related habit UUID |
+
+**Recommendation Generation (`src/progress/recommendation-generation.service.ts`):**
+
+Driven by a 5-rule engine inside `computeRecommendations()`. All rules use pre-computed signals:
+
+| Rule | Condition | Code | Priority |
+|------|-----------|------|----------|
+| 1 | `selfInitiatedRate < 0.4` AND `doneCount >= 3` | `BUILD_CONSISTENCY` | HIGH |
+| 2 | Avg difficulty ≥ `hard` AND `doneCount >= 5` | `SIMPLIFY_HABIT` | HIGH |
+| 3 | `reminderDependenceRate >= 0.7` AND `doneCount >= 5` | `REVIEW_REMINDER_DEPENDENCE` | MEDIUM |
+| 4 | `doneCount ∈ {7, 21, 66}` (milestone) | `CELEBRATE_CONSISTENCY` | MEDIUM |
+| 5 | `compositeScore >= 70` AND `selfInitiatedRate >= 0.7` | `REDUCE_TARGET` | LOW |
+
+Each recommendation includes an `articleIds[]` field linking it to specific learning articles on the frontend (e.g. `"build-consistency"`, `"reduce-friction"`). Multiple rules can fire simultaneously — each generates a separate recommendation. Upsert logic ensures no duplicate `(userId, habitId, code)` combinations remain `ACTIVE` — existing records are updated, new ones are created.
+
+---
+
 ## 7. Infrastructure Layer
 
 ### `PrismaService` (`src/infrastructure/prisma/prisma.service.ts`)
@@ -789,4 +904,13 @@ POST   /users/:userId/reminders/:reminderId/actions
 
 POST   /users/:userId/activity-logs
 GET    /users/:userId/activity-logs
+
+GET    /users/:userId/recommendations
+POST   /users/:userId/recommendations/refresh?habitId=:habitId
+GET    /users/:userId/recommendations/:recommendationId
+POST   /users/:userId/recommendations/:recommendationId/interactions
+POST   /users/:userId/recommendations/:recommendationId/dismiss
+
+POST   /users/:userId/articles/:articleId/interactions
+GET    /users/:userId/articles/interactions
 ```

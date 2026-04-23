@@ -4,6 +4,7 @@ import { Icon, LatLng } from 'leaflet';
 import { motion } from 'motion/react';
 import { MapPin, Crosshair, X } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
+import { TYPOGRAPHY, buttonStyles } from '@/shared/design';
 
 // Fix default marker icon
 const markerIcon = new Icon({
@@ -106,6 +107,13 @@ export function LocationMapPicker({ accentColor, btnColor, onConfirm, onClose }:
       <div className="px-4 pb-3">
         {/* Map */}
         <div className="rounded-2xl overflow-hidden relative" style={{ height: 220, border: '1px solid rgba(0,0,0,0.08)' }}>
+          <button
+            onClick={onClose}
+            className={`absolute top-3 right-3 z-[1000] bg-white/95 ${buttonStyles({ variant: 'outline', size: 'iconSm' })}`}
+            style={{ boxShadow: '0 2px 6px rgba(0,0,0,0.14)' }}
+          >
+            <X className="w-3.5 h-3.5 text-muted-foreground" />
+          </button>
           <MapContainer
             center={center} zoom={14}
             style={{ height: '100%', width: '100%' }}
@@ -120,7 +128,7 @@ export function LocationMapPicker({ accentColor, btnColor, onConfirm, onClose }:
           {/* Current location button */}
           <button
             onClick={handleUseCurrentLocation}
-            className="absolute bottom-3 right-3 z-[1000] w-9 h-9 rounded-full bg-white flex items-center justify-center"
+            className={`absolute bottom-3 right-3 z-[1000] bg-white ${buttonStyles({ variant: 'outline', size: 'icon' })}`}
             style={{ boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }}
           >
             <Crosshair className="w-4 h-4" style={{ color: accentColor }} />
@@ -131,11 +139,11 @@ export function LocationMapPicker({ accentColor, btnColor, onConfirm, onClose }:
         {position && (
           <div className="mt-3 flex items-center gap-2">
             <MapPin className="w-4 h-4 shrink-0" style={{ color: accentColor }} />
-            <p className="text-foreground flex-1 truncate" style={{ fontSize: 12, fontWeight: 500 }}>
+            <p className="text-foreground flex-1 truncate" style={TYPOGRAPHY.caption}>
               {loading ? 'Хайж байна...' : label}
             </p>
             <button onClick={() => { setPosition(null); setLabel(''); }}
-              className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+              className={`shrink-0 ${buttonStyles({ variant: 'secondary', size: 'iconSm' })}`}
               style={{ backgroundColor: 'rgba(0,0,0,0.08)' }}>
               <X className="w-3 h-3 text-muted-foreground" />
             </button>
@@ -144,14 +152,14 @@ export function LocationMapPicker({ accentColor, btnColor, onConfirm, onClose }:
 
         {/* Confirm / hints */}
         <div className="mt-3 flex items-center justify-between">
-          <p className="text-muted-foreground" style={{ fontSize: 11 }}>
+          <p className="text-muted-foreground" style={TYPOGRAPHY.micro}>
             {position ? '' : 'Газрын зурагт дарж байршил сонгоно уу'}
           </p>
           {position && label && !loading && (
             <motion.button whileTap={{ scale: 0.95 }}
               onClick={() => onConfirm({ lat: position.lat, lng: position.lng, label })}
-              className="px-4 py-1.5 rounded-full"
-              style={{ fontSize: 12, fontWeight: 500, color: accentColor, backgroundColor: btnColor }}>
+              className={buttonStyles({ variant: 'accent', size: 'sm' })}
+              style={{ color: accentColor, backgroundColor: btnColor }}>
               Сонгох
             </motion.button>
           )}

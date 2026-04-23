@@ -7,7 +7,9 @@ import { HabitDetailPage } from './pages/HabitDetailPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { RemindersPage } from './pages/RemindersPage';
 import { LearnPage } from './pages/LearnPage';
+import { ArticleDetailPage } from './pages/ArticleDetailPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { EditHabitPage } from './pages/EditHabitPage';
 import { BottomNav } from './components/bottom-nav';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -31,9 +33,11 @@ function AppRoutes() {
         <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
         <Route path="/create" element={<RequireAuth><CreateHabitPage /></RequireAuth>} />
         <Route path="/habit/:id" element={<RequireAuth><HabitDetailPage /></RequireAuth>} />
+        <Route path="/habit/:id/edit" element={<RequireAuth><EditHabitPage /></RequireAuth>} />
         <Route path="/analytics" element={<RequireAuth><AnalyticsPage /></RequireAuth>} />
         <Route path="/reminders" element={<RequireAuth><RemindersPage /></RequireAuth>} />
         <Route path="/learn" element={<RequireAuth><LearnPage /></RequireAuth>} />
+        <Route path="/learn/articles/:articleId" element={<RequireAuth><ArticleDetailPage /></RequireAuth>} />
         <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

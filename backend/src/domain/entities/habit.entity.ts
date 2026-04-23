@@ -4,6 +4,7 @@ import {
 } from '../enums/domain.enums';
 import { HabitCueEntity } from './habit-cue.entity';
 import { HabitScheduleDayEntity } from './habit-schedule-day.entity';
+import { HabitStepEntity } from './habit-step.entity';
 import { MotivationProfileEntity } from './motivation-profile.entity';
 
 /**
@@ -31,6 +32,7 @@ export class HabitEntity {
   archivedAt!: Date | null;
   scheduleDays!: HabitScheduleDayEntity[];
   cues!: HabitCueEntity[];
+  steps!: HabitStepEntity[];
   motivationProfile!: MotivationProfileEntity | null;
   createdAt!: Date;
   updatedAt!: Date;
