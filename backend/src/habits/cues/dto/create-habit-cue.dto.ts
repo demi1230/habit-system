@@ -1,10 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
+  IsNumber,
   IsOptional,
   IsString,
   Matches,
+  Max,
   MaxLength,
+  Min,
 } from 'class-validator';
 
 const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -33,12 +36,32 @@ export class CreateHabitCueDto {
   @ApiPropertyOptional({
     example: 'home',
     maxLength: 100,
-    description: 'Broad location where the cue occurs',
+    description: 'Broad location label where the cue occurs',
   })
   @IsOptional()
   @IsString()
   @MaxLength(100)
   coarseLocation?: string;
+
+  @ApiPropertyOptional({
+    example: 47.9184,
+    description: 'Latitude of the precise location (WGS84)',
+  })
+  @IsOptional()
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
+  locationLat?: number;
+
+  @ApiPropertyOptional({
+    example: 106.9177,
+    description: 'Longitude of the precise location (WGS84)',
+  })
+  @IsOptional()
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
+  locationLng?: number;
 
   @ApiPropertyOptional({
     example: 'wake up',

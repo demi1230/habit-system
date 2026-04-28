@@ -6,8 +6,11 @@ import {
   Bell,
   ChevronDown,
   ChevronRight,
+  Eye,
+  EyeOff,
   HelpCircle,
   Info,
+  KeyRound,
   LogOut,
   Monitor,
   Moon,
@@ -21,7 +24,9 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { habitsApi } from '@/api/habits';
 import { engagementApi } from '@/api/engagement';
+import { authApi } from '@/api/auth';
 import { pushApi } from '@/api/push';
+import { LocationSelector } from '@/components/LocationSelector';
 import { useLang, setLang } from '@/lib/i18n';
 import type { Lang } from '@/lib/i18n';
 import { useTheme, setTheme } from '@/lib/theme-store';
@@ -65,13 +70,15 @@ const SHARE_RESULT_MESSAGE = {
   downloaded: 'Амжилтын зураг татагдлаа.',
 } as const;
 
-function formatBadgeDate(value: string) {
-  return new Date(value).toLocaleDateString('mn-MN', {
-    month: 'short',
-    day: 'numeric',
-  });
-}
+function formatMnMonthDay(value: string) {
+  const date = new Date(value);
 
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  return `${date.getMonth() + 1}-р сар ${date.getDate()}`;
+}
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
@@ -253,6 +260,15 @@ export function ProfilePage() {
   const [selectedBadgeId, setSelectedBadgeId] = useState<string | null>(null);
   const [shareBusyId, setShareBusyId] = useState<string | null>(null);
   const [shareStatus, setShareStatus] = useState<string | null>(null);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [cpCurrent, setCpCurrent] = useState('');
+  const [cpNew, setCpNew] = useState('');
+  const [cpConfirm, setCpConfirm] = useState('');
+  const [cpShowCurrent, setCpShowCurrent] = useState(false);
+  const [cpShowNew, setCpShowNew] = useState(false);
+  const [cpLoading, setCpLoading] = useState(false);
+  const [cpError, setCpError] = useState('');
+  const [cpSuccess, setCpSuccess] = useState(false);
 
   const loadHabits = () => {
     if (!userId) return;
@@ -368,6 +384,26 @@ export function ProfilePage() {
     }
   };
 
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userId) return;
+    setCpError('');
+    if (cpNew !== cpConfirm) { setCpError('Шинэ нууц үг таарахгүй байна.'); return; }
+    if (cpNew.length < 8) { setCpError('Нууц үг хамгийн багадаа 8 тэмдэгт байна.'); return; }
+    setCpLoading(true);
+    try {
+      await authApi.changePassword(userId, cpCurrent, cpNew);
+      setCpSuccess(true);
+      setCpCurrent(''); setCpNew(''); setCpConfirm('');
+      setTimeout(() => { setShowChangePassword(false); setCpSuccess(false); }, 2000);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setCpError(err?.message || 'Нууц үг солиход алдаа гарлаа.');
+    } finally {
+      setCpLoading(false);
+    }
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -467,35 +503,7 @@ export function ProfilePage() {
                 НЭЭГДСЭН АМЖИЛТУУД
               </p>
               {engagement?.badges?.length ? (
-                <div
-                  className="rounded-[18px] p-3.5"
-                  style={{
-                    backgroundColor: 'var(--surface-muted)',
-                    border: '1px solid var(--surface-border-soft)',
-                  }}
-                >
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div>
-                      <p style={{ ...TYPOGRAPHY.sectionTitle, fontWeight: 600 }} className="text-foreground">
-                        Сүүлд нээгдсэн амжилтууд
-                      </p>
-                      <p style={TYPOGRAPHY.bodySm} className="text-muted-foreground mt-1">
-                        Нэгийг нь сонгоод зураг эсвэл текстээр хуваалцаж болно.
-                      </p>
-                    </div>
-                    <div
-                      className="shrink-0 rounded-full px-3 py-1.5"
-                      style={{
-                        backgroundColor: 'var(--card)',
-                        border: '1px solid var(--surface-border-soft)',
-                      }}
-                    >
-                      <span style={TYPOGRAPHY.micro} className="text-muted-foreground">
-                        {engagement.badges.length}
-                      </span>
-                    </div>
-                  </div>
-
+                <>
                   <div className="grid grid-cols-2 gap-2.5">
                     {engagement.badges.slice(0, 6).map((badge) => {
                       const isSelected = selectedBadgeId === badge.id;
@@ -539,7 +547,7 @@ export function ProfilePage() {
                                   color: isSelected ? palette.accent : 'var(--text-muted-soft)',
                                 }}
                               >
-                                {formatBadgeDate(badge.awardedAt)}
+                                {formatMnMonthDay(badge.awardedAt)}
                               </span>
                             </div>
                           </div>
@@ -631,7 +639,7 @@ export function ProfilePage() {
                               }}
                             >
                               <span style={{ ...TYPOGRAPHY.micro, color: palette.accent }}>
-                                {formatBadgeDate(selectedBadge.awardedAt)}
+                                {formatMnMonthDay(selectedBadge.awardedAt)}
                               </span>
                             </div>
 
@@ -658,7 +666,7 @@ export function ProfilePage() {
                       );
                     })()}
                   </AnimatePresence>
-                </div>
+                </>
               ) : (
                 <div
                   className="rounded-[18px] px-4 py-4"
@@ -839,11 +847,7 @@ export function ProfilePage() {
                                     style={{ ...TYPOGRAPHY.micro, marginTop: 1 }}
                                     className="text-muted-foreground"
                                   >
-                                    {new Date(habit.archivedAt).toLocaleDateString('mn-MN', {
-                                      month: 'long',
-                                      day: 'numeric',
-                                    })}{' '}
-                                    архивласан
+                                    {formatMnMonthDay(habit.archivedAt)} архивласан
                                   </p>
                                 ) : null}
                               </div>
@@ -884,6 +888,21 @@ export function ProfilePage() {
           transition={{ delay: 0.13 }}
         >
           <p style={TYPOGRAPHY.groupLabel} className="text-muted-foreground mb-2 pl-0.5">
+            БАЙРШИЛ
+          </p>
+          <Card>
+            <div className="px-4 py-4">
+              <LocationSelector />
+            </div>
+          </Card>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.13 }}
+        >
+          <p style={TYPOGRAPHY.groupLabel} className="text-muted-foreground mb-2 pl-0.5">
             ЦЭС
           </p>
           <Card>
@@ -892,6 +911,113 @@ export function ProfilePage() {
               label="Мэдэгдэл"
               onClick={() => navigate('/reminders')}
             />
+            <Divider />
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              onClick={() => { setShowChangePassword(v => !v); setCpError(''); setCpSuccess(false); }}
+              className={`w-full flex items-center gap-3 px-4 py-3.5 text-left ${buttonStyles({ variant: 'ghost', size: 'default' })}`}
+            >
+              <div className="w-8 h-8 rounded-[12px] flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
+                <KeyRound className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-foreground" style={{ ...TYPOGRAPHY.sectionTitle, fontWeight: 500 }}>Нууц үг солих</p>
+              </div>
+              <motion.div animate={{ rotate: showChangePassword ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                <ChevronDown className="w-4 h-4" style={{ color: 'var(--text-disabled)' }} />
+              </motion.div>
+            </motion.button>
+
+            <AnimatePresence>
+              {showChangePassword && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.22 }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-4 pb-4 pt-1" style={{ borderTop: '0.5px solid var(--surface-border-soft)' }}>
+                    {cpSuccess ? (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-3 text-center">
+                        <p style={{ ...TYPOGRAPHY.bodySm, color: '#22c55e', fontWeight: 600 }}>✓ Нууц үг амжилттай солигдлоо</p>
+                      </motion.div>
+                    ) : (
+                      <form onSubmit={handleChangePassword} className="flex flex-col gap-3 pt-3">
+                        {cpError && (
+                          <p style={{ ...TYPOGRAPHY.caption, color: 'var(--destructive, #ef4444)' }}>{cpError}</p>
+                        )}
+                        {/* Current password */}
+                        <div className="relative">
+                          <input
+                            type={cpShowCurrent ? 'text' : 'password'}
+                            value={cpCurrent}
+                            onChange={e => setCpCurrent(e.target.value)}
+                            placeholder="Одоогийн нууц үг"
+                            required
+                            autoComplete="current-password"
+                            style={{
+                              width: '100%', padding: '11px 40px 11px 14px',
+                              borderRadius: 12, backgroundColor: 'var(--surface-muted)',
+                              border: '1.5px solid var(--surface-border-soft)',
+                              fontSize: 14, color: 'var(--foreground)', fontFamily: "'Inter', sans-serif", outline: 'none',
+                            }}
+                          />
+                          <button type="button" onClick={() => setCpShowCurrent(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted-soft)', lineHeight: 0 }}>
+                            {cpShowCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                        {/* New password */}
+                        <div className="relative">
+                          <input
+                            type={cpShowNew ? 'text' : 'password'}
+                            value={cpNew}
+                            onChange={e => setCpNew(e.target.value)}
+                            placeholder="Шинэ нууц үг (8+ тэмдэгт)"
+                            required
+                            autoComplete="new-password"
+                            style={{
+                              width: '100%', padding: '11px 40px 11px 14px',
+                              borderRadius: 12, backgroundColor: 'var(--surface-muted)',
+                              border: '1.5px solid var(--surface-border-soft)',
+                              fontSize: 14, color: 'var(--foreground)', fontFamily: "'Inter', sans-serif", outline: 'none',
+                            }}
+                          />
+                          <button type="button" onClick={() => setCpShowNew(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted-soft)', lineHeight: 0 }}>
+                            {cpShowNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                        {/* Confirm */}
+                        <input
+                          type="password"
+                          value={cpConfirm}
+                          onChange={e => setCpConfirm(e.target.value)}
+                          placeholder="Шинэ нууц үгийг давтах"
+                          required
+                          autoComplete="new-password"
+                          style={{
+                            width: '100%', padding: '11px 14px',
+                            borderRadius: 12, backgroundColor: 'var(--surface-muted)',
+                            border: '1.5px solid var(--surface-border-soft)',
+                            fontSize: 14, color: 'var(--foreground)', fontFamily: "'Inter', sans-serif", outline: 'none',
+                          }}
+                        />
+                        <motion.button
+                          whileTap={{ scale: 0.97 }}
+                          type="submit"
+                          disabled={cpLoading}
+                          className={`w-full ${buttonStyles({ variant: 'default', size: 'default' })}`}
+                          style={{ fontSize: 14, fontWeight: 600, opacity: cpLoading ? 0.7 : 1 }}
+                        >
+                          {cpLoading ? '...' : 'Хадгалах'}
+                        </motion.button>
+                      </form>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <Divider />
             <MenuItem icon={<Shield className="w-4 h-4 text-muted-foreground" />} label="Нууцлал" />
             <Divider />

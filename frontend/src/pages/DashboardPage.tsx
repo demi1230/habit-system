@@ -2,12 +2,15 @@ import { BottomNav } from '@/components/bottom-nav';
 import { useState, useMemo, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Delete, Check, Pencil, Undo2 } from 'lucide-react';
+import { Delete, Check, Pencil, Undo2, Bell, X } from 'lucide-react';
 import { getHabitColor, CTA_DARK } from '@/lib/habit-colors';
 import { TYPOGRAPHY, SHADOW, buttonStyles, AppPlusIcon } from '@/shared/design';
 import { svgPaths } from '@/lib/svg-paths';
 import { useAuth } from '@/context/AuthContext';
+import { useHabitLogs } from '@/context/HabitLogsContext';
 import { habitsApi } from '@/api/habits';
+import { pushApi } from '@/api/push';
+import { ensurePushSubscription, getNotificationPermission } from '@/lib/push';
 import type { HabitWithCueContext } from '@/api/types';
 import { CelebrationSheet, CelebrationFullScreen, decideCelebration } from '@/features/celebration';
 import type { CelebrationContext } from '@/features/celebration';
@@ -649,6 +652,7 @@ function SwipeableHabitCard({ habit, index, entry, onBadgeTap, onEdit, onUndo, d
 export function DashboardPage() {
   const navigate  = useNavigate();
   const { userId, displayName } = useAuth();
+  const { refresh: refreshSharedLogs } = useHabitLogs();
 
   const [habits, setHabits] = useState<HabitWithCueContext[]>([]);
   const [loading, setLoading] = useState(true);
@@ -657,6 +661,29 @@ export function DashboardPage() {
   const [editMode, setEditMode]   = useState(false);
   const [celebrationTarget, setCelebrationTarget] = useState<{ habit: HabitWithCueContext; logId: string; ctx: CelebrationContext } | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [pushPermission, setPushPermission] = useState(getNotificationPermission);
+  const [pushBusy, setPushBusy] = useState(false);
+  const [pushBannerDismissed, setPushBannerDismissed] = useState(
+    () => localStorage.getItem('push_banner_dismissed') === '1',
+  );
+
+  const handleEnablePush = async () => {
+    if (!userId || pushBusy) return;
+    setPushBusy(true);
+    try {
+      const sub = await ensurePushSubscription();
+      await pushApi.register(userId, sub, navigator.userAgent);
+      setPushPermission(getNotificationPermission());
+      setPushBannerDismissed(true);
+      localStorage.setItem('push_banner_dismissed', '1');
+    } catch { /* user denied or not supported */ }
+    finally { setPushBusy(false); }
+  };
+
+  const dismissPushBanner = () => {
+    setPushBannerDismissed(true);
+    localStorage.setItem('push_banner_dismissed', '1');
+  };
 
   /** Format Date as YYYY-MM-DD for the API */
   const toDateStr = (d: Date) => {
@@ -680,15 +707,21 @@ export function DashboardPage() {
 
       const newLogMap = new Map<string, LogEntry>();
       for (const habit of data) {
-        const val = habit.todayLog?.actualValue ?? 0;
-        if (val > 0 && habit.todayLog) {
+        const log = habit.todayLog;
+        if (!log) continue;
+        // Trust server status: DONE means done regardless of actualValue.
+        // Reminder-created logs have status=DONE but actualValue=null.
+        if (log.status === 'DONE') {
+          const val = log.actualValue ?? habit.targetValue ?? 1;
+          newLogMap.set(habit.id, { value: val, status: 'done', logId: log.id });
+          continue;
+        }
+        // Partial / in-progress
+        const val = log.actualValue ?? 0;
+        if (val > 0) {
           const status = calcStatus(habit, val);
           if (status !== 'none') {
-            newLogMap.set(habit.id, {
-              value: val,
-              status,
-              logId: habit.todayLog.id,
-            });
+            newLogMap.set(habit.id, { value: val, status, logId: log.id });
           }
         }
       }
@@ -752,6 +785,8 @@ export function DashboardPage() {
         const ctx = decideCelebration(habit.currentStreak, 0, 'SELF_INITIATED');
         setCelebrationTarget({ habit, logId, ctx });
       }
+      // Sync shared logs context so Reminders page reflects the change
+      void refreshSharedLogs();
     } catch (err) {
       console.error('Failed to log:', err);
     }
@@ -780,6 +815,8 @@ export function DashboardPage() {
       await habitsApi.deleteLog(userId, habit.id, entry.logId);
       // Re-fetch habits so streak / strength score reflect the removal
       await loadHabits();
+      // Sync shared logs context so Reminders page reflects the change
+      void refreshSharedLogs();
     } catch (err) {
       console.error('Failed to undo log:', err);
       // Rollback on failure
@@ -821,6 +858,8 @@ export function DashboardPage() {
         const ctx = decideCelebration(habit.currentStreak, 0, 'SELF_INITIATED');
         setCelebrationTarget({ habit, logId, ctx });
       }
+      // Sync shared logs context so Reminders page reflects the change
+      void refreshSharedLogs();
     } catch (err) {
       console.error('Failed to update log:', err);
     }
@@ -865,6 +904,40 @@ export function DashboardPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Push notification permission banner */}
+      <AnimatePresence>
+        {!pushBannerDismissed && pushPermission !== 'granted' && pushPermission !== 'denied' &&
+          habits.some(h => h.reminderEnabled) && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+            className="mx-5 mb-3 rounded-[16px] px-4 py-3 flex items-center gap-3"
+            style={{ backgroundColor: '#8B7EC818', border: '1px solid #8B7EC830' }}
+          >
+            <div className="w-8 h-8 rounded-[12px] flex items-center justify-center shrink-0"
+              style={{ backgroundColor: '#8B7EC825' }}>
+              <Bell className="w-4 h-4" style={{ color: '#8B7EC8' }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p style={{ ...TYPOGRAPHY.caption, fontWeight: 600, color: 'var(--text-primary)' }}>
+                Сануулга идэвхжүүлэх
+              </p>
+              <p style={{ ...TYPOGRAPHY.micro, color: 'var(--text-muted-soft)' }}>
+                Дадлын цагт push мэдэгдэл хүлээн авах
+              </p>
+            </div>
+            <motion.button whileTap={{ scale: 0.92 }} onClick={handleEnablePush} disabled={pushBusy}
+              className="shrink-0 px-3 py-1.5 rounded-[10px]"
+              style={{ backgroundColor: '#8B7EC8', color: '#fff', ...TYPOGRAPHY.micro, fontWeight: 600 }}>
+              {pushBusy ? '...' : 'Зөвшөөрөх'}
+            </motion.button>
+            <motion.button whileTap={{ scale: 0.9 }} onClick={dismissPushBanner}
+              className="shrink-0 w-6 h-6 flex items-center justify-center">
+              <X className="w-3.5 h-3.5" style={{ color: 'var(--text-muted-soft)' }} />
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Week Strip */}
       <motion.div

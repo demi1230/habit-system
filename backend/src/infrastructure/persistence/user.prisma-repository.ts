@@ -35,4 +35,18 @@ export class UserPrismaRepository implements IUserRepository {
       select: { id: true, email: true, displayName: true, createdAt: true },
     });
   }
+
+  async updatePassword(userId: string, passwordHash: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
+  }
+
+  async updateLocation(userId: string, lat: number | null, lng: number | null): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { currentLat: lat, currentLng: lng },
+    });
+  }
 }

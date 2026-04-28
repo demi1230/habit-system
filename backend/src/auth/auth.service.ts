@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Inject,
   Injectable,
@@ -9,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import type { IUserRepository } from '../domain/repositories/user.repository';
 import { USER_REPOSITORY } from '../domain/repositories/user.repository';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './jwt-payload.interface';
@@ -53,6 +55,23 @@ export class AuthService {
     const accessToken = this.jwtService.sign(payload);
 
     return { accessToken, displayName: user.displayName ?? null };
+  }
+
+  async changePassword(userId: string, dto: ChangePasswordDto): Promise<void> {
+    const user = await this.userRepo.findById(userId);
+    if (!user) throw new NotFoundException(`User ${userId} was not found.`);
+
+    const match = await bcrypt.compare(dto.currentPassword, user.passwordHash);
+    if (!match) throw new BadRequestException('Current password is incorrect.');
+
+    const newHash = await bcrypt.hash(dto.newPassword, 12);
+    await this.userRepo.updatePassword(userId, newHash);
+  }
+
+  async updateLocation(userId: string, lat: number | null, lng: number | null): Promise<void> {
+    const user = await this.userRepo.findById(userId);
+    if (!user) throw new NotFoundException(`User ${userId} was not found.`);
+    await this.userRepo.updateLocation(userId, lat, lng);
   }
 
   async ensureUserExists(userId: string) {

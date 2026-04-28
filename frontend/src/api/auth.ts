@@ -18,4 +18,10 @@ export const authApi = {
 
   register: (email: string, password: string, displayName?: string) =>
     api.post<RegisterResponse>('/auth/register', { email, password, displayName }),
+
+  changePassword: (userId: string, currentPassword: string, newPassword: string) =>
+    api.patch(`/auth/users/${userId}/password`, { currentPassword, newPassword }),
+
+  updateLocation: (userId: string, lat: number | null, lng: number | null) =>
+    api.patch(`/auth/users/${userId}/location`, { lat, lng }),
 };

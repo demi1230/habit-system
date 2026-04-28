@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Bell, BellOff, Clock, Check } from 'lucide-react';
+import { Bell, BellOff, Clock, Check, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useHabitLogs } from '@/context/HabitLogsContext';
 import { remindersApi, type Reminder } from '@/api/reminders';
 import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
 
@@ -9,7 +11,18 @@ function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString('mn-MN', { hour: '2-digit', minute: '2-digit' });
 }
 
-function ReminderCard({ reminder, delay }: { reminder: Reminder; delay: number }) {
+function ReminderCard({
+  reminder,
+  delay,
+  isAlreadyDone,
+  onActionDone,
+}: {
+  reminder: Reminder;
+  delay: number;
+  /** True when the habit has already been logged today (via Dashboard or another reminder). */
+  isAlreadyDone: boolean;
+  onActionDone: () => void;
+}) {
   const { userId } = useAuth();
   const [responded, setResponded] = useState(reminder.status === 'ACTED' || reminder.status === 'EXPIRED' || reminder.status === 'CANCELLED');
   const [saving, setSaving] = useState(false);
@@ -20,6 +33,7 @@ function ReminderCard({ reminder, delay }: { reminder: Reminder; delay: number }
     try {
       await remindersApi.submitAction(userId, reminder.id, action, action === 'SNOOZE' ? 5 : undefined);
       setResponded(true);
+      if (action === 'DONE') onActionDone();
     } catch (err) { console.error('Reminder action failed:', err); }
     finally { setSaving(false); }
   };
@@ -42,10 +56,12 @@ function ReminderCard({ reminder, delay }: { reminder: Reminder; delay: number }
         </div>
         <div className="flex-1 min-w-0">
           <p style={{ ...TYPOGRAPHY.sectionTitle, fontWeight: 500, marginBottom: 3 }} className="text-foreground">
-            Сануулга
+            {reminder.explanation?.contentParts?.habit ?? 'Сануулга'}
           </p>
-          {reminder.decisionReason && (
-            <p style={{ ...TYPOGRAPHY.caption, lineHeight: 1.5, color: 'var(--text-muted-soft)', marginBottom: 4 }}>{reminder.decisionReason}</p>
+          {reminder.explanation?.body && (
+            <p style={{ ...TYPOGRAPHY.bodySm, lineHeight: 1.5, color: 'var(--text-muted-soft)', marginBottom: 4 }}>
+              {reminder.explanation.body}
+            </p>
           )}
           <div className="flex items-center gap-1.5">
             <Clock className="w-3 h-3" style={{ color: 'var(--text-placeholder)' }} />
@@ -65,7 +81,17 @@ function ReminderCard({ reminder, delay }: { reminder: Reminder; delay: number }
         </div>
       </div>
 
-      {!responded && (reminder.status === 'PENDING' || reminder.status === 'SENT') && (
+      {/* Already logged today via Dashboard — show a "done" badge instead of action buttons */}
+      {isAlreadyDone && !responded && (
+        <div className="flex items-center gap-1.5 mt-3 pt-3" style={{ borderTop: '0.5px solid var(--surface-border-soft)' }}>
+          <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: '#22c55e20' }}>
+            <Check className="w-3 h-3" style={{ color: '#22c55e' }} strokeWidth={2.5} />
+          </div>
+          <span style={{ ...TYPOGRAPHY.caption, color: '#22c55e' }}>Өнөөдөр бүртгэгдсэн</span>
+        </div>
+      )}
+
+      {!responded && !isAlreadyDone && (reminder.status === 'PENDING' || reminder.status === 'SENT') && (
         <div className="flex gap-2 mt-3 pt-3" style={{ borderTop: '0.5px solid var(--surface-border-soft)' }}>
           <motion.button whileTap={{ scale: 0.95 }} onClick={() => handleAction('DONE')} disabled={saving}
             className={`flex-1 ${buttonStyles({ variant: 'accent', size: 'default' })}`}
@@ -86,7 +112,9 @@ function ReminderCard({ reminder, delay }: { reminder: Reminder; delay: number }
 }
 
 export function RemindersPage() {
+  const navigate = useNavigate();
   const { userId } = useAuth();
+  const { todayLogMap, refresh: refreshSharedLogs } = useHabitLogs();
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -102,11 +130,18 @@ export function RemindersPage() {
     <div className="min-h-screen bg-background pb-28">
       {/* HEADER */}
       <div className="sticky top-0 z-20 bg-background" style={{ borderBottom: '1px solid var(--surface-border-faint)' }}>
-        <div className="flex items-center gap-3 px-5 pt-13 pb-3">
+        <div className="flex items-center justify-between px-5 pt-13 pb-3">
+          <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)}
+            className={buttonStyles({ variant: 'nav', size: 'icon' })}
+            style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
+            <ArrowLeft className="w-4 h-4" style={{ color: '#474747' }} />
+          </motion.button>
           <div className="flex items-center gap-2">
             <Bell className="w-4.5 h-4.5 text-primary" />
-            <p style={TYPOGRAPHY.pageTitle} className="text-foreground">Сануулга</p>
+            <p style={TYPOGRAPHY.navTitle} className="text-foreground">Сануулга</p>
           </div>
+          {/* Spacer to balance the back button */}
+          <div style={{ width: 36 }} />
         </div>
       </div>
 
@@ -118,7 +153,15 @@ export function RemindersPage() {
           </div>
         ) : reminders.length > 0 ? (
           <div className="flex flex-col gap-3">
-            {reminders.map((r, i) => <ReminderCard key={r.id} reminder={r} delay={i * 0.04} />)}
+            {reminders.map((r, i) => (
+              <ReminderCard
+                key={r.id}
+                reminder={r}
+                delay={i * 0.04}
+                isAlreadyDone={todayLogMap.get(r.habitId)?.status === 'done'}
+                onActionDone={refreshSharedLogs}
+              />
+            ))}
           </div>
         ) : (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}

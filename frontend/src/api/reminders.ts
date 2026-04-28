@@ -2,6 +2,18 @@ import { api } from './client';
 
 export type ReminderStatus = 'PENDING' | 'SENT' | 'ACTED' | 'EXPIRED' | 'CANCELLED';
 
+export interface ReminderExplanation {
+  isScheduledToday: boolean;
+  activeCueCount: number;
+  body?: string;
+  contentParts?: {
+    cue: string | null;
+    habit: string;
+    reason: string | null;
+    benefits: string[];
+  };
+}
+
 export interface Reminder {
   id: string;
   userId: string;
@@ -14,7 +26,7 @@ export interface Reminder {
   sentAt: string | null;
   deliveredAt: string | null;
   effectiveUntil: string | null;
-  explanation: unknown;
+  explanation: ReminderExplanation | null;
   createdAt: string;
 }
 

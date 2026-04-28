@@ -11,12 +11,22 @@ interface CelebrationCopy {
   badgeLabel?: string;
 }
 
+const REGULAR_HEADLINES = [
+  'Гал гал лаажийншдээ',
+  'Янзын байна шүү!',
+  'Ваа мундаг байна шүү!',
+  'Тиймээ чи чадлаа!',
+  'Наааяс!',
+  'Фантастик бээеби!',
+  'Лаажийншүү бро!',
+];
+
 export function getCelebrationCopy(ctx: CelebrationContext, habitTitle: string): CelebrationCopy {
   if (ctx.mode === 'milestone') {
     if (ctx.milestoneKind === 'first') {
       return {
         headline: 'Гайхалтай эхлэл!',
-        subline: `"${habitTitle}" анх удаа бүртгэгдлээ.`,
+        subline: habitTitle,
         detail: 'Хамгийн хэцүү алхам бол эхний алхам. Чи тэгсэн.',
         badgeIcon: '🌱',
         badgeLabel: 'Анхны давталт',
@@ -34,25 +44,18 @@ export function getCelebrationCopy(ctx: CelebrationContext, habitTitle: string):
     // count milestone
     return {
       headline: 'Сайхан!',
-      subline: `"${habitTitle}" нийт ${ctx.milestoneValue} удаа хийгдлээ.`,
+      subline: `Нийт ${ctx.milestoneValue} удаа хийгдлээ.`,
       detail: 'Тусгал бол дадлын тогтвортой байдлын нотолгоо.',
       badgeIcon: '✓',
       badgeLabel: `${ctx.milestoneValue} давталт`,
     };
   }
 
-  // Regular
-  if (ctx.triggerSource === 'SELF_INITIATED') {
-    return {
-      headline: 'Маш сайн!',
-      subline: 'Сануулгагүйгээр өөрийн санаачилгаар хийлээ.',
-      detail: 'Энэ нь дадал дотооджиж эхэлж буйн сайн шинж.',
-    };
-  }
-
+  // Regular — headline varies by streak, subline = habit name
+  const headline = REGULAR_HEADLINES[ctx.streak % REGULAR_HEADLINES.length];
   return {
-    headline: 'Сайн байна!',
-    subline: `"${habitTitle}" амжилттай бүртгэгдлээ.`,
+    headline,
+    subline: habitTitle,
     detail: 'Өнөөдрийн давталт дадлыг бэхжүүлж байна.',
   };
 }
@@ -60,10 +63,10 @@ export function getCelebrationCopy(ctx: CelebrationContext, habitTitle: string):
 // ── Feel chips ────────────────────────────────────────────────
 
 export const FEEL_CHIPS: { id: string; label: string }[] = [
-  { id: 'calm',    label: 'Илүү тайван' },
-  { id: 'focused', label: 'Илүү төвлөрсөн' },
-  { id: 'energy',  label: 'Илүү эрч хүчтэй' },
-  { id: 'happy',   label: 'Сэтгэл хангалуун' },
+  { id: 'focused',  label: 'Анхаарал сайжирсан' },
+  { id: 'energy',   label: 'Илүү эрч хүчтэй' },
+  { id: 'calm',     label: 'Илүү тайван' },
+  { id: 'content',  label: 'Сэтгэл амар' },
 ];
 
 // ── Difficulty options ────────────────────────────────────────

@@ -94,6 +94,8 @@ export const UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   displayName: 'displayName',
   totalXp: 'totalXp',
+  currentLat: 'currentLat',
+  currentLng: 'currentLng',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -153,6 +155,8 @@ export const HabitCueScalarFieldEnum = {
   startTime: 'startTime',
   endTime: 'endTime',
   coarseLocation: 'coarseLocation',
+  locationLat: 'locationLat',
+  locationLng: 'locationLng',
   precedingRoutine: 'precedingRoutine',
   isActive: 'isActive',
   createdAt: 'createdAt',

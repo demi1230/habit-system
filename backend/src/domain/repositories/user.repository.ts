@@ -18,4 +18,6 @@ export interface IUserRepository {
   create(
     data: CreateUserData,
   ): Promise<Pick<UserEntity, 'id' | 'email' | 'displayName' | 'createdAt'>>;
+  updatePassword(userId: string, passwordHash: string): Promise<void>;
+  updateLocation(userId: string, lat: number | null, lng: number | null): Promise<void>;
 }

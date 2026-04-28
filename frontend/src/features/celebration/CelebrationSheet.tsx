@@ -128,7 +128,7 @@ export function CelebrationSheet({ habit, logId, userId, ctx, onClose }: Props) 
         <div className="px-5 pt-4">
           {/* Feel chips */}
           <p style={{ ...TYPOGRAPHY.caption, color: 'var(--text-muted-soft)', marginBottom: 10 }}>
-            Та яаж мэдрэж байна?
+            Дадлаа хийсний дараа ямар мэдрэмж төрч байна?
           </p>
           <div className="flex flex-wrap gap-2 mb-5">
             {FEEL_CHIPS.map(chip => {

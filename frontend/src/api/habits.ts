@@ -38,6 +38,8 @@ export interface CreateHabitPayload {
     startTime?: string;
     endTime?: string;
     coarseLocation?: string;
+    locationLat?: number;
+    locationLng?: number;
     precedingRoutine?: string;
     isActive: boolean;
   }>;
@@ -48,7 +50,7 @@ export interface CreateHabitPayload {
   reminder?: {
     enabled?: boolean;
     timeWindows?: Array<{ startTime: string; endTime: string }>;
-    locations?: string[];
+    locations?: Array<{ label?: string; lat: number; lng: number }>;
   };
 }
 

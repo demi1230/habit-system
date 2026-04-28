@@ -26,7 +26,8 @@ function isBinaryHabit(h: Habit) {
 }
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('mn-MN', { month: 'short', day: 'numeric' });
+  const d = new Date(iso);
+  return `${d.getMonth() + 1}-р сарын ${d.getDate()}`;
 }
 function formatTime(iso: string) {
   const d = new Date(iso);
@@ -547,7 +548,10 @@ export function HabitDetailPage() {
             <>
               <div style={{ height: 0.5, backgroundColor: 'rgba(0,0,0,0.07)' }} />
               <div className="px-4 py-3 flex flex-col gap-2.5">
-                {logs.slice(0, 6).map(log => (
+                {Array.from(latestLogsByDay.entries())
+                  .sort((a, b) => b[0].localeCompare(a[0]))
+                  .slice(0, 6)
+                  .map(([, log]) => (
                   <div key={log.id} className="flex items-center gap-3">
                     <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
                       style={{ backgroundColor: log.status === 'DONE' ? color.btn : 'rgba(0,0,0,0.06)' }}>
@@ -556,9 +560,19 @@ export function HabitDetailPage() {
                         : <X className="w-3 h-3" style={{ color: 'rgba(0,0,0,0.3)' }} />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">{log.status === 'DONE' ? 'Дууссан' : 'Хийгдээгүй'}</span>
-                      {!binary && log.actualValue != null && (
-                        <span style={{ ...TYPOGRAPHY.caption, marginLeft: 6 }} className="text-muted-foreground">{log.actualValue} {habit.measurementUnit}</span>
+                      {binary ? (
+                        <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">
+                          {log.status === 'DONE' ? 'Гүйцэтгэсэн' : 'Хийгдээгүй'}
+                        </span>
+                      ) : (
+                        <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 600 }} className="text-foreground">
+                          {log.actualValue ?? 0} <span style={{ fontWeight: 400 }} className="text-muted-foreground">{habit.measurementUnit}</span>
+                          {log.actualValue != null && habit.targetValue > 0 && (
+                            <span style={{ ...TYPOGRAPHY.caption, fontWeight: 400, marginLeft: 6 }} className="text-muted-foreground">
+                              / {habit.targetValue}
+                            </span>
+                          )}
+                        </span>
                       )}
                     </div>
                     <div className="flex flex-col items-end gap-0.5 shrink-0">
@@ -581,7 +595,7 @@ export function HabitDetailPage() {
         <SectionCard delay={0.21}>
           <SectionLabel icon={<Archive className="w-4 h-4" style={{ color: '#474747' }} />} label="Тохиргоо" />
           <Row
-            left={<span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">Нийт биелсэн</span>}
+            left={<span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">Нийт гүйцэтгэсэн</span>}
             right={<span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 600 }} className="text-foreground">{totalCompletedDays} өдөр</span>}
           />
           <motion.button whileTap={{ scale: 0.98 }} onClick={() => setShowArchiveConfirm(true)}

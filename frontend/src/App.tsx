@@ -1,6 +1,9 @@
+import { useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { HabitLogsProvider } from './context/HabitLogsContext';
 import { AuthPage } from './pages/AuthPage';
+import { WelcomePage } from './pages/WelcomePage';
 import { DashboardPage } from './pages/DashboardPage';
 import { CreateHabitPage } from './pages/CreateHabitPage';
 import { HabitDetailPage } from './pages/HabitDetailPage';
@@ -11,23 +14,40 @@ import { ArticleDetailPage } from './pages/ArticleDetailPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { EditHabitPage } from './pages/EditHabitPage';
 import { BottomNav } from './components/bottom-nav';
+import { ensurePushSubscription } from './lib/push';
+import { pushApi } from './api/push';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { token } = useAuth();
   const location = useLocation();
-  if (!token) return <Navigate to="/login" state={{ from: location }} replace />;
+  if (!token) return <Navigate to="/welcome" state={{ from: location }} replace />;
   return <>{children}</>;
 }
 
 function AppRoutes() {
-  const { token } = useAuth();
+  const { token, userId } = useAuth();
   const location = useLocation();
   const mainTabs = ['/analytics', '/learn', '/profile'];
   const showNav = token && mainTabs.includes(location.pathname);
 
+  // Auto-register push subscription when the user is logged in and
+  // notification permission is already granted (silent re-registration on every
+  // app load ensures we always have a valid subscription in the DB).
+  useEffect(() => {
+    if (!token || !userId) return;
+    if (Notification.permission !== 'granted') return;
+
+    ensurePushSubscription()
+      .then((sub) => pushApi.register(userId, sub, navigator.userAgent))
+      .catch(() => {
+        // Silent — user may have denied permission or SW is unavailable
+      });
+  }, [token, userId]);
+
   return (
     <>
       <Routes>
+        <Route path="/welcome" element={token ? <Navigate to="/dashboard" replace /> : <WelcomePage />} />
         <Route path="/login" element={token ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
         <Route path="/signup" element={token ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
         <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
@@ -39,7 +59,7 @@ function AppRoutes() {
         <Route path="/learn" element={<RequireAuth><LearnPage /></RequireAuth>} />
         <Route path="/learn/articles/:articleId" element={<RequireAuth><ArticleDetailPage /></RequireAuth>} />
         <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={token ? <Navigate to="/dashboard" replace /> : <Navigate to="/welcome" replace />} />
       </Routes>
       {showNav && <BottomNav />}
     </>
@@ -49,7 +69,9 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
-      <AppRoutes />
+      <HabitLogsProvider>
+        <AppRoutes />
+      </HabitLogsProvider>
     </AuthProvider>
   );
 }

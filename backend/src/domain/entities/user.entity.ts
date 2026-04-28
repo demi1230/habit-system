@@ -7,6 +7,8 @@ export interface UserEntity {
   email: string;
   passwordHash: string;
   displayName: string | null;
+  currentLat: number | null;
+  currentLng: number | null;
   createdAt: Date;
   updatedAt: Date;
 }

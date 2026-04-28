@@ -24,6 +24,8 @@ export interface HabitCue {
   startTime: string | null;
   endTime: string | null;
   coarseLocation: string | null;
+  locationLat: number | null;
+  locationLng: number | null;
   precedingRoutine: string | null;
   isActive: boolean;
 }
@@ -64,6 +66,8 @@ export interface CueContext {
   startTime: string | null;
   endTime: string | null;
   coarseLocation: string | null;
+  locationLat: number | null;
+  locationLng: number | null;
   precedingRoutine: string | null;
 }
 

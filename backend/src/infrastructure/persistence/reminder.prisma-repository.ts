@@ -89,4 +89,15 @@ export class ReminderPrismaRepository implements IReminderRepository {
     });
     return result as unknown as ReminderEntity | null;
   }
+
+  async findDuePendingSnoozeFollowUps(now: Date): Promise<ReminderEntity[]> {
+    const results = await this.prisma.reminder.findMany({
+      where: {
+        status: ReminderStatus.PENDING,
+        scheduledFor: { lte: now },
+        cooldownKey: { contains: ':snooze:' },
+      } as any,
+    });
+    return results as unknown as ReminderEntity[];
+  }
 }

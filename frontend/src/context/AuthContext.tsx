@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
 import { analyticsApi } from '@/api/analytics';
+import { authApi } from '@/api/auth';
 
 /** Decode JWT payload without a library */
 function decodePayload(token: string): { sub: string; email: string } | null {
@@ -15,11 +16,14 @@ interface AuthState {
   token: string | null;
   userId: string | null;
   displayName: string | null;
+  currentLat: number | null;
+  currentLng: number | null;
 }
 
 interface AuthContextValue extends AuthState {
   login: (token: string, displayName?: string | null) => void;
   logout: () => void;
+  setCurrentLocation: (lat: number | null, lng: number | null) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -29,7 +33,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const token = localStorage.getItem('access_token');
     const userId = localStorage.getItem('user_id');
     const displayName = localStorage.getItem('display_name');
-    // Validate stored token is a real JWT with a uuid sub claim
+    const latStr = localStorage.getItem('current_lat');
+    const lngStr = localStorage.getItem('current_lng');
+    const currentLat = latStr !== null ? parseFloat(latStr) : null;
+    const currentLng = lngStr !== null ? parseFloat(lngStr) : null;
     if (token) {
       const payload = decodePayload(token);
       const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -37,10 +44,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem('access_token');
         localStorage.removeItem('user_id');
         localStorage.removeItem('display_name');
-        return { token: null, userId: null, displayName: null };
+        localStorage.removeItem('current_lat');
+        localStorage.removeItem('current_lng');
+        return { token: null, userId: null, displayName: null, currentLat: null, currentLng: null };
       }
     }
-    return { token, userId, displayName };
+    return { token, userId, displayName, currentLat, currentLng };
   });
 
   const login = (token: string, displayName?: string | null) => {
@@ -49,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('access_token', token);
     if (userId) localStorage.setItem('user_id', userId);
     if (displayName) localStorage.setItem('display_name', displayName);
-    setState({ token, userId, displayName: displayName ?? null });
+    setState((prev) => ({ ...prev, token, userId, displayName: displayName ?? null }));
   };
 
   const logout = () => {
@@ -59,8 +68,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user_id');
     localStorage.removeItem('display_name');
-    setState({ token: null, userId: null, displayName: null });
+    localStorage.removeItem('current_lat');
+    localStorage.removeItem('current_lng');
+    setState({ token: null, userId: null, displayName: null, currentLat: null, currentLng: null });
   };
+
+  const setCurrentLocation = useCallback(async (lat: number | null, lng: number | null) => {
+    if (!state.userId) return;
+    await authApi.updateLocation(state.userId, lat, lng);
+    if (lat !== null && lng !== null) {
+      localStorage.setItem('current_lat', String(lat));
+      localStorage.setItem('current_lng', String(lng));
+    } else {
+      localStorage.removeItem('current_lat');
+      localStorage.removeItem('current_lng');
+    }
+    setState((prev) => ({ ...prev, currentLat: lat, currentLng: lng }));
+  }, [state.userId]);
 
   // Track app_open / session_start when user is already logged in
   const sessionTracked = useRef(false);
@@ -72,8 +96,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [state.userId, state.token]);
 
+  // Auto-detect GPS location on mount and whenever the user returns to the app.
+  // Runs silently — no UI feedback, no error shown if permission denied.
+  useEffect(() => {
+    if (!state.userId || !navigator.geolocation) return;
+
+    const detect = () => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          authApi
+            .updateLocation(state.userId!, pos.coords.latitude, pos.coords.longitude)
+            .catch(() => {});
+          // Keep local state in sync without triggering a server round-trip again
+          localStorage.setItem('current_lat', String(pos.coords.latitude));
+          localStorage.setItem('current_lng', String(pos.coords.longitude));
+          setState((prev) => ({
+            ...prev,
+            currentLat: pos.coords.latitude,
+            currentLng: pos.coords.longitude,
+          }));
+        },
+        () => {}, // permission denied or unavailable — silently skip
+        { enableHighAccuracy: true, timeout: 8_000, maximumAge: 60_000 },
+      );
+    };
+
+    detect(); // on login / first render
+    window.addEventListener('focus', detect); // when user tabs back in
+    return () => window.removeEventListener('focus', detect);
+  }, [state.userId]);
+
   return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
+    <AuthContext.Provider value={{ ...state, login, logout, setCurrentLocation }}>
       {children}
     </AuthContext.Provider>
   );

@@ -19,6 +19,20 @@ import { ReminderMessageBuilder } from './reminder-message.builder';
 const DEFAULT_COOLDOWN_MINUTES = 60;
 
 /**
+ * Returns a local-time hourly bucket string "YYYY-MM-DDTHH" for dedup keys.
+ * Uses the server's local clock (UTC+8 / Ulaanbaatar) so the bucket aligns
+ * with the user-facing hour, matching how cue startTime/endTime are stored.
+ */
+function localHourBucket(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const y = date.getFullYear();
+  const mo = pad(date.getMonth() + 1);
+  const d = pad(date.getDate());
+  const h = pad(date.getHours());
+  return `${y}-${mo}-${d}T${h}`;
+}
+
+/**
  * Application service — Reminder execution
  * Evaluates whether a reminder should be sent, persists the result,
  * and drives the stub notification gateway.
@@ -88,7 +102,8 @@ export class ReminderExecutionService {
     const now = new Date();
 
     // Hourly cooldown key: allows multiple windows per day, deduplicates within one
-    const cooldownKey = `${habitId}:${now.toISOString().slice(0, 13)}`; // YYYY-MM-DDTHH
+    // Uses local (server) time so the hourly bucket aligns with the user-facing clock.
+    const cooldownKey = `${habitId}:${localHourBucket(now)}`; // YYYY-MM-DDTHH (local)
 
     // Resolve cooldown duration from persisted policy, falling back to default
     const policy = await this.policyRepo.findByHabitId(habitId);
@@ -125,6 +140,7 @@ export class ReminderExecutionService {
         isScheduledToday: decision.isScheduledToday,
         activeCueCount: decision.activeCueCount,
         contentParts: message.contentParts,
+        body: message.body,
       },
     });
 
@@ -159,6 +175,48 @@ export class ReminderExecutionService {
       evaluatedAt: decision.evaluatedAt,
       reminder,
     };
+  }
+
+  /**
+   * Delivers push for an already-persisted PENDING reminder (e.g. snooze follow-ups).
+   * Reads title/body from explanation.contentParts if available.
+   */
+  async deliverPendingReminder(reminder: ReminderEntity): Promise<void> {
+    const explanation = reminder.explanation;
+    const parts = explanation?.contentParts as
+      | { habit?: string; cue?: string | null }
+      | undefined;
+
+    const habitTitle = parts?.habit ?? 'Дадлын сануулга';
+    const body =
+      (explanation?.body as string | undefined) ??
+      `${habitTitle} дадлаа хийгээрэй.`;
+
+    try {
+      const delivery = await this.notificationGateway.send({
+        userId: reminder.userId,
+        habitId: reminder.habitId,
+        reminderId: reminder.id,
+        title: habitTitle,
+        body,
+        scheduledFor: new Date(reminder.scheduledFor),
+      });
+
+      await this.reminderRepo.update(reminder.id, {
+        status: ReminderStatus.SENT,
+        sentAt: new Date(),
+        deliveredAt: delivery.deliveredAt ?? undefined,
+      });
+
+      await this.analyticsService.recordActivity(
+        reminder.userId,
+        'reminder_sent',
+      );
+    } catch (err) {
+      this.logger.error(
+        `deliverPendingReminder failed for reminderId=${reminder.id}: ${String(err)}`,
+      );
+    }
   }
 
 }

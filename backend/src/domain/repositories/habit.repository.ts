@@ -67,6 +67,8 @@ export interface UpdateHabitData {
     startTime?: string | null;
     endTime?: string | null;
     coarseLocation?: string | null;
+    locationLat?: number | null;
+    locationLng?: number | null;
     precedingRoutine?: string | null;
     isActive: boolean;
   }>;

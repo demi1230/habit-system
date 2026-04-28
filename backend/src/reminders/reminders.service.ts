@@ -158,16 +158,40 @@ export class RemindersService {
       actedAt,
     });
 
-    // Auto-create HabitLog if no linked log already exists
-    const existingLog = await this.habitLogRepo.findByLinkedReminderId(
-      reminder.id,
+    // Auto-create HabitLog if none already exists for this habit today.
+    // Check two things:
+    //  1. A log already linked to this specific reminder (strict idempotency).
+    //  2. ANY log for today's date for this habit (prevents double-log when
+    //     the user also manually completed the habit in the Dashboard).
+    const todayDate = new Date();
+    const [existingLinkedLog, todayLogs] = await Promise.all([
+      this.habitLogRepo.findByLinkedReminderId(reminder.id),
+      this.habitLogRepo.findLatestByHabitIdsForDate(
+        [reminder.habitId],
+        todayDate,
+      ),
+    ]);
+
+    const existingTodayLog = todayLogs.find(
+      (l) => l.habitId === reminder.habitId,
     );
 
-    let habitLog = existingLog;
-    if (!existingLog) {
+    let habitLog: HabitLogEntity | null;
+    if (existingLinkedLog) {
+      // Already linked to this reminder — fully idempotent, reuse
+      habitLog = existingLinkedLog;
+    } else if (existingTodayLog) {
+      // Habit already logged today (e.g., from Dashboard) — reuse that log,
+      // don't create a second one
+      habitLog = await this.habitLogRepo.findById(existingTodayLog.id);
+    } else {
+      // No log for today — create one
       habitLog = await this.habitLogRepo.create({
         habitId: reminder.habitId,
         status: HabitLogStatus.DONE,
+        // actualValue = 1 so Dashboard (which checks actualValue > 0) shows
+        // the habit as done. For binary habits targetValue = 1 so this is exact.
+        actualValue: 1,
         completedAt: actedAt,
         loggedAt: new Date(),
         triggerSource: CompletionTriggerSource.REMINDER_TRIGGERED,

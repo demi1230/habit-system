@@ -20,8 +20,20 @@ export type HabitCueModel = runtime.Types.Result.DefaultSelection<Prisma.$HabitC
 
 export type AggregateHabitCue = {
   _count: HabitCueCountAggregateOutputType | null
+  _avg: HabitCueAvgAggregateOutputType | null
+  _sum: HabitCueSumAggregateOutputType | null
   _min: HabitCueMinAggregateOutputType | null
   _max: HabitCueMaxAggregateOutputType | null
+}
+
+export type HabitCueAvgAggregateOutputType = {
+  locationLat: number | null
+  locationLng: number | null
+}
+
+export type HabitCueSumAggregateOutputType = {
+  locationLat: number | null
+  locationLng: number | null
 }
 
 export type HabitCueMinAggregateOutputType = {
@@ -30,6 +42,8 @@ export type HabitCueMinAggregateOutputType = {
   startTime: string | null
   endTime: string | null
   coarseLocation: string | null
+  locationLat: number | null
+  locationLng: number | null
   precedingRoutine: string | null
   isActive: boolean | null
   createdAt: Date | null
@@ -42,6 +56,8 @@ export type HabitCueMaxAggregateOutputType = {
   startTime: string | null
   endTime: string | null
   coarseLocation: string | null
+  locationLat: number | null
+  locationLng: number | null
   precedingRoutine: string | null
   isActive: boolean | null
   createdAt: Date | null
@@ -54,6 +70,8 @@ export type HabitCueCountAggregateOutputType = {
   startTime: number
   endTime: number
   coarseLocation: number
+  locationLat: number
+  locationLng: number
   precedingRoutine: number
   isActive: number
   createdAt: number
@@ -62,12 +80,24 @@ export type HabitCueCountAggregateOutputType = {
 }
 
 
+export type HabitCueAvgAggregateInputType = {
+  locationLat?: true
+  locationLng?: true
+}
+
+export type HabitCueSumAggregateInputType = {
+  locationLat?: true
+  locationLng?: true
+}
+
 export type HabitCueMinAggregateInputType = {
   id?: true
   habitId?: true
   startTime?: true
   endTime?: true
   coarseLocation?: true
+  locationLat?: true
+  locationLng?: true
   precedingRoutine?: true
   isActive?: true
   createdAt?: true
@@ -80,6 +110,8 @@ export type HabitCueMaxAggregateInputType = {
   startTime?: true
   endTime?: true
   coarseLocation?: true
+  locationLat?: true
+  locationLng?: true
   precedingRoutine?: true
   isActive?: true
   createdAt?: true
@@ -92,6 +124,8 @@ export type HabitCueCountAggregateInputType = {
   startTime?: true
   endTime?: true
   coarseLocation?: true
+  locationLat?: true
+  locationLng?: true
   precedingRoutine?: true
   isActive?: true
   createdAt?: true
@@ -137,6 +171,18 @@ export type HabitCueAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: HabitCueAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: HabitCueSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: HabitCueMinAggregateInputType
@@ -167,6 +213,8 @@ export type HabitCueGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: HabitCueCountAggregateInputType | true
+  _avg?: HabitCueAvgAggregateInputType
+  _sum?: HabitCueSumAggregateInputType
   _min?: HabitCueMinAggregateInputType
   _max?: HabitCueMaxAggregateInputType
 }
@@ -177,11 +225,15 @@ export type HabitCueGroupByOutputType = {
   startTime: string | null
   endTime: string | null
   coarseLocation: string | null
+  locationLat: number | null
+  locationLng: number | null
   precedingRoutine: string | null
   isActive: boolean
   createdAt: Date
   updatedAt: Date
   _count: HabitCueCountAggregateOutputType | null
+  _avg: HabitCueAvgAggregateOutputType | null
+  _sum: HabitCueSumAggregateOutputType | null
   _min: HabitCueMinAggregateOutputType | null
   _max: HabitCueMaxAggregateOutputType | null
 }
@@ -210,6 +262,8 @@ export type HabitCueWhereInput = {
   startTime?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   endTime?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   coarseLocation?: Prisma.StringNullableFilter<"HabitCue"> | string | null
+  locationLat?: Prisma.FloatNullableFilter<"HabitCue"> | number | null
+  locationLng?: Prisma.FloatNullableFilter<"HabitCue"> | number | null
   precedingRoutine?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   isActive?: Prisma.BoolFilter<"HabitCue"> | boolean
   createdAt?: Prisma.DateTimeFilter<"HabitCue"> | Date | string
@@ -223,6 +277,8 @@ export type HabitCueOrderByWithRelationInput = {
   startTime?: Prisma.SortOrderInput | Prisma.SortOrder
   endTime?: Prisma.SortOrderInput | Prisma.SortOrder
   coarseLocation?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationLat?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationLng?: Prisma.SortOrderInput | Prisma.SortOrder
   precedingRoutine?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -239,6 +295,8 @@ export type HabitCueWhereUniqueInput = Prisma.AtLeast<{
   startTime?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   endTime?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   coarseLocation?: Prisma.StringNullableFilter<"HabitCue"> | string | null
+  locationLat?: Prisma.FloatNullableFilter<"HabitCue"> | number | null
+  locationLng?: Prisma.FloatNullableFilter<"HabitCue"> | number | null
   precedingRoutine?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   isActive?: Prisma.BoolFilter<"HabitCue"> | boolean
   createdAt?: Prisma.DateTimeFilter<"HabitCue"> | Date | string
@@ -252,13 +310,17 @@ export type HabitCueOrderByWithAggregationInput = {
   startTime?: Prisma.SortOrderInput | Prisma.SortOrder
   endTime?: Prisma.SortOrderInput | Prisma.SortOrder
   coarseLocation?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationLat?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationLng?: Prisma.SortOrderInput | Prisma.SortOrder
   precedingRoutine?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.HabitCueCountOrderByAggregateInput
+  _avg?: Prisma.HabitCueAvgOrderByAggregateInput
   _max?: Prisma.HabitCueMaxOrderByAggregateInput
   _min?: Prisma.HabitCueMinOrderByAggregateInput
+  _sum?: Prisma.HabitCueSumOrderByAggregateInput
 }
 
 export type HabitCueScalarWhereWithAggregatesInput = {
@@ -270,6 +332,8 @@ export type HabitCueScalarWhereWithAggregatesInput = {
   startTime?: Prisma.StringNullableWithAggregatesFilter<"HabitCue"> | string | null
   endTime?: Prisma.StringNullableWithAggregatesFilter<"HabitCue"> | string | null
   coarseLocation?: Prisma.StringNullableWithAggregatesFilter<"HabitCue"> | string | null
+  locationLat?: Prisma.FloatNullableWithAggregatesFilter<"HabitCue"> | number | null
+  locationLng?: Prisma.FloatNullableWithAggregatesFilter<"HabitCue"> | number | null
   precedingRoutine?: Prisma.StringNullableWithAggregatesFilter<"HabitCue"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"HabitCue"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"HabitCue"> | Date | string
@@ -281,6 +345,8 @@ export type HabitCueCreateInput = {
   startTime?: string | null
   endTime?: string | null
   coarseLocation?: string | null
+  locationLat?: number | null
+  locationLng?: number | null
   precedingRoutine?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -294,6 +360,8 @@ export type HabitCueUncheckedCreateInput = {
   startTime?: string | null
   endTime?: string | null
   coarseLocation?: string | null
+  locationLat?: number | null
+  locationLng?: number | null
   precedingRoutine?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -305,6 +373,8 @@ export type HabitCueUpdateInput = {
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locationLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -318,6 +388,8 @@ export type HabitCueUncheckedUpdateInput = {
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locationLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -330,6 +402,8 @@ export type HabitCueCreateManyInput = {
   startTime?: string | null
   endTime?: string | null
   coarseLocation?: string | null
+  locationLat?: number | null
+  locationLng?: number | null
   precedingRoutine?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -341,6 +415,8 @@ export type HabitCueUpdateManyMutationInput = {
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locationLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -353,6 +429,8 @@ export type HabitCueUncheckedUpdateManyInput = {
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locationLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -375,10 +453,17 @@ export type HabitCueCountOrderByAggregateInput = {
   startTime?: Prisma.SortOrder
   endTime?: Prisma.SortOrder
   coarseLocation?: Prisma.SortOrder
+  locationLat?: Prisma.SortOrder
+  locationLng?: Prisma.SortOrder
   precedingRoutine?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type HabitCueAvgOrderByAggregateInput = {
+  locationLat?: Prisma.SortOrder
+  locationLng?: Prisma.SortOrder
 }
 
 export type HabitCueMaxOrderByAggregateInput = {
@@ -387,6 +472,8 @@ export type HabitCueMaxOrderByAggregateInput = {
   startTime?: Prisma.SortOrder
   endTime?: Prisma.SortOrder
   coarseLocation?: Prisma.SortOrder
+  locationLat?: Prisma.SortOrder
+  locationLng?: Prisma.SortOrder
   precedingRoutine?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -399,10 +486,17 @@ export type HabitCueMinOrderByAggregateInput = {
   startTime?: Prisma.SortOrder
   endTime?: Prisma.SortOrder
   coarseLocation?: Prisma.SortOrder
+  locationLat?: Prisma.SortOrder
+  locationLng?: Prisma.SortOrder
   precedingRoutine?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type HabitCueSumOrderByAggregateInput = {
+  locationLat?: Prisma.SortOrder
+  locationLng?: Prisma.SortOrder
 }
 
 export type HabitCueCreateNestedManyWithoutHabitInput = {
@@ -452,6 +546,8 @@ export type HabitCueCreateWithoutHabitInput = {
   startTime?: string | null
   endTime?: string | null
   coarseLocation?: string | null
+  locationLat?: number | null
+  locationLng?: number | null
   precedingRoutine?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -463,6 +559,8 @@ export type HabitCueUncheckedCreateWithoutHabitInput = {
   startTime?: string | null
   endTime?: string | null
   coarseLocation?: string | null
+  locationLat?: number | null
+  locationLng?: number | null
   precedingRoutine?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -504,6 +602,8 @@ export type HabitCueScalarWhereInput = {
   startTime?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   endTime?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   coarseLocation?: Prisma.StringNullableFilter<"HabitCue"> | string | null
+  locationLat?: Prisma.FloatNullableFilter<"HabitCue"> | number | null
+  locationLng?: Prisma.FloatNullableFilter<"HabitCue"> | number | null
   precedingRoutine?: Prisma.StringNullableFilter<"HabitCue"> | string | null
   isActive?: Prisma.BoolFilter<"HabitCue"> | boolean
   createdAt?: Prisma.DateTimeFilter<"HabitCue"> | Date | string
@@ -515,6 +615,8 @@ export type HabitCueCreateManyHabitInput = {
   startTime?: string | null
   endTime?: string | null
   coarseLocation?: string | null
+  locationLat?: number | null
+  locationLng?: number | null
   precedingRoutine?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -526,6 +628,8 @@ export type HabitCueUpdateWithoutHabitInput = {
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locationLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -537,6 +641,8 @@ export type HabitCueUncheckedUpdateWithoutHabitInput = {
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locationLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -548,6 +654,8 @@ export type HabitCueUncheckedUpdateManyWithoutHabitInput = {
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coarseLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  locationLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   precedingRoutine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -562,6 +670,8 @@ export type HabitCueSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   startTime?: boolean
   endTime?: boolean
   coarseLocation?: boolean
+  locationLat?: boolean
+  locationLng?: boolean
   precedingRoutine?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -575,6 +685,8 @@ export type HabitCueSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   startTime?: boolean
   endTime?: boolean
   coarseLocation?: boolean
+  locationLat?: boolean
+  locationLng?: boolean
   precedingRoutine?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -588,6 +700,8 @@ export type HabitCueSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   startTime?: boolean
   endTime?: boolean
   coarseLocation?: boolean
+  locationLat?: boolean
+  locationLng?: boolean
   precedingRoutine?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -601,13 +715,15 @@ export type HabitCueSelectScalar = {
   startTime?: boolean
   endTime?: boolean
   coarseLocation?: boolean
+  locationLat?: boolean
+  locationLng?: boolean
   precedingRoutine?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type HabitCueOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "habitId" | "startTime" | "endTime" | "coarseLocation" | "precedingRoutine" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["habitCue"]>
+export type HabitCueOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "habitId" | "startTime" | "endTime" | "coarseLocation" | "locationLat" | "locationLng" | "precedingRoutine" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["habitCue"]>
 export type HabitCueInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>
 }
@@ -629,6 +745,8 @@ export type $HabitCuePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     startTime: string | null
     endTime: string | null
     coarseLocation: string | null
+    locationLat: number | null
+    locationLng: number | null
     precedingRoutine: string | null
     isActive: boolean
     createdAt: Date
@@ -1062,6 +1180,8 @@ export interface HabitCueFieldRefs {
   readonly startTime: Prisma.FieldRef<"HabitCue", 'String'>
   readonly endTime: Prisma.FieldRef<"HabitCue", 'String'>
   readonly coarseLocation: Prisma.FieldRef<"HabitCue", 'String'>
+  readonly locationLat: Prisma.FieldRef<"HabitCue", 'Float'>
+  readonly locationLng: Prisma.FieldRef<"HabitCue", 'Float'>
   readonly precedingRoutine: Prisma.FieldRef<"HabitCue", 'String'>
   readonly isActive: Prisma.FieldRef<"HabitCue", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"HabitCue", 'DateTime'>

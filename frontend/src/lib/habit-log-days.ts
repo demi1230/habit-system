@@ -42,6 +42,35 @@ export function countCompletedDays(logs: HabitLog[]): number {
   return count;
 }
 
+export function countScheduledDays(
+  startDate: string,
+  scheduleDays: Array<{ weekday: Weekday }> | Weekday[] | undefined,
+): number {
+  const scheduledWds = new Set(
+    (scheduleDays ?? []).map((day) =>
+      typeof day === 'string' ? day : day.weekday,
+    ),
+  );
+
+  const start = new Date(startDate);
+  start.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (start > today) return 0;
+
+  let count = 0;
+  const cursor = new Date(start);
+  while (cursor <= today) {
+    const weekday = JS_TO_WD[cursor.getDay()];
+    if (scheduledWds.size === 0 || scheduledWds.has(weekday)) {
+      count += 1;
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return count;
+}
+
 export function computeScheduledStreakFromLogs(
   logs: HabitLog[],
   scheduleDays: Array<{ weekday: Weekday }> | Weekday[] | undefined,

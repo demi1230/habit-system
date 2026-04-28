@@ -42,4 +42,11 @@ export interface IReminderRepository {
     cooldownKey: string,
     now: Date,
   ): Promise<ReminderEntity | null>;
+
+  /**
+   * Returns PENDING reminders whose scheduledFor <= now and whose cooldownKey
+   * starts with "snooze:" — these are follow-ups created by SNOOZE actions that
+   * have not yet been delivered via push.
+   */
+  findDuePendingSnoozeFollowUps(now: Date): Promise<ReminderEntity[]>;
 }

@@ -3,10 +3,13 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
+  IsNumber,
   IsOptional,
   IsString,
   Matches,
+  Max,
   MaxLength,
+  Min,
   ValidateNested,
 } from 'class-validator';
 
@@ -22,6 +25,26 @@ export class TimeWindowDto {
   @IsString()
   @Matches(TIME_REGEX, { message: 'endTime must be in HH:MM format' })
   endTime!: string;
+}
+
+export class ReminderLocationDto {
+  @ApiPropertyOptional({ example: 'Гэр', maxLength: 100 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  label?: string;
+
+  @ApiPropertyOptional({ example: 47.9184 })
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
+  lat!: number;
+
+  @ApiPropertyOptional({ example: 106.9177 })
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
+  lng!: number;
 }
 
 export class ReminderSettingsDto {
@@ -41,12 +64,12 @@ export class ReminderSettingsDto {
   timeWindows?: TimeWindowDto[];
 
   @ApiPropertyOptional({
-    example: ['home', 'dorm'],
-    description: 'Locations where the reminder applies',
+    type: [ReminderLocationDto],
+    description: 'GPS-pinned locations where the reminder applies (within 100m)',
   })
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  @MaxLength(100, { each: true })
-  locations?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => ReminderLocationDto)
+  locations?: ReminderLocationDto[];
 }

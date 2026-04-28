@@ -3,6 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from '../infrastructure/prisma/prisma.service';
 import { ReminderExecutionService } from './reminder-execution.service';
+import { REMINDER_REPOSITORY } from '../domain/repositories/reminder.repository';
+import type { IReminderRepository } from '../domain/repositories/reminder.repository';
+import { Inject } from '@nestjs/common';
 
 @Injectable()
 export class ReminderSchedulerService {
@@ -15,6 +18,8 @@ export class ReminderSchedulerService {
     private readonly prisma: PrismaService,
     private readonly reminderExecutionService: ReminderExecutionService,
     private readonly configService: ConfigService,
+    @Inject(REMINDER_REPOSITORY)
+    private readonly reminderRepo: IReminderRepository,
   ) {
     this.schedulerEnabled =
       this.configService.get<string>('REMINDER_SCHEDULER_ENABLED') === 'true';
@@ -50,11 +55,12 @@ export class ReminderSchedulerService {
         },
         include: {
           cues: true,
+          user: { select: { currentLat: true, currentLng: true } },
         },
       });
 
       for (const habit of habits) {
-        if (!this.isWithinAnyActiveWindow(habit.cues)) {
+        if (!this.isWithinAnyActiveWindow(habit.cues, habit.user.currentLat, habit.user.currentLng)) {
           continue;
         }
 
@@ -67,6 +73,24 @@ export class ReminderSchedulerService {
         } catch (error) {
           this.logger.debug(
             `Reminder scheduler skipped habit ${habit.id}: ${String(error)}`,
+          );
+        }
+      }
+
+      // Deliver any snooze follow-up reminders whose scheduled time has arrived
+      const now = new Date();
+      const snoozeFollowUps =
+        await this.reminderRepo.findDuePendingSnoozeFollowUps(now);
+
+      for (const followUp of snoozeFollowUps) {
+        try {
+          await this.reminderExecutionService.deliverPendingReminder(followUp);
+          this.logger.debug(
+            `Snooze follow-up delivered: reminderId=${followUp.id}`,
+          );
+        } catch (error) {
+          this.logger.debug(
+            `Snooze follow-up delivery failed for reminderId=${followUp.id}: ${String(error)}`,
           );
         }
       }
@@ -91,7 +115,11 @@ export class ReminderSchedulerService {
       startTime: string | null;
       endTime: string | null;
       coarseLocation: string | null;
+      locationLat: number | null;
+      locationLng: number | null;
     }>,
+    userLat: number | null,
+    userLng: number | null,
   ) {
     const activeCues = cues.filter((cue) => cue.isActive);
     if (activeCues.length === 0) {
@@ -102,9 +130,13 @@ export class ReminderSchedulerService {
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
     return activeCues.some((cue) => {
-      if (cue.coarseLocation && !cue.startTime && !cue.endTime) {
-        return true;
+      // GPS location gate: cue has precise coordinates → user must be within 100 m
+      if (cue.locationLat !== null && cue.locationLng !== null) {
+        if (userLat === null || userLng === null) return false;
+        if (!this.isWithin100m(userLat, userLng, cue.locationLat, cue.locationLng)) return false;
       }
+
+      // Time window check
       if (!cue.startTime || !cue.endTime) {
         return true;
       }
@@ -120,5 +152,22 @@ export class ReminderSchedulerService {
 
       return currentMinutes >= startTotal || currentMinutes <= endTotal;
     });
+  }
+
+  /** Returns true if two GPS points are within 100 metres of each other (Haversine). */
+  private isWithin100m(
+    lat1: number, lng1: number,
+    lat2: number, lng2: number,
+    thresholdMetres = 100,
+  ): boolean {
+    const R = 6_371_000; // Earth radius in metres
+    const toRad = (deg: number) => (deg * Math.PI) / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+    const distance = 2 * R * Math.asin(Math.sqrt(a));
+    return distance <= thresholdMetres;
   }
 }

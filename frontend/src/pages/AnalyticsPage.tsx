@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   BarChart3, Calendar,
   Target, Brain, MapPin, Clock,
-  ChevronDown, Sparkles, X, Info,
+  ChevronDown, ChevronRight, Sparkles, X, Info,
 } from 'lucide-react';
 import { getHabitColor } from '@/lib/habit-colors';
 import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
@@ -23,7 +23,7 @@ import type { RecommendationItem } from '@/features/learning/model/recommendatio
 
 import { BottomNav } from '@/components/bottom-nav';
 import { MonthCalendar } from '@/components/month-calendar';
-import { computeScheduledStreakFromLogs, countCompletedDays, getLatestLogsByDay } from '@/lib/habit-log-days';
+import { computeScheduledStreakFromLogs, countCompletedDays, countScheduledDays } from '@/lib/habit-log-days';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 function withAlpha(color: string, alpha: number) {
@@ -175,10 +175,22 @@ function AllHabitsOverview({ habits, logs, composites, loading }: {
   composites: (SrbaiCompositeScore & { habitId: string })[];
   loading: boolean;
 }) {
-  const completedDays = countCompletedDays(logs);
-  const attemptedDays = getLatestLogsByDay(logs).size;
-  const completionRate = attemptedDays > 0
-    ? Math.round((completedDays / attemptedDays) * 100)
+  // Group logs by habitId so each habit's completion is counted independently
+  const logsByHabit = new Map<string, HabitLog[]>();
+  for (const log of logs) {
+    if (!logsByHabit.has(log.habitId)) logsByHabit.set(log.habitId, []);
+    logsByHabit.get(log.habitId)!.push(log);
+  }
+  let totalCompleted = 0;
+  let totalAttempted = 0;
+  for (const habit of habits) {
+    const habitLogs = logsByHabit.get(habit.id) ?? [];
+    totalCompleted += countCompletedDays(habitLogs);
+    totalAttempted += countScheduledDays(habit.startDate, habit.scheduleDays);
+  }
+  const completedDays = totalCompleted;
+  const completionRate = totalAttempted > 0
+    ? Math.round((totalCompleted / totalAttempted) * 100)
     : 0;
 
   // Average composite score
@@ -266,9 +278,9 @@ function AllHabitsOverview({ habits, logs, composites, loading }: {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}
         className="grid grid-cols-2 gap-3">
         <StatMini icon={<Target className="w-4 h-4" style={{ color: '#18A68A' }} />}
-          label="Нийт биелэлт" value={`${completionRate}%`} color="#18A68A" />
+          label="Гүйцэтгэлийн хувь" value={`${completionRate}%`} color="#18A68A" />
         <StatMini icon={<Calendar className="w-4 h-4" style={{ color: '#3B8FD4' }} />}
-          label="Нийт биелсэн" value={`${completedDays}`} color="#3B8FD4" />
+          label="Нийт гүйцэтгэсэн" value={`${completedDays}`} color="#3B8FD4" />
         <StatMini icon={<svg width="20" height="20" viewBox="0 0 26 25.0006" fill="none"><path d={svgPaths.p2eaaee80} fill={stageColor} /></svg>}
           label="Дундаж хүч" value={`${avgScore}`} color={stageColor} />
         <StatMini icon={<BarChart3 className="w-4 h-4" style={{ color: 'var(--foreground)' }} />}
@@ -320,36 +332,45 @@ function PerformanceInsightSection({ difficulties, reflections, showAllReflectio
 
   return (
     <SectionCard delay={0.12}>
-      <SectionLabel icon={<Brain className="w-4 h-4" style={{ color: accent }} />} label="Сүүлийн дүгнэлт" />
-      <div className="flex gap-3">
-        {/* Left: Difficulty */}
+      <SectionLabel icon={<Brain className="w-4 h-4" style={{ color: accent }} />} label="Мэдрэмж ба хүчин чадал" />
+      <div className="flex flex-col gap-3">
+        {/* Difficulty */}
         {difficulties.length > 0 && (
-          <div className="flex-1 rounded-2xl p-3" style={{ backgroundColor: 'var(--surface-muted)', border: '1px solid var(--surface-border-faint)' }}>
-            <p style={{ ...TYPOGRAPHY.micro, fontWeight: 600, color: 'var(--text-muted-soft)', marginBottom: 6 }}>Хэцүү байдал</p>
+          <div className="rounded-2xl p-3" style={{ backgroundColor: 'var(--surface-muted)', border: '1px solid var(--surface-border-faint)' }}>
+            <p style={{ ...TYPOGRAPHY.micro, fontWeight: 600, color: 'var(--text-muted-soft)', marginBottom: 6 }}>Дундаж хүчин чадал</p>
             {/* 5-dot scale */}
-            <div className="flex gap-1 mb-2">
+            <div className="flex gap-1.5 mb-2">
               {[1, 2, 3, 4, 5].map(v => (
-                <div key={v} className="flex-1 h-1.5 rounded-full" style={{
+                <div key={v} className="flex-1 h-2 rounded-full" style={{
                   backgroundColor: avgScore !== null && v <= Math.round(avgScore)
                     ? (Math.round(avgScore) >= 4 ? '#E8A87C' : Math.round(avgScore) <= 2 ? '#18A68A' : '#3B8FD4')
                     : 'var(--surface-strong)',
                 }} />
               ))}
             </div>
-            <p style={{ ...TYPOGRAPHY.caption, fontWeight: 600 }} className="text-foreground">{avgLabel}</p>
-            <p style={{ ...TYPOGRAPHY.micro, fontSize: 10, marginTop: 2, color: trendColor }}>{trendLabel}</p>
+            <div className="flex items-center justify-between">
+              <p style={{ ...TYPOGRAPHY.caption, fontWeight: 600 }} className="text-foreground">{avgLabel}</p>
+              <p style={{ fontSize: 10, color: trendColor }}>{trendLabel}</p>
+            </div>
           </div>
         )}
-        {/* Right: Reflections */}
+        {/* Reflections */}
         {reflections.length > 0 && (
-          <div className="flex-1 rounded-2xl p-3" style={{ backgroundColor: 'var(--surface-muted)', border: '1px solid var(--surface-border-faint)' }}>
-            <p style={{ ...TYPOGRAPHY.micro, fontWeight: 600, color: 'var(--text-muted-soft)', marginBottom: 6 }}>Эргэцүүлэмж</p>
-            <div className="flex flex-col gap-1.5">
-              {visibleReflections.map(r => (
-                <p key={r.id} style={{ fontSize: 11, lineHeight: 1.45, fontStyle: 'italic', color: 'var(--text-soft)' }}>
-                  "{r.text.length > 60 ? r.text.slice(0, 57) + '…' : r.text}"
-                </p>
-              ))}
+          <div className="rounded-2xl p-3" style={{ backgroundColor: 'var(--surface-muted)', border: '1px solid var(--surface-border-faint)' }}>
+            <p style={{ ...TYPOGRAPHY.micro, fontWeight: 600, color: 'var(--text-muted-soft)', marginBottom: 8 }}>Эргэцүүлэмж</p>
+            <div className="flex flex-col gap-3">
+              {visibleReflections.map(r => {
+                const d = new Date(r.occurredAt);
+                const dateStr = `${d.getMonth() + 1}-р сарын ${d.getDate()}`;
+                return (
+                  <div key={r.id} className="flex flex-col gap-0.5">
+                    <p style={{ fontSize: 10, color: 'var(--text-placeholder)' }}>{dateStr}</p>
+                    <p style={{ fontSize: 12, lineHeight: 1.5, color: 'var(--text-soft)' }}>
+                      {r.text.length > 100 ? r.text.slice(0, 97) + '…' : r.text}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
             {reflections.length > 2 && (
               <button onClick={onToggleReflections} className={buttonStyles({ variant: 'link', size: 'inline' })} style={{ fontSize: 10, fontWeight: 600, color: accent, marginTop: 6 }}>
@@ -362,7 +383,7 @@ function PerformanceInsightSection({ difficulties, reflections, showAllReflectio
       {/* difficulty notes */}
       {difficulties.some(d => d.note) && (
         <div className="mt-3 flex flex-col gap-1" style={{ borderTop: '1px solid var(--surface-border-faint)', paddingTop: 10 }}>
-          <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-faint)', marginBottom: 2 }}>Тэмдэглэл</p>
+          <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-faint)', marginBottom: 2 }}>Хэцүү байдлын тэмдэглэл</p>
           {difficulties.filter(d => d.note).slice(0, 3).map(d => (
             <p key={d.id} style={{ fontSize: 11, fontStyle: 'italic', color: 'var(--text-muted-soft)', lineHeight: 1.4 }}>
               "{d.note}" <span style={{ fontStyle: 'normal', color: 'var(--text-placeholder)' }}>· {DIFFICULTY_LABEL[d.rating]}</span>
@@ -619,7 +640,7 @@ export function AnalyticsPage() {
                   )}
                   {composite && (
                     <span style={{ fontSize: 11, color: 'var(--text-placeholder)', marginTop: 2 }}>
-                      Үнэлсэн: {new Date(composite.evaluatedAt).toLocaleDateString('mn-MN')}
+                      {(() => { const d = new Date(composite.evaluatedAt); return `Үнэлсэн: ${d.getMonth() + 1}-р сарын ${d.getDate()}`; })()}
                     </span>
                   )}
                 </div>
@@ -657,7 +678,7 @@ export function AnalyticsPage() {
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#18A68A' }} />
                           <p style={{ ...TYPOGRAPHY.micro, lineHeight: 1.4 }} className="text-muted-foreground">
-                            <span className="font-semibold text-foreground">Тууштай (25%)</span> — биелэлтийн хувь × дата бэлэн байдал
+                            <span className="font-semibold text-foreground">Тууштай (25%)</span> — гүйцэтгэлийн хувь × дата бэлэн байдал
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -706,7 +727,7 @@ export function AnalyticsPage() {
                                 Дундаж: {srbaiLatest.rawAverage.toFixed(1)} / 7
                               </p>
                               <p style={{ ...TYPOGRAPHY.micro, marginTop: 4 }} className="text-muted-foreground">
-                                {new Date(srbaiLatest.assessedAt).toLocaleDateString('mn-MN')}
+                                {(() => { const d = new Date(srbaiLatest.assessedAt); return `${d.getMonth() + 1}-р сарын ${d.getDate()}`; })()}
                               </p>
                             </div>
                             <motion.button whileTap={{ scale: 0.95 }} onClick={() => setShowSrbai(true)}
@@ -734,13 +755,39 @@ export function AnalyticsPage() {
               </div>
             </SectionCard>
 
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.025 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => navigate(`/habit/${selected.id}`)}
+              className="w-full flex items-center gap-3 rounded-[20px] px-4 py-3.5 bg-card text-left"
+              style={{ boxShadow: SHADOW.card }}
+            >
+              <div
+                className="w-9 h-9 rounded-[12px] flex items-center justify-center shrink-0"
+                style={{ backgroundColor: color.btn }}
+              >
+                <Target className="w-4.5 h-4.5" style={{ color: color.accent }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p style={{ ...TYPOGRAPHY.sectionTitle, fontWeight: 600 }} className="text-foreground">
+                  Дадлын дэлгэрэнгүй харах
+                </p>
+                <p style={TYPOGRAPHY.micro} className="text-muted-foreground">
+                  Зорилго, тохиргоо, сануулга болон бүртгэл
+                </p>
+              </div>
+              <ChevronRight className="w-4 h-4 shrink-0" style={{ color: 'var(--text-disabled)' }} />
+            </motion.button>
+
             {/* ═══ 2. Stats Grid ═══ */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 }}
               className="grid grid-cols-2 gap-3">
               <StatMini icon={<svg width="18" height="18" viewBox="0 0 23 24" fill="none"><path d={svgPaths.p29fc8c00} fill={color.accent} fillRule="evenodd" clipRule="evenodd" /></svg>}
                 label="Дараалал (streak)" value={`${streak} өдөр`} color={color.accent} />
               <StatMini icon={<Calendar className="w-[18px] h-[18px]" style={{ color: color.accent }} />}
-                label="Нийт биелсэн" value={`${completedDays}`} color={color.accent} />
+                label="Нийт гүйцэтгэсэн" value={`${completedDays}`} color={color.accent} />
               <StatMini icon={<MapPin className="w-[18px] h-[18px]" style={{ color: color.accent }} />}
                 label="Контекст тогтвортой" value={`${Math.round(composite?.contextStabilityScore ?? 0)}%`} color={color.accent} />
               <StatMini icon={<Clock className="w-[18px] h-[18px]" style={{ color: color.accent }} />}

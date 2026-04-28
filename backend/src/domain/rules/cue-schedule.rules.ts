@@ -18,6 +18,8 @@ export interface CueContext {
   startTime: string | null;
   endTime: string | null;
   coarseLocation: string | null;
+  locationLat: number | null;
+  locationLng: number | null;
   precedingRoutine: string | null;
 }
 
@@ -53,6 +55,8 @@ export class CueScheduleRules {
       | 'startTime'
       | 'endTime'
       | 'coarseLocation'
+      | 'locationLat'
+      | 'locationLng'
       | 'precedingRoutine'
     >,
   ): CueContext {
@@ -61,6 +65,8 @@ export class CueScheduleRules {
       startTime: cue.startTime ?? null,
       endTime: cue.endTime ?? null,
       coarseLocation: cue.coarseLocation ?? null,
+      locationLat: cue.locationLat ?? null,
+      locationLng: cue.locationLng ?? null,
       precedingRoutine: cue.precedingRoutine ?? null,
     };
   }

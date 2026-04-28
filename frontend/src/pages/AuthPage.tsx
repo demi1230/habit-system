@@ -1,11 +1,36 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { useAuth } from '@/context/AuthContext';
 import { authApi } from '@/api/auth';
 import { TYPOGRAPHY, buttonStyles } from '@/shared/design';
+import { CTA_DARK } from '@/lib/habit-colors';
+
+// ─── Reusable styled input ────────────────────────────────────────────────────
+function AuthInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <input
+      {...props}
+      style={{
+        width: '100%',
+        padding: '13px 16px',
+        borderRadius: 14,
+        backgroundColor: 'var(--card)',
+        border: '1.5px solid var(--surface-border-soft)',
+        fontSize: 15,
+        color: 'var(--foreground)',
+        fontFamily: "'Inter', sans-serif",
+        outline: 'none',
+        transition: 'border-color 0.2s',
+        ...props.style,
+      }}
+      onFocus={e => { e.currentTarget.style.borderColor = 'var(--primary)'; if (props.onFocus) props.onFocus(e); }}
+      onBlur={e => { e.currentTarget.style.borderColor = 'var(--surface-border-soft)'; if (props.onBlur) props.onBlur(e); }}
+    />
+  );
+}
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -50,100 +75,180 @@ export function AuthPage() {
     : t('auth.signupSub', 'Шинэ хаяг үүсгэх');
 
   return (
-    <div className="min-h-screen bg-background px-6 py-8 flex flex-col">
-      <button onClick={() => navigate(-1)} className={`mb-6 self-start ${buttonStyles({ variant: 'nav', size: 'icon' })}`}>
-        <ArrowLeft className="w-5 h-5 text-foreground" />
-      </button>
+    <div
+      className="min-h-screen flex flex-col overflow-hidden"
+      style={{ backgroundColor: 'var(--background)' }}
+    >
+      {/* Top accent */}
+      <div
+        className="absolute top-0 left-0 right-0 pointer-events-none"
+        style={{
+          height: '38%',
+          backgroundColor: 'var(--muted)',
+          borderBottomLeftRadius: 60,
+          borderBottomRightRadius: 60,
+          zIndex: 0,
+        }}
+      />
 
+      {/* Back button */}
+      <div className="relative z-10 px-5 pt-14 pb-2">
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={() => navigate(-1)}
+          className={buttonStyles({ variant: 'nav', size: 'icon' })}
+          style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}
+        >
+          <ArrowLeft className="w-4 h-4" style={{ color: 'var(--foreground)' }} />
+        </motion.button>
+      </div>
+
+      {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex-1"
+        transition={{ duration: 0.35 }}
+        className="relative z-10 px-6 pt-4 pb-8"
       >
-        <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="w-5 h-5 text-primary" />
-          <h2 style={TYPOGRAPHY.pageTitle}>{title}</h2>
-        </div>
-        <p className="text-muted-foreground mb-8" style={TYPOGRAPHY.bodySm}>{subtitle}</p>
+        <h1
+          style={{
+            fontFamily: "'Montserrat', sans-serif",
+            fontSize: 28,
+            fontWeight: 700,
+            color: 'var(--foreground)',
+            marginBottom: 6,
+          }}
+        >
+          {title}
+        </h1>
+        <p style={{ ...TYPOGRAPHY.bodySm, color: 'var(--text-soft)' }}>{subtitle}</p>
+      </motion.div>
 
-        {error && (
-          <div className="mb-4 p-3 rounded-xl bg-destructive/10 text-destructive text-sm">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {!isLogin && (
-            <div>
-              <label className="block mb-1.5 text-foreground" style={{ fontSize: '14px' }}>{t('auth.fullName', 'Нэр')}</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder={t('auth.yourName', 'Таны нэр')}
-                className="w-full px-4 py-3 bg-card rounded-xl border border-border focus:border-primary focus:outline-none transition-colors"
-              />
+      {/* Form card */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.05 }}
+        className="relative z-10 flex-1 px-5"
+      >
+        <div
+          className="rounded-3xl p-6 flex flex-col gap-4"
+          style={{
+            backgroundColor: 'var(--card)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.07)',
+          }}
+        >
+          {error && (
+            <div
+              className="px-4 py-3 rounded-xl text-sm"
+              style={{
+                backgroundColor: 'rgba(239,68,68,0.09)',
+                color: 'var(--destructive, #ef4444)',
+                fontSize: 13,
+              }}
+            >
+              {error}
             </div>
           )}
 
-          <div>
-            <label className="block mb-1.5 text-foreground" style={{ fontSize: '14px' }}>{t('auth.email', 'Имэйл')}</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-              className="w-full px-4 py-3 bg-card rounded-xl border border-border focus:border-primary focus:outline-none transition-colors"
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            {!isLogin && (
+              <div className="flex flex-col gap-1.5">
+                <label style={{ ...TYPOGRAPHY.caption, color: 'var(--foreground)', fontWeight: 500 }}>
+                  {t('auth.fullName', 'Нэр')}
+                </label>
+                <AuthInput
+                  type="text"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder={t('auth.yourName', 'Таны нэр')}
+                />
+              </div>
+            )}
 
-          <div>
-            <label className="block mb-1.5 text-foreground" style={{ fontSize: '14px' }}>{t('auth.password', 'Нууц үг')}</label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+            <div className="flex flex-col gap-1.5">
+              <label style={{ ...TYPOGRAPHY.caption, color: 'var(--foreground)', fontWeight: 500 }}>
+                {t('auth.email', 'Имэйл')}
+              </label>
+              <AuthInput
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="you@example.com"
                 required
-                className="w-full px-4 py-3 bg-card rounded-xl border border-border focus:border-primary focus:outline-none transition-colors pr-12"
+                autoComplete="email"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className={`absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground ${buttonStyles({ variant: 'ghost', size: 'iconSm' })}`}
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full mt-4 ${buttonStyles({ variant: 'default', size: 'lg' })}`}
-          >
-            {loading
-              ? '...'
-              : isLogin
-              ? t('auth.signInBtn', 'Нэвтрэх')
-              : t('auth.createAccountBtn', 'Бүртгүүлэх')}
-          </button>
-        </form>
+            <div className="flex flex-col gap-1.5">
+              <label style={{ ...TYPOGRAPHY.caption, color: 'var(--foreground)', fontWeight: 500 }}>
+                {t('auth.password', 'Нууц үг')}
+              </label>
+              <div className="relative">
+                <AuthInput
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  autoComplete={isLogin ? 'current-password' : 'new-password'}
+                  style={{ paddingRight: 48 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(v => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  style={{ color: 'var(--text-muted-soft)', lineHeight: 0 }}
+                >
+                  {showPassword
+                    ? <EyeOff className="w-4.5 h-4.5" />
+                    : <Eye className="w-4.5 h-4.5" />}
+                </button>
+              </div>
+            </div>
 
-        <div className="text-center mt-6">
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              disabled={loading}
+              className={`w-full mt-1 ${buttonStyles({ variant: 'default', size: 'lg' })}`}
+              style={{
+                backgroundColor: CTA_DARK.bg,
+                color: '#fff',
+                fontWeight: 600,
+                fontSize: 15,
+                boxShadow: CTA_DARK.shadow,
+                opacity: loading ? 0.7 : 1,
+              }}
+            >
+              {loading
+                ? '...'
+                : isLogin
+                ? t('auth.signInBtn', 'Нэвтрэх')
+                : t('auth.createAccountBtn', 'Бүртгүүлэх')}
+            </motion.button>
+          </form>
+        </div>
+
+        {/* Switch link */}
+        <div className="text-center mt-5 mb-8">
           {isLogin ? (
-            <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
+            <p style={{ ...TYPOGRAPHY.caption, color: 'var(--text-soft)' }}>
               {t('auth.noAccount', 'Бүртгэл байхгүй юу?')}{' '}
-              <button onClick={() => navigate('/signup')} className={buttonStyles({ variant: 'link', size: 'inline' })}>
+              <button
+                onClick={() => navigate('/signup')}
+                style={{ color: 'var(--primary)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}
+              >
                 {t('auth.signUp', 'Бүртгүүлэх')}
               </button>
             </p>
           ) : (
-            <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
+            <p style={{ ...TYPOGRAPHY.caption, color: 'var(--text-soft)' }}>
               {t('auth.hasAccount', 'Бүртгэлтэй юу?')}{' '}
-              <button onClick={() => navigate('/login')} className={buttonStyles({ variant: 'link', size: 'inline' })}>
+              <button
+                onClick={() => navigate('/login')}
+                style={{ color: 'var(--primary)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}
+              >
                 {t('auth.signInLink', 'Нэвтрэх')}
               </button>
             </p>

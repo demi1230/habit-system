@@ -28,10 +28,14 @@ export type AggregateUser = {
 
 export type UserAvgAggregateOutputType = {
   totalXp: number | null
+  currentLat: number | null
+  currentLng: number | null
 }
 
 export type UserSumAggregateOutputType = {
   totalXp: number | null
+  currentLat: number | null
+  currentLng: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -40,6 +44,8 @@ export type UserMinAggregateOutputType = {
   passwordHash: string | null
   displayName: string | null
   totalXp: number | null
+  currentLat: number | null
+  currentLng: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +56,8 @@ export type UserMaxAggregateOutputType = {
   passwordHash: string | null
   displayName: string | null
   totalXp: number | null
+  currentLat: number | null
+  currentLng: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +68,8 @@ export type UserCountAggregateOutputType = {
   passwordHash: number
   displayName: number
   totalXp: number
+  currentLat: number
+  currentLng: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -68,10 +78,14 @@ export type UserCountAggregateOutputType = {
 
 export type UserAvgAggregateInputType = {
   totalXp?: true
+  currentLat?: true
+  currentLng?: true
 }
 
 export type UserSumAggregateInputType = {
   totalXp?: true
+  currentLat?: true
+  currentLng?: true
 }
 
 export type UserMinAggregateInputType = {
@@ -80,6 +94,8 @@ export type UserMinAggregateInputType = {
   passwordHash?: true
   displayName?: true
   totalXp?: true
+  currentLat?: true
+  currentLng?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -90,6 +106,8 @@ export type UserMaxAggregateInputType = {
   passwordHash?: true
   displayName?: true
   totalXp?: true
+  currentLat?: true
+  currentLng?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -100,6 +118,8 @@ export type UserCountAggregateInputType = {
   passwordHash?: true
   displayName?: true
   totalXp?: true
+  currentLat?: true
+  currentLng?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -197,6 +217,8 @@ export type UserGroupByOutputType = {
   passwordHash: string
   displayName: string | null
   totalXp: number
+  currentLat: number | null
+  currentLng: number | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -230,6 +252,8 @@ export type UserWhereInput = {
   passwordHash?: Prisma.StringFilter<"User"> | string
   displayName?: Prisma.StringNullableFilter<"User"> | string | null
   totalXp?: Prisma.IntFilter<"User"> | number
+  currentLat?: Prisma.FloatNullableFilter<"User"> | number | null
+  currentLng?: Prisma.FloatNullableFilter<"User"> | number | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   habits?: Prisma.HabitListRelationFilter
@@ -251,6 +275,8 @@ export type UserOrderByWithRelationInput = {
   passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
   totalXp?: Prisma.SortOrder
+  currentLat?: Prisma.SortOrderInput | Prisma.SortOrder
+  currentLng?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   habits?: Prisma.HabitOrderByRelationAggregateInput
@@ -275,6 +301,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   passwordHash?: Prisma.StringFilter<"User"> | string
   displayName?: Prisma.StringNullableFilter<"User"> | string | null
   totalXp?: Prisma.IntFilter<"User"> | number
+  currentLat?: Prisma.FloatNullableFilter<"User"> | number | null
+  currentLng?: Prisma.FloatNullableFilter<"User"> | number | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   habits?: Prisma.HabitListRelationFilter
@@ -296,6 +324,8 @@ export type UserOrderByWithAggregationInput = {
   passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
   totalXp?: Prisma.SortOrder
+  currentLat?: Prisma.SortOrderInput | Prisma.SortOrder
+  currentLng?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -314,6 +344,8 @@ export type UserScalarWhereWithAggregatesInput = {
   passwordHash?: Prisma.StringWithAggregatesFilter<"User"> | string
   displayName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   totalXp?: Prisma.IntWithAggregatesFilter<"User"> | number
+  currentLat?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
+  currentLng?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -324,6 +356,8 @@ export type UserCreateInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -345,6 +379,8 @@ export type UserUncheckedCreateInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -366,6 +402,8 @@ export type UserUpdateInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -387,6 +425,8 @@ export type UserUncheckedUpdateInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -408,6 +448,8 @@ export type UserCreateManyInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -418,6 +460,8 @@ export type UserUpdateManyMutationInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -428,6 +472,8 @@ export type UserUncheckedUpdateManyInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -438,12 +484,16 @@ export type UserCountOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   totalXp?: Prisma.SortOrder
+  currentLat?: Prisma.SortOrder
+  currentLng?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
   totalXp?: Prisma.SortOrder
+  currentLat?: Prisma.SortOrder
+  currentLng?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -452,6 +502,8 @@ export type UserMaxOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   totalXp?: Prisma.SortOrder
+  currentLat?: Prisma.SortOrder
+  currentLng?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -462,12 +514,16 @@ export type UserMinOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   totalXp?: Prisma.SortOrder
+  currentLat?: Prisma.SortOrder
+  currentLng?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
   totalXp?: Prisma.SortOrder
+  currentLat?: Prisma.SortOrder
+  currentLng?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -485,6 +541,14 @@ export type NullableStringFieldUpdateOperationsInput = {
 
 export type IntFieldUpdateOperationsInput = {
   set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
   increment?: number
   decrement?: number
   multiply?: number
@@ -655,6 +719,8 @@ export type UserCreateWithoutHabitsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
@@ -675,6 +741,8 @@ export type UserUncheckedCreateWithoutHabitsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
@@ -711,6 +779,8 @@ export type UserUpdateWithoutHabitsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
@@ -731,6 +801,8 @@ export type UserUncheckedUpdateWithoutHabitsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
@@ -751,6 +823,8 @@ export type UserCreateWithoutDifficultyFeedbackInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -771,6 +845,8 @@ export type UserUncheckedCreateWithoutDifficultyFeedbackInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -807,6 +883,8 @@ export type UserUpdateWithoutDifficultyFeedbackInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -827,6 +905,8 @@ export type UserUncheckedUpdateWithoutDifficultyFeedbackInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -847,6 +927,8 @@ export type UserCreateWithoutReflectionsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -867,6 +949,8 @@ export type UserUncheckedCreateWithoutReflectionsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -903,6 +987,8 @@ export type UserUpdateWithoutReflectionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -923,6 +1009,8 @@ export type UserUncheckedUpdateWithoutReflectionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -943,6 +1031,8 @@ export type UserCreateWithoutActivityLogsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -963,6 +1053,8 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -999,6 +1091,8 @@ export type UserUpdateWithoutActivityLogsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1019,6 +1113,8 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1039,6 +1135,8 @@ export type UserCreateWithoutRemindersInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1059,6 +1157,8 @@ export type UserUncheckedCreateWithoutRemindersInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1095,6 +1195,8 @@ export type UserUpdateWithoutRemindersInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1115,6 +1217,8 @@ export type UserUncheckedUpdateWithoutRemindersInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1135,6 +1239,8 @@ export type UserCreateWithoutReminderActionsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1155,6 +1261,8 @@ export type UserUncheckedCreateWithoutReminderActionsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1191,6 +1299,8 @@ export type UserUpdateWithoutReminderActionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1211,6 +1321,8 @@ export type UserUncheckedUpdateWithoutReminderActionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1231,6 +1343,8 @@ export type UserCreateWithoutAdaptationRecommendationsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1251,6 +1365,8 @@ export type UserUncheckedCreateWithoutAdaptationRecommendationsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1287,6 +1403,8 @@ export type UserUpdateWithoutAdaptationRecommendationsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1307,6 +1425,8 @@ export type UserUncheckedUpdateWithoutAdaptationRecommendationsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1327,6 +1447,8 @@ export type UserCreateWithoutArticleInteractionsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1347,6 +1469,8 @@ export type UserUncheckedCreateWithoutArticleInteractionsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1383,6 +1507,8 @@ export type UserUpdateWithoutArticleInteractionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1403,6 +1529,8 @@ export type UserUncheckedUpdateWithoutArticleInteractionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1423,6 +1551,8 @@ export type UserCreateWithoutRecommendationInteractionsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1443,6 +1573,8 @@ export type UserUncheckedCreateWithoutRecommendationInteractionsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1479,6 +1611,8 @@ export type UserUpdateWithoutRecommendationInteractionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1499,6 +1633,8 @@ export type UserUncheckedUpdateWithoutRecommendationInteractionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1519,6 +1655,8 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1539,6 +1677,8 @@ export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1575,6 +1715,8 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1595,6 +1737,8 @@ export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1615,6 +1759,8 @@ export type UserCreateWithoutBadgesInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1635,6 +1781,8 @@ export type UserUncheckedCreateWithoutBadgesInput = {
   passwordHash: string
   displayName?: string | null
   totalXp?: number
+  currentLat?: number | null
+  currentLng?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1671,6 +1819,8 @@ export type UserUpdateWithoutBadgesInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1691,6 +1841,8 @@ export type UserUncheckedUpdateWithoutBadgesInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1832,6 +1984,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   passwordHash?: boolean
   displayName?: boolean
   totalXp?: boolean
+  currentLat?: boolean
+  currentLng?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   habits?: boolean | Prisma.User$habitsArgs<ExtArgs>
@@ -1854,6 +2008,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   passwordHash?: boolean
   displayName?: boolean
   totalXp?: boolean
+  currentLat?: boolean
+  currentLng?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1864,6 +2020,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   passwordHash?: boolean
   displayName?: boolean
   totalXp?: boolean
+  currentLat?: boolean
+  currentLng?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1874,11 +2032,13 @@ export type UserSelectScalar = {
   passwordHash?: boolean
   displayName?: boolean
   totalXp?: boolean
+  currentLat?: boolean
+  currentLng?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "displayName" | "totalXp" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "displayName" | "totalXp" | "currentLat" | "currentLng" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habits?: boolean | Prisma.User$habitsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.User$activityLogsArgs<ExtArgs>
@@ -1917,6 +2077,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     passwordHash: string
     displayName: string | null
     totalXp: number
+    currentLat: number | null
+    currentLng: number | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -2358,6 +2520,8 @@ export interface UserFieldRefs {
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly displayName: Prisma.FieldRef<"User", 'String'>
   readonly totalXp: Prisma.FieldRef<"User", 'Int'>
+  readonly currentLat: Prisma.FieldRef<"User", 'Float'>
+  readonly currentLng: Prisma.FieldRef<"User", 'Float'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

@@ -340,6 +340,8 @@ export class HabitsService {
       startTime: cue.startTime ?? null,
       endTime: cue.endTime ?? null,
       coarseLocation: cue.coarseLocation ?? null,
+      locationLat: cue.locationLat ?? null,
+      locationLng: cue.locationLng ?? null,
       precedingRoutine: cue.precedingRoutine ?? null,
       isActive: cue.isActive ?? true,
     };
@@ -356,13 +358,18 @@ export class HabitsService {
 
   /** Convert structured reminder settings → cue rows for internal storage. */
   private buildCuesFromReminder(
-    reminder?: { timeWindows?: Array<{ startTime: string; endTime: string }>; locations?: string[] },
+    reminder?: {
+      timeWindows?: Array<{ startTime: string; endTime: string }>;
+      locations?: Array<{ label?: string; lat: number; lng: number }>;
+    },
   ) {
     if (!reminder) return undefined;
     const cues: Array<{
       startTime: string | null;
       endTime: string | null;
       coarseLocation: string | null;
+      locationLat: number | null;
+      locationLng: number | null;
       precedingRoutine: string | null;
       isActive: boolean;
     }> = [];
@@ -372,6 +379,8 @@ export class HabitsService {
         startTime: tw.startTime,
         endTime: tw.endTime,
         coarseLocation: null,
+        locationLat: null,
+        locationLng: null,
         precedingRoutine: null,
         isActive: true,
       });
@@ -380,7 +389,9 @@ export class HabitsService {
       cues.push({
         startTime: null,
         endTime: null,
-        coarseLocation: loc,
+        coarseLocation: loc.label ?? null,
+        locationLat: loc.lat,
+        locationLng: loc.lng,
         precedingRoutine: null,
         isActive: true,
       });

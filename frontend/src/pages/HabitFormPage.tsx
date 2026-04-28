@@ -20,8 +20,8 @@ const DAYS_EN: Weekday[] = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDA
 const UNITS = ['удаа', 'мин', 'хуудас', 'литр', 'км', 'шил', 'хэсэг'];
 const EMOJIS = ['🧘', '💪', '❤️', '📚', '🎨', '⚡', '🤝', '💰', '🏃', '🎵', '🌿', '🍎', '💧', '✍️', '🧠', '😴'];
 const BENEFIT_SUGGESTIONS = [
-  'Тайвшруулна', 'Төвлөрөл сайжруулна', 'Эрч хүч нэмнэ',
-  'Эрүүл мэнд дэмжинэ', 'Өөрийгөө сайжруулна', 'Бүтээмж нэмэгдэнэ',
+  'Тайвшруулах', 'Төвлөрөл сайжруулах', 'Эрч хүч нэмэх',
+  'Эрүүл мэнд дэмжих', 'Анхаарал төвлөрүүлэх', 'Бүтээмж нэмэх',
 ];
 
 // â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -261,7 +261,9 @@ export function HabitFormPage({
       reminder: {
         enabled: reminderEnabled,
         timeWindows: twPayload.length > 0 ? twPayload : undefined,
-        locations: selectedLocations.length > 0 ? selectedLocations.map(l => l.label) : undefined,
+        locations: selectedLocations.length > 0
+          ? selectedLocations.map(l => ({ lat: l.lat, lng: l.lng, label: l.label }))
+          : undefined,
       },
     };
 
@@ -358,12 +360,12 @@ export function HabitFormPage({
           </motion.div>
         </div>
 
-        <FormSection label="САНУУЛГЫН PREVIEW">
+        <FormSection label="Сануулгын бэлдэц">
           <div className="px-4 py-3 flex flex-col gap-3">
             {[
-              { label: 'Base', text: reminderPreview.base },
-              { label: 'Cue + reason', text: reminderPreview.cueAndReason },
-              { label: 'Cue + benefits', text: reminderPreview.cueAndBenefits },
+              { label: 'Үндсэн', text: reminderPreview.base },
+              { label: 'Өдөөгч + шалтгаан', text: reminderPreview.cueAndReason },
+              { label: 'Өдөөгч + ашиг тус', text: reminderPreview.cueAndBenefits },
             ].map((variant) => (
               <div key={variant.label} className="rounded-[16px] px-3 py-3"
                 style={{ backgroundColor: 'var(--surface-subtle)' }}>
@@ -479,7 +481,7 @@ export function HabitFormPage({
         <FormSection label="ЖИЖИГ АЛХАМУУД">
           <div className="px-4 py-3 flex flex-col gap-3">
             <p style={TYPOGRAPHY.caption} className="text-muted-foreground">
-              Хүсвэл 1-5 жижиг алхам болгон хувааж хадгалж болно.
+              Жижиг алхмуудыг тодорхой болгосноор дадал илүү бодитой, амархан эхлэх боломжтой болно. 
             </p>
             {steps.map((step, index) => (
               <div key={index} className="flex items-center gap-2">
@@ -575,12 +577,7 @@ export function HabitFormPage({
                       <AppPlusIcon className="w-3.5 h-3.5" style={{ color: color.accent }} />
                     </motion.button>
                   </div>
-                  {timeWindows.length === 0 && (
-                    <p className="text-muted-foreground flex items-center gap-1.5" style={TYPOGRAPHY.caption}>
-                      <AppPlusIcon className="w-3 h-3 shrink-0" style={{ color: 'var(--text-muted-soft)' }} />
-                      <span>дарж цагийн хүрээ нэмнэ</span>
-                    </p>
-                  )}
+
                   <div className="flex flex-col gap-2">
                     {timeWindows.map((tw, i) => (
                       <div key={i} className="flex items-center gap-2">
@@ -655,7 +652,7 @@ export function HabitFormPage({
             <div className="flex gap-1.5">
               {(['binary', 'measurable'] as const).map(t => (
                 <Chip key={t}
-                  label={t === 'binary' ? 'Тийм/Үгүй' : 'Хэмжигдэхүйц'}
+                  label={t === 'binary' ? 'Хийсэн/Хийгээгүй' : 'Хэмжигдэхүйц'}
                   active={habitType === t} accentColor={color.btn} small
                   onTap={() => setHabitType(t)} />
               ))}
