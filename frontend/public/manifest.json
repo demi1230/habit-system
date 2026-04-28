@@ -1,0 +1,20 @@
+{
+  "name": "Дадлага — Зуршил бүтээх систем",
+  "short_name": "Дадлага",
+  "description": "Дадлын зуршлыг бүтээх, хянах апп",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#14161A",
+  "theme_color": "#14161A",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "mn",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
