@@ -390,7 +390,7 @@ export async function mockRequest<T>(path: string, options: RequestInit = {}): P
         sentAt: null,
         deliveredAt: null,
         effectiveUntil: new Date(Date.now() + (snoozeMinutes + 60) * 60 * 1000).toISOString(),
-        explanation: { source: 'mock-snooze', snoozeMinutes },
+        explanation: { isScheduledToday: true, activeCueCount: 1 },
         createdAt: nowIso(),
       };
       reminders.unshift(followUp);
