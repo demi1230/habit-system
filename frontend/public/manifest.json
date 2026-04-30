@@ -1,7 +1,7 @@
 {
-  "name": "Дадлага — Зуршил бүтээх систем",
-  "short_name": "Дадлага",
-  "description": "Дадлын зуршлыг бүтээх, хянах апп",
+  "name": "Dadal — Дадал бүтээх систем",
+  "short_name": "Dadal",
+  "description": "Дадал бүтээх, хянах апп",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#14161A",
@@ -11,9 +11,9 @@
   "lang": "mn",
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icon192.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]

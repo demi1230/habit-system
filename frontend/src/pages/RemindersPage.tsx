@@ -8,7 +8,11 @@ import { remindersApi, type Reminder } from '@/api/reminders';
 import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
 
 function formatTime(iso: string) {
-  return new Date(iso).toLocaleTimeString('mn-MN', { hour: '2-digit', minute: '2-digit' });
+  const utcDate = new Date(iso);
+  // Ensure display is always in Mongolia time (UTC+8)
+  const mongoliaOffset = 8 * 60 * 60 * 1000;
+  const mongoliaTime = new Date(utcDate.getTime() - mongoliaOffset);
+  return mongoliaTime.toLocaleTimeString('mn-MN', { hour: '2-digit', minute: '2-digit' });
 }
 
 function ReminderCard({

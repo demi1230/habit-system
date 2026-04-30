@@ -122,8 +122,12 @@ export class ReminderExecutionService {
       );
     }
 
-    const scheduledFor = now;
-    const effectiveUntil = new Date(now.getTime() + cooldownMinutes * 60_000);
+    // Convert UTC to Mongolia time (UTC+8)
+    const mongoliaOffset = 8 * 60 * 60 * 1000;
+    const scheduledFor = new Date(now.getTime() + mongoliaOffset);
+    const effectiveUntil = new Date(
+      now.getTime() + mongoliaOffset + cooldownMinutes * 60_000,
+    );
     const message = this.reminderMessageBuilder.build(habit);
 
     // Persist PENDING reminder
