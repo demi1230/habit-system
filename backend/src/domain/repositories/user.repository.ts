@@ -7,6 +7,7 @@ export interface CreateUserData {
   email: string;
   passwordHash: string;
   displayName?: string | null;
+  timezone?: string | null;
 }
 
 /**
@@ -17,7 +18,14 @@ export interface IUserRepository {
   findById(id: string): Promise<UserEntity | null>;
   create(
     data: CreateUserData,
-  ): Promise<Pick<UserEntity, 'id' | 'email' | 'displayName' | 'createdAt'>>;
+  ): Promise<
+    Pick<UserEntity, 'id' | 'email' | 'displayName' | 'timezone' | 'createdAt'>
+  >;
   updatePassword(userId: string, passwordHash: string): Promise<void>;
-  updateLocation(userId: string, lat: number | null, lng: number | null): Promise<void>;
+  updateLocation(
+    userId: string,
+    lat: number | null,
+    lng: number | null,
+  ): Promise<void>;
+  updateTimezone(userId: string, timezone: string): Promise<void>;
 }
