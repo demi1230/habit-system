@@ -1,4 +1,10 @@
-import { IsEnum, IsOptional, IsString, IsUUID, IsDateString } from 'class-validator';
+import {
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsUUID,
+  IsDateString,
+} from 'class-validator';
 import {
   RecommendationInteractionType,
   ArticleInteractionType,

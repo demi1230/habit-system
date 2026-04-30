@@ -16,9 +16,7 @@ export interface CreateArticleInteractionData {
 }
 
 export interface IArticleInteractionRepository {
-  create(
-    data: CreateArticleInteractionData,
-  ): Promise<ArticleInteractionEntity>;
+  create(data: CreateArticleInteractionData): Promise<ArticleInteractionEntity>;
   findByUserAndArticle(
     userId: string,
     articleId: string,

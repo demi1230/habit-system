@@ -7,12 +7,17 @@ import { useHabitLogs } from '@/context/HabitLogsContext';
 import { remindersApi, type Reminder } from '@/api/reminders';
 import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
 
+// v1 displays reminder times in Asia/Ulaanbaatar regardless of the viewer's
+// device locale. Future per-user timezone support can read this from the
+// authenticated user instead of hard-coding the constant.
+const APP_TIMEZONE = 'Asia/Ulaanbaatar';
+
 function formatTime(iso: string) {
-  const utcDate = new Date(iso);
-  // Ensure display is always in Mongolia time (UTC+8)
-  const mongoliaOffset = 8 * 60 * 60 * 1000;
-  const mongoliaTime = new Date(utcDate.getTime() - mongoliaOffset);
-  return mongoliaTime.toLocaleTimeString('mn-MN', { hour: '2-digit', minute: '2-digit' });
+  return new Date(iso).toLocaleTimeString('mn-MN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: APP_TIMEZONE,
+  });
 }
 
 function ReminderCard({

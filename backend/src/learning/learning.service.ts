@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import type { IAdaptationRecommendationRepository } from '../domain/repositories/adaptation-recommendation.repository';
 import { ADAPTATION_RECOMMENDATION_REPOSITORY } from '../domain/repositories/adaptation-recommendation.repository';
 import type { IArticleInteractionRepository } from '../domain/repositories/article-interaction.repository';
@@ -36,15 +41,9 @@ export class LearningService {
   /**
    * Get active recommendations for a user, optionally filtered by habitId.
    */
-  async getRecommendations(
-    userId: string,
-    habitId?: string,
-  ): Promise<any[]> {
+  async getRecommendations(userId: string, habitId?: string): Promise<any[]> {
     if (habitId) {
-      return this.recommendationRepo.findActiveByUserAndHabit(
-        userId,
-        habitId,
-      );
+      return this.recommendationRepo.findActiveByUserAndHabit(userId, habitId);
     }
     return this.recommendationRepo.findActiveByUser(userId);
   }
@@ -88,10 +87,9 @@ export class LearningService {
     const rec = await this.getRecommendationById(userId, recommendationId);
 
     // Update status to DISMISSED
-    const updated = await this.recommendationRepo.update(
-      recommendationId,
-      { status: RecommendationStatus.DISMISSED },
-    );
+    const updated = await this.recommendationRepo.update(recommendationId, {
+      status: RecommendationStatus.DISMISSED,
+    });
 
     // Log interaction
     await this.recommendationInteractionRepo.create({
@@ -115,7 +113,11 @@ export class LearningService {
     await this.getRecommendationById(userId, recommendationId);
 
     // Validate interaction type
-    if (!Object.values(RecommendationInteractionType).includes(dto.interactionType)) {
+    if (
+      !Object.values(RecommendationInteractionType).includes(
+        dto.interactionType,
+      )
+    ) {
       throw new BadRequestException('Invalid interaction type');
     }
 

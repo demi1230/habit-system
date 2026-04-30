@@ -5,7 +5,8 @@ export class CreateHabitMotivationProfileDto {
   @ApiPropertyOptional({
     example: 'health',
     maxLength: 40,
-    description: 'Category tag for color-coding (e.g. health, creativity, mindset)',
+    description:
+      'Category tag for color-coding (e.g. health, creativity, mindset)',
   })
   @IsOptional()
   @IsString()

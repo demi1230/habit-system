@@ -93,10 +93,7 @@ export class LearningController {
     @Param('userId', new ParseUUIDPipe()) userId: string,
     @Param('recommendationId', new ParseUUIDPipe()) recommendationId: string,
   ) {
-    return this.learningService.dismissRecommendation(
-      userId,
-      recommendationId,
-    );
+    return this.learningService.dismissRecommendation(userId, recommendationId);
   }
 }
 

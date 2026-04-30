@@ -8,9 +8,7 @@ import { SourceType } from '../../domain/enums/domain.enums';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
-export class ArticleInteractionPrismaRepository
-  implements IArticleInteractionRepository
-{
+export class ArticleInteractionPrismaRepository implements IArticleInteractionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(

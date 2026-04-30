@@ -1,11 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type {
-  IDifficultyFeedbackRepository,
-} from '../domain/repositories/difficulty-feedback.repository';
+import type { IDifficultyFeedbackRepository } from '../domain/repositories/difficulty-feedback.repository';
 import { DIFFICULTY_FEEDBACK_REPOSITORY } from '../domain/repositories/difficulty-feedback.repository';
-import type {
-  IReflectionRepository,
-} from '../domain/repositories/reflection.repository';
+import type { IReflectionRepository } from '../domain/repositories/reflection.repository';
 import { REFLECTION_REPOSITORY } from '../domain/repositories/reflection.repository';
 import type { IHabitLogRepository } from '../domain/repositories/habit-log.repository';
 import { HABIT_LOG_REPOSITORY } from '../domain/repositories/habit-log.repository';
@@ -16,11 +12,17 @@ import {
   AdaptationRecommendation,
 } from '../domain/rules/adaptation.rules';
 import { HabitStrengthRules } from '../domain/rules/habit-strength.rules';
-import { DifficultyRating, SubmitDifficultyDto } from './dto/submit-difficulty.dto';
+import {
+  DifficultyRating,
+  SubmitDifficultyDto,
+} from './dto/submit-difficulty.dto';
 import { SubmitReflectionDto } from './dto/submit-reflection.dto';
 import { HabitsService } from '../habits/habits.service';
 import { SrbaiService } from '../habits/srbai.service';
-import { CompletionTriggerSource, HabitLogStatus } from '../domain/enums/domain.enums';
+import {
+  CompletionTriggerSource,
+  HabitLogStatus,
+} from '../domain/enums/domain.enums';
 
 const DIFFICULTY_SCORE: Record<DifficultyRating, number> = {
   [DifficultyRating.VERY_EASY]: 1,
@@ -169,20 +171,17 @@ export class FeedbackService {
       (l) => l.triggerSource === CompletionTriggerSource.REMINDER_TRIGGERED,
     ).length;
     const selfInitiatedRate =
-      doneCount > 0
-        ? Math.round((selfInitCount / doneCount) * 1000) / 1000
-        : 0;
+      doneCount > 0 ? Math.round((selfInitCount / doneCount) * 1000) / 1000 : 0;
     const reminderDependenceRate =
-      doneCount > 0
-        ? Math.round((reminderCount / doneCount) * 1000) / 1000
-        : 0;
+      doneCount > 0 ? Math.round((reminderCount / doneCount) * 1000) / 1000 : 0;
 
     // Derive recent average difficulty from last 5 entries
     let recentDifficultyLevel: DifficultyRating | null = null;
     if (recentDifficulty.length > 0) {
       const avg =
         recentDifficulty.reduce(
-          (sum, e) => sum + (DIFFICULTY_SCORE[e.rating as DifficultyRating] ?? 3),
+          (sum, e) =>
+            sum + (DIFFICULTY_SCORE[e.rating as DifficultyRating] ?? 3),
           0,
         ) / recentDifficulty.length;
       recentDifficultyLevel = REVERSE_DIFFICULTY[Math.round(avg)] ?? null;

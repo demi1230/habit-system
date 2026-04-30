@@ -71,17 +71,20 @@ export class ReminderPrismaRepository implements IReminderRepository {
   }
 
   /**
-   * Cooldown-key dedup: finds a PENDING or SENT reminder with the same
-   * cooldownKey whose effectiveUntil is still in the future.
-   * Returns null if no such reminder exists → safe to create a new one.
+   * Habit-scoped cooldown dedup: returns a PENDING or SENT reminder for the
+   * habit whose `effectiveUntil` is still in the future, or null if the
+   * cooldown window has passed → safe to create a new reminder.
+   *
+   * This is timezone-agnostic by design (we compare absolute UTC instants
+   * against `effectiveUntil`, never bucket strings).
    */
-  async findActiveByCooldownKey(
-    cooldownKey: string,
+  async findActiveByHabitId(
+    habitId: string,
     now: Date,
   ): Promise<ReminderEntity | null> {
     const result = await this.prisma.reminder.findFirst({
       where: {
-        cooldownKey,
+        habitId,
         status: { in: [ReminderStatus.PENDING, ReminderStatus.SENT] },
         effectiveUntil: { gt: now },
       } as any,

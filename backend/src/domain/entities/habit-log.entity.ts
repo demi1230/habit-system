@@ -18,7 +18,7 @@ export interface HabitLogEntity {
   /** Phase 4A: confidence score (0–1) that this source classification is correct. */
   sourceConfidence: number | null;
   /** Context snapshot fields — used for context-stability scoring. */
-  completionHour: number | null;    // 0–23
+  completionHour: number | null; // 0–23
   coarseLocation: string | null;
   precedingRoutine: string | null;
 }

@@ -43,7 +43,11 @@ export class UserPrismaRepository implements IUserRepository {
     });
   }
 
-  async updateLocation(userId: string, lat: number | null, lng: number | null): Promise<void> {
+  async updateLocation(
+    userId: string,
+    lat: number | null,
+    lng: number | null,
+  ): Promise<void> {
     await this.prisma.user.update({
       where: { id: userId },
       data: { currentLat: lat, currentLng: lng },

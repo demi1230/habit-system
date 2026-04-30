@@ -1,8 +1,5 @@
 import { HabitEntity } from '../entities/habit.entity';
-import {
-  HabitLifecycleStatus,
-  Weekday,
-} from '../enums/domain.enums';
+import { HabitLifecycleStatus, Weekday } from '../enums/domain.enums';
 
 /** Injection token for the habit repository port. */
 export const HABIT_REPOSITORY = Symbol('IHabitRepository');

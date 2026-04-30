@@ -12,12 +12,13 @@ export class ReminderMessageBuilder {
    */
   build(habit: HabitEntity, rotationSeed = Date.now()) {
     const cue =
-      habit.cues.find((item) => item.isActive && item.precedingRoutine) ??
-      null;
+      habit.cues.find((item) => item.isActive && item.precedingRoutine) ?? null;
     const precedingRoutine =
       cue?.precedingRoutine ?? habit.precedingRoutine ?? null;
     const reason = habit.motivationProfile?.reason?.trim() || null;
-    const benefits = habit.benefits.filter((benefit) => benefit.trim().length > 0);
+    const benefits = habit.benefits.filter(
+      (benefit) => benefit.trim().length > 0,
+    );
 
     const firstSentence = precedingRoutine
       ? `${precedingRoutine}-ын дараа ${habit.title} дадлаа хийгээрэй.`

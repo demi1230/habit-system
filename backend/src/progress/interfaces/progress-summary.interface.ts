@@ -1,6 +1,4 @@
-import {
-  CompletionTriggerSource,
-} from '../../domain/enums/domain.enums';
+import { CompletionTriggerSource } from '../../domain/enums/domain.enums';
 
 export interface ProgressSummary {
   totalLogs: number;

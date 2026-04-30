@@ -89,7 +89,7 @@ export class AdaptationRules {
         focus: 'increase_support',
         summary:
           'Completions are mostly reminder-triggered. Review cue configuration and motivation to build intrinsic habit strength.',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         suggestedPolicyMode: ReminderPolicyMode.FULL_SUPPORT,
         milestoneReached,
         evaluatedAt,

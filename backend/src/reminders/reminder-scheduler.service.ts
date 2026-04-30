@@ -6,6 +6,7 @@ import { ReminderExecutionService } from './reminder-execution.service';
 import { REMINDER_REPOSITORY } from '../domain/repositories/reminder.repository';
 import type { IReminderRepository } from '../domain/repositories/reminder.repository';
 import { Inject } from '@nestjs/common';
+import { nowInAppTz } from '../shared/time';
 
 @Injectable()
 export class ReminderSchedulerService {
@@ -60,7 +61,13 @@ export class ReminderSchedulerService {
       });
 
       for (const habit of habits) {
-        if (!this.isWithinAnyActiveWindow(habit.cues, habit.user.currentLat, habit.user.currentLng)) {
+        if (
+          !this.isWithinAnyActiveWindow(
+            habit.cues,
+            habit.user.currentLat,
+            habit.user.currentLng,
+          )
+        ) {
           continue;
         }
 
@@ -126,14 +133,20 @@ export class ReminderSchedulerService {
       return false;
     }
 
-    const now = new Date();
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    // Compute the current wall-clock time in the application timezone, not
+    // the server's local timezone — Railway and most cloud hosts run in UTC,
+    // so `new Date().getHours()` would otherwise produce the wrong window.
+    const local = nowInAppTz();
+    const currentMinutes = local.hour * 60 + local.minute;
 
     return activeCues.some((cue) => {
       // GPS location gate: cue has precise coordinates → user must be within 100 m
       if (cue.locationLat !== null && cue.locationLng !== null) {
         if (userLat === null || userLng === null) return false;
-        if (!this.isWithin100m(userLat, userLng, cue.locationLat, cue.locationLng)) return false;
+        if (
+          !this.isWithin100m(userLat, userLng, cue.locationLat, cue.locationLng)
+        )
+          return false;
       }
 
       // Time window check
@@ -156,8 +169,10 @@ export class ReminderSchedulerService {
 
   /** Returns true if two GPS points are within 100 metres of each other (Haversine). */
   private isWithin100m(
-    lat1: number, lng1: number,
-    lat2: number, lng2: number,
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number,
     thresholdMetres = 100,
   ): boolean {
     const R = 6_371_000; // Earth radius in metres

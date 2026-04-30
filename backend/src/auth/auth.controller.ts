@@ -18,7 +18,6 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
-import { UpdateTimezoneDto } from './dto/update-timezone.dto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 
@@ -76,21 +75,5 @@ export class AuthController {
     const lat = dto.lat ?? null;
     const lng = dto.lng ?? null;
     return this.authService.updateLocation(userId, lat, lng);
-  }
-
-  @Patch('users/:userId/timezone')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'Update user timezone used for local reminder scheduling',
-  })
-  @ApiResponse({ status: 204, description: 'Timezone updated.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  updateTimezone(
-    @Param('userId') userId: string,
-    @Body() dto: UpdateTimezoneDto,
-  ) {
-    return this.authService.updateTimezone(userId, dto);
   }
 }

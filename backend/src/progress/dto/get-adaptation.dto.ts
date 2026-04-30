@@ -5,7 +5,8 @@ import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 export class GetAdaptationDto {
   @ApiPropertyOptional({
     example: 72.5,
-    description: 'Composite habit-strength score (0–100). Omit if not yet assessed.',
+    description:
+      'Composite habit-strength score (0–100). Omit if not yet assessed.',
     minimum: 0,
     maximum: 100,
   })

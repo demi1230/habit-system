@@ -1,4 +1,9 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../../generated/prisma/client';
@@ -46,7 +51,9 @@ export class PrismaService
         'Prisma runtime is using Accelerate URL from DATABASE_URL.',
       );
     } else {
-      this.logger.log('Prisma runtime is using direct PostgreSQL driver adapter.');
+      this.logger.log(
+        'Prisma runtime is using direct PostgreSQL driver adapter.',
+      );
     }
 
     this.runtimeUrl = runtimeUrl;
@@ -58,7 +65,10 @@ export class PrismaService
     try {
       await this.$connect();
     } catch (error) {
-      const prismaError = error as { code?: string; meta?: { message?: string } };
+      const prismaError = error as {
+        code?: string;
+        meta?: { message?: string };
+      };
 
       if (this.usesAccelerate && prismaError.code === 'P6002') {
         throw new Error(

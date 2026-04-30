@@ -30,8 +30,10 @@ import { AuthService } from '../auth/auth.service';
 export class HabitsService {
   constructor(
     @Inject(HABIT_REPOSITORY) private readonly habitRepo: IHabitRepository,
-    @Inject(HABIT_LOG_REPOSITORY) private readonly habitLogRepo: IHabitLogRepository,
-    @Inject(SRBAI_ASSESSMENT_REPOSITORY) private readonly srbaiRepo: ISrbaiAssessmentRepository,
+    @Inject(HABIT_LOG_REPOSITORY)
+    private readonly habitLogRepo: IHabitLogRepository,
+    @Inject(SRBAI_ASSESSMENT_REPOSITORY)
+    private readonly srbaiRepo: ISrbaiAssessmentRepository,
     private readonly authService: AuthService,
     private readonly analyticsService: AnalyticsService,
   ) {}
@@ -47,8 +49,9 @@ export class HabitsService {
       false;
 
     // Build cues: prefer explicit cues[], otherwise derive from reminder settings
-    const cues = createHabitDto.cues?.map((c) => this.buildCuePayload(c))
-      ?? this.buildCuesFromReminder(createHabitDto.reminder);
+    const cues =
+      createHabitDto.cues?.map((c) => this.buildCuePayload(c)) ??
+      this.buildCuesFromReminder(createHabitDto.reminder);
 
     // Build motivation profile: merge top-level reason into motivationProfile
     const motivationProfile = this.mergeMotivationProfile(
@@ -115,8 +118,7 @@ export class HabitsService {
     this.validateHabitConfiguration({
       minimumTarget:
         updateHabitDto.minimumTarget ?? existingHabit.minimumTarget,
-      targetValue:
-        updateHabitDto.targetValue ?? existingHabit.targetValue,
+      targetValue: updateHabitDto.targetValue ?? existingHabit.targetValue,
       scheduleDays:
         updateHabitDto.scheduleDays ??
         existingHabit.scheduleDays.map((d) => ({ weekday: d.weekday })),
@@ -129,17 +131,21 @@ export class HabitsService {
     });
 
     const reminderEnabled =
-      updateHabitDto.reminderEnabled ??
-      updateHabitDto.reminder?.enabled;
+      updateHabitDto.reminderEnabled ?? updateHabitDto.reminder?.enabled;
 
-    const cues = updateHabitDto.cues?.map((c) => this.buildCuePayload(c))
-      ?? (updateHabitDto.reminder
+    const cues =
+      updateHabitDto.cues?.map((c) => this.buildCuePayload(c)) ??
+      (updateHabitDto.reminder
         ? this.buildCuesFromReminder(updateHabitDto.reminder)
         : undefined);
 
     const motivationProfile =
-      updateHabitDto.motivationProfile !== undefined || updateHabitDto.reason !== undefined
-        ? this.mergeMotivationProfile(updateHabitDto.motivationProfile, updateHabitDto.reason)
+      updateHabitDto.motivationProfile !== undefined ||
+      updateHabitDto.reason !== undefined
+        ? this.mergeMotivationProfile(
+            updateHabitDto.motivationProfile,
+            updateHabitDto.reason,
+          )
         : undefined;
 
     const updatedHabit = await this.habitRepo.update(habitId, {
@@ -233,8 +239,9 @@ export class HabitsService {
               currentStreak++;
             } else {
               // Today with no log yet doesn't break streak
-              if (i === 0 && !status) { /* skip today */ }
-              else break;
+              if (i === 0 && !status) {
+                /* skip today */
+              } else break;
             }
           }
           cursor.setDate(cursor.getDate() - 1);
@@ -272,7 +279,9 @@ export class HabitsService {
 
         return {
           ...habit,
-          cueContext: habit.cues.map((cue) => CueScheduleRules.evaluateCue(cue)),
+          cueContext: habit.cues.map((cue) =>
+            CueScheduleRules.evaluateCue(cue),
+          ),
           currentStreak,
           strengthScore,
           todayLog: todayLogByHabitId.get(habit.id) ?? null,
@@ -357,12 +366,10 @@ export class HabitsService {
   }
 
   /** Convert structured reminder settings → cue rows for internal storage. */
-  private buildCuesFromReminder(
-    reminder?: {
-      timeWindows?: Array<{ startTime: string; endTime: string }>;
-      locations?: Array<{ label?: string; lat: number; lng: number }>;
-    },
-  ) {
+  private buildCuesFromReminder(reminder?: {
+    timeWindows?: Array<{ startTime: string; endTime: string }>;
+    locations?: Array<{ label?: string; lat: number; lng: number }>;
+  }) {
     if (!reminder) return undefined;
     const cues: Array<{
       startTime: string | null;
@@ -412,9 +419,7 @@ export class HabitsService {
     };
   }
 
-  private normalizeSteps(
-    steps?: Array<{ title: string; orderIndex: number }>,
-  ) {
+  private normalizeSteps(steps?: Array<{ title: string; orderIndex: number }>) {
     if (!steps) return undefined;
 
     return [...steps]

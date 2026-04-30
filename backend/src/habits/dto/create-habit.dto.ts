@@ -49,7 +49,8 @@ export class CreateHabitDto {
   @ApiPropertyOptional({
     example: 'Өдрийг тайван эхлүүлэхийн тулд',
     maxLength: 500,
-    description: 'Why the user wants this habit — stored in motivationProfile.reason',
+    description:
+      'Why the user wants this habit — stored in motivationProfile.reason',
   })
   @IsOptional()
   @IsString()
@@ -100,7 +101,8 @@ export class CreateHabitDto {
 
   @ApiProperty({
     example: 5,
-    description: 'Ideal target value. Completion is DONE when actualValue >= targetValue.',
+    description:
+      'Ideal target value. Completion is DONE when actualValue >= targetValue.',
   })
   @Type(() => Number)
   @IsNumber()

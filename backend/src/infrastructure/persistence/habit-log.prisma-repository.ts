@@ -97,7 +97,11 @@ export class HabitLogPrismaRepository implements IHabitLogRepository {
         completedAt: true,
         loggedAt: true,
       },
-      orderBy: [{ habitId: 'asc' }, { completedAt: 'desc' }, { loggedAt: 'desc' }],
+      orderBy: [
+        { habitId: 'asc' },
+        { completedAt: 'desc' },
+        { loggedAt: 'desc' },
+      ],
     });
 
     const latestByHabitId = new Map<
@@ -114,7 +118,12 @@ export class HabitLogPrismaRepository implements IHabitLogRepository {
           result.habitId,
           result as Pick<
             HabitLogEntity,
-            'id' | 'habitId' | 'status' | 'actualValue' | 'completedAt' | 'loggedAt'
+            | 'id'
+            | 'habitId'
+            | 'status'
+            | 'actualValue'
+            | 'completedAt'
+            | 'loggedAt'
           >,
         );
       }

@@ -1,7 +1,4 @@
-import {
-  HabitLifecycleStatus,
-  Weekday,
-} from '../enums/domain.enums';
+import { HabitLifecycleStatus, Weekday } from '../enums/domain.enums';
 import { HabitCueEntity } from './habit-cue.entity';
 import { HabitScheduleDayEntity } from './habit-schedule-day.entity';
 import { HabitStepEntity } from './habit-step.entity';

@@ -49,7 +49,7 @@ const reminderRepo = {
   findByIdAndUserId: jest.fn(),
   findAllByUserId: jest.fn(),
   update: jest.fn(),
-  findActiveByCooldownKey: jest.fn(),
+  findActiveByHabitId: jest.fn(),
 };
 
 const policyRepo = {
@@ -132,7 +132,7 @@ describe('ReminderExecutionService', () => {
     habitsService.getOwnedHabitOrThrow.mockResolvedValue(
       makeHabitWithReminders(),
     );
-    reminderRepo.findActiveByCooldownKey.mockResolvedValue(null);
+    reminderRepo.findActiveByHabitId.mockResolvedValue(null);
 
     const createdReminder = {
       id: REMINDER_ID,
@@ -156,11 +156,11 @@ describe('ReminderExecutionService', () => {
     );
   });
 
-  it('throws ConflictException when an active reminder already exists in the hourly window', async () => {
+  it('throws ConflictException when an active reminder already exists for the habit', async () => {
     habitsService.getOwnedHabitOrThrow.mockResolvedValue(
       makeHabitWithReminders(),
     );
-    reminderRepo.findActiveByCooldownKey.mockResolvedValue({
+    reminderRepo.findActiveByHabitId.mockResolvedValue({
       id: 'existing-reminder',
       status: ReminderStatus.PENDING,
     });

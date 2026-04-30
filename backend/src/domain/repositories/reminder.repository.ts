@@ -33,13 +33,17 @@ export interface IReminderRepository {
   update(id: string, data: UpdateReminderData): Promise<ReminderEntity>;
 
   /**
-   * Returns a PENDING or SENT reminder whose effectiveUntil has not yet passed
-   * and whose cooldownKey matches the given key.
-   * Used for cooldown-key-based dedup — allows multiple valid reminder windows
-   * per day (an hourly key enables e.g. morning + evening reminders for one habit).
+   * Returns a PENDING or SENT reminder for the given habit whose
+   * `effectiveUntil` has not yet passed. Used for habit-scoped cooldown dedup.
+   *
+   * This replaces the previous `findActiveByCooldownKey` approach: matching
+   * by `habitId + effectiveUntil` is timezone-agnostic, so it stays correct
+   * regardless of which timezone the server runs in (older bucket-string keys
+   * were derived from `Date.getHours()`, which differs between a Mongolia
+   * laptop and a UTC cloud host).
    */
-  findActiveByCooldownKey(
-    cooldownKey: string,
+  findActiveByHabitId(
+    habitId: string,
     now: Date,
   ): Promise<ReminderEntity | null>;
 

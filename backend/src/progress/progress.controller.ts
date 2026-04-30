@@ -99,7 +99,9 @@ export class ProgressController {
   // ── Phase 4C: Difficulty feedback ─────────────────────────────────────────
 
   @Post('logs/:logId/difficulty')
-  @ApiOperation({ summary: 'Submit a difficulty rating after a habit completion' })
+  @ApiOperation({
+    summary: 'Submit a difficulty rating after a habit completion',
+  })
   submitDifficulty(
     @Param('userId', new ParseUUIDPipe()) userId: string,
     @Param('habitId', new ParseUUIDPipe()) habitId: string,

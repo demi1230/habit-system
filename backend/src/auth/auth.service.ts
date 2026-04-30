@@ -68,7 +68,11 @@ export class AuthService {
     await this.userRepo.updatePassword(userId, newHash);
   }
 
-  async updateLocation(userId: string, lat: number | null, lng: number | null): Promise<void> {
+  async updateLocation(
+    userId: string,
+    lat: number | null,
+    lng: number | null,
+  ): Promise<void> {
     const user = await this.userRepo.findById(userId);
     if (!user) throw new NotFoundException(`User ${userId} was not found.`);
     await this.userRepo.updateLocation(userId, lat, lng);

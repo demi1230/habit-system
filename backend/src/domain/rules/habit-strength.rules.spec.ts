@@ -1,5 +1,9 @@
 import { HabitStrengthRules } from './habit-strength.rules';
-import { ReminderPolicyMode, HabitLogStatus, CompletionTriggerSource } from '../enums/domain.enums';
+import {
+  ReminderPolicyMode,
+  HabitLogStatus,
+  CompletionTriggerSource,
+} from '../enums/domain.enums';
 
 describe('HabitStrengthRules.scoreSrbai', () => {
   it('computes rawAverage = mean of 4 items', () => {
@@ -113,10 +117,7 @@ describe('HabitStrengthRules.recommendTaperingPolicy', () => {
   });
 
   it('recommends MODERATE_SUPPORT for building habit', () => {
-    const result = HabitStrengthRules.recommendTaperingPolicy(
-      'building',
-      0.3,
-    );
+    const result = HabitStrengthRules.recommendTaperingPolicy('building', 0.3);
     expect(result.recommendedMode).toBe(ReminderPolicyMode.MODERATE_SUPPORT);
   });
 

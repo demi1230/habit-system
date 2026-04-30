@@ -14,34 +14,23 @@ import { HabitsService } from '../habits/habits.service';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { EvaluateAndCreateReminderDto } from './dto/evaluate-and-create-reminder.dto';
 import { ReminderMessageBuilder } from './reminder-message.builder';
+import { nowInAppTz } from '../shared/time';
 
 /** Default cooldown (minutes) when no ReminderPolicy exists for the habit. */
 const DEFAULT_COOLDOWN_MINUTES = 60;
-
-/**
- * Returns a local-time hourly bucket string "YYYY-MM-DDTHH" for dedup keys.
- * Uses the server's local clock (UTC+8 / Ulaanbaatar) so the bucket aligns
- * with the user-facing hour, matching how cue startTime/endTime are stored.
- */
-function localHourBucket(date: Date): string {
-  const pad = (n: number) => String(n).padStart(2, '0');
-  const y = date.getFullYear();
-  const mo = pad(date.getMonth() + 1);
-  const d = pad(date.getDate());
-  const h = pad(date.getHours());
-  return `${y}-${mo}-${d}T${h}`;
-}
 
 /**
  * Application service — Reminder execution
  * Evaluates whether a reminder should be sent, persists the result,
  * and drives the stub notification gateway.
  *
- * Dedup strategy: each reminder records a cooldownKey = `habitId:YYYY-MM-DDTHH`
- * (hourly bucket). Before creating a new reminder we check for any PENDING or
- * SENT reminder with the same key whose effectiveUntil is still in the future.
- * This allows multiple reminder windows per day while preventing duplicates
- * within the same window.
+ * Dedup strategy (habit-scoped, timezone-agnostic): before creating a new
+ * reminder we check for any PENDING or SENT reminder for the same habit
+ * whose `effectiveUntil` is still in the future. The dedup window is the
+ * habit's `cooldownMinutes` (60 by default).
+ *
+ * The `cooldownKey` column is still populated for diagnostic purposes and is
+ * also reused by the snooze follow-up pathway (which writes a `:snooze:` key).
  *
  * Thesis mapping: "Сануулга гүйцэтгэх · Reminder execution service"
  */
@@ -101,33 +90,32 @@ export class ReminderExecutionService {
 
     const now = new Date();
 
-    // Hourly cooldown key: allows multiple windows per day, deduplicates within one
-    // Uses local (server) time so the hourly bucket aligns with the user-facing clock.
-    const cooldownKey = `${habitId}:${localHourBucket(now)}`; // YYYY-MM-DDTHH (local)
-
     // Resolve cooldown duration from persisted policy, falling back to default
     const policy = await this.policyRepo.findByHabitId(habitId);
     const cooldownMinutes = policy?.cooldownMinutes ?? DEFAULT_COOLDOWN_MINUTES;
 
-    // Dedup: reject if an active reminder with the same key still covers now
-    const existing = await this.reminderRepo.findActiveByCooldownKey(
-      cooldownKey,
-      now,
-    );
+    // Habit-scoped dedup: reject if any active PENDING/SENT reminder for this
+    // habit still has effectiveUntil > now. Timezone-agnostic by construction
+    // (no bucket strings involved), so it stays correct on Railway/UTC hosts
+    // and survives any change of `APP_TIMEZONE` going forward.
+    const existing = await this.reminderRepo.findActiveByHabitId(habitId, now);
 
     if (existing) {
       throw new ConflictException(
-        `An active reminder already exists for habit ${habitId} in the ` +
-          `current hourly window (reminderId=${existing.id}).`,
+        `An active reminder already exists for habit ${habitId} ` +
+          `(reminderId=${existing.id}).`,
       );
     }
 
-    // Convert UTC to Mongolia time (UTC+8)
-    const mongoliaOffset = 8 * 60 * 60 * 1000;
-    const scheduledFor = new Date(now.getTime() + mongoliaOffset);
-    const effectiveUntil = new Date(
-      now.getTime() + mongoliaOffset + cooldownMinutes * 60_000,
-    );
+    // Stored for diagnostics and to keep the schema column non-null-ish.
+    // The hourly bucket is computed in the app timezone via Intl so it lines
+    // up with what the user sees on screen, regardless of host timezone.
+    const cooldownKey = `${habitId}:${nowInAppTz(now).ymdh}`; // YYYY-MM-DDTHH
+
+    // Persist real UTC instants. The frontend renders them in the user's
+    // local timezone via Intl, so no offset manipulation is needed here.
+    const scheduledFor = now;
+    const effectiveUntil = new Date(now.getTime() + cooldownMinutes * 60_000);
     const message = this.reminderMessageBuilder.build(habit);
 
     // Persist PENDING reminder
@@ -222,7 +210,6 @@ export class ReminderExecutionService {
       );
     }
   }
-
 }
 
 export interface EvaluateAndCreateResult {
@@ -231,5 +218,3 @@ export interface EvaluateAndCreateResult {
   evaluatedAt: string;
   reminder: ReminderEntity | null;
 }
-
-

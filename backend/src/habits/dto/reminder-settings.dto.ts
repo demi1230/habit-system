@@ -65,7 +65,8 @@ export class ReminderSettingsDto {
 
   @ApiPropertyOptional({
     type: [ReminderLocationDto],
-    description: 'GPS-pinned locations where the reminder applies (within 100m)',
+    description:
+      'GPS-pinned locations where the reminder applies (within 100m)',
   })
   @IsOptional()
   @IsArray()
