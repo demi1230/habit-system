@@ -11,7 +11,6 @@ import {
   AdaptationRules,
   AdaptationRecommendation,
 } from '../domain/rules/adaptation.rules';
-import { HabitStrengthRules } from '../domain/rules/habit-strength.rules';
 import {
   DifficultyRating,
   SubmitDifficultyDto,

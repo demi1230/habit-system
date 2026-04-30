@@ -133,6 +133,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// Splitting this hook into a sibling file would force ~12 import-site changes
+// across pages. The exception below keeps the file colocated and only loses
+// React Fast Refresh for this single module — an acceptable trade-off here.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used within AuthProvider');

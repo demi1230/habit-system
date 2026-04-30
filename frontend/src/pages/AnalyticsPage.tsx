@@ -436,19 +436,20 @@ export function AnalyticsPage() {
     }).catch(() => setLoading(false));
   }, [userId, searchParams]);
 
+  const selectedId = selected?.id ?? null;
   const loadHabitData = useCallback(async () => {
-    if (!userId || !selected) return;
+    if (!userId || !selectedId) return;
     const [l, p, c, s, diffs, refs] = await Promise.all([
-      habitsApi.listLogs(userId, selected.id),
-      habitsApi.getProgressSummary(userId, selected.id).catch(() => null),
-      srbaiApi.getCompositeScore(userId, selected.id).catch(() => null),
-      srbaiApi.getLatest(userId, selected.id).catch(() => null),
-      feedbackApi.listDifficultyRatings(userId, selected.id).catch(() => [] as DifficultyFeedback[]),
-      feedbackApi.listReflections(userId, selected.id).catch(() => [] as ReflectionResponse[]),
+      habitsApi.listLogs(userId, selectedId),
+      habitsApi.getProgressSummary(userId, selectedId).catch(() => null),
+      srbaiApi.getCompositeScore(userId, selectedId).catch(() => null),
+      srbaiApi.getLatest(userId, selectedId).catch(() => null),
+      feedbackApi.listDifficultyRatings(userId, selectedId).catch(() => [] as DifficultyFeedback[]),
+      feedbackApi.listReflections(userId, selectedId).catch(() => [] as ReflectionResponse[]),
     ]);
     setLogs(l); setProgress(p); setComposite(c); setSrbaiLatest(s);
     setDifficulties(diffs); setReflections(refs); setShowAllReflections(false);
-  }, [userId, selected?.id]);
+  }, [userId, selectedId]);
 
   useEffect(() => { loadHabitData(); }, [loadHabitData]);
 

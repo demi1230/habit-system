@@ -7,6 +7,7 @@ import {
 } from '../../domain/repositories/reminder.repository';
 import { ReminderStatus } from '../../domain/enums/domain.enums';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '../../generated/prisma/client';
 
 /**
  * Infrastructure adapter — Prisma implementation of IReminderRepository.
@@ -27,8 +28,9 @@ export class ReminderPrismaRepository implements IReminderRepository {
         evaluatedAt: data.evaluatedAt,
         effectiveUntil: data.effectiveUntil ?? null,
         cooldownKey: data.cooldownKey ?? null,
-        explanation: (data.explanation ?? null) as object | null,
-      } as any,
+        explanation: (data.explanation ??
+          Prisma.JsonNull) as Prisma.InputJsonValue,
+      },
     });
     return result as unknown as ReminderEntity;
   }
@@ -87,7 +89,7 @@ export class ReminderPrismaRepository implements IReminderRepository {
         habitId,
         status: { in: [ReminderStatus.PENDING, ReminderStatus.SENT] },
         effectiveUntil: { gt: now },
-      } as any,
+      },
       orderBy: { scheduledFor: 'desc' },
     });
     return result as unknown as ReminderEntity | null;
@@ -99,7 +101,7 @@ export class ReminderPrismaRepository implements IReminderRepository {
         status: ReminderStatus.PENDING,
         scheduledFor: { lte: now },
         cooldownKey: { contains: ':snooze:' },
-      } as any,
+      },
     });
     return results as unknown as ReminderEntity[];
   }

@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../infrastructure/prisma/prisma.service';
+import { BadgeCode } from '../generated/prisma/client';
 
 const DAILY_XP_REWARD = 10;
 
 export interface CompletionRewardResult {
   xpAwarded: number;
   unlockedBadges: Array<{
-    badgeCode: string;
+    badgeCode: BadgeCode;
     awardedAt: Date;
     habitId: string | null;
   }>;
@@ -96,24 +97,28 @@ export class EngagementService {
         habitLogs.map((log) => log.completedAt),
       );
 
-      const badgeCandidates = [
+      const badgeCandidates: Array<{
+        badgeCode: BadgeCode;
+        unlocked: boolean;
+        habitId: string | null;
+      }> = [
         {
-          badgeCode: 'FIRST_DONE',
+          badgeCode: BadgeCode.FIRST_DONE,
           unlocked: totalDoneCount >= 1,
           habitId: params.habitId,
         },
         {
-          badgeCode: 'STREAK_7',
+          badgeCode: BadgeCode.STREAK_7,
           unlocked: currentStreak >= 7,
           habitId: params.habitId,
         },
         {
-          badgeCode: 'STREAK_21',
+          badgeCode: BadgeCode.STREAK_21,
           unlocked: currentStreak >= 21,
           habitId: params.habitId,
         },
         {
-          badgeCode: 'TOTAL_30',
+          badgeCode: BadgeCode.TOTAL_30,
           unlocked: totalDoneCount >= 30,
           habitId: null,
         },
@@ -128,7 +133,7 @@ export class EngagementService {
           data: {
             userId: params.userId,
             habitId: candidate.habitId,
-            badgeCode: candidate.badgeCode as any,
+            badgeCode: candidate.badgeCode,
           },
         });
         unlockedBadges.push({

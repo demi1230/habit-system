@@ -59,9 +59,11 @@ const reminderActionRepo = {
 
 const habitLogRepo = {
   create: jest.fn(),
+  findById: jest.fn(),
   findAllByHabitId: jest.fn(),
   findSummaryByHabitId: jest.fn(),
   findByLinkedReminderId: jest.fn(),
+  findLatestByHabitIdsForDate: jest.fn().mockResolvedValue([]),
 };
 
 const analyticsService = { recordActivity: jest.fn() };

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react';
+﻿import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -11,7 +11,8 @@ import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
 import { useAuth } from '@/context/AuthContext';
 import { habitsApi } from '@/api/habits';
 import type { Habit, HabitLog, Weekday } from '@/api/types';
-import { MonthCalendar, toLocalDateStr } from '@/components/month-calendar';
+import { MonthCalendar } from '@/components/month-calendar';
+import { toLocalDateStr } from '@/lib/dates';
 import { countCompletedDays, getLatestLogsByDay, toLocalISO } from '@/lib/habit-log-days';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -234,7 +235,7 @@ export function HabitDetailPage() {
   const [showLogSheet, setShowLogSheet] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const fetchAll = async () => {
+  const fetchAll = useCallback(async () => {
     if (!userId || !id) return;
     try {
       const [h, l] = await Promise.all([
@@ -244,9 +245,9 @@ export function HabitDetailPage() {
       setHabit(h); setLogs(l);
     } catch (err) { console.error('Failed to load habit:', err); }
     finally { setLoading(false); }
-  };
+  }, [userId, id]);
 
-  useEffect(() => { fetchAll(); }, [userId, id]);
+  useEffect(() => { void fetchAll(); }, [fetchAll]);
 
   // ── Streak calculation ─────────────────────────────────────────────────────
   const latestLogsByDay = useMemo(() => getLatestLogsByDay(logs), [logs]);

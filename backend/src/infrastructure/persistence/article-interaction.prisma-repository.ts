@@ -4,8 +4,12 @@ import {
   IArticleInteractionRepository,
   CreateArticleInteractionData,
 } from '../../domain/repositories/article-interaction.repository';
-import { SourceType } from '../../domain/enums/domain.enums';
+import {
+  ArticleInteractionType,
+  SourceType,
+} from '../../domain/enums/domain.enums';
 import { PrismaService } from '../prisma/prisma.service';
+import type { ArticleInteraction as ArticleInteractionRow } from '../../generated/prisma/client';
 
 @Injectable()
 export class ArticleInteractionPrismaRepository implements IArticleInteractionRepository {
@@ -70,17 +74,17 @@ export class ArticleInteractionPrismaRepository implements IArticleInteractionRe
     return interactions.map((i) => this.mapToEntity(i));
   }
 
-  private mapToEntity(prismaInteraction: any): ArticleInteractionEntity {
+  private mapToEntity(row: ArticleInteractionRow): ArticleInteractionEntity {
     return {
-      id: prismaInteraction.id,
-      userId: prismaInteraction.userId,
-      habitId: prismaInteraction.habitId,
-      articleId: prismaInteraction.articleId,
-      sourceType: prismaInteraction.sourceType,
-      sourceId: prismaInteraction.sourceId,
-      interactionType: prismaInteraction.interactionType,
-      occurredAt: prismaInteraction.occurredAt,
-      createdAt: prismaInteraction.createdAt,
+      id: row.id,
+      userId: row.userId,
+      habitId: row.habitId,
+      articleId: row.articleId,
+      sourceType: row.sourceType as SourceType,
+      sourceId: row.sourceId,
+      interactionType: row.interactionType as ArticleInteractionType,
+      occurredAt: row.occurredAt,
+      createdAt: row.createdAt,
     };
   }
 }

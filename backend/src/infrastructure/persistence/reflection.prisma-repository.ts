@@ -11,7 +11,7 @@ export class ReflectionPrismaRepository implements IReflectionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateReflectionData): Promise<ReflectionEntity> {
-    const result = await (this.prisma as any).reflection.create({
+    const result = await this.prisma.reflection.create({
       data: {
         userId: data.userId,
         habitId: data.habitId,
@@ -20,14 +20,14 @@ export class ReflectionPrismaRepository implements IReflectionRepository {
         occurredAt: data.occurredAt,
       },
     });
-    return result as ReflectionEntity;
+    return result;
   }
 
   async findAllByHabitId(habitId: string): Promise<ReflectionEntity[]> {
-    const results = await (this.prisma as any).reflection.findMany({
+    const results = await this.prisma.reflection.findMany({
       where: { habitId },
       orderBy: { occurredAt: 'desc' },
     });
-    return results as ReflectionEntity[];
+    return results;
   }
 }

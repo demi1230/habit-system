@@ -32,22 +32,22 @@ export function LocationMapPicker({ accentColor, btnColor, onConfirm, onClose }:
   const [label, setLabel] = useState('');
   const [loading, setLoading] = useState(false);
   const [center, setCenter] = useState<[number, number]>([47.9184, 106.9177]); // UB default
-  const [mapReady, setMapReady] = useState(false);
+  // Lazy initial state — when geolocation is unavailable the map is ready
+  // immediately, so we don't need to call setState synchronously inside the
+  // effect below (which would trip `react-hooks/set-state-in-effect`).
+  const [mapReady, setMapReady] = useState(() => !('geolocation' in navigator));
 
   // Try to get user's current location on mount
   useEffect(() => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setCenter([pos.coords.latitude, pos.coords.longitude]);
-          setMapReady(true);
-        },
-        () => setMapReady(true),
-        { timeout: 5000 }
-      );
-    } else {
-      setMapReady(true);
-    }
+    if (!('geolocation' in navigator)) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCenter([pos.coords.latitude, pos.coords.longitude]);
+        setMapReady(true);
+      },
+      () => setMapReady(true),
+      { timeout: 5000 }
+    );
   }, []);
 
   const reverseGeocode = useCallback(async (lat: number, lng: number) => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -270,21 +270,21 @@ export function ProfilePage() {
   const [cpError, setCpError] = useState('');
   const [cpSuccess, setCpSuccess] = useState(false);
 
-  const loadHabits = () => {
+  const loadHabits = useCallback(() => {
     if (!userId) return;
     habitsApi.list(userId, true).then(setHabits).catch(console.error);
-  };
+  }, [userId]);
 
-  const loadEngagement = () => {
+  const loadEngagement = useCallback(() => {
     if (!userId) return;
     engagementApi.getSummary(userId).then(setEngagement).catch(console.error);
-  };
+  }, [userId]);
 
   useEffect(() => {
     loadHabits();
     loadEngagement();
     setPushPermission(getNotificationPermission());
-  }, [userId]);
+  }, [loadHabits, loadEngagement]);
 
   useEffect(() => {
     if (selectedBadgeId && !engagement?.badges.some((badge) => badge.id === selectedBadgeId)) {

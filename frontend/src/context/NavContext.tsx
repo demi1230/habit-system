@@ -27,6 +27,9 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Colocated with the Provider; see comment in `AuthContext.tsx` for why we
+// accept the Fast-Refresh trade-off rather than split this hook out.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useNav() {
   const ctx = useContext(NavContext);
   if (!ctx) throw new Error('useNav must be used within NavProvider');

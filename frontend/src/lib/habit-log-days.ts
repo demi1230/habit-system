@@ -1,5 +1,5 @@
 import type { HabitLog, Weekday } from '@/api/types';
-import { toLocalDateStr } from '@/components/month-calendar';
+import { toLocalDateStr } from '@/lib/dates';
 
 const JS_TO_WD: Record<number, Weekday> = {
   0: 'SUNDAY',

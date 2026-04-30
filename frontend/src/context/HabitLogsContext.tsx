@@ -37,6 +37,37 @@ interface HabitLogsContextValue {
 
 const HabitLogsContext = createContext<HabitLogsContextValue | null>(null);
 
+/**
+ * Pure helper: turns the `listToday` response into a Map<habitId, status>.
+ * Extracted so the effect (initial load) and the imperative `refresh()` use
+ * exactly the same projection logic.
+ */
+function buildTodayLogMap(
+  data: Awaited<ReturnType<typeof habitsApi.listToday>>,
+): Map<string, TodayLogStatus> {
+  const map = new Map<string, TodayLogStatus>();
+  for (const habit of data) {
+    const log = habit.todayLog;
+    if (!log) continue;
+    // Trust the server-side status field.
+    // Reminder-created logs have status = DONE but actualValue = null.
+    if (log.status === 'DONE') {
+      map.set(habit.id, {
+        logId: log.id,
+        status: 'done',
+        actualValue: log.actualValue ?? habit.targetValue ?? 1,
+      });
+    } else if ((log.actualValue ?? 0) > 0) {
+      map.set(habit.id, {
+        logId: log.id,
+        status: 'partial',
+        actualValue: log.actualValue!,
+      });
+    }
+  }
+  return map;
+}
+
 export function HabitLogsProvider({ children }: { children: ReactNode }) {
   const { userId } = useAuth();
   const [todayLogMap, setTodayLogMap] = useState<Map<string, TodayLogStatus>>(
@@ -47,35 +78,32 @@ export function HabitLogsProvider({ children }: { children: ReactNode }) {
     if (!userId) return;
     try {
       const data = await habitsApi.listToday(userId);
-      const map = new Map<string, TodayLogStatus>();
-      for (const habit of data) {
-        const log = habit.todayLog;
-        if (!log) continue;
-        // Trust the server-side status field.
-        // Reminder-created logs have status = DONE but actualValue = null.
-        if (log.status === 'DONE') {
-          map.set(habit.id, {
-            logId: log.id,
-            status: 'done',
-            actualValue: log.actualValue ?? habit.targetValue ?? 1,
-          });
-        } else if ((log.actualValue ?? 0) > 0) {
-          map.set(habit.id, {
-            logId: log.id,
-            status: 'partial',
-            actualValue: log.actualValue!,
-          });
-        }
-      }
-      setTodayLogMap(map);
+      setTodayLogMap(buildTodayLogMap(data));
     } catch (err) {
       console.error('[HabitLogsContext] Failed to load today logs:', err);
     }
   }, [userId]);
 
+  // Initial / userId-change load. Inlined (rather than calling `refresh()`)
+  // with a cancellation flag so the lint check sees a guarded async setter
+  // instead of a synchronous trampoline through a memoized callback.
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    if (!userId) return;
+    let cancelled = false;
+    habitsApi
+      .listToday(userId)
+      .then((data) => {
+        if (!cancelled) setTodayLogMap(buildTodayLogMap(data));
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          console.error('[HabitLogsContext] Failed to load today logs:', err);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
 
   return (
     <HabitLogsContext.Provider value={{ todayLogMap, refresh }}>
@@ -84,6 +112,8 @@ export function HabitLogsProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// See comment in `AuthContext.tsx` — colocated hook export, intentional.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useHabitLogs(): HabitLogsContextValue {
   const ctx = useContext(HabitLogsContext);
   if (!ctx)

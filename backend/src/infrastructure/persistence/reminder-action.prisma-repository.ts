@@ -6,6 +6,7 @@ import {
 } from '../../domain/repositories/reminder-action.repository';
 import { ReminderActionType } from '../../domain/enums/domain.enums';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '../../generated/prisma/client';
 
 /**
  * Infrastructure adapter — Prisma implementation of IReminderActionRepository.
@@ -22,7 +23,9 @@ export class ReminderActionPrismaRepository implements IReminderActionRepository
         actionType: data.actionType,
         actedAt: data.actedAt,
         snoozedUntil: data.snoozedUntil ?? null,
-        metadata: (data.metadata ?? null) as object | null,
+        // Prisma 7 requires `Prisma.JsonNull` for nullable Json fields rather
+        // than a raw `null`, which would otherwise be a type error.
+        metadata: (data.metadata ?? Prisma.JsonNull) as Prisma.InputJsonValue,
       },
     });
     return result as unknown as ReminderActionEntity;

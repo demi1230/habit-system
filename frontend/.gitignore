@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# dotenv environment variable files — never commit secrets.
+# `.env.example` is the only env file safe to track.
+.env
+.env.*
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 
 import { BadRequestException } from '@nestjs/common';
-import { jest } from '@jest/globals';
 import { HabitsService } from './habits.service';
 
 describe('HabitsService', () => {

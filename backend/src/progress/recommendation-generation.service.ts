@@ -8,6 +8,7 @@ import {
 } from '../domain/enums/domain.enums';
 import type { IAdaptationRecommendationRepository } from '../domain/repositories/adaptation-recommendation.repository';
 import { ADAPTATION_RECOMMENDATION_REPOSITORY } from '../domain/repositories/adaptation-recommendation.repository';
+import type { AdaptationRecommendationEntity } from '../domain/entities/adaptation-recommendation.entity';
 import type { IHabitLogRepository } from '../domain/repositories/habit-log.repository';
 import { HABIT_LOG_REPOSITORY } from '../domain/repositories/habit-log.repository';
 import type { IDifficultyFeedbackRepository } from '../domain/repositories/difficulty-feedback.repository';
@@ -75,7 +76,7 @@ export class RecommendationGenerationService {
   async generateRecommendations(
     userId: string,
     habitId: string,
-  ): Promise<any[]> {
+  ): Promise<AdaptationRecommendationEntity[]> {
     const habit = await this.habitsService.getOwnedHabitOrThrow(
       userId,
       habitId,

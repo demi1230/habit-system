@@ -13,13 +13,8 @@ import { PrismaService } from '../prisma/prisma.service';
 export class ReminderPolicyPrismaRepository implements IReminderPolicyRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  /** Untyped accessor — ReminderPolicy model is not yet in the generated client. Remove cast after `prisma generate`. */
-  private get db(): any {
-    return this.prisma as any;
-  }
-
   async upsert(data: UpsertReminderPolicyData): Promise<ReminderPolicyEntity> {
-    const result = await this.db.reminderPolicy.upsert({
+    const result = await this.prisma.reminderPolicy.upsert({
       where: { habitId: data.habitId },
       create: {
         habitId: data.habitId,
@@ -41,7 +36,7 @@ export class ReminderPolicyPrismaRepository implements IReminderPolicyRepository
   }
 
   async findByHabitId(habitId: string): Promise<ReminderPolicyEntity | null> {
-    const result = await this.db.reminderPolicy.findUnique({
+    const result = await this.prisma.reminderPolicy.findUnique({
       where: { habitId },
     });
     return result as unknown as ReminderPolicyEntity | null;

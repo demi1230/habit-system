@@ -5,6 +5,7 @@ import { TYPOGRAPHY, buttonStyles } from '@/shared/design';
 import type { HabitLog } from '@/api/types';
 import type { Weekday } from '@/api/types';
 import { getLatestLogsByDay } from '@/lib/habit-log-days';
+import { toLocalDateStr } from '@/lib/dates';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -28,10 +29,6 @@ const WEEKDAY_LABELS = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
 
 function toMnMonthLabel(date: Date): string {
   return `${date.getFullYear()} оны ${date.getMonth() + 1}-р сар`;
-}
-
-export function toLocalDateStr(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 // ── Component ────────────────────────────────────────────────────────────────

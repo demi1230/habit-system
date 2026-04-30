@@ -3,7 +3,7 @@ import { useSyncExternalStore } from 'react';
 export type Lang = 'en' | 'mn';
 
 let currentLang: Lang = (typeof localStorage !== 'undefined' && localStorage.getItem('bloom-lang') as Lang) || 'mn';
-let langListeners = new Set<() => void>();
+const langListeners = new Set<() => void>();
 
 function emitLangChange() {
   for (const l of langListeners) l();

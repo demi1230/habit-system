@@ -17,10 +17,27 @@ import {
   RecommendationStatus,
 } from '../domain/enums/domain.enums';
 import { RecommendationGenerationService } from '../progress/recommendation-generation.service';
+import type { AdaptationRecommendationEntity } from '../domain/entities/adaptation-recommendation.entity';
+import type { ArticleInteractionEntity } from '../domain/entities/article-interaction.entity';
 import {
   LogArticleInteractionDto,
   LogRecommendationInteractionDto,
 } from './dto';
+
+/**
+ * Lightweight response DTO for interaction-logging endpoints. Returned to
+ * controllers (and ultimately to HTTP clients) instead of the full entity, so
+ * we don't leak internal fields like `userId` or `createdAt`.
+ */
+export interface InteractionLogResponse {
+  id: string;
+  interactionType: string;
+  occurredAt: string;
+}
+
+export interface ArticleInteractionLogResponse extends InteractionLogResponse {
+  articleId: string;
+}
 
 /**
  * Application service — Learning
@@ -41,7 +58,10 @@ export class LearningService {
   /**
    * Get active recommendations for a user, optionally filtered by habitId.
    */
-  async getRecommendations(userId: string, habitId?: string): Promise<any[]> {
+  async getRecommendations(
+    userId: string,
+    habitId?: string,
+  ): Promise<AdaptationRecommendationEntity[]> {
     if (habitId) {
       return this.recommendationRepo.findActiveByUserAndHabit(userId, habitId);
     }
@@ -55,8 +75,7 @@ export class LearningService {
   async refreshRecommendations(
     userId: string,
     habitId: string,
-  ): Promise<any[]> {
-    // Generate fresh recommendations (updates existing or creates new)
+  ): Promise<AdaptationRecommendationEntity[]> {
     return this.recommendationGenerationService.generateRecommendations(
       userId,
       habitId,
@@ -66,7 +85,10 @@ export class LearningService {
   /**
    * Get a single recommendation by ID.
    */
-  async getRecommendationById(userId: string, id: string): Promise<any> {
+  async getRecommendationById(
+    userId: string,
+    id: string,
+  ): Promise<AdaptationRecommendationEntity> {
     const rec = await this.recommendationRepo.findById(id);
     if (!rec) {
       throw new NotFoundException('Recommendation not found');
@@ -83,15 +105,14 @@ export class LearningService {
   async dismissRecommendation(
     userId: string,
     recommendationId: string,
-  ): Promise<any> {
-    const rec = await this.getRecommendationById(userId, recommendationId);
+  ): Promise<AdaptationRecommendationEntity> {
+    // Verify ownership; will throw NotFoundException if not found.
+    await this.getRecommendationById(userId, recommendationId);
 
-    // Update status to DISMISSED
     const updated = await this.recommendationRepo.update(recommendationId, {
       status: RecommendationStatus.DISMISSED,
     });
 
-    // Log interaction
     await this.recommendationInteractionRepo.create({
       userId,
       recommendationId,
@@ -109,10 +130,9 @@ export class LearningService {
     userId: string,
     recommendationId: string,
     dto: LogRecommendationInteractionDto,
-  ): Promise<any> {
+  ): Promise<InteractionLogResponse> {
     await this.getRecommendationById(userId, recommendationId);
 
-    // Validate interaction type
     if (
       !Object.values(RecommendationInteractionType).includes(
         dto.interactionType,
@@ -142,13 +162,11 @@ export class LearningService {
     userId: string,
     articleId: string,
     dto: LogArticleInteractionDto,
-  ): Promise<any> {
-    // Validate interaction type
+  ): Promise<ArticleInteractionLogResponse> {
     if (!Object.values(ArticleInteractionType).includes(dto.interactionType)) {
       throw new BadRequestException('Invalid interaction type');
     }
 
-    // Validate source type
     if (!Object.values(SourceType).includes(dto.sourceType)) {
       throw new BadRequestException('Invalid source type');
     }
@@ -177,7 +195,7 @@ export class LearningService {
   async getArticleInteractionHistory(
     userId: string,
     limit: number = 20,
-  ): Promise<any[]> {
+  ): Promise<ArticleInteractionEntity[]> {
     return this.articleInteractionRepo.findRecentByUser(userId, limit);
   }
 }

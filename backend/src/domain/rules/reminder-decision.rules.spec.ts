@@ -1,6 +1,7 @@
 import { ReminderDecisionRules } from './reminder-decision.rules';
 import { ReminderDecisionReason, Weekday } from '../enums/domain.enums';
 import { HabitCueEntity } from '../entities/habit-cue.entity';
+import { CueScheduleRules } from './cue-schedule.rules';
 
 /** Helper: build a minimal HabitCueEntity stub. */
 function makeCue(isActive: boolean): HabitCueEntity {
@@ -49,10 +50,7 @@ describe('ReminderDecisionRules.decide', () => {
     // when all matching days are absent). Provide a single-element array whose
     // weekday is guaranteed not to be today by using a jest spy.
     const spy = jest
-      .spyOn(
-        require('./cue-schedule.rules').CueScheduleRules,
-        'isScheduledToday',
-      )
+      .spyOn(CueScheduleRules, 'isScheduledToday')
       .mockReturnValueOnce(false);
 
     const result = ReminderDecisionRules.decide({ ...baseInput });

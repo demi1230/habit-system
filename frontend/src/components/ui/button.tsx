@@ -3,9 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 import type { VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
-import { buttonStyles } from "@/shared/design";
-
-const buttonVariants = buttonStyles;
+import { buttonVariants } from "./button-variants";
 
 function Button({
   className,
@@ -28,4 +26,4 @@ function Button({
   );
 }
 
-export { Button, buttonVariants };
+export { Button };
