@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { X } from 'lucide-react';
+import { HabitIconSlot } from '@/components/habit-icon-slot';
 import { getHabitColor, CTA_DARK } from '@/lib/habit-colors';
 import { svgPaths } from '@/lib/svg-paths';
 import { feedbackApi } from '@/api/feedback';
@@ -84,7 +85,7 @@ export function CelebrationSheet({ habit, logId, userId, ctx, onClose }: Props) 
             className="w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0"
             style={{ backgroundColor: color.btn }}
           >
-            <span style={{ fontSize: 24 }}>{habit.iconValue || '✨'}</span>
+            <HabitIconSlot iconValue={habit.iconValue} emojiSizePx={24} circlePx={24} />
           </motion.div>
 
           <div className="flex-1 min-w-0">

@@ -4,24 +4,21 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowLeft, Archive, Clock, MapPin,
   Bell, BellOff, Check, X, ChevronRight,
-  Delete, Pencil, Heart, Calendar, Target, BarChart3,
+  Delete, Pencil, Heart, Calendar, Target, BarChart3, Search, FileText,
 } from 'lucide-react';
 import { getHabitColor, CTA_DARK } from '@/lib/habit-colors';
 import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
 import { useAuth } from '@/context/AuthContext';
 import { habitsApi } from '@/api/habits';
-import type { Habit, HabitLog, Weekday } from '@/api/types';
+import type { Habit, HabitLog } from '@/api/types';
 import { MonthCalendar } from '@/components/month-calendar';
+import { WeekdayStrip } from '@/components/weekday-strip';
+import { HabitIconSlot } from '@/components/habit-icon-slot';
 import { toLocalDateStr } from '@/lib/dates';
 import { countCompletedDays, getLatestLogsByDay, toLocalISO } from '@/lib/habit-log-days';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-const DAYS_MAP: Record<string, string> = {
-  MONDAY: 'Да', TUESDAY: 'Мя', WEDNESDAY: 'Лх', THURSDAY: 'Пү',
-  FRIDAY: 'Ба', SATURDAY: 'Бя', SUNDAY: 'Ня',
-};
-const ALL_DAYS: Weekday[] = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 function isBinaryHabit(h: Habit) {
   return h.targetValue === 1 && ['удаа', 'times', 'boolean'].includes(h.measurementUnit);
 }
@@ -98,7 +95,6 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0, color }: {
   const min = habit.minimumTarget ?? 1;
   const status = calcStatus(habit, numValue);
   const pct = calcProgress(habit, numValue);
-  const habitIcon = habit.iconValue || '✨';
 
   const handleKey = (key: string) => {
     if (key === 'AC') { setInput(''); return; }
@@ -139,7 +135,7 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0, color }: {
           <div className="flex items-center gap-3 px-5 pb-4">
             <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
               style={{ backgroundColor: color.btn }}>
-              <span style={{ fontSize: 18 }}>{habitIcon}</span>
+              <HabitIconSlot iconValue={habit.iconValue} emojiSizePx={18} circlePx={18} />
             </div>
             <div>
               <p style={TYPOGRAPHY.cardTitle} className="text-foreground">{habit.title}</p>
@@ -265,9 +261,13 @@ export function HabitDetailPage() {
   if (!habit) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-6">
-        <div className="text-center">
-          <p style={{ fontSize: 48 }}>🔍</p>
-          <p style={{ ...TYPOGRAPHY.cardTitle, fontWeight: 500, marginTop: 12 }} className="text-foreground">Дадал олдсонгүй</p>
+        <div className="text-center flex flex-col items-center">
+          <div
+            className="mb-5 w-[52px] h-[52px] rounded-[18px] flex items-center justify-center"
+            style={{ backgroundColor: 'var(--surface-subtle)' }}>
+            <Search className="w-[26px] h-[26px]" strokeWidth={2} style={{ color: 'var(--text-muted-soft)' }} />
+          </div>
+          <p style={{ ...TYPOGRAPHY.cardTitle, fontWeight: 500 }} className="text-foreground">Дадал олдсонгүй</p>
           <p style={{ ...TYPOGRAPHY.bodySm, marginTop: 6 }} className="text-muted-foreground">Энэ дадал устгагдсан байж болзошгүй</p>
           <button onClick={() => navigate('/dashboard')}
             className={`mt-6 ${buttonStyles({ variant: 'default', size: 'lg' })}`}
@@ -280,7 +280,6 @@ export function HabitDetailPage() {
   }
 
   const color = getHabitColor(habit.color);
-  const habitIcon = habit.iconValue || '?';
   const binary = isBinaryHabit(habit);
 
   const scheduledDays = habit.scheduleDays.map(s => s.weekday);
@@ -359,7 +358,7 @@ export function HabitDetailPage() {
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0"
               style={{ backgroundColor: color.btn }}>
-              <span style={{ fontSize: 24 }}>{habitIcon}</span>
+              <HabitIconSlot iconValue={habit.iconValue} emojiSizePx={24} circlePx={24} />
             </div>
             <p style={TYPOGRAPHY.cardTitle} className="text-foreground flex-1 min-w-0">{habit.title}</p>
           </div>
@@ -404,7 +403,7 @@ export function HabitDetailPage() {
           )}
         </div>
 
-        {/* ── 5. ЗОРИЛТ БА ХУВААРЬ ── */}
+        {/* ── 5. Зорилт ба хуваарь ── */}
         <SectionCard delay={0.09}>
           <SectionLabel icon={<Target className="w-4 h-4" style={{ color: color.accent }} />} label="Зорилт ба хуваарь" />
           {!binary && (
@@ -420,18 +419,12 @@ export function HabitDetailPage() {
             />
           )}
           <div className="px-4 pt-1 pb-3">
-            <div className="flex gap-1.5 mb-2">
-              {ALL_DAYS.map(day => {
-                const active = scheduledDays.includes(day);
-                return (
-                  <div key={day} className="flex-1 py-1.5 rounded-[10px] flex items-center justify-center"
-                    style={{
-                      backgroundColor: active ? color.btn : 'rgba(0,0,0,0.04)',
-                      fontSize: 11, fontWeight: active ? 600 : 400,
-                      color: active ? '#202325' : 'rgba(0,0,0,0.3)',
-                    }}>{DAYS_MAP[day]}</div>
-                );
-              })}
+            <div className="mb-2">
+              <WeekdayStrip
+                selectedDays={scheduledDays}
+                accentBg={color.btn}
+                accentRing={color.accent}
+              />
             </div>
             <p style={TYPOGRAPHY.micro} className="text-muted-foreground">
               {daysLabel} · {formatDate(habit.startDate)}-аас эхэлсэн
@@ -473,13 +466,13 @@ export function HabitDetailPage() {
           </SectionCard>
         )}
 
-        {/* ── 7. ДОХИО БА САНУУЛГА ── */}
+        {/* ── 7. Дохио ба сануулга ── */}
         <SectionCard delay={0.15}>
           <SectionLabel icon={<Bell className="w-4 h-4" style={{ color: color.accent }} />} label="Дохио ба сануулга" />
           <Row
             left={
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
+                <div className="w-7 h-7 rounded-[10px] flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
                   {habit.reminderEnabled
                     ? <Bell className="w-3.5 h-3.5 text-muted-foreground" />
                     : <BellOff className="w-3.5 h-3.5" style={{ color: 'rgba(0,0,0,0.35)' }} />}
@@ -494,7 +487,7 @@ export function HabitDetailPage() {
             <Row
               left={
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: color.btn + '22' }}>
+                  <div className="w-7 h-7 rounded-[10px] flex items-center justify-center shrink-0" style={{ backgroundColor: color.btn + '22' }}>
                     <Clock className="w-3.5 h-3.5" style={{ color: color.accent }} />
                   </div>
                   <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">Цагийн хүрээ</span>
@@ -508,13 +501,21 @@ export function HabitDetailPage() {
             <Row
               left={
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: color.btn + '22' }}>
+                  <div className="w-7 h-7 rounded-[10px] flex items-center justify-center shrink-0" style={{ backgroundColor: color.btn + '22' }}>
                     <MapPin className="w-3.5 h-3.5" style={{ color: color.accent }} />
                   </div>
                   <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">Байршил</span>
                 </div>
               }
-              right={<span style={TYPOGRAPHY.bodySm} className="text-muted-foreground">{locationCue.coarseLocation}</span>}
+              right={
+                <span
+                  style={TYPOGRAPHY.bodySm}
+                  className="text-muted-foreground inline-block max-w-[180px] truncate align-middle"
+                  title={locationCue.coarseLocation ?? undefined}
+                >
+                  {locationCue.coarseLocation}
+                </span>
+              }
               divider={!!routineCue}
             />
           )}
@@ -522,19 +523,27 @@ export function HabitDetailPage() {
             <Row
               left={
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: color.btn + '22' }}>
+                  <div className="w-7 h-7 rounded-[10px] flex items-center justify-center shrink-0" style={{ backgroundColor: color.btn + '22' }}>
                     <ChevronRight className="w-3.5 h-3.5" style={{ color: color.accent }} />
                   </div>
                   <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">Өмнөх хэрэглүүр</span>
                 </div>
               }
-              right={<span style={TYPOGRAPHY.bodySm} className="text-muted-foreground">{routineCue.precedingRoutine}</span>}
+              right={
+                <span
+                  style={TYPOGRAPHY.bodySm}
+                  className="text-muted-foreground inline-block max-w-[180px] truncate align-middle"
+                  title={routineCue.precedingRoutine ?? undefined}
+                >
+                  {routineCue.precedingRoutine}
+                </span>
+              }
               divider={false}
             />
           )}
         </SectionCard>
 
-        {/* ── 8. ГҮЙЦЭТГЭЛИЙН ТҮҮХ / ХУАНЛИ ── */}
+        {/* ── 8. Гүйцэтгэлийн түүх / хуанли ── */}
         <SectionCard delay={0.18}>
           <SectionLabel icon={<Calendar className="w-4 h-4" style={{ color: color.accent }} />} label="Гүйцэтгэлийн түүх" />
           <div className="px-4 pt-1 pb-3">
@@ -585,14 +594,14 @@ export function HabitDetailPage() {
               </div>
             </>
           ) : (
-            <div className="text-center px-4 py-8">
-              <p style={{ fontSize: 32 }}>📝</p>
-              <p style={{ ...TYPOGRAPHY.bodySm, marginTop: 8 }} className="text-muted-foreground">Бүртгэл байхгүй байна</p>
+            <div className="text-center px-4 py-8 flex flex-col items-center">
+              <FileText className="w-8 h-8 mb-3 shrink-0" strokeWidth={2} style={{ color: 'var(--text-muted-soft)' }} />
+              <p style={{ ...TYPOGRAPHY.bodySm }} className="text-muted-foreground">Бүртгэл байхгүй байна</p>
             </div>
           )}
         </SectionCard>
 
-        {/* ── 9. ТОХИРГОО ── */}
+        {/* ── 9. Тохиргоо ── */}
         <SectionCard delay={0.21}>
           <SectionLabel icon={<Archive className="w-4 h-4" style={{ color: '#474747' }} />} label="Тохиргоо" />
           <Row
@@ -625,8 +634,14 @@ export function HabitDetailPage() {
                 style={{ boxShadow: '0 -6px 32px rgba(0,0,0,0.12)' }}>
                 <div className="w-9 h-[3px] rounded-full mx-auto mb-5" style={{ backgroundColor: 'rgba(0,0,0,0.12)' }} />
                 <div className="text-center mb-6">
-                  <p style={{ fontSize: 40 }}>🗂️</p>
-                  <p style={{ ...TYPOGRAPHY.pageTitle, fontWeight: 500, marginTop: 12 }} className="text-foreground">Дадлаа архивлах уу?</p>
+                  <div className="flex justify-center mb-4">
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                      style={{ backgroundColor: 'var(--surface-subtle)' }}>
+                      <Archive className="w-7 h-7" style={{ color: 'var(--text-muted-soft)' }} />
+                    </div>
+                  </div>
+                  <p style={{ ...TYPOGRAPHY.pageTitle, fontWeight: 500 }} className="text-foreground">Дадлаа архивлах уу?</p>
                   <p className="mt-2 text-muted-foreground" style={{ ...TYPOGRAPHY.bodySm, lineHeight: 1.6 }}>
                     Архивласан дадал хяналтын самбараас нуугдана,<br />харин гүйцэтгэлийн түүх хадгалагдана.
                   </p>

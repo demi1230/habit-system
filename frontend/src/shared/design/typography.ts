@@ -49,7 +49,7 @@ export const TYPOGRAPHY = {
     fontWeight: 550,
     lineHeight: 1.4,
   },
-  /** Small uppercase-style group label above a set of controls */
+  /** Small group label above a set of controls */
   groupLabel: {
     fontFamily: FF,
     fontSize: 12,

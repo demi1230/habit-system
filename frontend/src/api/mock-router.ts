@@ -260,7 +260,7 @@ export async function mockRequest<T>(path: string, options: RequestInit = {}): P
       precedingRoutine: body.precedingRoutine ?? null,
       color: body.color ?? 'peach',
       iconType: body.iconType ?? 'emoji',
-      iconValue: body.iconValue ?? '✨',
+      iconValue: body.iconValue ?? '',
       benefits: Array.isArray(body.benefits) ? body.benefits : [],
       measurementUnit: body.measurementUnit ?? 'boolean',
       targetValue: body.targetValue ?? 1,

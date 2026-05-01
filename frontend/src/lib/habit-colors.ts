@@ -61,7 +61,7 @@ export function getHabitColor(colorKey?: string | null) {
 
 /** Return the stored emoji/icon for a habit, with a safe fallback. */
 export function getHabitIcon(habit?: { iconValue?: string | null } | null): string {
-  return habit?.iconValue || '✨';
+  return habit?.iconValue?.trim() || '';
 }
 
 export const ALL_COLOR = {

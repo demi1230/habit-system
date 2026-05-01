@@ -20,8 +20,8 @@ export function TopicChips({ topics, activeId, onSelect }: Props) {
             onClick={() => onSelect(topic.id)}
             className={`shrink-0 ${buttonStyles({ variant: active ? 'default' : 'secondary', size: 'sm' })}`}
             style={{
-              backgroundColor: active ? '#303437' : 'rgba(0,0,0,0.055)',
-              color: active ? '#fff' : 'rgba(0,0,0,0.55)',
+              backgroundColor: active ? '#303437' : 'var(--surface-subtle)',
+              color: active ? '#fff' : 'var(--text-soft)',
               fontWeight: active ? 600 : 400,
               fontSize: 12,
               boxShadow: 'none',

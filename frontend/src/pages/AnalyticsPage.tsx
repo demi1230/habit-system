@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   BarChart3, Calendar,
   Target, Brain, MapPin, Clock,
-  ChevronDown, ChevronRight, Sparkles, X, Info,
+  ChevronDown, ChevronRight, Sparkles, X, Info, Check, Layers2,
 } from 'lucide-react';
 import { getHabitColor } from '@/lib/habit-colors';
 import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
@@ -22,6 +22,7 @@ import { RecommendationCard } from '@/features/learning/components/Recommendatio
 import type { RecommendationItem } from '@/features/learning/model/recommendation.types';
 
 import { BottomNav } from '@/components/bottom-nav';
+import { HabitIconSlot } from '@/components/habit-icon-slot';
 import { MonthCalendar } from '@/components/month-calendar';
 import { computeScheduledStreakFromLogs, countCompletedDays, countScheduledDays } from '@/lib/habit-log-days';
 
@@ -255,7 +256,7 @@ function AllHabitsOverview({ habits, logs, composites, loading }: {
               <div key={habit.id} className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
                   style={{ backgroundColor: 'var(--surface-subtle)' }}>
-                  <span style={{ fontSize: 14 }}>{habit.iconValue || '✨'}</span>
+                  <HabitIconSlot iconValue={habit.iconValue} emojiSizePx={14} circlePx={14} />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
@@ -540,7 +541,13 @@ export function AnalyticsPage() {
                     ? '0 0 0 3px var(--background), 0 0 0 5px var(--foreground)'
                     : '0 2px 8px var(--surface-border-soft)',
                 }}>
-                <span style={{ fontSize: 22 }}>🏆</span>
+                <Layers2
+                  className="w-6 h-6 shrink-0"
+                  strokeWidth={2}
+                  style={{
+                    color: isAllMode ? 'var(--background)' : 'var(--muted-foreground)',
+                  }}
+                />
               </div>
               <span style={{ ...TYPOGRAPHY.micro, color: isAllMode ? 'var(--foreground)' : 'var(--text-faint)', fontWeight: isAllMode ? 700 : 400, maxWidth: 48, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>
                 Бүгд
@@ -562,7 +569,7 @@ export function AnalyticsPage() {
                         ? `0 0 0 3px var(--background), 0 0 0 5px ${c.accent}`
                         : '0 2px 8px var(--surface-border-soft)',
                     }}>
-                    <span style={{ fontSize: 22 }}>{h.iconValue || '✨'}</span>
+                    <HabitIconSlot iconValue={h.iconValue} emojiSizePx={22} circlePx={22} />
                   </div>
                   <span style={{ ...TYPOGRAPHY.micro, color: active ? c.accent : 'var(--text-faint)', fontWeight: active ? 700 : 400, maxWidth: 48, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{h.title}</span>
                 </button>
@@ -575,10 +582,32 @@ export function AnalyticsPage() {
       <div className="px-5 pt-5 flex flex-col gap-4">
 
         {habits.length === 0 ? (
-          <div className="text-center py-20">
-            <p style={{ fontSize: 48 }}>📊</p>
-            <p className="text-muted-foreground mt-4" style={{ fontSize: 14 }}>Дадал нэмээгүй байна</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center px-6 py-16 text-center rounded-[20px] bg-card gap-3"
+            style={{ boxShadow: SHADOW.card }}
+          >
+            <div
+              className="mb-2 w-14 h-14 rounded-2xl flex items-center justify-center"
+              style={{ backgroundColor: 'var(--surface-subtle)' }}>
+              <BarChart3 className="w-7 h-7" strokeWidth={2} style={{ color: 'var(--text-muted-soft)' }} />
+            </div>
+            <p style={{ ...TYPOGRAPHY.sectionTitle }} className="text-foreground">
+              Дадал байхгүй байна
+            </p>
+            <p style={{ ...TYPOGRAPHY.bodySm, lineHeight: 1.65 }} className="text-muted-foreground max-w-[272px]">
+              Шинэ дадлаа үүсгээд өөрчлөлтөө шинжилгээнээс хянаарай.
+            </p>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => navigate('/create')}
+              className={buttonStyles({ variant: 'default', size: 'lg' })}
+              style={{ marginTop: 6, ...TYPOGRAPHY.bodySm, fontWeight: 600 }}
+            >
+              Дадал нэмэх
+            </motion.button>
+          </motion.div>
         ) : isAllMode ? (
           <AllHabitsOverview
             habits={habits}
@@ -622,7 +651,11 @@ export function AnalyticsPage() {
               {/* ── Main: big ring with habit icon + motivation text ── */}
               <div className="flex items-center gap-4">
                 <ProgressRing value={displayScore} size={116} strokeWidth={8} color={color.accent}>
-                  <span style={{ fontSize: 38, lineHeight: 1 }}>{selected.iconValue ?? '✅'}</span>
+                  {selected.iconValue ? (
+                    <span style={{ fontSize: 38, lineHeight: 1 }}>{selected.iconValue}</span>
+                  ) : (
+                    <Check className="w-10 h-10" strokeWidth={2.6} style={{ color: color.accent }} />
+                  )}
                 </ProgressRing>
                 <div className="flex-1 flex flex-col gap-1.5 min-w-0">
                   <div className="flex items-baseline gap-1">

@@ -1,6 +1,7 @@
 import { Check, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Habit } from '@/api/types';
+import { HabitIconSlot } from '@/components/habit-icon-slot';
 import { getHabitColor } from '@/lib/habit-colors';
 import { TYPOGRAPHY, buttonStyles } from '@/shared/design';
 
@@ -14,7 +15,6 @@ interface HabitCardProps {
 export function HabitCard({ habit, onQuickComplete, todayCompleted, currentValue }: HabitCardProps) {
   const navigate = useNavigate();
   const color = getHabitColor(habit.color);
-  const habitIcon = habit.iconValue || '✨';
 
   return (
     <div
@@ -32,7 +32,11 @@ export function HabitCard({ habit, onQuickComplete, todayCompleted, currentValue
               : 'border-2 border-border hover:border-primary'
           }`}
         >
-          {todayCompleted ? <Check className="w-5 h-5" /> : <span style={{ fontSize: '16px' }}>{habitIcon}</span>}
+          {todayCompleted ? (
+            <Check className="w-5 h-5" />
+          ) : (
+            <HabitIconSlot iconValue={habit.iconValue} emojiSizePx={16} circlePx={16} />
+          )}
         </button>
 
         <div

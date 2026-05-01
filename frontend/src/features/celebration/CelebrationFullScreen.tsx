@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { X } from 'lucide-react';
+import { Share2, X, Leaf, Check } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 import { getHabitColor, CTA_DARK } from '@/lib/habit-colors';
 import { shareAchievement } from '@/lib/share-achievement';
 import { svgPaths } from '@/lib/svg-paths';
@@ -9,6 +10,7 @@ import type { DifficultyRating, HabitWithCueContext } from '@/api/types';
 import { getCelebrationCopy, FEEL_CHIPS, DIFFICULTY_OPTIONS } from './copy';
 import type { CelebrationContext } from './types';
 import { TYPOGRAPHY, buttonStyles } from '@/shared/design';
+import { HabitIconSlot } from '@/components/habit-icon-slot';
 
 interface Props {
   habit: HabitWithCueContext;
@@ -23,18 +25,22 @@ export function CelebrationFullScreen({ habit, logId, userId, ctx, onClose }: Pr
   const [selectedDifficulty, setSelectedDifficulty] = useState<DifficultyRating | null>(null);
   const [reflectionText, setReflectionText] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const { displayName } = useAuth();
   const color = getHabitColor(habit.color);
   const copy = getCelebrationCopy(ctx, habit.title);
 
   const handleShare = async () => {
-    const badgeLabel = 'badgeLabel' in copy ? copy.badgeLabel ?? null : null;
+    const milestoneLabel = 'badgeLabel' in copy ? copy.badgeLabel ?? null : null;
     await shareAchievement({
-      title: copy.headline,
+      title: milestoneLabel ?? copy.headline,
       subtitle: copy.subline,
       accentColor: color.accent,
-      badgeLabel,
+      badgeIcon: habit.iconValue ?? null,
       xpLabel: ctx.streak > 0 ? `${ctx.streak} өдөр дараалсан` : null,
-      text: `${copy.headline} ${copy.subline}`,
+      userName: displayName || null,
+      text: milestoneLabel
+        ? `“${habit.title}” — ${milestoneLabel}`
+        : `${copy.headline} ${copy.subline}`,
     });
   };
 
@@ -103,7 +109,7 @@ export function CelebrationFullScreen({ habit, logId, userId, ctx, onClose }: Pr
             className="w-[90px] h-[90px] rounded-[26px] flex items-center justify-center"
             style={{ backgroundColor: color.btn }}
           >
-            <span style={{ fontSize: 44 }}>{habit.iconValue || '✨'}</span>
+            <HabitIconSlot iconValue={habit.iconValue} emojiSizePx={44} circlePx={44} />
           </motion.div>
         </div>
 
@@ -141,8 +147,10 @@ export function CelebrationFullScreen({ habit, logId, userId, ctx, onClose }: Pr
               <svg width="22" height="22" viewBox="0 0 23 24" fill="none" style={{ flexShrink: 0 }}>
                 <path d={svgPaths.p29fc8c00} fill={color.accent} fillRule="evenodd" clipRule="evenodd" />
               </svg>
+            ) : ctx.milestoneKind === 'first' ? (
+              <Leaf className="w-[22px] h-[22px] shrink-0" strokeWidth={2.25} style={{ color: color.accent }} />
             ) : (
-              <span style={{ fontSize: 22 }}>{copy.badgeIcon}</span>
+              <Check className="w-[22px] h-[22px] shrink-0" strokeWidth={2.75} style={{ color: color.accent }} />
             )}
             <span style={{ ...TYPOGRAPHY.sectionTitle, fontWeight: 700, color: color.accent }}>{copy.badgeLabel}</span>
           </motion.div>
@@ -244,7 +252,7 @@ export function CelebrationFullScreen({ habit, logId, userId, ctx, onClose }: Pr
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={handleShare}
-          className={`w-full mb-3 ${buttonStyles({ variant: 'secondary', size: 'lg' })}`}
+          className={`w-full mb-3 flex items-center justify-center gap-2 ${buttonStyles({ variant: 'secondary', size: 'lg' })}`}
           style={{
             backgroundColor: color.btn,
             color: color.accent,
@@ -253,7 +261,8 @@ export function CelebrationFullScreen({ habit, logId, userId, ctx, onClose }: Pr
             fontWeight: 600,
           }}
         >
-          Share achievement
+          <Share2 className="w-4 h-4" />
+          Хуваалцах
         </motion.button>
 
         {/* CTA */}

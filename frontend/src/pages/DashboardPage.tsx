@@ -1,8 +1,9 @@
 import { BottomNav } from '@/components/bottom-nav';
+import { HabitIconSlot } from '@/components/habit-icon-slot';
 import { useState, useMemo, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Delete, Check, Pencil, Undo2, Bell, X } from 'lucide-react';
+import { Delete, Check, Pencil, Undo2, Bell, X, LayoutGrid, CalendarOff } from 'lucide-react';
 import { getHabitColor, CTA_DARK } from '@/lib/habit-colors';
 import { TYPOGRAPHY, SHADOW, buttonStyles, AppPlusIcon } from '@/shared/design';
 import { svgPaths } from '@/lib/svg-paths';
@@ -91,7 +92,6 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0 }: {
   const min      = habit.minimumTarget ?? 1;
   const status   = calcStatus(habit, numValue);
   const pct      = calcProgress(habit, numValue);
-  const habitIcon = habit.iconValue || '✨';
 
   const handleKey = (key: string) => {
     if (key === 'AC') { setInput(''); return; }
@@ -143,7 +143,7 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0 }: {
           <div className="flex items-center gap-3 px-5 pb-4">
             <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
               style={{ backgroundColor: color.btn }}>
-              <span style={{ fontSize: 18 }}>{habitIcon}</span>
+              <HabitIconSlot iconValue={habit.iconValue} emojiSizePx={18} circlePx={18} />
             </div>
             <div>
               <p style={TYPOGRAPHY.cardTitle} className="text-foreground">{habit.title}</p>
@@ -496,7 +496,6 @@ function HabitCard({ habit, index, entry, onBadgeTap, disabled }: {
 }) {
   const navigate   = useNavigate();
   const color      = getHabitColor(habit.color);
-  const habitIcon  = habit.iconValue || '✨';
   const status     = entry?.status ?? 'none';
   const pct        = entry ? calcProgress(habit, entry.value) : 0;
 
@@ -531,10 +530,10 @@ function HabitCard({ habit, index, entry, onBadgeTap, disabled }: {
           <div className="shrink-0">
             <div className="w-[50px] h-[50px] rounded-2xl flex items-center justify-center"
               style={{
-                backgroundColor: PASTEL_CARD_ICON_BG, fontSize: 26,
+                backgroundColor: PASTEL_CARD_ICON_BG,
                 opacity: status === 'done' ? 0.55 : 1, transition: 'opacity 0.3s',
               }}>
-              {habitIcon}
+              <HabitIconSlot iconValue={habit.iconValue} emojiSizePx={26} circlePx={26} />
             </div>
           </div>
 
@@ -867,7 +866,7 @@ export function DashboardPage() {
 
   const today    = new Date();
   const hour     = today.getHours();
-  const greeting = hour < 5 ? 'Шөн' : hour < 12 ? 'Хаая морнийн ^^' : hour < 17 ? 'WaasUUP' : 'Хээллөв';
+  const greeting = hour < 5 ? 'Унтаачээ' : hour < 12 ? 'Хаая морнийн ^^' : hour < 17 ? 'WaasUUP' : 'Хаая ^^';
   const dateStr  = formatMnDate(today);
 
   const doneCount    = [...logMap.values()].filter(e => e.status === 'done').length;
@@ -967,7 +966,11 @@ export function DashboardPage() {
           isToday ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center py-16 text-center">
-              <span style={{ fontSize: 52 }} className="mb-4">🌱</span>
+              <div
+                className="mb-4 w-14 h-14 rounded-2xl flex items-center justify-center"
+                style={{ backgroundColor: 'var(--surface-subtle)' }}>
+                <LayoutGrid className="w-7 h-7" strokeWidth={2} style={{ color: 'var(--text-muted-soft)' }} />
+              </div>
               <p style={TYPOGRAPHY.cardTitle} className="text-foreground mb-2">
                 Дадал байхгүй байна
               </p>
@@ -984,7 +987,11 @@ export function DashboardPage() {
           ) : (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center py-16 text-center">
-              <span style={{ fontSize: 44 }} className="mb-4">📭</span>
+              <div
+                className="mb-4 w-14 h-14 rounded-2xl flex items-center justify-center"
+                style={{ backgroundColor: 'var(--surface-subtle)' }}>
+                <CalendarOff className="w-7 h-7" strokeWidth={2} style={{ color: 'var(--text-muted-soft)' }} />
+              </div>
               <p style={TYPOGRAPHY.navTitle} className="text-foreground mb-1">
                 Энэ өдөр дадал байхгүй
               </p>

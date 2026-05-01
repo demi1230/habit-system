@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Archive,
+  Award,
   Bell,
   ChevronDown,
   ChevronRight,
@@ -15,11 +16,15 @@ import {
   Monitor,
   Moon,
   RotateCcw,
+  Search,
   Share2,
   Shield,
   Sun,
-  Trophy,
   User,
+  Star,
+  Flame,
+  Zap,
+  Trophy,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { habitsApi } from '@/api/habits';
@@ -27,8 +32,10 @@ import { engagementApi } from '@/api/engagement';
 import { authApi } from '@/api/auth';
 import { pushApi } from '@/api/push';
 import { LocationSelector } from '@/components/LocationSelector';
-import { useLang, setLang } from '@/lib/i18n';
-import type { Lang } from '@/lib/i18n';
+import { ConfirmDialog } from '@/components/confirm-dialog';
+import { HabitIconSlot } from '@/components/habit-icon-slot';
+import { Spinner } from '@/components/spinner';
+import { Skeleton } from '@/components/skeleton';
 import { useTheme, setTheme } from '@/lib/theme-store';
 import type { ThemeMode } from '@/lib/theme-store';
 import { getHabitColor } from '@/lib/habit-colors';
@@ -43,10 +50,7 @@ const THEME_OPTIONS: { key: ThemeMode; label: string; icon: React.ReactNode }[] 
   { key: 'system', label: 'Систем', icon: <Monitor className="w-3.5 h-3.5" /> },
 ];
 
-const LANG_OPTIONS: { key: Lang; label: string; flag: string }[] = [
-  { key: 'mn', label: 'Монгол', flag: 'MN' },
-  { key: 'en', label: 'English', flag: 'EN' },
-];
+const APP_VERSION = `v${__APP_VERSION__}`;
 
 const BADGE_LABELS: Record<string, string> = {
   FIRST_DONE: 'Анхны амжилт',
@@ -55,12 +59,22 @@ const BADGE_LABELS: Record<string, string> = {
   TOTAL_30: '30 удаагийн гүйцэтгэл',
 };
 
-const BADGE_ICONS: Record<string, string> = {
-  FIRST_DONE: '🥇',
-  STREAK_7: '🔥',
-  STREAK_21: '⚡',
-  TOTAL_30: '🏆',
-};
+function EngagementBadgeGlyph({ badgeCode, size = 'md' }: { badgeCode: string; size?: 'md' | 'lg' }) {
+  const cn = size === 'lg' ? 'w-[22px] h-[22px] shrink-0' : 'w-5 h-5 shrink-0';
+  const sw = size === 'lg' ? 2.25 : 2;
+  switch (badgeCode) {
+    case 'FIRST_DONE':
+      return <Star className={cn} strokeWidth={sw} style={{ color: '#d97706', fill: 'rgba(217,119,6,0.22)' }} />;
+    case 'STREAK_7':
+      return <Flame className={cn} strokeWidth={sw} style={{ color: '#ea580c' }} />;
+    case 'STREAK_21':
+      return <Zap className={cn} strokeWidth={sw} style={{ color: '#ca8a04' }} />;
+    case 'TOTAL_30':
+      return <Trophy className={cn} strokeWidth={sw} style={{ color: '#b45309' }} />;
+    default:
+      return <Award className={cn} strokeWidth={sw} style={{ color: 'var(--text-muted-soft)' }} />;
+  }
+}
 
 const SHARE_RESULT_MESSAGE = {
   shared: 'Хуваалцах цонх нээгдлээ.',
@@ -80,6 +94,31 @@ function formatMnMonthDay(value: string) {
   return `${date.getMonth() + 1}-р сар ${date.getDate()}`;
 }
 
+interface PasswordScore {
+  score: 0 | 1 | 2 | 3 | 4;
+  label: string;
+  color: string;
+}
+
+function scorePassword(value: string): PasswordScore {
+  if (!value) return { score: 0, label: '', color: 'transparent' };
+
+  let score = 0;
+  if (value.length >= 8) score++;
+  if (value.length >= 12) score++;
+  if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score++;
+  if (/\d/.test(value)) score++;
+  if (/[^A-Za-z0-9]/.test(value)) score++;
+
+  // Cap at 4 so we always have 4 segments worth of feedback.
+  const capped = Math.min(score, 4) as 0 | 1 | 2 | 3 | 4;
+
+  if (capped <= 1) return { score: 1, label: 'Сул', color: '#ef4444' };
+  if (capped === 2) return { score: 2, label: 'Дунд зэрэг', color: '#f59e0b' };
+  if (capped === 3) return { score: 3, label: 'Сайн', color: '#3b82f6' };
+  return { score: 4, label: 'Маш сайн', color: '#22c55e' };
+}
+
 function Card({ children }: { children: React.ReactNode }) {
   return (
     <div className="rounded-[20px] bg-card overflow-hidden" style={{ boxShadow: SHADOW.card }}>
@@ -93,27 +132,35 @@ function MenuItem({
   label,
   subtitle,
   value,
+  badge,
   onClick,
   danger,
+  disabled,
 }: {
   icon: React.ReactNode;
   label: string;
   subtitle?: string;
   value?: string;
+  badge?: string;
   onClick?: () => void;
   danger?: boolean;
+  disabled?: boolean;
 }) {
+  const interactive = Boolean(onClick) && !disabled;
+
   return (
     <motion.button
-      whileTap={{ scale: 0.98 }}
-      onClick={onClick}
+      whileTap={interactive ? { scale: 0.98 } : undefined}
+      onClick={interactive ? onClick : undefined}
+      disabled={!interactive}
       className={`w-full flex items-center gap-3 px-4 py-3.5 text-left ${
         buttonStyles({ variant: danger ? 'destructive' : 'ghost', size: 'default' })
       }`}
+      style={{ opacity: disabled ? 0.55 : 1, cursor: interactive ? 'pointer' : 'default' }}
     >
       <div
         className="w-8 h-8 rounded-[12px] flex items-center justify-center shrink-0"
-        style={{ backgroundColor: danger ? '#ef444415' : 'rgba(0,0,0,0.05)' }}
+        style={{ backgroundColor: danger ? '#ef444418' : 'var(--surface-subtle)' }}
       >
         {icon}
       </div>
@@ -134,6 +181,19 @@ function MenuItem({
           </p>
         ) : null}
       </div>
+      {badge ? (
+        <span
+          className="shrink-0 rounded-full px-2 py-0.5"
+          style={{
+            ...TYPOGRAPHY.micro,
+            fontSize: 10.5,
+            backgroundColor: 'var(--surface-muted)',
+            color: 'var(--text-muted-soft)',
+          }}
+        >
+          {badge}
+        </span>
+      ) : null}
       {value ? (
         <span
           className="text-muted-foreground shrink-0 text-right max-w-[128px] truncate"
@@ -143,7 +203,7 @@ function MenuItem({
           {value}
         </span>
       ) : null}
-      {onClick && !danger ? (
+      {interactive && !danger ? (
         <ChevronRight className="w-4 h-4 shrink-0" style={{ color: 'var(--text-disabled)' }} />
       ) : null}
     </motion.button>
@@ -188,7 +248,7 @@ function PushToggleRow({
     <div className="flex items-center gap-3 px-4 py-3.5">
       <div
         className="w-8 h-8 rounded-[12px] flex items-center justify-center shrink-0"
-        style={{ backgroundColor: isOn ? 'var(--primary-translucent, rgba(var(--primary-rgb,99,102,241),0.12))' : 'rgba(0,0,0,0.05)' }}
+        style={{ backgroundColor: isOn ? 'var(--primary-translucent, rgba(var(--primary-rgb,99,102,241),0.12))' : 'var(--surface-subtle)' }}
       >
         <Bell
           className="w-4 h-4"
@@ -250,14 +310,17 @@ export function ProfilePage() {
   const navigate = useNavigate();
   const { userId, displayName, logout } = useAuth();
   const [theme] = useTheme();
-  const lang = useLang();
   const [habits, setHabits] = useState<Habit[]>([]);
+  const [habitsLoading, setHabitsLoading] = useState(true);
   const [engagement, setEngagement] = useState<EngagementSummary | null>(null);
+  const [engagementLoading, setEngagementLoading] = useState(true);
   const [showArchive, setShowArchive] = useState(false);
+  const [archiveQuery, setArchiveQuery] = useState('');
   const [restoringId, setRestoringId] = useState<string | null>(null);
   const [pushPermission, setPushPermission] = useState(getNotificationPermission());
   const [pushBusy, setPushBusy] = useState(false);
   const [selectedBadgeId, setSelectedBadgeId] = useState<string | null>(null);
+  const [showAllBadges, setShowAllBadges] = useState(false);
   const [shareBusyId, setShareBusyId] = useState<string | null>(null);
   const [shareStatus, setShareStatus] = useState<string | null>(null);
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -266,24 +329,49 @@ export function ProfilePage() {
   const [cpConfirm, setCpConfirm] = useState('');
   const [cpShowCurrent, setCpShowCurrent] = useState(false);
   const [cpShowNew, setCpShowNew] = useState(false);
+  const [cpShowConfirm, setCpShowConfirm] = useState(false);
   const [cpLoading, setCpLoading] = useState(false);
   const [cpError, setCpError] = useState('');
   const [cpSuccess, setCpSuccess] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const loadHabits = useCallback(() => {
     if (!userId) return;
-    habitsApi.list(userId, true).then(setHabits).catch(console.error);
+    setHabitsLoading(true);
+    habitsApi
+      .list(userId, true)
+      .then(setHabits)
+      .catch(console.error)
+      .finally(() => setHabitsLoading(false));
   }, [userId]);
 
   const loadEngagement = useCallback(() => {
     if (!userId) return;
-    engagementApi.getSummary(userId).then(setEngagement).catch(console.error);
+    setEngagementLoading(true);
+    engagementApi
+      .getSummary(userId)
+      .then(setEngagement)
+      .catch(console.error)
+      .finally(() => setEngagementLoading(false));
   }, [userId]);
 
   useEffect(() => {
     loadHabits();
     loadEngagement();
     setPushPermission(getNotificationPermission());
+  }, [loadHabits, loadEngagement]);
+
+  // Refetch when the tab becomes visible again so achievements/streaks stay fresh.
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') {
+        loadHabits();
+        loadEngagement();
+        setPushPermission(getNotificationPermission());
+      }
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
   }, [loadHabits, loadEngagement]);
 
   useEffect(() => {
@@ -293,12 +381,31 @@ export function ProfilePage() {
     }
   }, [engagement, selectedBadgeId]);
 
-  const activeCount = habits.filter((habit) => habit.status === 'ACTIVE').length;
-  const archivedHabits = habits.filter((habit) => habit.status === 'ARCHIVED');
+  const activeHabits = useMemo(() => habits.filter((h) => h.status === 'ACTIVE'), [habits]);
+  const archivedHabits = useMemo(() => habits.filter((h) => h.status === 'ARCHIVED'), [habits]);
+  const activeCount = activeHabits.length;
   const archivedCount = archivedHabits.length;
+  const unlockedBadgeCount = engagement?.unlockedBadgeCount ?? 0;
+  const filteredArchivedHabits = useMemo(() => {
+    const q = archiveQuery.trim().toLowerCase();
+    if (!q) return archivedHabits;
+    return archivedHabits.filter((h) => h.title.toLowerCase().includes(q));
+  }, [archivedHabits, archiveQuery]);
   const selectedBadge = selectedBadgeId
     ? engagement?.badges.find((badge) => badge.id === selectedBadgeId) ?? null
     : null;
+  const visibleBadges = useMemo(() => {
+    if (!engagement?.badges) return [];
+    return showAllBadges ? engagement.badges : engagement.badges.slice(0, 6);
+  }, [engagement, showAllBadges]);
+  const initials = useMemo(() => {
+    if (!displayName) return '';
+    const parts = displayName.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return '';
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }, [displayName]);
+  const passwordScore = useMemo(() => scorePassword(cpNew), [cpNew]);
 
   const handleRestore = async (habitId: string) => {
     if (!userId || restoringId) return;
@@ -350,7 +457,6 @@ export function ProfilePage() {
 
   const handleShareBadge = async (badge: EngagementBadge) => {
     const badgeLabel = BADGE_LABELS[badge.badgeCode] ?? badge.badgeCode;
-    const badgeIcon = BADGE_ICONS[badge.badgeCode] ?? '🏅';
     const color = getHabitColor(badge.habitColor);
     setShareBusyId(badge.id);
     setShareStatus(null);
@@ -358,14 +464,14 @@ export function ProfilePage() {
       const result = await shareAchievement({
         title: badgeLabel,
         subtitle: badge.habitTitle
-          ? `${badge.habitTitle} дадал дээр шинэ амжилт нээгдлээ.`
-          : 'Шинэ амжилт нээгдлээ.',
+          ? `“${badge.habitTitle}” дээр шинэ амжилт нээлээ.`
+          : 'Шинэ амжилт нээлээ.',
         accentColor: color.accent,
-        badgeIcon,
-        badgeLabel,
+        badgeIcon: badge.habitIcon ?? null,
         xpLabel: engagement ? `${engagement.totalXp} XP` : null,
+        userName: displayName || null,
         text: badge.habitTitle
-          ? `${badge.habitTitle} дадал дээр ${badgeLabel} амжилтыг нээлээ.`
+          ? `“${badge.habitTitle}” дээр ${badgeLabel} амжилтыг нээлээ.`
           : `Шинэ амжилт: ${badgeLabel}`,
       });
       setShareStatus(SHARE_RESULT_MESSAGE[result]);
@@ -388,8 +494,9 @@ export function ProfilePage() {
     e.preventDefault();
     if (!userId) return;
     setCpError('');
-    if (cpNew !== cpConfirm) { setCpError('Шинэ нууц үг таарахгүй байна.'); return; }
     if (cpNew.length < 8) { setCpError('Нууц үг хамгийн багадаа 8 тэмдэгт байна.'); return; }
+    if (cpNew === cpCurrent) { setCpError('Шинэ нууц үг хуучин нууц үгнээс өөр байх ёстой.'); return; }
+    if (cpNew !== cpConfirm) { setCpError('Шинэ нууц үг таарахгүй байна.'); return; }
     setCpLoading(true);
     try {
       await authApi.changePassword(userId, cpCurrent, cpNew);
@@ -409,20 +516,20 @@ export function ProfilePage() {
     navigate('/login');
   };
 
+  const isLoadingProfile = engagementLoading && !engagement;
+  const totalBadgeCount = engagement?.badges?.length ?? 0;
+  const hasMoreBadges = totalBadgeCount > 6;
+
   return (
     <div className="min-h-screen bg-background pb-28">
-      {/* <div
-        className="sticky top-0 z-20 bg-background"
-        style={{ borderBottom: '1px solid var(--surface-border-faint)' }}
-      >
-        <div className="flex items-center gap-3 px-5 pt-13 pb-3">
-          <p style={TYPOGRAPHY.pageTitle} className="text-foreground">
-            Профайл
-          </p>
-        </div>
-      </div> */}
+      {/* Page header — matches the pattern used by other tabs */}
+      <div className="px-5 pt-12 pb-2">
+        <p style={TYPOGRAPHY.pageTitle} className="text-foreground">
+          Профайл
+        </p>
+      </div>
 
-      <div className="px-5 pt-12 flex flex-col gap-5">
+      <div className="px-5 pt-3 flex flex-col gap-5">
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -432,44 +539,68 @@ export function ProfilePage() {
           <div className="flex items-center gap-4 mb-4">
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center shrink-0"
-              style={{ backgroundColor: 'var(--muted)' }}
+              style={{
+                backgroundColor: initials ? 'var(--foreground)' : 'var(--muted)',
+                color: initials ? 'var(--background)' : 'var(--muted-foreground)',
+              }}
             >
-              <User className="w-6 h-6" style={{ color: 'var(--muted-foreground)' }} />
+              {initials ? (
+                <span style={{ ...TYPOGRAPHY.statMd, fontWeight: 600, fontSize: 16 }}>
+                  {initials}
+                </span>
+              ) : (
+                <User className="w-6 h-6" />
+              )}
             </div>
-            <div className="min-w-0">
-              <p style={TYPOGRAPHY.pageTitle} className="text-foreground truncate">
-                {displayName || 'Хэрэглэгч'}
-              </p>
-              <p style={TYPOGRAPHY.caption} className="text-muted-foreground mt-1">
-                {engagement?.unlockedBadgeCount ?? 0} амжилт · {engagement?.totalXp ?? 0} XP
-              </p>
+            <div className="min-w-0 flex-1">
+              {isLoadingProfile && !displayName ? (
+                <>
+                  <Skeleton width={140} height={20} />
+                  <Skeleton width={100} height={12} style={{ marginTop: 6 }} />
+                </>
+              ) : (
+                <>
+                  <p style={TYPOGRAPHY.pageTitle} className="text-foreground truncate">
+                    {displayName || 'Хэрэглэгч'}
+                  </p>
+                  <p style={TYPOGRAPHY.caption} className="text-muted-foreground mt-1">
+                    Дадлаа бэхжүүлж буй аялалаа үргэлжлүүлээрэй
+                  </p>
+                </>
+              )}
             </div>
           </div>
           <div
             className="flex justify-center gap-6 pt-4"
             style={{ borderTop: '0.5px solid var(--surface-border-soft)' }}
           >
-            <div className="text-center">
+            <div className="text-center flex-1">
               <p style={TYPOGRAPHY.statLg} className="text-foreground">
-                {activeCount}
+                {habitsLoading ? '—' : activeCount}
               </p>
               <p style={TYPOGRAPHY.micro} className="text-muted-foreground">
                 Идэвхтэй
               </p>
             </div>
             <div style={{ width: 1, backgroundColor: 'var(--surface-border-soft)' }} />
-            <div className="text-center">
-              <p style={TYPOGRAPHY.statLg} className="text-foreground">
-                {archivedCount}
+            <div className="text-center flex-1">
+              <p
+                style={{ ...TYPOGRAPHY.statLg, display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                className="text-foreground"
+              >
+                {isLoadingProfile ? '—' : unlockedBadgeCount}
+                {!isLoadingProfile && unlockedBadgeCount > 0 ? (
+                  <Award className="w-4 h-4" style={{ color: '#f59e0b' }} />
+                ) : null}
               </p>
               <p style={TYPOGRAPHY.micro} className="text-muted-foreground">
-                Архив
+                Амжилт
               </p>
             </div>
             <div style={{ width: 1, backgroundColor: 'var(--surface-border-soft)' }} />
-            <div className="text-center">
+            <div className="text-center flex-1">
               <p style={TYPOGRAPHY.statLg} className="text-foreground">
-                {engagement?.totalXp ?? 0}
+                {isLoadingProfile ? '—' : engagement?.totalXp ?? 0}
               </p>
               <p style={TYPOGRAPHY.micro} className="text-muted-foreground">
                 XP
@@ -480,35 +611,22 @@ export function ProfilePage() {
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
           <p style={TYPOGRAPHY.groupLabel} className="text-muted-foreground mb-2 pl-0.5">
-            АМЖИЛТ
+            Нээгдсэн амжилтууд
           </p>
           <Card>
-            <MenuItem
-              icon={<Trophy className="w-4 h-4 text-muted-foreground" />}
-              label="Нийт XP"
-              subtitle="Дадал хийж цуглуулсан нийт оноо"
-              value={`${engagement?.totalXp ?? 0}`}
-            />
-            <Divider />
-            <PushToggleRow
-              permission={pushPermission}
-              busy={pushBusy}
-              subscriptionCount={engagement?.subscriptionCount ?? 0}
-              onEnable={handleEnablePush}
-              onDisable={handleDisablePush}
-            />
-            <Divider />
-            <div className="px-4 py-3.5">
-              <p style={TYPOGRAPHY.groupLabel} className="text-muted-foreground mb-2.5">
-                НЭЭГДСЭН АМЖИЛТУУД
-              </p>
-              {engagement?.badges?.length ? (
+            <div className="px-4 py-4">
+              {isLoadingProfile ? (
+                <div className="grid grid-cols-2 gap-2.5">
+                  {[0, 1, 2, 3].map((i) => (
+                    <Skeleton key={i} height={132} rounded={18} />
+                  ))}
+                </div>
+              ) : engagement?.badges?.length ? (
                 <>
                   <div className="grid grid-cols-2 gap-2.5">
-                    {engagement.badges.slice(0, 6).map((badge) => {
+                    {visibleBadges.map((badge) => {
                       const isSelected = selectedBadgeId === badge.id;
                       const label = BADGE_LABELS[badge.badgeCode] ?? badge.badgeCode;
-                      const icon = BADGE_ICONS[badge.badgeCode] ?? '🏅';
                       const palette = getHabitColor(badge.habitColor);
 
                       return (
@@ -519,7 +637,8 @@ export function ProfilePage() {
                             setShareStatus(null);
                             setSelectedBadgeId(isSelected ? null : badge.id);
                           }}
-                          className="rounded-[18px] p-3 text-left min-h-[132px] flex flex-col"
+                          aria-label={`${label}${badge.habitTitle ? ` — ${badge.habitTitle}` : ''}`}
+                          className="rounded-[18px] p-3 text-left min-h-[128px] flex flex-col"
                           style={{
                             backgroundColor: isSelected ? `${palette.accent}16` : 'var(--card)',
                             border: `1px solid ${isSelected ? `${palette.accent}55` : 'var(--surface-border-soft)'}`,
@@ -533,7 +652,7 @@ export function ProfilePage() {
                                 backgroundColor: isSelected ? `${palette.accent}24` : `${palette.accent}14`,
                               }}
                             >
-                              <span style={{ fontSize: 20, lineHeight: 1 }}>{icon}</span>
+                              <EngagementBadgeGlyph badgeCode={badge.badgeCode} />
                             </div>
                             <div
                               className="rounded-full px-2 py-1"
@@ -568,34 +687,43 @@ export function ProfilePage() {
                                 marginTop: 6,
                                 color: 'var(--text-muted-soft)',
                               }}
+                              className="truncate"
                             >
-                              {badge.habitTitle ? `${badge.habitTitle} дадал` : 'Системийн амжилт'}
+                              {badge.habitTitle ?? 'Системийн амжилт'}
                             </p>
-                          </div>
-
-                          <div className="mt-3 flex items-center justify-between">
-                            <span style={TYPOGRAPHY.micro} className="text-muted-foreground">
-                              {isSelected ? 'Сонгогдсон' : 'Сонгох'}
-                            </span>
-                            <div
-                              className="w-7 h-7 rounded-full flex items-center justify-center"
-                              style={{
-                                backgroundColor: isSelected ? palette.accent : 'var(--surface-muted)',
-                                color: isSelected ? '#fff' : 'var(--text-muted-soft)',
-                              }}
-                            >
-                              <Share2 className="w-3.5 h-3.5" />
-                            </div>
                           </div>
                         </motion.button>
                       );
                     })}
                   </div>
 
+                  {hasMoreBadges ? (
+                    <motion.button
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setShowAllBadges((v) => !v)}
+                      className="w-full mt-3 flex items-center justify-center gap-1.5 rounded-[14px] py-2.5"
+                      style={{
+                        backgroundColor: 'var(--surface-subtle)',
+                        ...TYPOGRAPHY.caption,
+                        fontWeight: 600,
+                        color: 'var(--text-soft)',
+                      }}
+                    >
+                      {showAllBadges
+                        ? 'Жижигрүүлэх'
+                        : `Бүгдийг харах (${totalBadgeCount})`}
+                      <motion.span
+                        animate={{ rotate: showAllBadges ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <ChevronDown className="w-4 h-4" />
+                      </motion.span>
+                    </motion.button>
+                  ) : null}
+
                   <AnimatePresence>
                     {selectedBadge && (() => {
                       const label = BADGE_LABELS[selectedBadge.badgeCode] ?? selectedBadge.badgeCode;
-                      const icon = BADGE_ICONS[selectedBadge.badgeCode] ?? '🏅';
                       const palette = getHabitColor(selectedBadge.habitColor);
 
                       return (
@@ -616,7 +744,7 @@ export function ProfilePage() {
                               className="w-11 h-11 rounded-[16px] flex items-center justify-center shrink-0"
                               style={{ backgroundColor: `${palette.accent}18` }}
                             >
-                              <span style={{ fontSize: 22, lineHeight: 1 }}>{icon}</span>
+                              <EngagementBadgeGlyph badgeCode={selectedBadge.badgeCode} size="lg" />
                             </div>
                             <div className="min-w-0 flex-1">
                               <p style={{ ...TYPOGRAPHY.sectionTitle, fontWeight: 600 }} className="text-foreground">
@@ -624,7 +752,7 @@ export function ProfilePage() {
                               </p>
                               <p style={TYPOGRAPHY.bodySm} className="text-muted-foreground mt-1">
                                 {selectedBadge.habitTitle
-                                  ? `${selectedBadge.habitTitle} дадал дээр нээгдсэн.`
+                                  ? `“${selectedBadge.habitTitle}” дээр нээгдсэн.`
                                   : 'Энэ бол таны шинэ системийн амжилт.'}
                               </p>
                             </div>
@@ -650,9 +778,13 @@ export function ProfilePage() {
                               className={`flex items-center justify-center gap-2 ${buttonStyles({ variant: 'default', size: 'default' })}`}
                               style={{ minWidth: 150 }}
                             >
-                              <Share2 className="w-4 h-4" />
+                              {shareBusyId === selectedBadge.id ? (
+                                <Spinner size={14} />
+                              ) : (
+                                <Share2 className="w-4 h-4" />
+                              )}
                               <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 600 }}>
-                                {shareBusyId === selectedBadge.id ? 'Бэлтгэж байна...' : 'Хуваалцах'}
+                                {shareBusyId === selectedBadge.id ? 'Бэлтгэж байна…' : 'Хуваалцах'}
                               </span>
                             </motion.button>
                           </div>
@@ -693,7 +825,7 @@ export function ProfilePage() {
           transition={{ delay: 0.04 }}
         >
           <p style={TYPOGRAPHY.groupLabel} className="text-muted-foreground mb-2 pl-0.5">
-            ХАРАГДАЦ
+            Харагдац
           </p>
           <Card>
             <div className="p-3 flex gap-2">
@@ -725,45 +857,10 @@ export function ProfilePage() {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.07 }}
-        >
-          <p style={TYPOGRAPHY.groupLabel} className="text-muted-foreground mb-2 pl-0.5">
-            ХЭЛ
-          </p>
-          <Card>
-            <div className="p-3 flex gap-2">
-              {LANG_OPTIONS.map((option) => {
-                const active = lang === option.key;
-                return (
-                  <motion.button
-                    key={option.key}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setLang(option.key)}
-                    className={`flex-1 flex items-center justify-center gap-2 ${
-                      buttonStyles({ variant: active ? 'default' : 'secondary', size: 'default' })
-                    }`}
-                    style={{
-                      border: '1.5px solid transparent',
-                      fontSize: 13,
-                      fontWeight: active ? 600 : 500,
-                    }}
-                  >
-                    <span>{option.flag}</span>
-                    {option.label}
-                  </motion.button>
-                );
-              })}
-            </div>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
           <p style={TYPOGRAPHY.groupLabel} className="text-muted-foreground mb-2 pl-0.5">
-            АРХИВ
+            Архив
           </p>
           <Card>
             <motion.button
@@ -805,77 +902,115 @@ export function ProfilePage() {
                   transition={{ duration: 0.22 }}
                   className="overflow-hidden"
                 >
-                  {archivedHabits.length === 0 ? (
-                    <div className="text-center px-4 py-6">
-                      <p style={{ ...TYPOGRAPHY.bodySm, marginTop: 6 }} className="text-muted-foreground">
-                        Архивласан дадал байхгүй
-                      </p>
-                    </div>
-                  ) : (
-                    <div style={{ borderTop: '0.5px solid var(--surface-border-soft)' }}>
-                      {archivedHabits.map((habit, index) => {
-                        const color = getHabitColor(habit.color);
-                        const isRestoring = restoringId === habit.id;
+                  <div style={{ borderTop: '0.5px solid var(--surface-border-soft)' }}>
+                    {archivedHabits.length > 4 ? (
+                      <div className="px-4 pt-3 pb-1">
+                        <div className="relative">
+                          <Search
+                            className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2"
+                            style={{ color: 'var(--text-muted-soft)' }}
+                          />
+                          <input
+                            value={archiveQuery}
+                            onChange={(e) => setArchiveQuery(e.target.value)}
+                            placeholder="Хайх…"
+                            style={{
+                              width: '100%',
+                              padding: '9px 12px 9px 34px',
+                              borderRadius: 12,
+                              backgroundColor: 'var(--surface-subtle)',
+                              border: '1px solid var(--surface-border-soft)',
+                              fontSize: 13,
+                              color: 'var(--foreground)',
+                              outline: 'none',
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ) : null}
 
-                        return (
-                          <div key={habit.id}>
-                            {index > 0 ? (
-                              <div
-                                style={{
-                                  height: 0.5,
-                                  backgroundColor: 'var(--surface-border-soft)',
-                                  marginLeft: 60,
-                                }}
-                              />
-                            ) : null}
-                            <div className="flex items-center gap-3 px-4 py-3">
-                              <div
-                                className="w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0"
-                                style={{ backgroundColor: color.btn }}
-                              >
-                                <span style={{ fontSize: 20 }}>{habit.iconValue || '📦'}</span>
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p
-                                  style={{ ...TYPOGRAPHY.sectionTitle, fontWeight: 500 }}
-                                  className="text-foreground truncate"
+                    {archivedHabits.length === 0 ? (
+                      <div className="text-center px-4 py-6">
+                        <p style={{ ...TYPOGRAPHY.bodySm, marginTop: 6 }} className="text-muted-foreground">
+                          Архивласан дадал байхгүй
+                        </p>
+                      </div>
+                    ) : filteredArchivedHabits.length === 0 ? (
+                      <div className="text-center px-4 py-6">
+                        <p style={TYPOGRAPHY.bodySm} className="text-muted-foreground">
+                          “{archiveQuery}” олдсонгүй
+                        </p>
+                      </div>
+                    ) : (
+                      <div>
+                        {filteredArchivedHabits.map((habit, index) => {
+                          const color = getHabitColor(habit.color);
+                          const isRestoring = restoringId === habit.id;
+
+                          return (
+                            <div key={habit.id}>
+                              {index > 0 ? (
+                                <div
+                                  style={{
+                                    height: 0.5,
+                                    backgroundColor: 'var(--surface-border-soft)',
+                                    marginLeft: 60,
+                                  }}
+                                />
+                              ) : null}
+                              <div className="flex items-center gap-3 px-4 py-3">
+                                <div
+                                  className="w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0"
+                                  style={{ backgroundColor: color.btn }}
                                 >
-                                  {habit.title}
-                                </p>
-                                {habit.archivedAt ? (
+                                  <HabitIconSlot iconValue={habit.iconValue} emojiSizePx={20} circlePx={20} />
+                                </div>
+                                <div className="flex-1 min-w-0">
                                   <p
-                                    style={{ ...TYPOGRAPHY.micro, marginTop: 1 }}
-                                    className="text-muted-foreground"
+                                    style={{ ...TYPOGRAPHY.sectionTitle, fontWeight: 500 }}
+                                    className="text-foreground truncate"
                                   >
-                                    {formatMnMonthDay(habit.archivedAt)} архивласан
+                                    {habit.title}
                                   </p>
-                                ) : null}
-                              </div>
-                              <motion.button
-                                whileTap={{ scale: 0.92 }}
-                                onClick={() => handleRestore(habit.id)}
-                                disabled={Boolean(restoringId)}
-                                className={`flex items-center gap-1.5 disabled:opacity-50 ${
-                                  buttonStyles({ variant: 'accent', size: 'sm' })
-                                }`}
-                                style={{
-                                  backgroundColor: color.btn,
-                                  border: `1px solid ${color.accent}30`,
-                                }}
-                              >
-                                <RotateCcw className="w-3 h-3" style={{ color: color.accent }} />
-                                <span
-                                  style={{ ...TYPOGRAPHY.caption, fontWeight: 600, color: color.accent }}
+                                  {habit.archivedAt ? (
+                                    <p
+                                      style={{ ...TYPOGRAPHY.micro, marginTop: 1 }}
+                                      className="text-muted-foreground"
+                                    >
+                                      {formatMnMonthDay(habit.archivedAt)} архивласан
+                                    </p>
+                                  ) : null}
+                                </div>
+                                <motion.button
+                                  whileTap={{ scale: 0.92 }}
+                                  onClick={() => handleRestore(habit.id)}
+                                  disabled={Boolean(restoringId)}
+                                  className={`flex items-center gap-1.5 disabled:opacity-50 ${
+                                    buttonStyles({ variant: 'accent', size: 'sm' })
+                                  }`}
+                                  style={{
+                                    backgroundColor: color.btn,
+                                    border: `1px solid ${color.accent}30`,
+                                  }}
                                 >
-                                  {isRestoring ? '...' : 'Сэргээх'}
-                                </span>
-                              </motion.button>
+                                  {isRestoring ? (
+                                    <Spinner size={12} color={color.accent} />
+                                  ) : (
+                                    <RotateCcw className="w-3 h-3" style={{ color: color.accent }} />
+                                  )}
+                                  <span
+                                    style={{ ...TYPOGRAPHY.caption, fontWeight: 600, color: color.accent }}
+                                  >
+                                    {isRestoring ? 'Сэргээж байна…' : 'Сэргээх'}
+                                  </span>
+                                </motion.button>
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 </motion.div>
               ) : null}
             </AnimatePresence>
@@ -888,7 +1023,7 @@ export function ProfilePage() {
           transition={{ delay: 0.13 }}
         >
           <p style={TYPOGRAPHY.groupLabel} className="text-muted-foreground mb-2 pl-0.5">
-            БАЙРШИЛ
+            Байршил
           </p>
           <Card>
             <div className="px-4 py-4">
@@ -903,13 +1038,28 @@ export function ProfilePage() {
           transition={{ delay: 0.13 }}
         >
           <p style={TYPOGRAPHY.groupLabel} className="text-muted-foreground mb-2 pl-0.5">
-            ЦЭС
+            Цэс
           </p>
           <Card>
+            <PushToggleRow
+              permission={pushPermission}
+              busy={pushBusy}
+              subscriptionCount={engagement?.subscriptionCount ?? 0}
+              onEnable={handleEnablePush}
+              onDisable={handleDisablePush}
+            />
+            <Divider />
             <MenuItem
               icon={<Bell className="w-4 h-4 text-muted-foreground" />}
-              label="Мэдэгдэл"
+              label="Сануулгууд"
               onClick={() => navigate('/reminders')}
+            />
+            <Divider />
+            <MenuItem
+              icon={<User className="w-4 h-4 text-muted-foreground" />}
+              label="Профайл засах"
+              badge="Удахгүй"
+              disabled
             />
             <Divider />
             <motion.button
@@ -917,7 +1067,7 @@ export function ProfilePage() {
               onClick={() => { setShowChangePassword(v => !v); setCpError(''); setCpSuccess(false); }}
               className={`w-full flex items-center gap-3 px-4 py-3.5 text-left ${buttonStyles({ variant: 'ghost', size: 'default' })}`}
             >
-              <div className="w-8 h-8 rounded-[12px] flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
+              <div className="w-8 h-8 rounded-[12px] flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--surface-subtle)' }}>
                 <KeyRound className="w-4 h-4 text-muted-foreground" />
               </div>
               <div className="flex-1 min-w-0">
@@ -954,6 +1104,7 @@ export function ProfilePage() {
                             value={cpCurrent}
                             onChange={e => setCpCurrent(e.target.value)}
                             placeholder="Одоогийн нууц үг"
+                            aria-label="Одоогийн нууц үг"
                             required
                             autoComplete="current-password"
                             style={{
@@ -963,7 +1114,13 @@ export function ProfilePage() {
                               fontSize: 14, color: 'var(--foreground)', fontFamily: "'Inter', sans-serif", outline: 'none',
                             }}
                           />
-                          <button type="button" onClick={() => setCpShowCurrent(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted-soft)', lineHeight: 0 }}>
+                          <button
+                            type="button"
+                            onClick={() => setCpShowCurrent(v => !v)}
+                            aria-label={cpShowCurrent ? 'Нууц үгийг далдлах' : 'Нууц үгийг харуулах'}
+                            className="absolute right-3 top-1/2 -translate-y-1/2"
+                            style={{ color: 'var(--text-muted-soft)', lineHeight: 0 }}
+                          >
                             {cpShowCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                           </button>
                         </div>
@@ -974,6 +1131,7 @@ export function ProfilePage() {
                             value={cpNew}
                             onChange={e => setCpNew(e.target.value)}
                             placeholder="Шинэ нууц үг (8+ тэмдэгт)"
+                            aria-label="Шинэ нууц үг"
                             required
                             autoComplete="new-password"
                             style={{
@@ -983,33 +1141,84 @@ export function ProfilePage() {
                               fontSize: 14, color: 'var(--foreground)', fontFamily: "'Inter', sans-serif", outline: 'none',
                             }}
                           />
-                          <button type="button" onClick={() => setCpShowNew(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted-soft)', lineHeight: 0 }}>
+                          <button
+                            type="button"
+                            onClick={() => setCpShowNew(v => !v)}
+                            aria-label={cpShowNew ? 'Нууц үгийг далдлах' : 'Нууц үгийг харуулах'}
+                            className="absolute right-3 top-1/2 -translate-y-1/2"
+                            style={{ color: 'var(--text-muted-soft)', lineHeight: 0 }}
+                          >
                             {cpShowNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                           </button>
                         </div>
-                        {/* Confirm */}
-                        <input
-                          type="password"
-                          value={cpConfirm}
-                          onChange={e => setCpConfirm(e.target.value)}
-                          placeholder="Шинэ нууц үгийг давтах"
-                          required
-                          autoComplete="new-password"
-                          style={{
-                            width: '100%', padding: '11px 14px',
-                            borderRadius: 12, backgroundColor: 'var(--surface-muted)',
-                            border: '1.5px solid var(--surface-border-soft)',
-                            fontSize: 14, color: 'var(--foreground)', fontFamily: "'Inter', sans-serif", outline: 'none',
-                          }}
-                        />
+
+                        {/* Strength meter */}
+                        {cpNew ? (
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 flex gap-1">
+                              {[1, 2, 3, 4].map((level) => (
+                                <div
+                                  key={level}
+                                  className="flex-1 rounded-full transition-colors duration-150"
+                                  style={{
+                                    height: 4,
+                                    backgroundColor:
+                                      level <= passwordScore.score
+                                        ? passwordScore.color
+                                        : 'var(--surface-strong)',
+                                  }}
+                                />
+                              ))}
+                            </div>
+                            <span
+                              style={{
+                                ...TYPOGRAPHY.micro,
+                                color: passwordScore.color,
+                                minWidth: 70,
+                                textAlign: 'right',
+                              }}
+                            >
+                              {passwordScore.label}
+                            </span>
+                          </div>
+                        ) : null}
+
+                        {/* Confirm with eye toggle */}
+                        <div className="relative">
+                          <input
+                            type={cpShowConfirm ? 'text' : 'password'}
+                            value={cpConfirm}
+                            onChange={e => setCpConfirm(e.target.value)}
+                            placeholder="Шинэ нууц үгийг давтах"
+                            aria-label="Шинэ нууц үгийг давтах"
+                            required
+                            autoComplete="new-password"
+                            style={{
+                              width: '100%', padding: '11px 40px 11px 14px',
+                              borderRadius: 12, backgroundColor: 'var(--surface-muted)',
+                              border: '1.5px solid var(--surface-border-soft)',
+                              fontSize: 14, color: 'var(--foreground)', fontFamily: "'Inter', sans-serif", outline: 'none',
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setCpShowConfirm(v => !v)}
+                            aria-label={cpShowConfirm ? 'Нууц үгийг далдлах' : 'Нууц үгийг харуулах'}
+                            className="absolute right-3 top-1/2 -translate-y-1/2"
+                            style={{ color: 'var(--text-muted-soft)', lineHeight: 0 }}
+                          >
+                            {cpShowConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
                         <motion.button
-                          whileTap={{ scale: 0.97 }}
+                          whileTap={cpLoading ? undefined : { scale: 0.97 }}
                           type="submit"
                           disabled={cpLoading}
-                          className={`w-full ${buttonStyles({ variant: 'default', size: 'default' })}`}
+                          className={`w-full flex items-center justify-center gap-2 ${buttonStyles({ variant: 'default', size: 'default' })}`}
                           style={{ fontSize: 14, fontWeight: 600, opacity: cpLoading ? 0.7 : 1 }}
                         >
-                          {cpLoading ? '...' : 'Хадгалах'}
+                          {cpLoading ? <Spinner size={14} /> : null}
+                          {cpLoading ? 'Хадгалж байна…' : 'Хадгалах'}
                         </motion.button>
                       </form>
                     )}
@@ -1019,24 +1228,57 @@ export function ProfilePage() {
             </AnimatePresence>
 
             <Divider />
-            <MenuItem icon={<Shield className="w-4 h-4 text-muted-foreground" />} label="Нууцлал" />
+            <MenuItem
+              icon={<Shield className="w-4 h-4 text-muted-foreground" />}
+              label="Нууцлал"
+              badge="Удахгүй"
+              disabled
+            />
             <Divider />
-            <MenuItem icon={<HelpCircle className="w-4 h-4 text-muted-foreground" />} label="Тусламж" />
+            <MenuItem
+              icon={<HelpCircle className="w-4 h-4 text-muted-foreground" />}
+              label="Тусламж"
+              badge="Удахгүй"
+              disabled
+            />
             <Divider />
             <MenuItem
               icon={<Info className="w-4 h-4 text-muted-foreground" />}
               label="Хувилбар"
-              value="v1.0.0"
+              value={APP_VERSION}
             />
             <Divider />
             <MenuItem
               icon={<LogOut className="w-4 h-4 text-muted-foreground" />}
               label="Гарах"
-              onClick={handleLogout}
+              onClick={() => setShowLogoutConfirm(true)}
             />
           </Card>
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {showLogoutConfirm ? (
+          <ConfirmDialog
+            title="Гарах уу?"
+            description={
+              <>
+                Та профайлаасаа гарах гэж байна.
+                <br />
+                Дараа нь дахин нэвтрэх шаардлагатай.
+              </>
+            }
+            confirmLabel="Тийм, гарах"
+            cancelLabel="Болих"
+            tone="danger"
+            onConfirm={() => {
+              setShowLogoutConfirm(false);
+              handleLogout();
+            }}
+            onCancel={() => setShowLogoutConfirm(false)}
+          />
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }

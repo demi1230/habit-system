@@ -3,8 +3,8 @@ export interface ShareAchievementInput {
   subtitle: string;
   accentColor: string;
   badgeIcon?: string | null;
-  badgeLabel?: string | null;
   xpLabel?: string | null;
+  userName?: string | null;
   text: string;
 }
 
@@ -23,6 +23,34 @@ function dataURLtoBlob(dataUrl: string): Blob {
   const u8arr = new Uint8Array(bstr.length);
   for (let i = 0; i < bstr.length; i++) u8arr[i] = bstr.charCodeAt(i);
   return new Blob([u8arr], { type: mime });
+}
+
+function drawShareBadgeOrPlaceholder(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  badgeIcon: string | null | undefined,
+) {
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  const t = badgeIcon?.trim();
+  if (t) {
+    ctx.font = '118px serif';
+    ctx.fillStyle = '#202325';
+    ctx.fillText(t, cx, cy);
+    return;
+  }
+
+  ctx.strokeStyle = '#202325';
+  ctx.lineWidth = 12;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(cx - 39, cy - 6);
+  ctx.lineTo(cx - 10, cy + 32);
+  ctx.lineTo(cx + 48, cy - 40);
+  ctx.stroke();
 }
 
 function buildShareImage(input: ShareAchievementInput): Blob {
@@ -54,7 +82,7 @@ function buildShareImage(input: ShareAchievementInput): Blob {
   ctx.globalAlpha = 1;
 
   const cardW = 820;
-  const cardH = 760;
+  const cardH = 800;
   const cardX = (W - cardW) / 2;
   const cardY = (H - cardH) / 2 - 24;
 
@@ -66,21 +94,22 @@ function buildShareImage(input: ShareAchievementInput): Blob {
   roundRect(ctx, cardX, cardY, cardW, cardH, 44);
   ctx.fill();
 
-  const headerChipW = 210;
+  const headerLabel = 'Амжилт нээгдлээ';
   const headerChipH = 52;
+  ctx.font = '600 24px Montserrat, Arial, sans-serif';
+  const headerChipW = Math.min(ctx.measureText(headerLabel).width + 56, cardW - 96);
   const headerChipX = W / 2 - headerChipW / 2;
   const headerChipY = cardY + 50;
   ctx.fillStyle = `${accent}18`;
   roundRect(ctx, headerChipX, headerChipY, headerChipW, headerChipH, 26);
   ctx.fill();
   ctx.fillStyle = accent;
-  ctx.font = '600 24px Montserrat, Arial, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('Achievement Unlocked', W / 2, headerChipY + headerChipH / 2);
+  ctx.fillText(headerLabel, W / 2, headerChipY + headerChipH / 2);
 
   const emojiCx = W / 2;
-  const emojiCy = cardY + 224;
+  const emojiCy = cardY + 232;
   const circleR = 96;
 
   ctx.globalAlpha = 0.18;
@@ -95,37 +124,17 @@ function buildShareImage(input: ShareAchievementInput): Blob {
   ctx.arc(emojiCx, emojiCy, circleR, 0, Math.PI * 2);
   ctx.fill();
 
-  ctx.font = '118px serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#202325';
-  ctx.fillText(input.badgeIcon ?? '🏅', emojiCx, emojiCy + 4);
-
-  if (input.badgeLabel) {
-    const badgeText = input.badgeLabel;
-    ctx.font = '600 26px Montserrat, Arial, sans-serif';
-    const badgeW = Math.min(ctx.measureText(badgeText).width + 60, 480);
-    const badgeH = 48;
-    const badgeX = W / 2 - badgeW / 2;
-    const badgeY = cardY + 346;
-    ctx.fillStyle = `${accent}14`;
-    roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 24);
-    ctx.fill();
-    ctx.fillStyle = accent;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(badgeText, W / 2, badgeY + badgeH / 2);
-  }
+  drawShareBadgeOrPlaceholder(ctx, emojiCx, emojiCy + 4, input.badgeIcon);
 
   ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = '#202325';
   ctx.font = '700 58px Montserrat, Arial, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText(input.title, W / 2, cardY + 438);
+  ctx.fillText(input.title, W / 2, cardY + 422);
 
   ctx.fillStyle = '#5F6B74';
-  ctx.font = '400 31px Montserrat, Arial, sans-serif';
-  wrapTextCenter(ctx, input.subtitle, W / 2, cardY + 498, 660, 46, 3);
+  ctx.font = '400 30px Montserrat, Arial, sans-serif';
+  wrapTextCenter(ctx, input.subtitle, W / 2, cardY + 482, 660, 44, 2);
 
   if (input.xpLabel) {
     const chipLabel = input.xpLabel;
@@ -133,7 +142,7 @@ function buildShareImage(input: ShareAchievementInput): Blob {
     const chipW = ctx.measureText(chipLabel).width + 52;
     const chipH = 48;
     const chipX = W / 2 - chipW / 2;
-    const chipY = cardY + 624;
+    const chipY = cardY + 596;
     ctx.fillStyle = '#303437';
     roundRect(ctx, chipX, chipY, chipW, chipH, 24);
     ctx.fill();
@@ -143,19 +152,46 @@ function buildShareImage(input: ShareAchievementInput): Blob {
     ctx.fillText(chipLabel, W / 2, chipY + chipH / 2);
   }
 
-  const divY = cardY + cardH - 110;
+  const divY = cardY + cardH - 134;
   ctx.globalAlpha = 0.15;
   ctx.fillStyle = '#202325';
   ctx.fillRect(cardX + 44, divY, cardW - 88, 1);
   ctx.globalAlpha = 1;
 
-  ctx.font = '700 42px Montserrat, Arial, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = accent;
-  ctx.fillText('Dadii', W / 2, cardY + cardH - 52);
+
+  if (input.userName) {
+    ctx.fillStyle = '#5F6B74';
+    ctx.font = '500 26px Montserrat, Arial, sans-serif';
+    ctx.fillText(truncateToWidth(ctx, input.userName, cardW - 120), W / 2, cardY + cardH - 84);
+
+    ctx.font = '700 38px Montserrat, Arial, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('Dadal app', W / 2, cardY + cardH - 36);
+  } else {
+    ctx.font = '700 38px Montserrat, Arial, sans-serif';
+    ctx.fillStyle = accent;
+    ctx.fillText('Dadal app', W / 2, cardY + cardH - 56);
+  }
 
   return dataURLtoBlob(canvas.toDataURL('image/png'));
+}
+
+function truncateToWidth(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {
+  if (ctx.measureText(text).width <= maxWidth) return text;
+  const ellipsis = '…';
+  let lo = 0;
+  let hi = text.length;
+  while (lo < hi) {
+    const mid = Math.ceil((lo + hi) / 2);
+    if (ctx.measureText(text.slice(0, mid) + ellipsis).width <= maxWidth) {
+      lo = mid;
+    } else {
+      hi = mid - 1;
+    }
+  }
+  return text.slice(0, lo).trimEnd() + ellipsis;
 }
 
 function roundRect(
@@ -189,26 +225,41 @@ function wrapTextCenter(
   maxLines: number,
 ) {
   const words = text.split(' ');
-  let line = '';
-  let lineIndex = 0;
+  ctx.textAlign = 'center';
 
-  for (const word of words) {
-    if (lineIndex >= maxLines) break;
-    const testLine = line + word + ' ';
+  const lines: string[] = [];
+  let line = '';
+  let truncated = false;
+
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    const testLine = line ? `${line} ${word}` : word;
     if (ctx.measureText(testLine).width > maxWidth && line) {
-      ctx.textAlign = 'center';
-      ctx.fillText(line.trim(), cx, y + lineIndex * lineHeight);
-      line = word + ' ';
-      lineIndex++;
+      lines.push(line);
+      line = word;
+      if (lines.length === maxLines) {
+        const remaining = words.slice(i).join(' ');
+        if (remaining) truncated = true;
+        break;
+      }
     } else {
       line = testLine;
     }
   }
+  if (line && lines.length < maxLines) lines.push(line);
 
-  if (line && lineIndex < maxLines) {
-    ctx.textAlign = 'center';
-    ctx.fillText(line.trim(), cx, y + lineIndex * lineHeight);
+  if (truncated && lines.length === maxLines) {
+    const last = lines[lines.length - 1];
+    const withEllipsis = `${last}…`;
+    lines[lines.length - 1] =
+      ctx.measureText(withEllipsis).width <= maxWidth
+        ? withEllipsis
+        : truncateToWidth(ctx, last, maxWidth);
   }
+
+  lines.forEach((l, i) => {
+    ctx.fillText(l, cx, y + i * lineHeight);
+  });
 }
 
 let isSharing = false;

@@ -7,7 +7,6 @@ interface CelebrationCopy {
   headline: string;
   subline: string;
   detail: string;
-  badgeIcon?: string;
   badgeLabel?: string;
 }
 
@@ -26,27 +25,24 @@ export function getCelebrationCopy(ctx: CelebrationContext, habitTitle: string):
     if (ctx.milestoneKind === 'first') {
       return {
         headline: 'Гайхалтай эхлэл!',
-        subline: habitTitle,
+        subline: `“${habitTitle}” — анхны давталт амжилттай.`,
         detail: 'Хамгийн хэцүү алхам бол эхний алхам. Чи тэгсэн.',
-        badgeIcon: '🌱',
         badgeLabel: 'Анхны давталт',
       };
     }
     if (ctx.milestoneKind === 'streak') {
       return {
         headline: 'Гайхалтай!',
-        subline: `${ctx.milestoneValue} өдөр дараалан хийлээ.`,
+        subline: `“${habitTitle}” — ${ctx.milestoneValue} өдөр дараалан хийлээ.`,
         detail: 'Тогтмол давталт бол дадал бэхжих хамгийн чухал алхам.',
-        badgeIcon: '🔥',
         badgeLabel: `${ctx.milestoneValue} өдрийн дараалал`,
       };
     }
     // count milestone
     return {
       headline: 'Сайхан!',
-      subline: `Нийт ${ctx.milestoneValue} удаа хийгдлээ.`,
+      subline: `“${habitTitle}” — нийт ${ctx.milestoneValue} удаа хийлээ.`,
       detail: 'Тусгал бол дадлын тогтвортой байдлын нотолгоо.',
-      badgeIcon: '✓',
       badgeLabel: `${ctx.milestoneValue} давталт`,
     };
   }

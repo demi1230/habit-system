@@ -80,7 +80,6 @@ export function WelcomePage() {
             fontWeight: 600,
             letterSpacing: '0.14em',
             color: 'var(--text-muted-soft)',
-            textTransform: 'uppercase',
           }}
         >
           Dadii
