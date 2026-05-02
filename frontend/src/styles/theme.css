@@ -198,7 +198,7 @@
     }
 
     #root {
-      max-width: 400px;
+      max-width: 440px;
       box-shadow: 0 0 0 1px var(--surface-border-faint), 0 24px 70px rgba(0, 0, 0, 0.18);
     }
   }

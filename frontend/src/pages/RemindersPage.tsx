@@ -48,10 +48,10 @@ function ReminderCard({
   };
 
   const statusColor =
-    reminder.status === 'ACTED' ? '#22c55e' :
-    reminder.status === 'SENT' ? '#8B7EC8' :
-    reminder.status === 'CANCELLED' ? '#ef4444' :
-    reminder.status === 'EXPIRED' ? '#9ca3af' : '#8B7EC8';
+    reminder.status === 'ACTED' ? 'var(--text-primary)' :
+    reminder.status === 'SENT' ? 'var(--text-primary)' :
+    reminder.status === 'CANCELLED' ? 'var(--text-primary)' :
+    reminder.status === 'EXPIRED' ? 'var(--text-primary)' : 'var(--text-primary)';
 
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
@@ -94,9 +94,9 @@ function ReminderCard({
       {isAlreadyDone && !responded && (
         <div className="flex items-center gap-1.5 mt-3 pt-3" style={{ borderTop: '0.5px solid var(--surface-border-soft)' }}>
           <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: '#22c55e20' }}>
-            <Check className="w-3 h-3" style={{ color: '#22c55e' }} strokeWidth={2.5} />
+            <Check className="w-3 h-3" style={{ color: 'var(--text-primary)' }} strokeWidth={2.5} />
           </div>
-          <span style={{ ...TYPOGRAPHY.caption, color: '#22c55e' }}>Өнөөдөр бүртгэгдсэн</span>
+          <span style={{ ...TYPOGRAPHY.caption, color: 'var(--text-primary)' }}>Өнөөдөр бүртгэгдсэн</span>
         </div>
       )}
 
@@ -104,15 +104,15 @@ function ReminderCard({
         <div className="flex gap-2 mt-3 pt-3" style={{ borderTop: '0.5px solid var(--surface-border-soft)' }}>
           <motion.button whileTap={{ scale: 0.95 }} onClick={() => handleAction('DONE')} disabled={saving}
             className={`flex-1 ${buttonStyles({ variant: 'accent', size: 'default' })}`}
-            style={{ backgroundColor: '#22c55e18' }}>
-            <Check className="w-3.5 h-3.5" style={{ color: '#22c55e' }} strokeWidth={2.5} />
-            <span style={{ ...TYPOGRAPHY.caption, color: '#22c55e' }}>Хийлээ</span>
+            style={{ backgroundColor: 'var(--text-primary)18' }}>
+            <Check className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} strokeWidth={2.5} />
+            <span style={{ ...TYPOGRAPHY.caption, color: 'var(--text-primary)' }}>Хийсэн</span>
           </motion.button>
           <motion.button whileTap={{ scale: 0.95 }} onClick={() => handleAction('SNOOZE')} disabled={saving}
             className={`flex-1 ${buttonStyles({ variant: 'accent', size: 'default' })}`}
-            style={{ backgroundColor: '#f59e0b18' }}>
-            <Clock className="w-3.5 h-3.5" style={{ color: '#f59e0b' }} />
-            <span style={{ ...TYPOGRAPHY.caption, color: '#f59e0b' }}>5 мин</span>
+            style={{ backgroundColor: 'var(--text-primary)18' }}>
+            <Clock className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
+            <span style={{ ...TYPOGRAPHY.caption, color: 'var(--text-primary)' }}>5 мин хойшлуулах</span>
           </motion.button>
         </div>
       )}

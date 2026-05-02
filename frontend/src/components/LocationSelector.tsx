@@ -59,17 +59,16 @@ export function LocationSelector() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.85 }}
               transition={{ duration: 0.18 }}
-              className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
+              className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold"
               style={{ background: 'var(--primary)', color: 'var(--primary-foreground)' }}
             >
-              📍 {currentLat!.toFixed(5)}, {currentLng!.toFixed(5)}
+              {currentLat!.toFixed(5)}, {currentLng!.toFixed(5)}
               <button
                 disabled={loading}
                 onClick={handleClear}
                 className="ml-1 opacity-70 hover:opacity-100"
                 aria-label="Байршил цэвэрлэх"
               >
-                <X className="w-3 h-3" />
               </button>
             </motion.span>
           ) : (

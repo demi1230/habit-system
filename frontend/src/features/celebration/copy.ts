@@ -11,13 +11,13 @@ interface CelebrationCopy {
 }
 
 const REGULAR_HEADLINES = [
-  'Гал гал лаажийншдээ',
   'Янзын байна шүү!',
   'Ваа мундаг байна шүү!',
   'Тиймээ чи чадлаа!',
+  'Гал гал лаажийншдээ',
   'Наааяс!',
   'Фантастик бээеби!',
-  'Лаажийншүү бро!',
+  'Лаажийншүү!',
 ];
 
 export function getCelebrationCopy(ctx: CelebrationContext, habitTitle: string): CelebrationCopy {
@@ -26,7 +26,7 @@ export function getCelebrationCopy(ctx: CelebrationContext, habitTitle: string):
       return {
         headline: 'Гайхалтай эхлэл!',
         subline: `“${habitTitle}” — анхны давталт амжилттай.`,
-        detail: 'Хамгийн хэцүү алхам бол эхний алхам. Чи тэгсэн.',
+        detail: 'Хамгийн хэцүү алхам бол эхний алхам. Хийж чадлаа шүү.',
         badgeLabel: 'Анхны давталт',
       };
     }
@@ -59,10 +59,6 @@ export function getCelebrationCopy(ctx: CelebrationContext, habitTitle: string):
 // ── Feel chips ────────────────────────────────────────────────
 
 export const FEEL_CHIPS: { id: string; label: string }[] = [
-  { id: 'focused',  label: 'Анхаарал сайжирсан' },
-  { id: 'energy',   label: 'Илүү эрч хүчтэй' },
-  { id: 'calm',     label: 'Илүү тайван' },
-  { id: 'content',  label: 'Сэтгэл амар' },
 ];
 
 // ── Difficulty options ────────────────────────────────────────
