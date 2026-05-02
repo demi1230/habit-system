@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   BarChart3, Calendar,
   Target, Brain, MapPin, Clock,
-  ChevronDown, ChevronRight, Sparkles, X, Info, Check, Layers2,
+  ChevronDown, ChevronRight, Sparkles, X, Info, Check,
 } from 'lucide-react';
 import { getHabitColor } from '@/lib/habit-colors';
 import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
@@ -333,12 +333,12 @@ function PerformanceInsightSection({ difficulties, reflections, showAllReflectio
 
   return (
     <SectionCard delay={0.12}>
-      <SectionLabel icon={<Brain className="w-4 h-4" style={{ color: accent }} />} label="Мэдрэмж ба хүчин чадал" />
+      <SectionLabel icon={<Brain className="w-4 h-4" style={{ color: accent }} />} label="Хэцүү байдал ба эргэцүүлэмж" />
       <div className="flex flex-col gap-3">
         {/* Difficulty */}
         {difficulties.length > 0 && (
           <div className="rounded-2xl p-3" style={{ backgroundColor: 'var(--surface-muted)', border: '1px solid var(--surface-border-faint)' }}>
-            <p style={{ ...TYPOGRAPHY.micro, fontWeight: 600, color: 'var(--text-muted-soft)', marginBottom: 6 }}>Дундаж хүчин чадал</p>
+            <p style={{ ...TYPOGRAPHY.micro, fontWeight: 600, color: 'var(--text-muted-soft)', marginBottom: 6 }}>Дундаж хэцүүү байдал</p>
             {/* 5-dot scale */}
             <div className="flex gap-1.5 mb-2">
               {[1, 2, 3, 4, 5].map(v => (
@@ -541,13 +541,15 @@ export function AnalyticsPage() {
                     ? '0 0 0 3px var(--background), 0 0 0 5px var(--foreground)'
                     : '0 2px 8px var(--surface-border-soft)',
                 }}>
-                <Layers2
-                  className="w-6 h-6 shrink-0"
-                  strokeWidth={2}
+                <span
                   style={{
-                    color: isAllMode ? 'var(--background)' : 'var(--muted-foreground)',
+                    fontSize: 23,
+                    lineHeight: 1,
+                    filter: isAllMode ? 'none' : 'grayscale(0.15)',
                   }}
-                />
+                >
+                  🏆
+                </span>
               </div>
               <span style={{ ...TYPOGRAPHY.micro, color: isAllMode ? 'var(--foreground)' : 'var(--text-faint)', fontWeight: isAllMode ? 700 : 400, maxWidth: 48, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>
                 Бүгд

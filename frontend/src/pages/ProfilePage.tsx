@@ -1061,7 +1061,6 @@ export function ProfilePage() {
             }
             confirmLabel="Тийм, гарах"
             cancelLabel="Болих"
-            tone="danger"
             onConfirm={() => {
               setShowLogoutConfirm(false);
               handleLogout();

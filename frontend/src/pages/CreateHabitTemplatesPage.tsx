@@ -103,7 +103,7 @@ export function CreateHabitTemplatesPage() {
           style={{ ...TYPOGRAPHY.bodySm, lineHeight: 1.5, marginTop: 6 }}
           className="text-muted-foreground"
         >
-          Бэлэн загвараас сонгох, эсвэл өөрийн дадлыг нь үүсгэнэ үү ^^
+          Бэлэн загвараас сонгож засах, эсвэл өөрийн дадлыг үүсгэнэ үү ^^
         </p>
 
         <motion.button
@@ -126,7 +126,7 @@ export function CreateHabitTemplatesPage() {
               style={{ ...TYPOGRAPHY.cardTitle, fontWeight: 600, color: '#fff' }}
               className="truncate"
             >
-              Өөрөө оруулах
+              Өөрөө дадлаа оруулах
             </p>
             <p
               style={{
@@ -135,7 +135,7 @@ export function CreateHabitTemplatesPage() {
                 marginTop: 2,
               }}
             >
-              Шинээр дадал үүсгэх
+              Шинээр үүсгэх
             </p>
           </div>
         </motion.button>

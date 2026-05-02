@@ -1,4 +1,4 @@
-﻿/**
+/**
  * HabitFormPage — shared form template used by both CreateHabitPage and EditHabitPage.
  * Pass initialValues for edit mode; leave undefined for create mode.
  * onSubmit receives the built payload; return a promise.
@@ -460,7 +460,7 @@ function UnsavedChangesDialog({
           <div className="flex flex-col gap-2.5">
             <motion.button whileTap={{ scale: 0.97 }} onClick={onDiscard}
               className={`w-full ${buttonStyles({ variant: 'default', size: 'lg' })}`}
-              style={{ backgroundColor: '#EF4444', color: '#fff', fontSize: 15, fontWeight: 500 }}>
+              style={{ backgroundColor: 'var(--foreground)', color: 'var(--background)', fontSize: 15, fontWeight: 500 }}>
               Тийм, хаях
             </motion.button>
             <motion.button whileTap={{ scale: 0.97 }} onClick={onCancel}

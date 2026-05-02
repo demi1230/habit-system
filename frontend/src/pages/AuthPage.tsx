@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
@@ -53,13 +54,20 @@ export function AuthPage() {
     try {
       if (isLogin) {
         const res = await authApi.login(email, password);
-        login(res.accessToken, res.displayName);
+        // flushSync ensures the auth token is in React state BEFORE the
+        // route change, so RequireAuth on the destination page does not
+        // bounce us to /welcome based on stale (null) state.
+        flushSync(() => {
+          login(res.accessToken, res.displayName);
+        });
         navigate('/dashboard');
       } else {
         await authApi.register(email, password, name);
         const res = await authApi.login(email, password);
-        login(res.accessToken, res.displayName ?? name);
-        navigate('/dashboard');
+        flushSync(() => {
+          login(res.accessToken, res.displayName ?? name);
+        });
+        navigate('/onboarding');
       }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
