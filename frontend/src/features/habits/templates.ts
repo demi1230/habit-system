@@ -281,7 +281,7 @@ export const HABIT_TEMPLATES: HabitTemplate[] = [
     title: 'талархлын тэмдэглэл бичих',
     selectedEmoji: '❤️',
     colorId: 'pink',
-    precedingRoutine: 'Унтах бэлтгэлээ хийснийхээ дараа',
+    precedingRoutine: 'Унтах бэлтгэлээ хийснийхээ',
     reason: 'өдрөөсөө сайн талыг олж харж сурна',
     benefits: ['Тайвшруулах'],
     steps: ['Тэмдэглэлээ нээх', 'Өнөөдрийн 3 сайн зүйлээ бичих', 'Нэгийг нь яагаад сайн байсныг тэмдэглэх'],
