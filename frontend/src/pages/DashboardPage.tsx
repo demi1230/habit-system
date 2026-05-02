@@ -508,7 +508,7 @@ function HabitCard({ habit, index, entry, onBadgeTap, disabled }: {
       <div
         className="rounded-[24px] overflow-hidden cursor-pointer active:scale-[0.98] transition-transform relative"
         style={{ backgroundColor: color.card, boxShadow: SHADOW.card, border: `1px solid ${PASTEL_CARD_SUBTLE}` }}
-        onClick={() => navigate(`/habit/${habit.id}`)}
+        onClick={() => navigate(`/habit/${habit.id}`, { state: { from: '/dashboard' } })}
       >
         {/* Progress fill layer */}
         <motion.div

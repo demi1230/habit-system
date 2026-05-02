@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowLeft, Archive, Clock, MapPin,
@@ -221,8 +221,10 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0, color }: {
 
 export function HabitDetailPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams<{ id: string }>();
   const { userId } = useAuth();
+  const backTo = (location.state as { from?: string } | null)?.from ?? '/dashboard';
 
   const [habit, setHabit] = useState<Habit | null>(null);
   const [logs, setLogs] = useState<HabitLog[]>([]);
@@ -329,14 +331,14 @@ export function HabitDetailPage() {
       {/* HEADER */}
       <div className="sticky top-0 z-20 bg-background" style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
         <div className="flex items-center justify-between px-5 pt-13 pb-3">
-          <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)}
+          <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(backTo)}
             className={buttonStyles({ variant: 'nav', size: 'icon' })}
             style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
             <ArrowLeft className="w-4 h-4" style={{ color: '#474747' }} />
           </motion.button>
           <p style={TYPOGRAPHY.navTitle} className="truncate mx-3 flex-1 text-center text-foreground">{habit.title}</p>
           <div className="flex items-center gap-2">
-            <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(`/habit/${id}/edit`)}
+            <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(`/habit/${id}/edit`, { state: { from: backTo } })}
               className={buttonStyles({ variant: 'nav', size: 'icon' })}
               style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
               <Pencil className="w-4 h-4" style={{ color: '#474747' }} />

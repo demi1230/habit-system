@@ -1,9 +1,12 @@
+import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { habitsApi, type CreateHabitPayload } from '@/api/habits';
-import { HabitFormPage } from './HabitFormPage';
+import { HabitFormPage, type HabitFormInitialValues } from './HabitFormPage';
 
 export function CreateHabitPage() {
   const { userId } = useAuth();
+  const location = useLocation();
+  const template = (location.state as { template?: HabitFormInitialValues } | null)?.template;
 
   const handleSubmit = async (payload: Partial<CreateHabitPayload>) => {
     if (!userId) throw new Error('Нэвтрэх шаардлагатай');
@@ -14,8 +17,9 @@ export function CreateHabitPage() {
     <HabitFormPage
       pageTitle="Дадал нэмэх"
       submitLabel="Хадгалах"
+      mode="create"
+      initialValues={template ?? {}}
       onSubmit={handleSubmit}
-      // onSuccess not provided -> shows success animation then navigates to /dashboard
     />
   );
 }

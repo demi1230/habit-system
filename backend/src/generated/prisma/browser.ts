@@ -112,3 +112,8 @@ export type PushSubscription = Prisma.PushSubscriptionModel
  * 
  */
 export type UserBadge = Prisma.UserBadgeModel
+/**
+ * Model UserFeedback
+ * 
+ */
+export type UserFeedback = Prisma.UserFeedbackModel

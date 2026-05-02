@@ -794,7 +794,7 @@ export function AnalyticsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.025 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => navigate(`/habit/${selected.id}`)}
+              onClick={() => navigate(`/habit/${selected.id}`, { state: { from: '/analytics' } })}
               className="w-full flex items-center gap-3 rounded-[20px] px-4 py-3.5 bg-card text-left"
               style={{ boxShadow: SHADOW.card }}
             >

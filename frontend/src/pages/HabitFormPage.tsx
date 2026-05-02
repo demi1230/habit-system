@@ -279,6 +279,38 @@ function InlineInput({ value, onChange, placeholder, accentColor, invalid }: {
   );
 }
 
+function MultilineInlineInput({ value, onChange, placeholder, accentColor }: {
+  value: string; onChange: (v: string) => void; placeholder: string; accentColor: string;
+}) {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }, [value, placeholder]);
+
+  return (
+    <textarea
+      ref={textareaRef}
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      placeholder={placeholder}
+      rows={1}
+      className="w-full bg-transparent focus:outline-none resize-none overflow-hidden"
+      style={{
+        ...TYPOGRAPHY.body,
+        fontWeight: 500,
+        lineHeight: 1.7,
+        minHeight: 32,
+        color: 'var(--foreground)',
+        borderBottom: `1.5px solid ${value ? accentColor + '60' : 'var(--surface-strong)'}`,
+      }}
+    />
+  );
+}
+
 // ── Tiny helpers ─────────────────────────────────────────────────────────────
 
 function Spinner({ size = 16, color }: { size?: number; color?: string }) {
@@ -480,8 +512,14 @@ interface HabitFormPageProps {
   pageTitle: string;
   /** Label on the save button */
   submitLabel?: string;
-  /** Pre-filled values for edit mode */
+  /** Pre-filled values for edit mode or template-driven create mode */
   initialValues?: HabitFormInitialValues;
+  /**
+   * Whether this form is in create or edit mode. Defaults to 'create'.
+   * Used so that template-prefilled create forms (where `initialValues.title`
+   * is set) still behave like a create — e.g. startDate is attached on submit.
+   */
+  mode?: 'create' | 'edit';
   /** Called with the built payload. Should throw on error. */
   onSubmit: (payload: Partial<CreateHabitPayload>) => Promise<void>;
   /** Called after onSubmit resolves. Defaults to success animation â†’ /dashboard */
@@ -494,6 +532,7 @@ export function HabitFormPage({
   pageTitle,
   submitLabel = 'Хадгалах',
   initialValues = {},
+  mode = 'create',
   onSubmit,
   onSuccess,
 }: HabitFormPageProps) {
@@ -529,7 +568,7 @@ export function HabitFormPage({
   const [hintIdx, setHintIdx] = useState(0);
 
   const color = getHabitColor(colorId);
-  const isCreate = initialValues.title === undefined;
+  const isCreate = mode === 'create';
   const titleValid = title.trim().length > 0;
   const showTitleError = attemptedSave && !titleValid;
   const stepRefs = useRef<Array<HTMLInputElement | null>>([]);
@@ -754,11 +793,13 @@ export function HabitFormPage({
                 placeholder={currentHint.routine} accentColor={color.accent} invalid={showTitleError} />
               <span style={{ fontWeight: 500 }}> дадлыг хийнэ.</span>
             </p>
-            <p style={{ ...TYPOGRAPHY.body, lineHeight: 2.4, marginTop: 2 }} className="text-foreground">
-              <span style={{ fontWeight: 500 }}>Ингэснээр би: </span>
-              <InlineInput value={reason} onChange={setReason}
+            <div className="mt-2">
+              <p style={{ ...TYPOGRAPHY.body, fontWeight: 500, marginBottom: 4 }} className="text-foreground">
+                Ингэснээр би:
+              </p>
+              <MultilineInlineInput value={reason} onChange={setReason}
                 placeholder={currentHint.reason} accentColor={color.accent} />
-            </p>
+            </div>
             {showTitleError && (
               <motion.p
                 initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }}

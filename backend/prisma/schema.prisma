@@ -91,6 +91,7 @@ model User {
   recommendationInteractions   RecommendationInteraction[]
   pushSubscriptions            PushSubscription[]
   badges                       UserBadge[]
+  feedbacks                    UserFeedback[]
 
   @@map("users")
 }
@@ -536,4 +537,17 @@ model UserBadge {
   @@unique([userId, badgeCode])
   @@index([userId, awardedAt])
   @@map("user_badges")
+}
+
+// ─── User Feedback (app-level suggestions / complaints) ─────────────────────
+
+model UserFeedback {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("user_feedbacks")
 }

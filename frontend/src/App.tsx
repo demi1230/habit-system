@@ -6,6 +6,7 @@ import { AuthPage } from './pages/AuthPage';
 import { WelcomePage } from './pages/WelcomePage';
 import { DashboardPage } from './pages/DashboardPage';
 import { CreateHabitPage } from './pages/CreateHabitPage';
+import { CreateHabitTemplatesPage } from './pages/CreateHabitTemplatesPage';
 import { HabitDetailPage } from './pages/HabitDetailPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { RemindersPage } from './pages/RemindersPage';
@@ -51,7 +52,8 @@ function AppRoutes() {
         <Route path="/login" element={token ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
         <Route path="/signup" element={token ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
         <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
-        <Route path="/create" element={<RequireAuth><CreateHabitPage /></RequireAuth>} />
+        <Route path="/create" element={<RequireAuth><CreateHabitTemplatesPage /></RequireAuth>} />
+        <Route path="/create/new" element={<RequireAuth><CreateHabitPage /></RequireAuth>} />
         <Route path="/habit/:id" element={<RequireAuth><HabitDetailPage /></RequireAuth>} />
         <Route path="/habit/:id/edit" element={<RequireAuth><EditHabitPage /></RequireAuth>} />
         <Route path="/analytics" element={<RequireAuth><AnalyticsPage /></RequireAuth>} />

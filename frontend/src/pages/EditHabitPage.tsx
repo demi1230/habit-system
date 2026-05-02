@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { habitsApi } from '@/api/habits';
 import type { CreateHabitPayload } from '@/api/habits';
@@ -38,8 +38,10 @@ function mapHabitToInitialValues(h: Habit): HabitFormInitialValues {
 
 export function EditHabitPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams<{ id: string }>();
   const { userId } = useAuth();
+  const backTo = (location.state as { from?: string } | null)?.from ?? '/dashboard';
 
   const [initialValues, setInitialValues] = useState<HabitFormInitialValues | null>(null);
 
@@ -67,9 +69,10 @@ export function EditHabitPage() {
     <HabitFormPage
       pageTitle="Дадал засах"
       submitLabel="Хадгалах"
+      mode="edit"
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      onSuccess={() => navigate(`/habit/${id}`)}
+      onSuccess={() => navigate(`/habit/${id}`, { state: { from: backTo }, replace: true })}
     />
   );
 }

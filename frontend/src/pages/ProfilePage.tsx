@@ -7,12 +7,11 @@ import {
   Bell,
   ChevronDown,
   ChevronRight,
-  Eye,
-  EyeOff,
   HelpCircle,
   Info,
   KeyRound,
   LogOut,
+  MessageSquare,
   Monitor,
   Moon,
   RotateCcw,
@@ -29,10 +28,11 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { habitsApi } from '@/api/habits';
 import { engagementApi } from '@/api/engagement';
-import { authApi } from '@/api/auth';
 import { pushApi } from '@/api/push';
 import { LocationSelector } from '@/components/LocationSelector';
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import { FeedbackDialog } from '@/components/feedback-dialog';
+import { ChangePasswordDialog } from '@/components/change-password-dialog';
 import { HabitIconSlot } from '@/components/habit-icon-slot';
 import { Spinner } from '@/components/spinner';
 import { Skeleton } from '@/components/skeleton';
@@ -92,31 +92,6 @@ function formatMnMonthDay(value: string) {
   }
 
   return `${date.getMonth() + 1}-р сар ${date.getDate()}`;
-}
-
-interface PasswordScore {
-  score: 0 | 1 | 2 | 3 | 4;
-  label: string;
-  color: string;
-}
-
-function scorePassword(value: string): PasswordScore {
-  if (!value) return { score: 0, label: '', color: 'transparent' };
-
-  let score = 0;
-  if (value.length >= 8) score++;
-  if (value.length >= 12) score++;
-  if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score++;
-  if (/\d/.test(value)) score++;
-  if (/[^A-Za-z0-9]/.test(value)) score++;
-
-  // Cap at 4 so we always have 4 segments worth of feedback.
-  const capped = Math.min(score, 4) as 0 | 1 | 2 | 3 | 4;
-
-  if (capped <= 1) return { score: 1, label: 'Сул', color: '#ef4444' };
-  if (capped === 2) return { score: 2, label: 'Дунд зэрэг', color: '#f59e0b' };
-  if (capped === 3) return { score: 3, label: 'Сайн', color: '#3b82f6' };
-  return { score: 4, label: 'Маш сайн', color: '#22c55e' };
 }
 
 function Card({ children }: { children: React.ReactNode }) {
@@ -324,15 +299,7 @@ export function ProfilePage() {
   const [shareBusyId, setShareBusyId] = useState<string | null>(null);
   const [shareStatus, setShareStatus] = useState<string | null>(null);
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [cpCurrent, setCpCurrent] = useState('');
-  const [cpNew, setCpNew] = useState('');
-  const [cpConfirm, setCpConfirm] = useState('');
-  const [cpShowCurrent, setCpShowCurrent] = useState(false);
-  const [cpShowNew, setCpShowNew] = useState(false);
-  const [cpShowConfirm, setCpShowConfirm] = useState(false);
-  const [cpLoading, setCpLoading] = useState(false);
-  const [cpError, setCpError] = useState('');
-  const [cpSuccess, setCpSuccess] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const loadHabits = useCallback(() => {
@@ -405,7 +372,6 @@ export function ProfilePage() {
     if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }, [displayName]);
-  const passwordScore = useMemo(() => scorePassword(cpNew), [cpNew]);
 
   const handleRestore = async (habitId: string) => {
     if (!userId || restoringId) return;
@@ -490,27 +456,6 @@ export function ProfilePage() {
     }
   };
 
-  const handleChangePassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!userId) return;
-    setCpError('');
-    if (cpNew.length < 8) { setCpError('Нууц үг хамгийн багадаа 8 тэмдэгт байна.'); return; }
-    if (cpNew === cpCurrent) { setCpError('Шинэ нууц үг хуучин нууц үгнээс өөр байх ёстой.'); return; }
-    if (cpNew !== cpConfirm) { setCpError('Шинэ нууц үг таарахгүй байна.'); return; }
-    setCpLoading(true);
-    try {
-      await authApi.changePassword(userId, cpCurrent, cpNew);
-      setCpSuccess(true);
-      setCpCurrent(''); setCpNew(''); setCpConfirm('');
-      setTimeout(() => { setShowChangePassword(false); setCpSuccess(false); }, 2000);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setCpError(err?.message || 'Нууц үг солиход алдаа гарлаа.');
-    } finally {
-      setCpLoading(false);
-    }
-  };
-
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -564,7 +509,7 @@ export function ProfilePage() {
                     {displayName || 'Хэрэглэгч'}
                   </p>
                   <p style={TYPOGRAPHY.caption} className="text-muted-foreground mt-1">
-                    Дадлаа бэхжүүлж буй аялалаа үргэлжлүүлээрэй
+                    , love you - Demi
                   </p>
                 </>
               )}
@@ -1062,171 +1007,17 @@ export function ProfilePage() {
               disabled
             />
             <Divider />
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              onClick={() => { setShowChangePassword(v => !v); setCpError(''); setCpSuccess(false); }}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 text-left ${buttonStyles({ variant: 'ghost', size: 'default' })}`}
-            >
-              <div className="w-8 h-8 rounded-[12px] flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--surface-subtle)' }}>
-                <KeyRound className="w-4 h-4 text-muted-foreground" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-foreground" style={{ ...TYPOGRAPHY.sectionTitle, fontWeight: 500 }}>Нууц үг солих</p>
-              </div>
-              <motion.div animate={{ rotate: showChangePassword ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                <ChevronDown className="w-4 h-4" style={{ color: 'var(--text-disabled)' }} />
-              </motion.div>
-            </motion.button>
-
-            <AnimatePresence>
-              {showChangePassword && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.22 }}
-                  className="overflow-hidden"
-                >
-                  <div className="px-4 pb-4 pt-1" style={{ borderTop: '0.5px solid var(--surface-border-soft)' }}>
-                    {cpSuccess ? (
-                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-3 text-center">
-                        <p style={{ ...TYPOGRAPHY.bodySm, color: '#22c55e', fontWeight: 600 }}>✓ Нууц үг амжилттай солигдлоо</p>
-                      </motion.div>
-                    ) : (
-                      <form onSubmit={handleChangePassword} className="flex flex-col gap-3 pt-3">
-                        {cpError && (
-                          <p style={{ ...TYPOGRAPHY.caption, color: 'var(--destructive, #ef4444)' }}>{cpError}</p>
-                        )}
-                        {/* Current password */}
-                        <div className="relative">
-                          <input
-                            type={cpShowCurrent ? 'text' : 'password'}
-                            value={cpCurrent}
-                            onChange={e => setCpCurrent(e.target.value)}
-                            placeholder="Одоогийн нууц үг"
-                            aria-label="Одоогийн нууц үг"
-                            required
-                            autoComplete="current-password"
-                            style={{
-                              width: '100%', padding: '11px 40px 11px 14px',
-                              borderRadius: 12, backgroundColor: 'var(--surface-muted)',
-                              border: '1.5px solid var(--surface-border-soft)',
-                              fontSize: 14, color: 'var(--foreground)', fontFamily: "'Inter', sans-serif", outline: 'none',
-                            }}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setCpShowCurrent(v => !v)}
-                            aria-label={cpShowCurrent ? 'Нууц үгийг далдлах' : 'Нууц үгийг харуулах'}
-                            className="absolute right-3 top-1/2 -translate-y-1/2"
-                            style={{ color: 'var(--text-muted-soft)', lineHeight: 0 }}
-                          >
-                            {cpShowCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                          </button>
-                        </div>
-                        {/* New password */}
-                        <div className="relative">
-                          <input
-                            type={cpShowNew ? 'text' : 'password'}
-                            value={cpNew}
-                            onChange={e => setCpNew(e.target.value)}
-                            placeholder="Шинэ нууц үг (8+ тэмдэгт)"
-                            aria-label="Шинэ нууц үг"
-                            required
-                            autoComplete="new-password"
-                            style={{
-                              width: '100%', padding: '11px 40px 11px 14px',
-                              borderRadius: 12, backgroundColor: 'var(--surface-muted)',
-                              border: '1.5px solid var(--surface-border-soft)',
-                              fontSize: 14, color: 'var(--foreground)', fontFamily: "'Inter', sans-serif", outline: 'none',
-                            }}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setCpShowNew(v => !v)}
-                            aria-label={cpShowNew ? 'Нууц үгийг далдлах' : 'Нууц үгийг харуулах'}
-                            className="absolute right-3 top-1/2 -translate-y-1/2"
-                            style={{ color: 'var(--text-muted-soft)', lineHeight: 0 }}
-                          >
-                            {cpShowNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                          </button>
-                        </div>
-
-                        {/* Strength meter */}
-                        {cpNew ? (
-                          <div className="flex items-center gap-2">
-                            <div className="flex-1 flex gap-1">
-                              {[1, 2, 3, 4].map((level) => (
-                                <div
-                                  key={level}
-                                  className="flex-1 rounded-full transition-colors duration-150"
-                                  style={{
-                                    height: 4,
-                                    backgroundColor:
-                                      level <= passwordScore.score
-                                        ? passwordScore.color
-                                        : 'var(--surface-strong)',
-                                  }}
-                                />
-                              ))}
-                            </div>
-                            <span
-                              style={{
-                                ...TYPOGRAPHY.micro,
-                                color: passwordScore.color,
-                                minWidth: 70,
-                                textAlign: 'right',
-                              }}
-                            >
-                              {passwordScore.label}
-                            </span>
-                          </div>
-                        ) : null}
-
-                        {/* Confirm with eye toggle */}
-                        <div className="relative">
-                          <input
-                            type={cpShowConfirm ? 'text' : 'password'}
-                            value={cpConfirm}
-                            onChange={e => setCpConfirm(e.target.value)}
-                            placeholder="Шинэ нууц үгийг давтах"
-                            aria-label="Шинэ нууц үгийг давтах"
-                            required
-                            autoComplete="new-password"
-                            style={{
-                              width: '100%', padding: '11px 40px 11px 14px',
-                              borderRadius: 12, backgroundColor: 'var(--surface-muted)',
-                              border: '1.5px solid var(--surface-border-soft)',
-                              fontSize: 14, color: 'var(--foreground)', fontFamily: "'Inter', sans-serif", outline: 'none',
-                            }}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setCpShowConfirm(v => !v)}
-                            aria-label={cpShowConfirm ? 'Нууц үгийг далдлах' : 'Нууц үгийг харуулах'}
-                            className="absolute right-3 top-1/2 -translate-y-1/2"
-                            style={{ color: 'var(--text-muted-soft)', lineHeight: 0 }}
-                          >
-                            {cpShowConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                          </button>
-                        </div>
-                        <motion.button
-                          whileTap={cpLoading ? undefined : { scale: 0.97 }}
-                          type="submit"
-                          disabled={cpLoading}
-                          className={`w-full flex items-center justify-center gap-2 ${buttonStyles({ variant: 'default', size: 'default' })}`}
-                          style={{ fontSize: 14, fontWeight: 600, opacity: cpLoading ? 0.7 : 1 }}
-                        >
-                          {cpLoading ? <Spinner size={14} /> : null}
-                          {cpLoading ? 'Хадгалж байна…' : 'Хадгалах'}
-                        </motion.button>
-                      </form>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
+            <MenuItem
+              icon={<KeyRound className="w-4 h-4 text-muted-foreground" />}
+              label="Нууц үг солих"
+              onClick={() => setShowChangePassword(true)}
+            />
+            <Divider />
+            <MenuItem
+              icon={<MessageSquare className="w-4 h-4 text-muted-foreground" />}
+              label="Санал хүсэлт"
+              onClick={() => setShowFeedback(true)}
+            />
             <Divider />
             <MenuItem
               icon={<Shield className="w-4 h-4 text-muted-foreground" />}
@@ -1277,6 +1068,18 @@ export function ProfilePage() {
             }}
             onCancel={() => setShowLogoutConfirm(false)}
           />
+        ) : null}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showChangePassword ? (
+          <ChangePasswordDialog onClose={() => setShowChangePassword(false)} />
+        ) : null}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showFeedback ? (
+          <FeedbackDialog onClose={() => setShowFeedback(false)} />
         ) : null}
       </AnimatePresence>
     </div>

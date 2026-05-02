@@ -82,7 +82,7 @@ export function WelcomePage() {
             color: 'var(--text-muted-soft)',
           }}
         >
-          Dadii
+          Dadal App
         </motion.p>
       </div>
 

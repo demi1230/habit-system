@@ -13,4 +13,5 @@ export const LEARNING_TOPICS: LearningTopic[] = [
   { id: 'cues', label: 'Өдөөгч ба орчин', categories: ['cues'] },
   { id: 'consistency', label: 'Тогтвортой байдал', categories: ['consistency'] },
   { id: 'motivation', label: 'Урам ба эсэргүүцэл', categories: ['motivation'] },
+  { id: 'advanced', label: 'Онол ба систем', categories: ['advanced'] },
 ];

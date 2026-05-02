@@ -11,6 +11,7 @@ import { ProgressModule } from './progress/progress.module';
 import { PushModule } from './push/push.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { LearningModule } from './learning/learning.module';
+import { FeedbackModule } from './feedback/feedback.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
@@ -26,6 +27,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     PushModule,
     RemindersModule,
     LearningModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [AppService],

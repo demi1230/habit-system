@@ -69,7 +69,8 @@ export const ModelName = {
   ArticleInteraction: 'ArticleInteraction',
   RecommendationInteraction: 'RecommendationInteraction',
   PushSubscription: 'PushSubscription',
-  UserBadge: 'UserBadge'
+  UserBadge: 'UserBadge',
+  UserFeedback: 'UserFeedback'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -371,6 +372,16 @@ export const UserBadgeScalarFieldEnum = {
 } as const
 
 export type UserBadgeScalarFieldEnum = (typeof UserBadgeScalarFieldEnum)[keyof typeof UserBadgeScalarFieldEnum]
+
+
+export const UserFeedbackScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  message: 'message',
+  createdAt: 'createdAt'
+} as const
+
+export type UserFeedbackScalarFieldEnum = (typeof UserFeedbackScalarFieldEnum)[keyof typeof UserFeedbackScalarFieldEnum]
 
 
 export const SortOrder = {

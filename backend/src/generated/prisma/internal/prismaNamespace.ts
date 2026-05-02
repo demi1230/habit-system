@@ -402,7 +402,8 @@ export const ModelName = {
   ArticleInteraction: 'ArticleInteraction',
   RecommendationInteraction: 'RecommendationInteraction',
   PushSubscription: 'PushSubscription',
-  UserBadge: 'UserBadge'
+  UserBadge: 'UserBadge',
+  UserFeedback: 'UserFeedback'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -418,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "habit" | "habitStep" | "habitScheduleDay" | "habitCue" | "habitMotivationProfile" | "habitLog" | "difficultyFeedback" | "reflection" | "userActivityLog" | "reminder" | "reminderAction" | "srbaiAssessment" | "reminderPolicy" | "adaptationRecommendation" | "articleInteraction" | "recommendationInteraction" | "pushSubscription" | "userBadge"
+    modelProps: "user" | "habit" | "habitStep" | "habitScheduleDay" | "habitCue" | "habitMotivationProfile" | "habitLog" | "difficultyFeedback" | "reflection" | "userActivityLog" | "reminder" | "reminderAction" | "srbaiAssessment" | "reminderPolicy" | "adaptationRecommendation" | "articleInteraction" | "recommendationInteraction" | "pushSubscription" | "userBadge" | "userFeedback"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1828,6 +1829,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    UserFeedback: {
+      payload: Prisma.$UserFeedbackPayload<ExtArgs>
+      fields: Prisma.UserFeedbackFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserFeedbackFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFeedbackPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserFeedbackFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFeedbackPayload>
+        }
+        findFirst: {
+          args: Prisma.UserFeedbackFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFeedbackPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserFeedbackFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFeedbackPayload>
+        }
+        findMany: {
+          args: Prisma.UserFeedbackFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFeedbackPayload>[]
+        }
+        create: {
+          args: Prisma.UserFeedbackCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFeedbackPayload>
+        }
+        createMany: {
+          args: Prisma.UserFeedbackCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UserFeedbackCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFeedbackPayload>[]
+        }
+        delete: {
+          args: Prisma.UserFeedbackDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFeedbackPayload>
+        }
+        update: {
+          args: Prisma.UserFeedbackUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFeedbackPayload>
+        }
+        deleteMany: {
+          args: Prisma.UserFeedbackDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserFeedbackUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UserFeedbackUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFeedbackPayload>[]
+        }
+        upsert: {
+          args: Prisma.UserFeedbackUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFeedbackPayload>
+        }
+        aggregate: {
+          args: Prisma.UserFeedbackAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserFeedback>
+        }
+        groupBy: {
+          args: Prisma.UserFeedbackGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserFeedbackGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserFeedbackCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserFeedbackCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2150,6 +2225,16 @@ export const UserBadgeScalarFieldEnum = {
 } as const
 
 export type UserBadgeScalarFieldEnum = (typeof UserBadgeScalarFieldEnum)[keyof typeof UserBadgeScalarFieldEnum]
+
+
+export const UserFeedbackScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  message: 'message',
+  createdAt: 'createdAt'
+} as const
+
+export type UserFeedbackScalarFieldEnum = (typeof UserFeedbackScalarFieldEnum)[keyof typeof UserFeedbackScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2627,6 +2712,7 @@ export type GlobalOmitConfig = {
   recommendationInteraction?: Prisma.RecommendationInteractionOmit
   pushSubscription?: Prisma.PushSubscriptionOmit
   userBadge?: Prisma.UserBadgeOmit
+  userFeedback?: Prisma.UserFeedbackOmit
 }
 
 /* Types for Logging */
