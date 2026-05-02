@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MapPin, LocateFixed, X, Loader2 } from 'lucide-react';
+import { MapPin, LocateFixed, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/context/AuthContext';
 import { TYPOGRAPHY } from '@/shared/design';
