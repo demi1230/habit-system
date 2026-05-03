@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowLeft, Archive, Clock, MapPin,
   Bell, BellOff, Check, ChevronRight,
-  Delete, Pencil, Heart, Calendar, Target, BarChart3, Search, FileText,
+  Delete, Pencil, Heart, Calendar, Target, Search, FileText,
 } from 'lucide-react';
 import { getHabitColor, CTA_DARK } from '@/lib/habit-colors';
 import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
