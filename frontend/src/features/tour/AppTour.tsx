@@ -35,18 +35,6 @@ export function AppTour() {
     (data: EventData) => {
       const { status, type, action, index } = data;
 
-      if (type === EVENTS.STEP_BEFORE) {
-        const target = (data as EventData & { step?: { target?: unknown } }).step?.target;
-        if (typeof target === 'string') {
-          const el = document.querySelector(target);
-          if (el) {
-            const rect = el.getBoundingClientRect();
-            const top = rect.top + window.scrollY - (window.innerHeight - rect.height) / 2;
-            window.scrollTo({ top: Math.max(0, top) });
-          }
-        }
-      }
-
       if (type === EVENTS.STEP_AFTER || type === EVENTS.TARGET_NOT_FOUND) {
         setStepIndex(index + (action === ACTIONS.PREV ? -1 : 1));
       }
