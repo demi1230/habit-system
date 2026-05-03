@@ -63,9 +63,10 @@ export function OnboardingPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col overflow-hidden"
+      className="min-h-screen flex justify-center"
       style={{ backgroundColor: 'var(--background)' }}
     >
+    <div className="w-full max-w-[430px] relative flex flex-col min-h-screen overflow-hidden">
       {/* Top decorative blob */}
       <div
         className="absolute top-0 left-0 right-0 pointer-events-none"
@@ -205,6 +206,7 @@ export function OnboardingPage() {
           </motion.button>
         )}
       </div>
+    </div>
     </div>
   );
 }
