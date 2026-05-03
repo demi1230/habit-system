@@ -432,14 +432,14 @@ export function ProfilePage() {
       const result = await shareAchievement({
         title: badgeLabel,
         subtitle: badge.habitTitle
-          ? `“${badge.habitTitle}” дээр шинэ амжилт нээлээ.`
+          ? `“${badge.habitTitle}” дадал дээр шинэ амжилт нээлээ.`
           : 'Шинэ амжилт нээлээ.',
         accentColor: color.accent,
         badgeIcon: badge.habitIcon ?? null,
         xpLabel: engagement ? `${engagement.totalXp} XP` : null,
         userName: displayName || null,
         text: badge.habitTitle
-          ? `“${badge.habitTitle}” дээр ${badgeLabel} амжилтыг нээлээ.`
+          ? `“${badge.habitTitle}” дадал дээр ${badgeLabel} амжилтыг нээлээ.`
           : `Шинэ амжилт: ${badgeLabel}`,
       });
       setShareStatus(SHARE_RESULT_MESSAGE[result]);

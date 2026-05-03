@@ -169,14 +169,14 @@ export function MonthCalendar({
                 border: `1px solid ${withAlpha(accent, 0.33)}`,
               }}
             />
-            <span style={TYPOGRAPHY.micro} className="text-muted-foreground">Биэлсэн</span>
+            <span style={TYPOGRAPHY.micro} className="text-muted-foreground">Хийсэн</span>
           </div>
           <div className="flex items-center gap-1">
             <div
               className="w-3 h-3 rounded-sm"
               style={{ backgroundColor: 'var(--surface-muted)', border: '1px solid var(--surface-border-soft)' }}
             />
-            <span style={TYPOGRAPHY.micro} className="text-muted-foreground">Дутуу</span>
+            <span style={TYPOGRAPHY.micro} className="text-muted-foreground">Хийгээгүй</span>
           </div>
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'transparent' }} />

@@ -9,6 +9,36 @@ import { authApi } from '@/api/auth';
 import { TYPOGRAPHY, buttonStyles } from '@/shared/design';
 import { CTA_DARK } from '@/lib/habit-colors';
 
+// ─── Error → Mongolian ────────────────────────────────────────────────────────
+function toMongolianError(err: unknown, isLogin: boolean): string {
+  if (!navigator.onLine) return 'Интернэт холболтоо шалгаад дахин оролдоно уу.';
+  const status = (err as { status?: number })?.status;
+  const msg = ((err as { message?: string })?.message ?? '').toLowerCase();
+
+  if (isLogin) {
+    if (status === 401 || status === 400 ||
+        msg.includes('unauthorized') || msg.includes('invalid') ||
+        msg.includes('credential') || msg.includes('password') ||
+        msg.includes('not found'))
+      return 'Имэйл эсвэл нууц үг буруу байна.';
+  } else {
+    if (status === 409 ||
+        msg.includes('already') || msg.includes('exist') ||
+        msg.includes('taken') || msg.includes('duplicate') || msg.includes('conflict'))
+      return 'Энэ имэйл хаяг аль хэдийн бүртгэлтэй байна.';
+    if (msg.includes('password') || msg.includes('weak'))
+      return 'Нууц үг хэтэрхий богино байна. 6-с дээш тэмдэгт оруулна уу.';
+    if (msg.includes('email') || msg.includes('validation'))
+      return 'Имэйл хаягаа зөв оруулна уу.';
+    if (status === 400)
+      return 'Оруулсан мэдээлэл буруу байна. Дахин шалгана уу.';
+  }
+
+  return isLogin
+    ? 'Нэвтрэхэд алдаа гарлаа. Дахин оролдоно уу.'
+    : 'Бүртгүүлэхэд алдаа гарлаа. Дахин оролдоно уу.';
+}
+
 // ─── Reusable styled input ────────────────────────────────────────────────────
 function AuthInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
@@ -71,7 +101,7 @@ export function AuthPage() {
       }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err?.message || (isLogin ? t('auth.loginError', 'Нэвтрэхэд алдаа гарлаа') : t('auth.signupError', 'Бүртгүүлэхэд алдаа гарлаа')));
+      setError(toMongolianError(err, isLogin));
     } finally {
       setLoading(false);
     }

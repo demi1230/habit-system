@@ -65,19 +65,20 @@ function buildShareImage(input: ShareAchievementInput): Blob {
 
   const accent = input.accentColor || '#18A68A';
 
-  const bgGradient = ctx.createLinearGradient(0, 0, W, H);
-  bgGradient.addColorStop(0, '#F7FCFF');
-  bgGradient.addColorStop(1, '#EEF7FB');
+  const bgGradient = ctx.createLinearGradient(0, H, W, 0);
+  bgGradient.addColorStop(0, `${accent}28`);
+  bgGradient.addColorStop(0.6, `${accent}10`);
+  bgGradient.addColorStop(1, '#FAFCFF');
   ctx.fillStyle = bgGradient;
   ctx.fillRect(0, 0, W, H);
 
-  ctx.globalAlpha = 0.16;
+  ctx.globalAlpha = 0.22;
   ctx.fillStyle = accent;
   ctx.beginPath();
-  ctx.arc(220, 220, 180, 0, Math.PI * 2);
+  ctx.arc(180, 180, 220, 0, Math.PI * 2);
   ctx.fill();
   ctx.beginPath();
-  ctx.arc(868, 840, 228, 0, Math.PI * 2);
+  ctx.arc(900, 860, 280, 0, Math.PI * 2);
   ctx.fill();
   ctx.globalAlpha = 1;
 
@@ -93,6 +94,10 @@ function buildShareImage(input: ShareAchievementInput): Blob {
   ctx.fillStyle = '#FFFFFF';
   roundRect(ctx, cardX, cardY, cardW, cardH, 44);
   ctx.fill();
+  ctx.strokeStyle = `${accent}30`;
+  ctx.lineWidth = 2;
+  roundRect(ctx, cardX, cardY, cardW, cardH, 44);
+  ctx.stroke();
 
   const headerLabel = 'Амжилт нээгдлээ';
   const headerChipH = 52;
@@ -100,10 +105,10 @@ function buildShareImage(input: ShareAchievementInput): Blob {
   const headerChipW = Math.min(ctx.measureText(headerLabel).width + 56, cardW - 96);
   const headerChipX = W / 2 - headerChipW / 2;
   const headerChipY = cardY + 50;
-  ctx.fillStyle = `${accent}18`;
+  ctx.fillStyle = accent;
   roundRect(ctx, headerChipX, headerChipY, headerChipW, headerChipH, 26);
   ctx.fill();
-  ctx.fillStyle = accent;
+  ctx.fillStyle = '#FFFFFF';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(headerLabel, W / 2, headerChipY + headerChipH / 2);
@@ -112,14 +117,14 @@ function buildShareImage(input: ShareAchievementInput): Blob {
   const emojiCy = cardY + 232;
   const circleR = 96;
 
-  ctx.globalAlpha = 0.18;
+  ctx.globalAlpha = 0.12;
   ctx.fillStyle = accent;
   ctx.beginPath();
-  ctx.arc(emojiCx, emojiCy, circleR + 16, 0, Math.PI * 2);
+  ctx.arc(emojiCx, emojiCy, circleR + 24, 0, Math.PI * 2);
   ctx.fill();
   ctx.globalAlpha = 1;
 
-  ctx.fillStyle = `${accent}28`;
+  ctx.fillStyle = `${accent}38`;
   ctx.beginPath();
   ctx.arc(emojiCx, emojiCy, circleR, 0, Math.PI * 2);
   ctx.fill();
@@ -143,18 +148,22 @@ function buildShareImage(input: ShareAchievementInput): Blob {
     const chipH = 48;
     const chipX = W / 2 - chipW / 2;
     const chipY = cardY + 596;
-    ctx.fillStyle = '#303437';
+    ctx.fillStyle = `${accent}22`;
     roundRect(ctx, chipX, chipY, chipW, chipH, 24);
     ctx.fill();
-    ctx.fillStyle = '#FFFFFF';
+    ctx.strokeStyle = `${accent}55`;
+    ctx.lineWidth = 1.5;
+    roundRect(ctx, chipX, chipY, chipW, chipH, 24);
+    ctx.stroke();
+    ctx.fillStyle = accent;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(chipLabel, W / 2, chipY + chipH / 2);
   }
 
   const divY = cardY + cardH - 134;
-  ctx.globalAlpha = 0.15;
-  ctx.fillStyle = '#202325';
+  ctx.globalAlpha = 0.28;
+  ctx.fillStyle = accent;
   ctx.fillRect(cardX + 44, divY, cardW - 88, 1);
   ctx.globalAlpha = 1;
 

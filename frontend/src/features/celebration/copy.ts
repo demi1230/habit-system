@@ -25,7 +25,7 @@ export function getCelebrationCopy(ctx: CelebrationContext, habitTitle: string):
     if (ctx.milestoneKind === 'first') {
       return {
         headline: 'Гайхалтай эхлэл!',
-        subline: `“${habitTitle}” — анхны давталт амжилттай.`,
+        subline: `"${habitTitle}" дадал дээр анхны амжилт.`,
         detail: 'Хамгийн хэцүү алхам бол эхний алхам. Хийж чадлаа шүү.',
         badgeLabel: 'Анхны давталт',
       };
@@ -33,7 +33,7 @@ export function getCelebrationCopy(ctx: CelebrationContext, habitTitle: string):
     if (ctx.milestoneKind === 'streak') {
       return {
         headline: 'Гайхалтай!',
-        subline: `“${habitTitle}” — ${ctx.milestoneValue} өдөр дараалан хийлээ.`,
+        subline: `"${habitTitle}" дадал дээр ${ctx.milestoneValue} өдрийн дараалал.`,
         detail: 'Тогтмол давталт бол дадал бэхжих хамгийн чухал алхам.',
         badgeLabel: `${ctx.milestoneValue} өдрийн дараалал`,
       };
@@ -41,7 +41,7 @@ export function getCelebrationCopy(ctx: CelebrationContext, habitTitle: string):
     // count milestone
     return {
       headline: 'Сайхан!',
-      subline: `“${habitTitle}” — нийт ${ctx.milestoneValue} удаа хийлээ.`,
+      subline: `"${habitTitle}" дадал дээр нийт ${ctx.milestoneValue} давталт.`,
       detail: 'Тусгал бол дадлын тогтвортой байдлын нотолгоо.',
       badgeLabel: `${ctx.milestoneValue} давталт`,
     };

@@ -26,11 +26,12 @@ const PASTEL_CARD_ACTION_BG = 'var(--pastel-card-action-bg)';
 const MN_DAYS = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
 
 // ── Habit Tag Pill ─────────────────────────────────────────────
-function HabitTag({ value, icon }: { value: string | number; icon: 'dumbbell' | 'flame' }) {
+function HabitTag({ value, icon, onClick }: { value: string | number; icon: 'dumbbell' | 'flame'; onClick?: (e: React.MouseEvent) => void }) {
   return (
     <div
+      onClick={onClick}
       className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
-      style={{ backgroundColor: PASTEL_CARD_PILL_BG, border: `1px solid ${PASTEL_CARD_SUBTLE}`, height: 30 }}>
+      style={{ backgroundColor: PASTEL_CARD_PILL_BG, border: `1px solid ${PASTEL_CARD_SUBTLE}`, height: 30, cursor: onClick ? 'pointer' : undefined }}>
       <svg
         width="16"
         height="16"
@@ -499,6 +500,15 @@ function HabitCard({ habit, index, entry, onBadgeTap, disabled }: {
   const status     = entry?.status ?? 'none';
   const pct        = entry ? calcProgress(habit, entry.value) : 0;
 
+  const [chipMsg, setChipMsg] = useState<string | null>(null);
+  const chipTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const flash = (msg: string) => {
+    clearTimeout(chipTimer.current);
+    setChipMsg(msg);
+    chipTimer.current = setTimeout(() => setChipMsg(null), 3000);
+  };
+  useEffect(() => () => clearTimeout(chipTimer.current), []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
@@ -550,9 +560,17 @@ function HabitCard({ habit, index, entry, onBadgeTap, disabled }: {
             </p>
             <div className="flex items-center gap-2 flex-wrap">
               {habit.currentStreak > 0 && (
-                <HabitTag icon="flame" value={`${habit.currentStreak} өдөр`} />
+                <HabitTag
+                  icon="flame"
+                  value={`${habit.currentStreak} өдөр`}
+                  onClick={e => { e.stopPropagation(); flash(`Та ${habit.currentStreak} өдөр тасралтгүй "${habit.title}" дадлаа хийсэн байна.`); }}
+                />
               )}
-              <HabitTag icon="dumbbell" value={habit.strengthScore} />
+              <HabitTag
+                icon="dumbbell"
+                value={habit.strengthScore}
+                onClick={e => { e.stopPropagation(); flash(`"${habit.title}" дадлын хүч ${habit.strengthScore} оноо байна.`); }}
+              />
             </div>
           </div>
 
@@ -565,6 +583,31 @@ function HabitCard({ habit, index, entry, onBadgeTap, disabled }: {
             disabled={disabled}
           />
         </div>
+
+        {/* Chip message strip */}
+        <AnimatePresence>
+          {chipMsg && (
+            <motion.div
+              key="chip-msg"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="relative z-10 overflow-hidden"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between gap-3 px-4 pb-3">
+                <p style={{ ...TYPOGRAPHY.micro, color: PASTEL_CARD_MUTED, flex: 1, lineHeight: 1.45 }}>{chipMsg}</p>
+                <button
+                  onClick={e => { e.stopPropagation(); navigate(`/analytics?habitId=${habit.id}`); }}
+                  style={{ ...TYPOGRAPHY.micro, fontWeight: 700, color: PASTEL_CARD_INK, whiteSpace: 'nowrap', background: 'none', border: 'none', cursor: 'pointer' }}
+                >
+                  Ахиц харах →
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );

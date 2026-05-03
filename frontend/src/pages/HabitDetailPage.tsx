@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowLeft, Archive, Clock, MapPin,
-  Bell, BellOff, Check, X, ChevronRight,
+  Bell, BellOff, Check, ChevronRight,
   Delete, Pencil, Heart, Calendar, Target, BarChart3, Search, FileText,
 } from 'lucide-react';
 import { getHabitColor, CTA_DARK } from '@/lib/habit-colors';
@@ -336,7 +336,10 @@ export function HabitDetailPage() {
             style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
             <ArrowLeft className="w-4 h-4" style={{ color: '#474747' }} />
           </motion.button>
-          <p style={TYPOGRAPHY.navTitle} className="truncate mx-3 flex-1 text-center text-foreground">{habit.title}</p>
+          <div className="flex items-center justify-center gap-2 mx-3 flex-1 min-w-0">
+            <HabitIconSlot iconValue={habit.iconValue} emojiSizePx={20} circlePx={20} />
+            <p style={TYPOGRAPHY.navTitle} className="truncate text-foreground">{habit.title}</p>
+          </div>
           <div className="flex items-center gap-2">
             <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(`/habit/${id}/edit`, { state: { from: backTo } })}
               className={buttonStyles({ variant: 'nav', size: 'icon' })}
@@ -354,18 +357,6 @@ export function HabitDetailPage() {
 
       <div className="flex flex-col gap-4 px-5 pt-5">
 
-        {/* ── 1. HERO BAND ── */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-          className="rounded-[20px] p-5 bg-card" style={{ boxShadow: SHADOW.card }}>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0"
-              style={{ backgroundColor: color.btn }}>
-              <HabitIconSlot iconValue={habit.iconValue} emojiSizePx={24} circlePx={24} />
-            </div>
-            <p style={TYPOGRAPHY.cardTitle} className="text-foreground flex-1 min-w-0">{habit.title}</p>
-          </div>
-        </motion.div>
-
         {/* ── Analytics shortcut ── */}
         <motion.button
           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
@@ -374,10 +365,6 @@ export function HabitDetailPage() {
           className="w-full flex items-center gap-3 rounded-[20px] px-4 py-3.5 bg-card text-left"
           style={{ boxShadow: SHADOW.card }}
         >
-          <div className="w-9 h-9 rounded-[12px] flex items-center justify-center shrink-0"
-            style={{ backgroundColor: color.btn }}>
-            <BarChart3 className="w-4.5 h-4.5" style={{ color: color.accent }} />
-          </div>
           <div className="flex-1 min-w-0">
             <p style={{ ...TYPOGRAPHY.sectionTitle, fontWeight: 600 }} className="text-foreground">Дадлын ахиц харах</p>
             <p style={TYPOGRAPHY.micro} className="text-muted-foreground">Шинжилгээ, статистик, календар</p>
@@ -400,7 +387,7 @@ export function HabitDetailPage() {
           {habit.motivationProfile?.reason && (
             <p style={{ ...TYPOGRAPHY.body, lineHeight: 1.65, marginTop: 8 }} className="text-foreground">
               <span style={{ fontWeight: 500 }}>Ингэснээр би: </span>
-              <span style={{ ...TYPOGRAPHY.sectionTitle, color: color.accent }}>{habit.motivationProfile.reason}</span>
+              <span style={{ ...TYPOGRAPHY.sectionTitle, color: 'var(--text-soft)' }}>{habit.motivationProfile.reason}</span>
             </p>
           )}
         </div>
@@ -456,7 +443,7 @@ export function HabitDetailPage() {
               {habit.steps.map((step) => (
                 <div key={`${step.orderIndex}-${step.title}`} className="flex items-center gap-3">
                   <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: color.btn, ...TYPOGRAPHY.micro, fontWeight: 700 }}>
+                    style={{ backgroundColor: color.btn, ...TYPOGRAPHY.micro, fontWeight: 700, color: '#202325' }}>
                     {step.orderIndex + 1}
                   </div>
                   <p style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">
@@ -559,38 +546,39 @@ export function HabitDetailPage() {
           {logs.length > 0 ? (
             <>
               <div style={{ height: 0.5, backgroundColor: 'rgba(0,0,0,0.07)' }} />
-              <div className="px-4 py-3 flex flex-col gap-2.5">
+              <div className="px-4 py-3 flex flex-col gap-0">
                 {Array.from(latestLogsByDay.entries())
                   .sort((a, b) => b[0].localeCompare(a[0]))
                   .slice(0, 6)
-                  .map(([, log]) => (
-                  <div key={log.id} className="flex items-center gap-3">
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: log.status === 'DONE' ? color.btn : 'rgba(0,0,0,0.06)' }}>
-                      {log.status === 'DONE'
-                        ? <Check className="w-3.5 h-3.5" style={{ color: color.accent }} strokeWidth={2.5} />
-                        : <X className="w-3 h-3" style={{ color: 'rgba(0,0,0,0.3)' }} />}
+                  .map(([, log], i, arr) => (
+                  <div key={log.id}>
+                    <div className="flex items-center gap-3 py-2.5">
+                      <div className="w-2 h-2 rounded-full shrink-0"
+                        style={{ backgroundColor: log.status === 'DONE' ? color.accent : 'rgba(0,0,0,0.18)' }} />
+                      <div className="flex-1 min-w-0">
+                        {binary ? (
+                          <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">
+                            {log.status === 'DONE' ? 'Хийсэн' : 'Хийгдээгүй'}
+                          </span>
+                        ) : (
+                          <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 600 }} className="text-foreground">
+                            {log.actualValue ?? 0}
+                            <span style={{ fontWeight: 400, marginLeft: 4 }} className="text-muted-foreground">{habit.measurementUnit}</span>
+                            {log.actualValue != null && habit.targetValue > 0 && (
+                              <span style={{ ...TYPOGRAPHY.caption, fontWeight: 400, marginLeft: 4 }} className="text-muted-foreground">
+                                / {habit.targetValue}
+                              </span>
+                            )}
+                          </span>
+                        )}
+                      </div>
+                      <span style={{ ...TYPOGRAPHY.micro, whiteSpace: 'nowrap' }} className="text-muted-foreground">
+                        {formatDate(log.completedAt)} · {formatTime(log.completedAt)}
+                      </span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      {binary ? (
-                        <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">
-                          {log.status === 'DONE' ? 'Гүйцэтгэсэн' : 'Хийгдээгүй'}
-                        </span>
-                      ) : (
-                        <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 600 }} className="text-foreground">
-                          {log.actualValue ?? 0} <span style={{ fontWeight: 400 }} className="text-muted-foreground">{habit.measurementUnit}</span>
-                          {log.actualValue != null && habit.targetValue > 0 && (
-                            <span style={{ ...TYPOGRAPHY.caption, fontWeight: 400, marginLeft: 6 }} className="text-muted-foreground">
-                              / {habit.targetValue}
-                            </span>
-                          )}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex flex-col items-end gap-0.5 shrink-0">
-                      <span style={{ ...TYPOGRAPHY.micro, whiteSpace: 'nowrap' }} className="text-muted-foreground">{formatDate(log.completedAt)}</span>
-                      <span style={{ ...TYPOGRAPHY.micro, whiteSpace: 'nowrap' }} className="text-muted-foreground">{formatTime(log.completedAt)}</span>
-                    </div>
+                    {i < arr.length - 1 && (
+                      <div style={{ height: 0.5, backgroundColor: 'rgba(0,0,0,0.05)', marginLeft: 20 }} />
+                    )}
                   </div>
                 ))}
               </div>

@@ -26,6 +26,7 @@ export function CelebrationSheet({ habit, logId, userId, ctx, onClose }: Props) 
   const color = getHabitColor(habit.color);
   const copy = getCelebrationCopy(ctx, habit.title);
 
+
   const toggleFeel = (id: string) => {
     setSelectedFeel(prev => {
       const next = new Set(prev);
@@ -127,6 +128,21 @@ export function CelebrationSheet({ habit, logId, userId, ctx, onClose }: Props) 
         <div style={{ height: 1, backgroundColor: 'var(--surface-border-soft)' }} />
 
         <div className="px-5 pt-4">
+          {/* Benefits */}
+          {habit.benefits && habit.benefits.length > 0 && (
+            <div className="mb-4">
+              <p style={{ ...TYPOGRAPHY.caption, color: 'var(--text-muted-soft)', marginBottom: 8 }}>Ач тус</p>
+              <div className="flex flex-wrap gap-2">
+                {habit.benefits.map(b => (
+                  <span key={b} className="px-3 py-1.5 rounded-full"
+                    style={{ backgroundColor: color.btn, ...TYPOGRAPHY.caption, color: '#202325' }}>
+                    {b}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Feel chips */}
           <p style={{ ...TYPOGRAPHY.caption, color: 'var(--text-muted-soft)', marginBottom: 10 }}>
             Дадлаа хийсний дараа ямар мэдрэмж төрч байна?

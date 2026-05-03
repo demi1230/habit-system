@@ -935,7 +935,7 @@ export function HabitFormPage({
         </FormSection>
 
         {/* ── 5. Ашиг тус (the why) ── */}
-        <FormSection id="tour-form-benefits" label="Ашиг тус">
+        <FormSection id="tour-form-benefits" label="Ашиг тус (Заавал биш)">
           <div className="px-4 py-3 flex flex-col gap-3">
             <p style={TYPOGRAPHY.caption} className="text-muted-foreground">
               Жишээ: толгой сэргээх, эрүүл чийрэг болох, төвлөрөл нэмэгдүүлэх
@@ -975,7 +975,7 @@ export function HabitFormPage({
         </FormSection>
 
         {/* ── 6. Жижиг алхмууд (steps — no preseed, X/MAX counter) ── */}
-        <FormSection id="tour-form-steps" label="Жижиг алхмууд">
+        <FormSection id="tour-form-steps" label="Жижиг алхмууд (Заавал биш)">
           <div className="px-4 py-3 flex flex-col gap-3">
             <div className="flex items-start justify-between gap-3">
               <p style={TYPOGRAPHY.caption} className="text-muted-foreground flex-1">
