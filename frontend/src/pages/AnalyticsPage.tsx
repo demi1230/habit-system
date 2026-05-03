@@ -9,6 +9,8 @@ import { getHabitColor } from '@/lib/habit-colors';
 import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
 import { svgPaths } from '@/lib/svg-paths';
 import { useAuth } from '@/context/AuthContext';
+import { useTour } from '@/context/TourContext';
+import { PAGE_TOUR_CONFIG } from '@/features/tour/tour-steps';
 import { habitsApi } from '@/api/habits';
 import { srbaiApi } from '@/api/srbai';
 import type { Habit, HabitLog, ProgressSummary } from '@/api/types';
@@ -56,9 +58,9 @@ function ProgressRing({ value, size = 120, strokeWidth = 8, color, children }: {
   );
 }
 
-function SectionCard({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
+function SectionCard({ children, delay = 0, className = '', id }: { children: React.ReactNode; delay?: number; className?: string; id?: string }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
+    <motion.div id={id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
       className={`rounded-[20px] p-4 bg-card ${className}`} style={{ boxShadow: SHADOW.card }}>
       {children}
     </motion.div>
@@ -421,6 +423,17 @@ export function AnalyticsPage() {
 
   const [allLoading, setAllLoading] = useState(false);
 
+  const { startTour } = useTour();
+
+  // Auto-start tour the first time the user selects a specific habit
+  useEffect(() => {
+    if (selectedIdx < 0) return;
+    const key = PAGE_TOUR_CONFIG['/analytics'].storageKey;
+    if (localStorage.getItem(key) === '1') return;
+    const timer = setTimeout(startTour, 600);
+    return () => clearTimeout(timer);
+  }, [selectedIdx, startTour]);
+
   const isAllMode = selectedIdx === -1;
   const selected = habits[selectedIdx] ?? null;
 
@@ -525,7 +538,7 @@ export function AnalyticsPage() {
   return (
     <div className="min-h-screen bg-background pb-32">
       {/* Header + Habit Selector — single sticky block */}
-      <div className="sticky top-0 z-20 bg-background" style={{ borderBottom: '1px solid var(--surface-border-faint)' }}>
+      <div id="tour-analytics-selector" className="sticky top-0 z-20 bg-background" style={{ borderBottom: '1px solid var(--surface-border-faint)' }}>
         {habits.length > 0 && (
           <div className="flex items-center gap-3 overflow-x-auto px-5 pt-14 pb-3"
             style={{ scrollbarWidth: 'none' }}>
@@ -581,7 +594,7 @@ export function AnalyticsPage() {
         )}
       </div>
 
-      <div className="px-5 pt-5 flex flex-col gap-4">
+      <div id="tour-analytics-content" className="px-5 pt-5 flex flex-col gap-4">
 
         {habits.length === 0 ? (
           <motion.div
@@ -640,7 +653,7 @@ export function AnalyticsPage() {
             </div>
 
             {/* ═══ 1. Composite Strength Score (with SRBAI inline) ═══ */}
-            <SectionCard delay={0}>
+            <SectionCard id="tour-analytics-strength" delay={0}>
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <svg width="20" height="20" viewBox="0 0 26 25.0006" fill="none"><path d={svgPaths.p2eaaee80} fill={color.accent} /></svg>
@@ -735,7 +748,7 @@ export function AnalyticsPage() {
               </AnimatePresence>
 
               {/* SRBAI expandable detail */}
-              <div className="mt-3" style={{ borderTop: '1px solid var(--surface-border-soft)' }}>
+              <div id="tour-analytics-srbai" className="mt-3" style={{ borderTop: '1px solid var(--surface-border-soft)' }}>
                 <button className={`w-full pt-3 ${buttonStyles({ variant: 'ghost', size: 'inline' })}`} onClick={() => setExpandedSection(expandedSection === 'srbai' ? null : 'srbai')}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -838,7 +851,7 @@ export function AnalyticsPage() {
 
             {/* ═══ 4. Recommendations ═══ */}
             {Array.isArray(habitRecommendations) && habitRecommendations.length > 0 && (
-              <SectionCard delay={0.09}>
+              <SectionCard id="tour-analytics-recommendations" delay={0.09}>
                 <SectionLabel icon={<Sparkles className="w-4 h-4" style={{ color: 'var(--foreground)' }} />} label="Зөвлөмж" />
                 <div className="flex flex-col">
                   {(habitRecommendations as RecommendationItem[]).map((rec, i) => (

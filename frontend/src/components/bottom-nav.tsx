@@ -19,6 +19,7 @@ export function BottomNav() {
         style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
       >
         <div
+          id="tour-bottom-nav"
           className="mx-5 mb-2 rounded-[24px] border border-border bg-card flex items-center justify-between px-6 py-3"
           style={{ boxShadow: '10px 14px 56px 0px var(--surface-muted)' }}
         >

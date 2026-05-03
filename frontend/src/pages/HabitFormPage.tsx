@@ -74,9 +74,9 @@ function clampTimeWindow(
 
 // â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-function FormSection({ label, children }: { label: string; children: React.ReactNode }) {
+function FormSection({ label, children, id }: { label: string; children: React.ReactNode; id?: string }) {
   return (
-    <div className="mx-5">
+    <div id={id} className="mx-5">
       <p style={{ ...TYPOGRAPHY.groupLabel, marginBottom: 8, paddingLeft: 2 }}
         className="text-muted-foreground">{label}</p>
       <div className="rounded-[20px] overflow-hidden bg-card" style={{ boxShadow: SHADOW.card }}>
@@ -775,7 +775,7 @@ export function HabitFormPage({
       <div className="flex flex-col gap-5 pt-5">
 
         {/* ── 1. Sentence builder (identity in narrative form) ── */}
-        <div className="mx-5">
+        <div id="tour-form-sentence" className="mx-5">
           <motion.div className="rounded-[20px] bg-card px-4 py-4"
             animate={{
               boxShadow: showTitleError
@@ -811,7 +811,7 @@ export function HabitFormPage({
         </div>
 
         {/* ── 2. Харагдах төрх (visual identity) ── */}
-        <FormSection label="Харагдац">
+        <FormSection id="tour-form-appearance" label="Харагдац">
           <div className="px-4 py-3">
             <div className="flex items-center justify-between">
               <p style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">Дүрс</p>
@@ -852,7 +852,7 @@ export function HabitFormPage({
         </FormSection>
 
         {/* ── 3. Хэмжилт (fundamental tracking decision — moved up) ── */}
-        <FormSection label="Хэмжилт">
+        <FormSection id="tour-form-measurement" label="Хэмжилт">
           <FormRow label="Төрөл">
             <div className="flex gap-1.5">
               {(['binary', 'measurable'] as const).map(t => (
@@ -909,7 +909,7 @@ export function HabitFormPage({
         </FormSection>
 
         {/* ── 4. Хийх өдрүүд (schedule) ── */}
-        <FormSection label="Хийх өдрүүд">
+        <FormSection id="tour-form-schedule" label="Хийх өдрүүд">
           <div className="px-4 py-3">
             <div className="flex items-center justify-between mb-2.5">
               <p style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">Өдрүүд</p>
@@ -935,7 +935,7 @@ export function HabitFormPage({
         </FormSection>
 
         {/* ── 5. Ашиг тус (the why) ── */}
-        <FormSection label="Ашиг тус">
+        <FormSection id="tour-form-benefits" label="Ашиг тус">
           <div className="px-4 py-3 flex flex-col gap-3">
             <p style={TYPOGRAPHY.caption} className="text-muted-foreground">
               Жишээ: толгой сэргээх, эрүүл чийрэг болох, төвлөрөл нэмэгдүүлэх
@@ -975,7 +975,7 @@ export function HabitFormPage({
         </FormSection>
 
         {/* ── 6. Жижиг алхмууд (steps — no preseed, X/MAX counter) ── */}
-        <FormSection label="Жижиг алхмууд">
+        <FormSection id="tour-form-steps" label="Жижиг алхмууд">
           <div className="px-4 py-3 flex flex-col gap-3">
             <div className="flex items-start justify-between gap-3">
               <p style={TYPOGRAPHY.caption} className="text-muted-foreground flex-1">
@@ -1021,6 +1021,7 @@ export function HabitFormPage({
         </FormSection>
 
         {/* ── 7. Сануулга (reminders) ── */}
+        <div id="tour-form-reminder">
         <FormSection label="Сануулга">
           <FormRow label="Сануулга идэвхтэй">
             <div className="flex items-center gap-2">
@@ -1121,6 +1122,7 @@ export function HabitFormPage({
             )}
           </AnimatePresence>
         </FormSection>
+        </div>
 
         {/* ── 8. Сануулгын бэлдэц (preview — collapsed by default at the end) ── */}
         <div className="mx-5">

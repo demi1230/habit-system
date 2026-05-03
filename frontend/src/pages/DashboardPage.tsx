@@ -892,6 +892,7 @@ export function DashboardPage() {
 
           <div className="flex items-center gap-2 mt-1">
             <motion.button
+              id="tour-add-btn"
               whileTap={{ scale: 0.9 }}
               onClick={() => navigate('/create')}
               className={`${buttonStyles({ variant: 'default', size: 'default' })} flex items-center gap-1.5`}
@@ -940,6 +941,7 @@ export function DashboardPage() {
 
       {/* Week Strip */}
       <motion.div
+        id="tour-week-strip"
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.08 }}
         className="px-0 pt-1 pb-4"
       >
@@ -957,7 +959,7 @@ export function DashboardPage() {
       </div>
 
       {/* Habit Cards */}
-      <div className="px-5 flex flex-col gap-2.5">
+      <div id="tour-habit-list" className="px-5 flex flex-col gap-2.5">
         {loading ? (
           <div className="flex justify-center py-16">
             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />

@@ -16,6 +16,9 @@ import { ArticleDetailPage } from './pages/ArticleDetailPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { EditHabitPage } from './pages/EditHabitPage';
 import { BottomNav } from './components/bottom-nav';
+import { ScrollToTop } from './components/scroll-to-top';
+import { AppTour } from './features/tour';
+import { TourProvider } from './context/TourContext';
 import { ensurePushSubscription } from './lib/push';
 import { pushApi } from './api/push';
 
@@ -48,6 +51,8 @@ function AppRoutes() {
 
   return (
     <>
+      <ScrollToTop />
+      <AppTour />
       <Routes>
         <Route path="/welcome" element={token ? <Navigate to="/dashboard" replace /> : <WelcomePage />} />
         <Route path="/login" element={token ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
@@ -74,7 +79,9 @@ export default function App() {
   return (
     <AuthProvider>
       <HabitLogsProvider>
-        <AppRoutes />
+        <TourProvider>
+          <AppRoutes />
+        </TourProvider>
       </HabitLogsProvider>
     </AuthProvider>
   );

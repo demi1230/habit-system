@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { useState, useEffect } from 'react';
 
 interface BottomSheetProps {
   onClose: () => void;
@@ -9,8 +10,26 @@ interface BottomSheetProps {
 /**
  * Reusable bottom-sheet shell for form dialogs (matches ConfirmDialog visual style).
  * Renders a dim backdrop + a spring-animated card rising from the bottom.
+ * Automatically shifts above the virtual keyboard on mobile using visualViewport API.
  */
 export function BottomSheet({ onClose, busy = false, children }: BottomSheetProps) {
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
+
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const update = () => {
+      const offset = Math.max(0, window.innerHeight - vv.offsetTop - vv.height);
+      setKeyboardOffset(offset);
+    };
+    vv.addEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    return () => {
+      vv.removeEventListener('resize', update);
+      vv.removeEventListener('scroll', update);
+    };
+  }, []);
+
   return (
     <>
       <motion.div
@@ -26,7 +45,8 @@ export function BottomSheet({ onClose, busy = false, children }: BottomSheetProp
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 200, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 360, damping: 36 }}
-        className="fixed bottom-0 left-0 right-0 z-[101] flex justify-center isolate"
+        className="fixed left-0 right-0 z-[101] flex justify-center isolate"
+        style={{ bottom: keyboardOffset, transition: keyboardOffset > 0 ? 'bottom 0.15s ease-out' : undefined }}
       >
         <div
           className="w-full max-w-[430px] bg-card rounded-t-[28px] px-6 pb-[max(2.75rem,env(safe-area-inset-bottom))] pt-5"

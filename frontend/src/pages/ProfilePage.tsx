@@ -5,6 +5,7 @@ import {
   Archive,
   Award,
   Bell,
+  BookOpen,
   ChevronDown,
   ChevronRight,
   HelpCircle,
@@ -26,6 +27,7 @@ import {
   Trophy,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { PAGE_TOUR_CONFIG } from '@/features/tour/tour-steps';
 import { habitsApi } from '@/api/habits';
 import { engagementApi } from '@/api/engagement';
 import { pushApi } from '@/api/push';
@@ -456,6 +458,11 @@ export function ProfilePage() {
     }
   };
 
+  const handleRestartTour = useCallback(() => {
+    Object.values(PAGE_TOUR_CONFIG).forEach(c => localStorage.removeItem(c.storageKey));
+    navigate('/dashboard');
+  }, [navigate]);
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -788,6 +795,7 @@ export function ProfilePage() {
                       border: '1.5px solid transparent',
                       fontSize: 12,
                       fontWeight: active ? 600 : 500,
+                      color: active ? undefined : 'var(--foreground)',
                     }}
                   >
                     {option.icon}
@@ -1017,6 +1025,12 @@ export function ProfilePage() {
               icon={<MessageSquare className="w-4 h-4 text-muted-foreground" />}
               label="Санал хүсэлт"
               onClick={() => setShowFeedback(true)}
+            />
+            <Divider />
+            <MenuItem
+              icon={<BookOpen className="w-4 h-4 text-muted-foreground" />}
+              label="Заавар дахин харах"
+              onClick={handleRestartTour}
             />
             <Divider />
             <MenuItem
