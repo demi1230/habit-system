@@ -62,6 +62,10 @@ export class PushSubscriptionsService {
     });
   }
 
+  async listAll() {
+    return this.prisma.pushSubscription.findMany();
+  }
+
   async deleteByEndpoint(endpoint: string) {
     await this.prisma.pushSubscription.deleteMany({
       where: { endpoint },

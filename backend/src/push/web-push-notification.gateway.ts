@@ -30,6 +30,27 @@ export class WebPushNotificationGateway implements INotificationGateway {
     }
   }
 
+  async broadcast(title: string, body: string): Promise<{ sent: number; failed: number }> {
+    if (!this.vapidReady) return { sent: 0, failed: 0 };
+    const subscriptions = await this.pushSubscriptionsService.listAll();
+    let sent = 0, failed = 0;
+    const message = JSON.stringify({ title, body, url: '/dashboard' });
+    for (const sub of subscriptions) {
+      try {
+        await webPush.sendNotification({ endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } }, message);
+        sent++;
+      } catch (error) {
+        const statusCode = (error as { statusCode?: number }).statusCode;
+        if (statusCode === 404 || statusCode === 410) {
+          await this.pushSubscriptionsService.deleteByEndpoint(sub.endpoint);
+        }
+        failed++;
+      }
+    }
+    this.logger.log(`Broadcast: ${sent} sent, ${failed} failed`);
+    return { sent, failed };
+  }
+
   async send(
     payload: NotificationPayload,
   ): Promise<NotificationDeliveryResult> {
