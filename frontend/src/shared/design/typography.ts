@@ -46,7 +46,7 @@ export const TYPOGRAPHY = {
   sectionTitle: {
     fontFamily: FF,
     fontSize: 14,
-    fontWeight: 550,
+    fontWeight: 500,
     lineHeight: 1.4,
   },
   /** Small group label above a set of controls */

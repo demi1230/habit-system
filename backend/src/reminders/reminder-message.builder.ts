@@ -1,6 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { HabitEntity } from '../domain/entities/habit.entity';
 
+const TIMING_SEP = '|||';
+const VALID_TIMINGS = ['дараа', 'өмнө', 'үедээ'] as const;
+type RoutineTiming = (typeof VALID_TIMINGS)[number];
+
+function parseRoutineCue(stored: string): { activity: string; timing: RoutineTiming } {
+  if (stored.includes(TIMING_SEP)) {
+    const idx = stored.indexOf(TIMING_SEP);
+    const activity = stored.slice(0, idx);
+    const raw = stored.slice(idx + TIMING_SEP.length);
+    const timing = VALID_TIMINGS.includes(raw as RoutineTiming)
+      ? (raw as RoutineTiming)
+      : 'дараа';
+    return { activity, timing };
+  }
+  return { activity: stored, timing: 'дараа' };
+}
+
 @Injectable()
 export class ReminderMessageBuilder {
   /**
@@ -13,15 +30,18 @@ export class ReminderMessageBuilder {
   build(habit: HabitEntity, rotationSeed = Date.now()) {
     const cue =
       habit.cues.find((item) => item.isActive && item.precedingRoutine) ?? null;
-    const precedingRoutine =
+    const rawRoutine =
       cue?.precedingRoutine ?? habit.precedingRoutine ?? null;
     const reason = habit.motivationProfile?.reason?.trim() || null;
     const benefits = habit.benefits.filter(
       (benefit) => benefit.trim().length > 0,
     );
 
-    const firstSentence = precedingRoutine
-      ? `${precedingRoutine}-ын дараа ${habit.title} дадлаа хийгээрэй.`
+    const firstSentence = rawRoutine
+      ? (() => {
+          const { activity, timing } = parseRoutineCue(rawRoutine);
+          return `${activity} ${timing} ${habit.title} дадлаа хийгээрэй.`;
+        })()
       : `${habit.title} дадлаа хийгээрэй.`;
 
     // Build all available second-sentence variants
@@ -42,7 +62,7 @@ export class ReminderMessageBuilder {
       title: habit.title,
       body: [firstSentence, secondSentence].filter(Boolean).join(' '),
       contentParts: {
-        cue: precedingRoutine,
+        cue: rawRoutine ? parseRoutineCue(rawRoutine).activity : null,
         habit: habit.title,
         reason,
         benefits,

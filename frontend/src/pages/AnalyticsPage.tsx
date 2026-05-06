@@ -27,6 +27,7 @@ import { BottomNav } from '@/components/bottom-nav';
 import { HabitIconSlot } from '@/components/habit-icon-slot';
 import { MonthCalendar } from '@/components/month-calendar';
 import { computeScheduledStreakFromLogs, countCompletedDays, countScheduledDays } from '@/lib/habit-log-days';
+import { parseRoutineCue } from '@/lib/routine-cue';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 function withAlpha(color: string, alpha: number) {
@@ -507,7 +508,7 @@ export function AnalyticsPage() {
     if (userId && selected?.id) {
       refreshRecommendations.mutate(selected.id);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, selected?.id]);
   const streak = computeScheduledStreakFromLogs(logs, selected?.scheduleDays);
   const completedDays = countCompletedDays(logs);
@@ -635,19 +636,22 @@ export function AnalyticsPage() {
             {/* Habit definition sentence */}
             <div className="rounded-[20px] bg-card px-4 py-4" style={{ boxShadow: SHADOW.card }}>
               <p style={{ ...TYPOGRAPHY.sectionTitle, lineHeight: 1.75 }} className="text-foreground">
-                {selected.precedingRoutine ? (
-                  <>
-                    <span style={{ }}>{selected.precedingRoutine} </span>
-                    <span style={{ fontWeight: 500 }}>дараа </span>
-                  </>
-                ) : null}
+                {selected.precedingRoutine ? (() => {
+                  const { activity, timing } = parseRoutineCue(selected.precedingRoutine!);
+                  return (
+                    <>
+                      <span style={{}}>{activity} </span>
+                      <span style={{ fontWeight: 500 }}>{timing} </span>
+                    </>
+                  );
+                })() : null}
                 <span style={{ ...TYPOGRAPHY.sectionTitle }}>{selected.title}</span>
                 <span style={{ fontWeight: 500 }}> дадлыг хийнэ.</span>
               </p>
               {selected.motivationProfile?.reason && (
                 <p style={{ ...TYPOGRAPHY.body, lineHeight: 1.65, marginTop: 8 }} className="text-foreground">
                   <span style={{ fontWeight: 500 }}>Ингэснээр би: </span>
-                  <span style={{...TYPOGRAPHY.sectionTitle }}>{selected.motivationProfile.reason}</span>
+                  <span style={{ ...TYPOGRAPHY.sectionTitle }}>{selected.motivationProfile.reason}</span>
                 </p>
               )}
             </div>

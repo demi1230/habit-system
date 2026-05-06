@@ -15,6 +15,7 @@ import { buildReminderPreview } from '@/lib/reminder-preview';
 import { TYPOGRAPHY, SHADOW, buttonStyles, AppPlusIcon } from '@/shared/design';
 import type { CreateHabitPayload } from '@/api/habits';
 import type { Weekday } from '@/api/types';
+import { type RoutineTiming, TIMING_OPTIONS, encodeRoutineCue, parseRoutineCue } from '@/lib/routine-cue';
 
 const UNITS = ['удаа', 'мин', 'хуудас', 'литр', 'км', 'шил', 'хэсэг', 'цаг', 'г'];
 const EMOJIS = ['🧘', '💪', '❤️', '📚', '🎨', '⚡', '🤝', '💰', '🏃', '🎵', '🌿', '🍎', '💧', '✍️', '🧠', '😴', '🦷', '🚿', '🥗', '☕', '🌅', '🛏️', '📖', '🧹'];
@@ -113,11 +114,10 @@ function Chip({ label, active, accentColor, onTap, small }: {
   return (
     <motion.button whileTap={{ scale: 0.88 }} onClick={onTap} className={`${buttonStyles({ variant: 'chip', size: small ? 'sm' : 'default' })} transition-colors`}
       style={{
-        fontSize: small ? 11 : 12, fontWeight: active ? 600 : 400,
+        fontSize: small ? 11 : 12, fontWeight: active ? 500 : 400,
         padding: small ? '4px 10px' : '5px 12px',
         backgroundColor: active ? accentColor : 'var(--surface-subtle)',
         color: active ? '#202325' : 'var(--text-soft)',
-        boxShadow: active ? `0 0 0 1.5px ${accentColor}80` : 'none',
       }}>
       {label}
     </motion.button>
@@ -492,6 +492,7 @@ function Toggle({ value, onChange, accentColor }: {
 export interface HabitFormInitialValues {
   title?: string;
   precedingRoutine?: string;
+  routineTiming?: RoutineTiming;
   reason?: string;
   colorId?: string;
   selectedEmoji?: string;
@@ -542,7 +543,15 @@ export function HabitFormPage({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const [title, setTitle] = useState(initialValues.title ?? '');
-  const [precedingRoutine, setPrecedingRoutine] = useState(initialValues.precedingRoutine ?? '');
+  const [precedingRoutine, setPrecedingRoutine] = useState(() => {
+    const stored = initialValues.precedingRoutine ?? '';
+    return parseRoutineCue(stored).activity;
+  });
+  const [routineTiming, setRoutineTiming] = useState<RoutineTiming>(() => {
+    if (initialValues.routineTiming) return initialValues.routineTiming;
+    const stored = initialValues.precedingRoutine ?? '';
+    return parseRoutineCue(stored).timing;
+  });
   const [reason, setReason] = useState(initialValues.reason ?? '');
   const [colorId, setColorId] = useState(initialValues.colorId ?? 'lavender');
   const [selectedEmoji, setSelectedEmoji] = useState(initialValues.selectedEmoji ?? '🧘');
@@ -562,6 +571,7 @@ export function HabitFormPage({
   const [minNum, setMinNum] = useState(initialValues.minNum ?? '');
   const [targetUnit, setTargetUnit] = useState(initialValues.targetUnit ?? 'удаа');
   const [showUnitPicker, setShowUnitPicker] = useState(false);
+  const [showTimingPicker, setShowTimingPicker] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [attemptedSave, setAttemptedSave] = useState(false);
   const [showUnsavedConfirm, setShowUnsavedConfirm] = useState(false);
@@ -587,7 +597,8 @@ export function HabitFormPage({
   // We don't include transient UI state (showEmojiPicker, etc.) — only data fields.
   const initialSnapshot = useMemo(() => JSON.stringify({
     title: initialValues.title ?? '',
-    precedingRoutine: initialValues.precedingRoutine ?? '',
+    precedingRoutine: parseRoutineCue(initialValues.precedingRoutine ?? '').activity,
+    routineTiming: parseRoutineCue(initialValues.precedingRoutine ?? '').timing,
     reason: initialValues.reason ?? '',
     colorId: initialValues.colorId ?? 'lavender',
     selectedEmoji: initialValues.selectedEmoji ?? '🧘',
@@ -603,7 +614,7 @@ export function HabitFormPage({
     targetUnit: initialValues.targetUnit ?? 'удаа',
   }), [initialValues]);
   const currentSnapshot = JSON.stringify({
-    title, precedingRoutine, reason, colorId, selectedEmoji,
+    title, precedingRoutine, routineTiming, reason, colorId, selectedEmoji,
     benefits, steps, selectedDays, reminderEnabled,
     timeWindows, selectedLocations, habitType, targetNum, minNum, targetUnit,
   });
@@ -679,7 +690,9 @@ export function HabitFormPage({
 
     const payload: Partial<CreateHabitPayload> = {
       title: title.trim(),
-      precedingRoutine: precedingRoutine || undefined,
+      precedingRoutine: precedingRoutine
+        ? encodeRoutineCue(precedingRoutine, routineTiming)
+        : undefined,
       reason: reason || undefined,
       color: colorId,
       iconType: 'EMOJI',
@@ -720,12 +733,12 @@ export function HabitFormPage({
 
   const reminderPreview = buildReminderPreview({
     title,
-    precedingRoutine,
+    precedingRoutine: precedingRoutine ? encodeRoutineCue(precedingRoutine, routineTiming) : '',
     reason,
     benefits,
   });
 
-  // â”€â”€ Success screen (create mode default) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â”€â”€ Success screen (create mode default) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (showSuccess) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-6">
@@ -788,11 +801,43 @@ export function HabitFormPage({
             <p style={{ ...TYPOGRAPHY.body, lineHeight: 2.4 }} className="text-foreground">
               <InlineInput value={precedingRoutine} onChange={setPrecedingRoutine}
                 placeholder={currentHint.cue} accentColor={color.accent} />
-              <span style={{ fontWeight: 500 }}> дараа </span>
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setShowTimingPicker(p => !p)}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 2,
+                  cursor: 'pointer', fontWeight: 500, fontSize: 'inherit',
+                  padding: '1px 8px', borderRadius: 20, marginInline: 3,
+                  backgroundColor: showTimingPicker ? color.accent + '30' : color.accent + '18',
+                  color: '#202325',
+                  lineHeight: 1.5,
+                }}
+              >
+                {routineTiming}
+                <ChevronDown className="inline" style={{ width: 11, height: 11, marginLeft: 1 }} />
+              </motion.button>
               <InlineInput value={title} onChange={setTitle}
                 placeholder={currentHint.routine} accentColor={color.accent} invalid={showTitleError} />
               <span style={{ fontWeight: 500 }}> дадлыг хийнэ.</span>
             </p>
+            <AnimatePresence>
+              {showTimingPicker && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.15 }}
+                  className="overflow-hidden"
+                >
+                  <div className="flex gap-2 pt-2 pb-2">
+                    {TIMING_OPTIONS.map(opt => (
+                      <Chip key={opt} label={opt} active={routineTiming === opt}
+                        accentColor={color.btn} small
+                        onTap={() => { setRoutineTiming(opt); setShowTimingPicker(false); }} />
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
             <div className="mt-2">
               <p style={{ ...TYPOGRAPHY.body, fontWeight: 500, marginBottom: 4 }} className="text-foreground">
                 Ингэснээр би:
@@ -917,7 +962,7 @@ export function HabitFormPage({
                 <button
                   onClick={() => setSelectedDays([...WEEKDAY_KEYS])}
                   className={buttonStyles({ variant: 'plain', size: 'bare' })}
-                  style={{ ...TYPOGRAPHY.micro, color: color.accent, fontWeight: 600 }}>Бүгд</button>
+                  style={{ ...TYPOGRAPHY.micro, color: 'var(--text-muted-soft)', fontWeight: 600 }}>Бүгд</button>
                 <span style={{ fontSize: 11 }} className="text-muted-foreground">·</span>
                 <button
                   onClick={() => setSelectedDays([...WORKDAY_KEYS])}
@@ -1012,8 +1057,8 @@ export function HabitFormPage({
             {steps.length < MAX_STEPS && (
               <motion.button whileTap={{ scale: 0.96 }} onClick={addStep}
                 className={`${buttonStyles({ variant: 'secondary', size: 'sm' })} w-full justify-center`}
-                style={{ backgroundColor: color.btn, color: color.accent, fontWeight: 600 }}>
-                <AppPlusIcon className="w-3.5 h-3.5" style={{ color: color.accent }} />
+                style={{ backgroundColor: color.btn, color: '#202325', fontWeight: 500 }}>
+                <AppPlusIcon className="w-3.5 h-3.5" style={{ color: '#202325' }} />
                 <span>{steps.length === 0 ? 'Эхний алхам нэмэх' : 'Алхам нэмэх'}</span>
               </motion.button>
             )}
@@ -1042,7 +1087,7 @@ export function HabitFormPage({
                       aria-label="Цагийн хүрээ нэмэх"
                       className={buttonStyles({ variant: 'accent', size: 'iconSm' })}
                       style={{ backgroundColor: color.btn }}>
-                      <AppPlusIcon className="w-3.5 h-3.5" style={{ color: color.accent }} />
+                      <AppPlusIcon className="w-3.5 h-3.5" style={{ color: '#202325' }} />
                     </motion.button>
                   </div>
 
@@ -1079,10 +1124,10 @@ export function HabitFormPage({
                     <p style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">Байршил</p>
                     <motion.button whileTap={{ scale: 0.9 }} onClick={() => setShowMapPicker(p => !p)}
                       className={buttonStyles({ variant: 'accent', size: 'sm' })}
-                      style={{ fontSize: 12, color: color.accent, fontWeight: 500, backgroundColor: color.btn }}>
+                      style={{ fontSize: 12, color: '#202325', fontWeight: 500, backgroundColor: color.btn }}>
                       {showMapPicker ? 'Хаах' : (
                         <>
-                          <AppPlusIcon className="w-3.5 h-3.5" style={{ color: color.accent }} />
+                          <AppPlusIcon className="w-3.5 h-3.5" style={{ color: '#202325' }} />
                           <span>Газрын зургаас</span>
                         </>
                       )}

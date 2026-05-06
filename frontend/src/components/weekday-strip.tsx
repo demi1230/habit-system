@@ -29,7 +29,7 @@ interface WeekdayStripProps {
  * Unified Mon–Sun weekday chip strip used by both the habit form (interactive)
  * and the habit detail page (read-only). Pass `onToggle` to enable taps.
  */
-export function WeekdayStrip({ selectedDays, accentBg, accentRing, onToggle }: WeekdayStripProps) {
+export function WeekdayStrip({ selectedDays, accentBg, onToggle }: WeekdayStripProps) {
   const interactive = !!onToggle;
 
   return (
@@ -39,7 +39,6 @@ export function WeekdayStrip({ selectedDays, accentBg, accentRing, onToggle }: W
         const className = 'flex-1 py-2 rounded-[30px] flex items-center justify-center';
         const style: React.CSSProperties = {
           backgroundColor: active ? accentBg : 'var(--surface-muted)',
-          boxShadow: active ? `0 0 0 1.5px ${accentRing}50` : 'none',
           fontSize: 11,
           fontWeight: active ? 600 : 400,
           color: active ? '#202325' : 'var(--text-faint)',

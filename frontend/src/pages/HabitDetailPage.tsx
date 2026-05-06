@@ -16,6 +16,7 @@ import { WeekdayStrip } from '@/components/weekday-strip';
 import { HabitIconSlot } from '@/components/habit-icon-slot';
 import { toLocalDateStr } from '@/lib/dates';
 import { countCompletedDays, getLatestLogsByDay, toLocalISO } from '@/lib/habit-log-days';
+import { parseRoutineCue } from '@/lib/routine-cue';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -375,19 +376,22 @@ export function HabitDetailPage() {
         {/* ── 2. HABIT SENTENCE ── */}
         <div className="rounded-[20px] bg-card px-4 py-4" style={{ boxShadow: SHADOW.card }}>
           <p style={{ ...TYPOGRAPHY.sectionTitle, lineHeight: 1.75 }} className="text-foreground">
-            {habit.precedingRoutine ? (
-              <>
-                <span style={{ color: 'var(--text-soft)' }}>{habit.precedingRoutine} </span>
-                <span style={{ fontWeight: 500 }}>дараа </span>
-              </>
-            ) : null}
+            {habit.precedingRoutine ? (() => {
+              const { activity, timing } = parseRoutineCue(habit.precedingRoutine!);
+              return (
+                <>
+                  <span style={{ }}>{activity} </span>
+                  <span style={{ fontWeight: 500 }}>{timing} </span>
+                </>
+              );
+            })() : null}
             <span style={{ ...TYPOGRAPHY.sectionTitle }}>{habit.title}</span>
             <span style={{ fontWeight: 500 }}> дадлыг хийнэ.</span>
           </p>
           {habit.motivationProfile?.reason && (
             <p style={{ ...TYPOGRAPHY.body, lineHeight: 1.65, marginTop: 8 }} className="text-foreground">
               <span style={{ fontWeight: 500 }}>Ингэснээр би: </span>
-              <span style={{ ...TYPOGRAPHY.sectionTitle, color: 'var(--text-soft)' }}>{habit.motivationProfile.reason}</span>
+              <span style={{ ...TYPOGRAPHY.sectionTitle, }}>{habit.motivationProfile.reason}</span>
             </p>
           )}
         </div>
@@ -407,7 +411,7 @@ export function HabitDetailPage() {
               right={<span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 600 }} className="text-foreground">{habit.minimumTarget} {habit.measurementUnit}</span>}
             />
           )}
-          <div className="px-4 pt-1 pb-3">
+          <div className="px-4 pt-2 pb-3">
             <div className="mb-2">
               <WeekdayStrip
                 selectedDays={scheduledDays}
@@ -425,7 +429,7 @@ export function HabitDetailPage() {
         {habit.benefits && habit.benefits.length > 0 && (
           <SectionCard delay={0.12}>
             <SectionLabel icon={<Heart className="w-4 h-4" style={{ color: color.accent }} />} label="Ач тус" />
-            <div className="px-4 pb-4 flex flex-wrap gap-2">
+            <div className="pt-2 px-4 pb-4 flex flex-wrap gap-2">
               {habit.benefits.map(b => (
                 <span key={b} className="px-3 py-1.5 rounded-full"
                   style={{ backgroundColor: color.btn, ...TYPOGRAPHY.caption, color: '#202325' }}>
