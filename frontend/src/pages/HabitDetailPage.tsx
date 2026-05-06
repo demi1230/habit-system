@@ -246,7 +246,7 @@ export function HabitDetailPage() {
     finally { setLoading(false); }
   }, [userId, id]);
 
-  useEffect(() => { void fetchAll(); }, [fetchAll]);
+  useEffect(() => { void fetchAll(); }, [fetchAll, location.key]);
 
   // ── Streak calculation ─────────────────────────────────────────────────────
   const latestLogsByDay = useMemo(() => getLatestLogsByDay(logs), [logs]);
@@ -295,9 +295,9 @@ export function HabitDetailPage() {
   const todayLog = latestLogsByDay.get(todayStr);
   const todayVal = todayLog?.actualValue ?? 0;
 
-  const timeCue = habit.cues.find(c => c.startTime || c.endTime);
-  const locationCue = habit.cues.find(c => c.coarseLocation);
-  const routineCue = habit.cues.find(c => c.precedingRoutine);
+  const timeCues = habit.cues.filter(c => c.isActive && (c.startTime || c.endTime));
+  const locationCue = habit.cues.find(c => c.isActive && c.coarseLocation);
+  const routineCue = habit.cues.find(c => c.isActive && c.precedingRoutine);
 
   const handleArchive = async () => {
     if (!userId || !id) return;
@@ -474,10 +474,11 @@ export function HabitDetailPage() {
               </div>
             }
             right={<span style={TYPOGRAPHY.bodySm} className="text-muted-foreground">{habit.reminderEnabled ? 'Идэвхтэй' : 'Идэвхгүй'}</span>}
-            divider={!!(timeCue || locationCue || routineCue)}
+            divider={!!(timeCues.length || locationCue || routineCue)}
           />
-          {timeCue && (
+          {timeCues.map((tc, idx) => (
             <Row
+              key={tc.id}
               left={
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-[10px] flex items-center justify-center shrink-0" style={{ backgroundColor: color.btn + '22' }}>
@@ -486,10 +487,10 @@ export function HabitDetailPage() {
                   <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500 }} className="text-foreground">Цагийн хүрээ</span>
                 </div>
               }
-              right={<span style={TYPOGRAPHY.bodySm} className="text-muted-foreground">{[timeCue.startTime, timeCue.endTime].filter(Boolean).join(' – ')}</span>}
-              divider={!!(locationCue || routineCue)}
+              right={<span style={TYPOGRAPHY.bodySm} className="text-muted-foreground">{[tc.startTime?.slice(0,5), tc.endTime?.slice(0,5)].filter(Boolean).join(' – ')}</span>}
+              divider={idx < timeCues.length - 1 || !!(locationCue || routineCue)}
             />
-          )}
+          ))}
           {locationCue && (
             <Row
               left={
