@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Bell, BellOff, Clock, Check, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -122,6 +122,7 @@ function ReminderCard({
 
 export function RemindersPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { userId } = useAuth();
   const { todayLogMap, refresh: refreshSharedLogs } = useHabitLogs();
   const [reminders, setReminders] = useState<Reminder[]>([]);
@@ -140,7 +141,7 @@ export function RemindersPage() {
       {/* HEADER */}
       <div className="sticky top-0 z-20 bg-background" style={{ borderBottom: '1px solid var(--surface-border-faint)' }}>
         <div className="flex items-center justify-between px-5 pt-13 pb-3">
-          <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)}
+          <motion.button whileTap={{ scale: 0.9 }} onClick={() => location.key === 'default' ? navigate('/profile') : navigate(-1)}
             className={buttonStyles({ variant: 'nav', size: 'icon' })}
             style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
             <ArrowLeft className="w-4 h-4" style={{ color: '#474747' }} />

@@ -68,6 +68,10 @@ const habitLogRepo = {
 
 const analyticsService = { recordActivity: jest.fn() };
 
+const habitsService = {
+  getOwnedHabitOrThrow: jest.fn().mockResolvedValue({ targetValue: 1 }),
+};
+
 // ─── Test suite ──────────────────────────────────────────────────────────────
 
 describe('RemindersService', () => {
@@ -80,6 +84,7 @@ describe('RemindersService', () => {
       reminderActionRepo as never,
       habitLogRepo as never,
       analyticsService as never,
+      habitsService as never,
     );
   });
 

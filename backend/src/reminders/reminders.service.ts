@@ -22,6 +22,7 @@ import type { IHabitLogRepository } from '../domain/repositories/habit-log.repos
 import { HABIT_LOG_REPOSITORY } from '../domain/repositories/habit-log.repository';
 import { CreateReminderActionDto } from './dto/create-reminder-action.dto';
 import { AnalyticsService } from '../analytics/analytics.service';
+import { HabitsService } from '../habits/habits.service';
 
 /** Return shape for a DONE action. */
 export interface DoneActionResult {
@@ -56,6 +57,7 @@ export class RemindersService {
     @Inject(HABIT_LOG_REPOSITORY)
     private readonly habitLogRepo: IHabitLogRepository,
     private readonly analyticsService: AnalyticsService,
+    private readonly habitsService: HabitsService,
   ) {}
 
   async listReminders(userId: string): Promise<ReminderEntity[]> {
@@ -185,13 +187,15 @@ export class RemindersService {
       // don't create a second one
       habitLog = await this.habitLogRepo.findById(existingTodayLog.id);
     } else {
-      // No log for today — create one
+      // No log for today — create one using the habit's targetValue
+      const habit = await this.habitsService.getOwnedHabitOrThrow(
+        userId,
+        reminder.habitId,
+      );
       habitLog = await this.habitLogRepo.create({
         habitId: reminder.habitId,
         status: HabitLogStatus.DONE,
-        // actualValue = 1 so Dashboard (which checks actualValue > 0) shows
-        // the habit as done. For binary habits targetValue = 1 so this is exact.
-        actualValue: 1,
+        actualValue: habit.targetValue,
         completedAt: actedAt,
         loggedAt: new Date(),
         triggerSource: CompletionTriggerSource.REMINDER_TRIGGERED,
