@@ -1010,7 +1010,7 @@ export function ProfilePage() {
                 whileTap={{ scale: 0.97 }}
                 onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSeqU77MUs0L-7RUtyu4QjqWpDrWZfI2R8qyANKvuRnvjt44YQ/viewform', '_blank', 'noopener,noreferrer')}
                 className={`w-full flex items-center justify-center gap-2 ${buttonStyles({ variant: 'default', size: 'default' })}`}
-                style={{ backgroundColor: 'var(--primary)', fontWeight: 500, fontSize: 13 }}
+                style={{ backgroundColor: 'var(--primary)', fontWeight: 600, fontSize: 13, color: 'var(--primary-foreground)' }}
               >
                 Судалгаа бөглөх
                 <ExternalLink className="w-3.5 h-3.5 opacity-70" />
