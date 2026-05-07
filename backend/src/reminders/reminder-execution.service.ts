@@ -1,6 +1,7 @@
 import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
 import { ReminderDecisionRules } from '../domain/rules/reminder-decision.rules';
 import {
+  HabitLogStatus,
   ReminderDecisionReason,
   ReminderStatus,
 } from '../domain/enums/domain.enums';
@@ -8,6 +9,8 @@ import type { IReminderRepository } from '../domain/repositories/reminder.reposi
 import { REMINDER_REPOSITORY } from '../domain/repositories/reminder.repository';
 import type { IReminderPolicyRepository } from '../domain/repositories/reminder-policy.repository';
 import { REMINDER_POLICY_REPOSITORY } from '../domain/repositories/reminder-policy.repository';
+import type { IHabitLogRepository } from '../domain/repositories/habit-log.repository';
+import { HABIT_LOG_REPOSITORY } from '../domain/repositories/habit-log.repository';
 import * as notificationGatewayInterface from './notification/notification.gateway.interface';
 import { ReminderEntity } from '../domain/entities/reminder.entity';
 import { HabitsService } from '../habits/habits.service';
@@ -45,6 +48,8 @@ export class ReminderExecutionService {
     private readonly notificationGateway: notificationGatewayInterface.INotificationGateway,
     @Inject(REMINDER_POLICY_REPOSITORY)
     private readonly policyRepo: IReminderPolicyRepository,
+    @Inject(HABIT_LOG_REPOSITORY)
+    private readonly habitLogRepo: IHabitLogRepository,
     private readonly habitsService: HabitsService,
     private readonly analyticsService: AnalyticsService,
     private readonly reminderMessageBuilder: ReminderMessageBuilder,
@@ -89,6 +94,17 @@ export class ReminderExecutionService {
     }
 
     const now = new Date();
+    const alreadyCompletedToday = await this.hasCompletedToday(habitId, now);
+
+    if (alreadyCompletedToday) {
+      return {
+        persisted: false,
+        decisionReason,
+        evaluatedAt: decision.evaluatedAt,
+        reminder: null,
+        skippedReason: 'ALREADY_COMPLETED_TODAY',
+      };
+    }
 
     // Resolve cooldown duration from persisted policy, falling back to default
     const policy = await this.policyRepo.findByHabitId(habitId);
@@ -174,6 +190,18 @@ export class ReminderExecutionService {
    * Reads title/body from explanation.contentParts if available.
    */
   async deliverPendingReminder(reminder: ReminderEntity): Promise<void> {
+    const alreadyCompletedToday = await this.hasCompletedToday(
+      reminder.habitId,
+      new Date(),
+    );
+
+    if (alreadyCompletedToday) {
+      await this.reminderRepo.update(reminder.id, {
+        status: ReminderStatus.CANCELLED,
+      });
+      return;
+    }
+
     const explanation = reminder.explanation;
     const parts = explanation?.contentParts as
       | { habit?: string; cue?: string | null }
@@ -210,6 +238,17 @@ export class ReminderExecutionService {
       );
     }
   }
+
+  private async hasCompletedToday(habitId: string, date: Date): Promise<boolean> {
+    const todayLogs = await this.habitLogRepo.findLatestByHabitIdsForDate(
+      [habitId],
+      date,
+    );
+
+    return todayLogs.some(
+      (log) => log.habitId === habitId && log.status === HabitLogStatus.DONE,
+    );
+  }
 }
 
 export interface EvaluateAndCreateResult {
@@ -217,4 +256,5 @@ export interface EvaluateAndCreateResult {
   decisionReason: ReminderDecisionReason;
   evaluatedAt: string;
   reminder: ReminderEntity | null;
+  skippedReason?: 'ALREADY_COMPLETED_TODAY';
 }

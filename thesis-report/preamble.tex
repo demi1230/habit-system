@@ -8,6 +8,7 @@
 \usepackage{fontspec,xltxtra,xunicode}
 \setmainfont[Ligatures=TeX]{Times New Roman}
 \setsansfont{Arial}
+\setmonofont{Consolas}
 
 % \usepackage[utf8x]{inputenc}
 % \usepackage[mongolian]{babel}
@@ -33,6 +34,7 @@
 \usepackage{mathtools}
 \usepackage[hidelinks]{hyperref}
 \usepackage{longtable}
+\usepackage{booktabs}
 \usepackage{array}
 \usepackage{ragged2e}
 \newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
@@ -107,7 +109,7 @@
     tabsize=2
 }
  
-\lstset{style=mystyle, label=DescriptiveLabel} 
+\lstset{style=mystyle} 
 
 \let\oldabs\abs
 \def\abs{\@ifstar{\oldabs}{\oldabs*}}

@@ -1,4 +1,4 @@
-PWD C:\Users\Dell 14 5425\UNI\2026spring\thesis\bachelor_report-main
+PWD C:\Users\Dell 14 5425\UNI\2026spring\thesis\habit-system\thesis-report
 INPUT C:\Users\Dell 14 5425\AppData\Local\MiKTeX\miktex\data\le\xetex\xelatex.fmt
 INPUT main.tex
 OUTPUT main.log
@@ -186,6 +186,8 @@ INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\generic\uniquecoun
 INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\generic\uniquecounter\uniquecounter.sty
 INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\tools\longtable.sty
 INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\tools\longtable.sty
+INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\booktabs\booktabs.sty
+INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\booktabs\booktabs.sty
 INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\ragged2e\ragged2e.sty
 INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\ragged2e\ragged2e.sty
 INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\algorithms\algorithm.sty
@@ -239,6 +241,9 @@ INPUT chapter3_architecture.aux
 INPUT .\chapter4_system_design.aux
 INPUT .\chapter4_system_design.aux
 INPUT chapter4_system_design.aux
+INPUT .\chapter_implementation.aux
+INPUT .\chapter_implementation.aux
+INPUT chapter_implementation.aux
 INPUT .\chapter5_evaluation.aux
 INPUT .\chapter5_evaluation.aux
 INPUT chapter5_evaluation.aux
@@ -378,6 +383,51 @@ INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfo
 INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm5.tfm
 INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\euler\eurm7.tfm
 INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\euler\eurm5.tfm
+INPUT .\chapter_implementation.tex
+INPUT .\chapter_implementation.tex
+OUTPUT chapter_implementation.aux
+INPUT .\chapter_implementation.tex
+INPUT .\chapter_implementation.tex
+INPUT chapter_implementation.tex
+INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\Dell 14 5425\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT .\images\frontend\dashboard.png
+INPUT .\images\frontend\dashboard.png
+INPUT .\images\frontend\dashboard.png
+INPUT .\images\frontend\habitbutgesenDashboard.png
+INPUT .\images\frontend\habitbutgesenDashboard.png
+INPUT .\images\frontend\habitbutgesenDashboard.png
+INPUT .\images\frontend\addhabit.png
+INPUT .\images\frontend\addhabit.png
+INPUT .\images\frontend\addhabit.png
+INPUT .\images\frontend\addhabit2.png
+INPUT .\images\frontend\addhabit2.png
+INPUT .\images\frontend\addhabit2.png
+INPUT .\images\frontend\habitBurtgel.png
+INPUT .\images\frontend\habitBurtgel.png
+INPUT .\images\frontend\habitBurtgel.png
+INPUT .\images\frontend\habitBurtgel2.png
+INPUT .\images\frontend\habitBurtgel2.png
+INPUT .\images\frontend\habitBurtgel2.png
+INPUT .\images\frontend\analytics.png
+INPUT .\images\frontend\analytics.png
+INPUT .\images\frontend\analytics.png
+INPUT .\images\frontend\analytics2.png
+INPUT .\images\frontend\analytics2.png
+INPUT .\images\frontend\analytics2.png
+INPUT .\images\frontend\analytics3.png
+INPUT .\images\frontend\analytics3.png
+INPUT .\images\frontend\analytics3.png
+INPUT .\images\frontend\learn.png
+INPUT .\images\frontend\learn.png
+INPUT .\images\frontend\learn.png
 INPUT .\chapter5_evaluation.tex
 INPUT .\chapter5_evaluation.tex
 OUTPUT chapter5_evaluation.aux
@@ -417,6 +467,15 @@ INPUT .\images\ActivityDiagram5.png
 INPUT .\images\SequenceDiagram5.png
 INPUT .\images\SequenceDiagram5.png
 INPUT .\images\SequenceDiagram5.png
+INPUT .\images\figma\wireframe.png
+INPUT .\images\figma\wireframe.png
+INPUT .\images\figma\wireframe.png
+INPUT .\images\figma\components.png
+INPUT .\images\figma\components.png
+INPUT .\images\figma\components.png
+INPUT .\images\figma\figma_pages.png
+INPUT .\images\figma\figma_pages.png
+INPUT .\images\figma\figma_pages.png
 INPUT main.aux
 INPUT .\main-pre.aux
 INPUT .\main-pre.aux
@@ -433,6 +492,9 @@ INPUT chapter3_architecture.aux
 INPUT .\chapter4_system_design.aux
 INPUT .\chapter4_system_design.aux
 INPUT chapter4_system_design.aux
+INPUT .\chapter_implementation.aux
+INPUT .\chapter_implementation.aux
+INPUT chapter_implementation.aux
 INPUT .\chapter5_evaluation.aux
 INPUT .\chapter5_evaluation.aux
 INPUT chapter5_evaluation.aux

@@ -2,6 +2,7 @@ import 'reflect-metadata';
 
 import { ConflictException } from '@nestjs/common';
 import {
+  HabitLogStatus,
   ReminderDecisionReason,
   ReminderStatus,
 } from '../domain/enums/domain.enums';
@@ -57,6 +58,10 @@ const policyRepo = {
   findByHabitId: jest.fn().mockResolvedValue(null),
 };
 
+const habitLogRepo = {
+  findLatestByHabitIdsForDate: jest.fn().mockResolvedValue([]),
+};
+
 const notificationGateway = {
   send: jest.fn().mockResolvedValue({
     delivered: true,
@@ -91,10 +96,13 @@ describe('ReminderExecutionService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     policyRepo.findByHabitId.mockResolvedValue(null);
+    habitLogRepo.findLatestByHabitIdsForDate.mockResolvedValue([]);
+    reminderRepo.findActiveByHabitId.mockResolvedValue(null);
     service = new ReminderExecutionService(
       reminderRepo as never,
       notificationGateway as never,
       policyRepo as never,
+      habitLogRepo as never,
       habitsService as never,
       analyticsService as never,
       reminderMessageBuilder as never,
@@ -126,6 +134,30 @@ describe('ReminderExecutionService', () => {
     expect(result.persisted).toBe(false);
     expect(result.decisionReason).toBe(ReminderDecisionReason.NO_ACTIVE_CUES);
     expect(reminderRepo.create).not.toHaveBeenCalled();
+  });
+
+  it('does not persist or send a reminder when the habit is already completed today', async () => {
+    habitsService.getOwnedHabitOrThrow.mockResolvedValue(
+      makeHabitWithReminders(),
+    );
+    habitLogRepo.findLatestByHabitIdsForDate.mockResolvedValue([
+      {
+        id: 'log-id',
+        habitId: HABIT_ID,
+        status: HabitLogStatus.DONE,
+        actualValue: 1,
+        completedAt: new Date(),
+        loggedAt: new Date(),
+      },
+    ]);
+
+    const result = await service.evaluateAndCreate(USER_ID, HABIT_ID, {});
+
+    expect(result.persisted).toBe(false);
+    expect(result.skippedReason).toBe('ALREADY_COMPLETED_TODAY');
+    expect(result.reminder).toBeNull();
+    expect(reminderRepo.create).not.toHaveBeenCalled();
+    expect(notificationGateway.send).not.toHaveBeenCalled();
   });
 
   it('persists a reminder, calls gateway, returns SHOULD_REMIND + persisted=true', async () => {
@@ -170,5 +202,31 @@ describe('ReminderExecutionService', () => {
     ).rejects.toBeInstanceOf(ConflictException);
 
     expect(reminderRepo.create).not.toHaveBeenCalled();
+  });
+
+  it('cancels a pending follow-up reminder when the habit is already completed today', async () => {
+    habitLogRepo.findLatestByHabitIdsForDate.mockResolvedValue([
+      {
+        id: 'log-id',
+        habitId: HABIT_ID,
+        status: HabitLogStatus.DONE,
+        actualValue: 1,
+        completedAt: new Date(),
+        loggedAt: new Date(),
+      },
+    ]);
+
+    await service.deliverPendingReminder({
+      id: REMINDER_ID,
+      userId: USER_ID,
+      habitId: HABIT_ID,
+      scheduledFor: new Date(),
+      explanation: null,
+    } as never);
+
+    expect(reminderRepo.update).toHaveBeenCalledWith(REMINDER_ID, {
+      status: ReminderStatus.CANCELLED,
+    });
+    expect(notificationGateway.send).not.toHaveBeenCalled();
   });
 });
