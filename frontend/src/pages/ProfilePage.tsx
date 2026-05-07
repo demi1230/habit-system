@@ -11,6 +11,7 @@ import {
   HelpCircle,
   Info,
   KeyRound,
+  ExternalLink,
   LogOut,
   MessageSquare,
   Monitor,
@@ -981,6 +982,39 @@ export function ProfilePage() {
           <Card>
             <div className="px-4 py-4">
               <LocationSelector />
+            </div>
+          </Card>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.14 }}
+        >
+          <p style={TYPOGRAPHY.groupLabel} className="text-muted-foreground mb-2 pl-0.5">
+            Судалгаа
+          </p>
+          <Card>
+            <div className="px-4 py-4">
+              <div className="flex items-start gap-3 mb-3">
+                <div className="flex-1 min-w-0">
+                  <p style={{ ...TYPOGRAPHY.sectionTitle, fontWeight: 600 }} className="text-foreground">
+                    Судалгаанд оролцоорой
+                  </p>
+                  <p style={{ ...TYPOGRAPHY.micro, marginTop: 4 }} className="text-muted-foreground">
+                    Энэхүү аппыг сайжруулахад таны санал хэрэгтэй байнаа ^^. 2-3 минут л хангалттай. Баярлалаа
+                  </p>
+                </div>
+              </div>
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSeqU77MUs0L-7RUtyu4QjqWpDrWZfI2R8qyANKvuRnvjt44YQ/viewform', '_blank', 'noopener,noreferrer')}
+                className={`w-full flex items-center justify-center gap-2 ${buttonStyles({ variant: 'default', size: 'default' })}`}
+                style={{ backgroundColor: 'var(--primary)', fontWeight: 500, fontSize: 13 }}
+              >
+                Судалгаа бөглөх
+                <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+              </motion.button>
             </div>
           </Card>
         </motion.div>
