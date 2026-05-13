@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Bell, BellOff, Clock, Check, ArrowLeft } from 'lucide-react';
+import { Bell, BellOff, ChevronLeft, Clock, Check } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useHabitLogs } from '@/context/HabitLogsContext';
 import { remindersApi, type Reminder } from '@/api/reminders';
@@ -138,21 +138,17 @@ export function RemindersPage() {
 
   return (
     <div className="min-h-screen bg-background pb-28">
-      {/* HEADER */}
-      <div className="sticky top-0 z-20 bg-background" style={{ borderBottom: '1px solid var(--surface-border-faint)' }}>
-        <div className="flex items-center justify-between px-5 pt-13 pb-3">
-          <motion.button whileTap={{ scale: 0.9 }} onClick={() => location.key === 'default' ? navigate('/profile') : navigate(-1)}
-            className={buttonStyles({ variant: 'nav', size: 'icon' })}
-            style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
-            <ArrowLeft className="w-4 h-4" style={{ color: '#474747' }} />
-          </motion.button>
-          <div className="flex items-center gap-2">
-            <Bell className="w-4.5 h-4.5 text-primary" />
-            <p style={TYPOGRAPHY.navTitle} className="text-foreground">Сануулга</p>
-          </div>
-          {/* Spacer to balance the back button */}
-          <div style={{ width: 36 }} />
-        </div>
+      <div className="px-5 pt-12 pb-2 flex items-center gap-3">
+        <motion.button
+          whileTap={{ scale: 0.92 }}
+          onClick={() => location.key === 'default' ? navigate('/profile') : navigate(-1)}
+          className="w-9 h-9 rounded-[18px] flex items-center justify-center shrink-0"
+          style={{ backgroundColor: 'var(--surface-subtle)' }}
+          aria-label="Буцах"
+        >
+          <ChevronLeft className="w-5 h-5 text-foreground" />
+        </motion.button>
+        <p style={TYPOGRAPHY.pageTitle} className="text-foreground">Сануулга</p>
       </div>
 
       <div className="px-5 pt-5">

@@ -14,6 +14,7 @@ import { RemindersPage } from './pages/RemindersPage';
 import { LearnPage } from './pages/LearnPage';
 import { ArticleDetailPage } from './pages/ArticleDetailPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { SettingsPage } from './pages/SettingsPage';
 import { EditHabitPage } from './pages/EditHabitPage';
 import { BottomNav } from './components/bottom-nav';
 import { ScrollToTop } from './components/scroll-to-top';
@@ -68,6 +69,7 @@ function AppRoutes() {
         <Route path="/learn" element={<RequireAuth><LearnPage /></RequireAuth>} />
         <Route path="/learn/articles/:articleId" element={<RequireAuth><ArticleDetailPage /></RequireAuth>} />
         <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
+        <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
         <Route path="*" element={token ? <Navigate to="/dashboard" replace /> : <Navigate to="/welcome" replace />} />
       </Routes>
       {showNav && <BottomNav />}

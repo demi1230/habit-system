@@ -18,11 +18,11 @@
 \contentsline {subsection}{\numberline {3.2.1}Өдөөгч дохионы давхарга}{12}{subsection.3.2.1}%
 \contentsline {subsection}{\numberline {3.2.2}Хүсэл тэмүүллийн давхарга}{12}{subsection.3.2.2}%
 \contentsline {subsection}{\numberline {3.2.3}Хариу үйлдлийн давхарга}{12}{subsection.3.2.3}%
-\contentsline {subsection}{\numberline {3.2.4}Урамшууллын давхарга}{13}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.4}Урамшууллын давхарга}{12}{subsection.3.2.4}%
 \contentsline {section}{\numberline {3.3}Фоггийн зан үйлийн загварыг системийн зохиомжид ашигласан нь}{13}{section.3.3}%
 \contentsline {section}{\numberline {3.4}Итгүүлэн нөлөөлөх технологийн зарчмыг системд тусгасан нь}{13}{section.3.4}%
 \contentsline {section}{\numberline {3.5}Дадлын хүчийг тооцоолох нь}{14}{section.3.5}%
-\contentsline {section}{\numberline {3.6}Онолын нэгдсэн хүрээ ба системийн концепц загвар}{15}{section.3.6}%
+\contentsline {section}{\numberline {3.6}Онолын нэгдсэн хүрээ ба системийн үзэл баримтлалын загвар}{15}{section.3.6}%
 \contentsline {section}{\numberline {3.7}Бүлгийн дүгнэлт}{16}{section.3.7}%
 \contentsline {chapter}{\numberline {4.}\uppercase {СИСТЕМИЙН ШИНЖИЛГЭЭ БА ЗОХИОМЖ}}{17}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Зорилтот хэрэглэгчийн бүлэг, хэрэглэгчийн үүрэг ба системийн хамрах хүрээ}{17}{section.4.1}%
@@ -53,45 +53,45 @@
 \contentsline {section}{\numberline {4.9}Системийн хязгаарлалт}{40}{section.4.9}%
 \contentsline {section}{\numberline {4.10}Бүлгийн дүгнэлт}{40}{section.4.10}%
 \contentsline {chapter}{\numberline {5.}\uppercase {СИСТЕМИЙН ХЭРЭГЖҮҮЛЭЛТ}}{42}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Технологийн стек}{42}{section.5.1}%
+\contentsline {section}{\numberline {5.1}Технологийн багц}{42}{section.5.1}%
 \contentsline {section}{\numberline {5.2}Кодын сангийн бүтэц}{43}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Бэкэндийн бүтэц}{43}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Фронтэндийн бүтэц}{44}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.1}Сервер талын бүтэц}{43}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Хэрэглэгчийн талын бүтэц}{44}{subsection.5.2.2}%
 \contentsline {section}{\numberline {5.3}Өгөгдлийн сангийн хэрэгжүүлэлт}{44}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Домайн логикийн хэрэгжүүлэлт}{48}{section.5.4}%
+\contentsline {section}{\numberline {5.4}Зан үйлийн дүрмийн хэрэгжүүлэлт}{48}{section.5.4}%
 \contentsline {subsection}{\numberline {5.4.1}Сануулгын шийдвэрийн дүрэм}{48}{subsection.5.4.1}%
 \contentsline {subsection}{\numberline {5.4.2}Дадлын хүчний тооцоолол}{49}{subsection.5.4.2}%
 \contentsline {subsection}{\numberline {5.4.3}Дасан зохицох зөвлөмжийн дүрэм}{52}{subsection.5.4.3}%
-\contentsline {section}{\numberline {5.5}Бэкэнд модулиудын хэрэгжүүлэлт}{53}{section.5.5}%
+\contentsline {section}{\numberline {5.5}Сервер талын хэсгүүдийн хэрэгжүүлэлт}{53}{section.5.5}%
 \contentsline {subsection}{\numberline {5.5.1}Бүртгэл ба хандалтын модуль}{53}{subsection.5.5.1}%
 \contentsline {subsection}{\numberline {5.5.2}Дадлын удирдлагын модуль}{53}{subsection.5.5.2}%
 \contentsline {subsection}{\numberline {5.5.3}Ахицын модуль}{53}{subsection.5.5.3}%
-\contentsline {subsection}{\numberline {5.5.4}Сануулгын модуль}{54}{subsection.5.5.4}%
-\contentsline {subsection}{\numberline {5.5.5}Оролцооны болон урамшууллын модуль}{54}{subsection.5.5.5}%
-\contentsline {section}{\numberline {5.6}Фронтэндийн хэрэгжүүлэлт}{55}{section.5.6}%
+\contentsline {subsection}{\numberline {5.5.4}Сануулгын хэсэг}{54}{subsection.5.5.4}%
+\contentsline {subsection}{\numberline {5.5.5}Оролцоо ба урамшууллын хэсэг}{54}{subsection.5.5.5}%
+\contentsline {section}{\numberline {5.6}Хэрэглэгчийн талын хэрэгжүүлэлт}{55}{section.5.6}%
 \contentsline {subsection}{\numberline {5.6.1}Үндсэн дэлгэцүүд}{55}{subsection.5.6.1}%
 \contentsline {subsection}{\numberline {5.6.2}Дадал үүсгэх дэлгэц}{55}{subsection.5.6.2}%
 \contentsline {subsection}{\numberline {5.6.3}Хурдан бүртгэлийн дэлгэц}{57}{subsection.5.6.3}%
 \contentsline {subsection}{\numberline {5.6.4}Ахицын шинжилгээний дэлгэц}{57}{subsection.5.6.4}%
 \contentsline {subsection}{\numberline {5.6.5}Суралцах агуулгын дэлгэц}{58}{subsection.5.6.5}%
 \contentsline {subsection}{\numberline {5.6.6}Профайл, санал хүсэлт ба судалгааны хэсэг}{58}{subsection.5.6.6}%
-\contentsline {subsection}{\numberline {5.6.7}API клиент}{59}{subsection.5.6.7}%
-\contentsline {section}{\numberline {5.7}Бүлгийн дүгнэлт}{63}{section.5.7}%
+\contentsline {subsection}{\numberline {5.6.7}API холбогч}{60}{subsection.5.6.7}%
+\contentsline {section}{\numberline {5.7}Бүлгийн дүгнэлт}{64}{section.5.7}%
 \contentsline {chapter}{\numberline {6.}\uppercase {ТУРШИЛТ БА ҮНЭЛГЭЭ}}{65}{chapter.6}%
 \contentsline {section}{\numberline {6.1}Үнэлгээний зорилго}{65}{section.6.1}%
 \contentsline {section}{\numberline {6.2}Судалгааны зохиомж}{65}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Оролцогчид}{66}{section.6.3}%
+\contentsline {section}{\numberline {6.3}Оролцогчид}{65}{section.6.3}%
 \contentsline {section}{\numberline {6.4}Туршилтын явц}{66}{section.6.4}%
 \contentsline {section}{\numberline {6.5}Цуглуулсан өгөгдөл}{66}{section.6.5}%
 \contentsline {section}{\numberline {6.6}Үнэлгээний шалгуур үзүүлэлтүүд}{67}{section.6.6}%
 \contentsline {section}{\numberline {6.7}Судалгааны үр дүн}{68}{section.6.7}%
 \contentsline {subsection}{\numberline {6.7.1}Ашиглахад хялбар байдал}{68}{subsection.6.7.1}%
-\contentsline {subsection}{\numberline {6.7.2}Cue болон сануулгын үр нөлөө}{68}{subsection.6.7.2}%
-\contentsline {subsection}{\numberline {6.7.3}Ахиц, analytics ба дадлын хүчний мэдээлэл}{69}{subsection.6.7.3}%
-\contentsline {subsection}{\numberline {6.7.4}Урамшуулал, XP ба badge}{69}{subsection.6.7.4}%
+\contentsline {subsection}{\numberline {6.7.2}Өдөөгч нөхцөл болон сануулгын үр нөлөө}{68}{subsection.6.7.2}%
+\contentsline {subsection}{\numberline {6.7.3}Ахицын шинжилгээ ба дадлын хүчний мэдээлэл}{69}{subsection.6.7.3}%
+\contentsline {subsection}{\numberline {6.7.4}Урамшуулал, XP ба амжилтын тэмдэг}{69}{subsection.6.7.4}%
 \contentsline {subsection}{\numberline {6.7.5}Санал хүсэлт ба сайжруулах хэрэгцээ}{69}{subsection.6.7.5}%
 \contentsline {section}{\numberline {6.8}Хэлэлцүүлэг}{70}{section.6.8}%
-\contentsline {section}{\numberline {6.9}Хязгаарлалт}{71}{section.6.9}%
+\contentsline {section}{\numberline {6.9}Хязгаарлалт}{70}{section.6.9}%
 \contentsline {section}{\numberline {6.10}Бүлгийн дүгнэлт}{71}{section.6.10}%
 \contentsline {chapter}{\numberline {A.}\uppercase {Системийн дэлгэрэнгүй материал}}{72}{appendix.A}%
 \contentsline {section}{\numberline {A.1}Функциональ шаардлагын дэлгэрэнгүй хүснэгт}{72}{section.A.1}%
@@ -99,4 +99,4 @@
 \contentsline {section}{\numberline {A.3}Хэрэглээний тохиолдол ба системийн урсгалын нэмэлт диаграммууд}{76}{section.A.3}%
 \contentsline {section}{\numberline {A.4}Figma загварын нэмэлт зургууд}{82}{section.A.4}%
 \contentsline {section}{\numberline {A.5}Туршилтын дэлгэрэнгүй хэмжигдэх үзүүлэлтүүд}{83}{section.A.5}%
-\contentsline {part}{ЭХ СУРВАЛЖУУД}{84}{table.caption.40}%
+\contentsline {part}{ЭХ СУРВАЛЖУУД}{84}{table.caption.46}%

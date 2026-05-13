@@ -3,8 +3,6 @@ import { ChevronRight } from 'lucide-react';
 import { TYPOGRAPHY, SHADOW } from '@/shared/design';
 import type { Article } from '../content/articles';
 
-const PASTEL_CARD_INK = 'var(--pastel-card-ink)';
-const PASTEL_CARD_MUTED = 'var(--pastel-card-muted)';
 
 interface Props {
   article: Article;
@@ -19,19 +17,19 @@ export function ArticleCard({ article, bg, onClick }: Props) {
       onClick={onClick}
       className="flex flex-col justify-between rounded-3xl p-4 text-left w-full min-h-[108px]"
       style={{
-        backgroundColor: bg,
+        backgroundColor: 'var(--card)',
         boxShadow: SHADOW.card,
-        border: '1px solid var(--surface-border-faint)',
+        border: `1.5px solid ${bg}40`,
       }}
     >
-      <p style={{ ...TYPOGRAPHY.caption, lineHeight: 1.4, color: PASTEL_CARD_INK }}>
+      <p style={{ ...TYPOGRAPHY.caption, lineHeight: 1.4, color: 'var(--foreground)' }}>
         {article.title}
       </p>
       <div className="flex items-center justify-between mt-3">
-        <span style={{ ...TYPOGRAPHY.micro, color: PASTEL_CARD_MUTED }}>
+        <span style={{ ...TYPOGRAPHY.micro, color: 'var(--muted-foreground)' }}>
           {article.readTimeMinutes} мин
         </span>
-        <ChevronRight className="w-3.5 h-3.5" style={{ color: PASTEL_CARD_MUTED }} />
+        <ChevronRight className="w-3.5 h-3.5" style={{ color: 'var(--muted-foreground)' }} />
       </div>
     </motion.button>
   );
