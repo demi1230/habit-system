@@ -119,18 +119,6 @@ export function AuthPage() {
       style={{ backgroundColor: 'var(--background)' }}
     >
     <div className="w-full max-w-[430px] relative flex flex-col min-h-screen overflow-hidden">
-      {/* Top accent */}
-      <div
-        className="absolute top-0 left-0 right-0 pointer-events-none"
-        style={{
-          height: '38%',
-          backgroundColor: 'var(--muted)',
-          borderBottomLeftRadius: 60,
-          borderBottomRightRadius: 60,
-          zIndex: 0,
-        }}
-      />
-
       {/* Back button */}
       <div className="relative z-10 px-5 pt-14 pb-2">
         <motion.button
