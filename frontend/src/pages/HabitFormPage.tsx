@@ -1,3 +1,5 @@
+import { useTour } from '@/context/TourContext';
+import { errorMessage } from '@/lib/error-message';
 /**
  * HabitFormPage — shared form template used by both CreateHabitPage and EditHabitPage.
  * Pass initialValues for edit mode; leave undefined for create mode.
@@ -538,6 +540,7 @@ export function HabitFormPage({
   onSuccess,
 }: HabitFormPageProps) {
   const navigate = useNavigate();
+  const { startTour } = useTour();
   const [showSuccess, setShowSuccess] = useState(false);
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -725,7 +728,7 @@ export function HabitFormPage({
         setTimeout(() => navigate('/dashboard'), 1400);
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Алдаа гарлаа';
+      const msg = errorMessage(err);
       setErrorMsg(msg);
       setSaving(false);
     }
@@ -758,7 +761,7 @@ export function HabitFormPage({
   }
 
   return (
-    <div className="min-h-screen bg-background pb-36">
+    <div className="habit-form-page min-h-screen bg-background pb-36">
 
       {/* Header */}
       <div className="sticky top-0 z-20 bg-background px-5 pt-13 pb-3"
@@ -788,6 +791,7 @@ export function HabitFormPage({
       <div className="flex flex-col gap-5 pt-5">
 
         {/* ── 1. Sentence builder (identity in narrative form) ── */}
+        {isCreate && <div className="px-5 flex justify-end"><button className="help-button" onClick={startTour}>Заавар</button></div>}
         <div id="tour-form-sentence" className="mx-5">
           <motion.div className="rounded-[20px] bg-card px-4 py-4"
             animate={{
@@ -1220,10 +1224,10 @@ export function HabitFormPage({
       </div>
 
       {/* Save button */}
-      <div className="fixed bottom-0 left-0 right-0 flex flex-col items-center pb-10 pt-5 z-20 gap-2"
+      <div className="form-save-bar fixed bottom-0 left-0 right-0 flex flex-col items-center pb-10 pt-5 z-20 gap-2"
         style={{ background: 'linear-gradient(to top, var(--background) 65%, transparent)' }}>
         {errorMsg && (
-          <div className="mx-5 px-4 py-2 rounded-[14px] text-center"
+          <div role="alert" className="mx-5 px-4 py-2 rounded-[14px] text-center"
             style={{ backgroundColor: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)', maxWidth: 360 }}>
             <p style={{ fontSize: 13, color: '#ef4444', fontWeight: 500 }}>{errorMsg}</p>
           </div>

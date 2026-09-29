@@ -1,3 +1,4 @@
+import { DesktopNav } from './components/desktop-nav';
 import { useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -26,7 +27,7 @@ import { pushApi } from './api/push';
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { token } = useAuth();
   const location = useLocation();
-  if (!token) return <Navigate to="/welcome" state={{ from: location }} replace />;
+  if (!token) return <Navigate to="/login" state={{ from: location }} replace />;
   return <>{children}</>;
 }
 
@@ -41,6 +42,7 @@ function AppRoutes() {
   // app load ensures we always have a valid subscription in the DB).
   useEffect(() => {
     if (!token || !userId) return;
+    if (!('Notification' in window)) return;
     if (Notification.permission !== 'granted') return;
 
     ensurePushSubscription()
@@ -54,9 +56,11 @@ function AppRoutes() {
     <>
       <ScrollToTop />
       <AppTour />
+      {token && <DesktopNav />}
+      <main className={token ? "app-content" : "public-content"}>
       <Routes>
         <Route path="/welcome" element={token ? <Navigate to="/dashboard" replace /> : <WelcomePage />} />
-        <Route path="/login" element={token ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
+        <Route path="/login" element={token ? <Navigate to="/dashboard" replace /> : <AuthPage key="login" />} />
         <Route path="/signup" element={token ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
         <Route path="/onboarding" element={<RequireAuth><OnboardingPage /></RequireAuth>} />
         <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
@@ -72,6 +76,7 @@ function AppRoutes() {
         <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
         <Route path="*" element={token ? <Navigate to="/dashboard" replace /> : <Navigate to="/welcome" replace />} />
       </Routes>
+      </main>
       {showNav && <BottomNav />}
     </>
   );

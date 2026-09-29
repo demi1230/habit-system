@@ -1,3 +1,6 @@
+import { InlineError } from '@/components/inline-error';
+import { errorMessage } from '@/lib/error-message';
+import { useTour } from '@/context/TourContext';
 import { BottomNav } from '@/components/bottom-nav';
 import { HabitIconSlot } from '@/components/habit-icon-slot';
 import { useState, useMemo, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
@@ -79,13 +82,16 @@ function calcStatus(habit: HabitWithCueContext, value: number): 'none' | 'partia
 }
 
 // ── Quick Log Number Pad ───────────────────────────────────────
-function QuickLogSheet({ habit, onClose, onLog, currentValue = 0 }: {
+function QuickLogSheet({ habit, onClose, onLog, currentValue: initialValue = 0, error, saving }: {
   habit: HabitWithCueContext;
   onClose: () => void;
-  onLog: (value: number) => void;
+  onLog: (value: number) => Promise<boolean | undefined>;
+  error?: string;
+  saving?: boolean;
   currentValue?: number;
 }) {
   const [input, setInput] = useState('');
+  const [currentValue] = useState(initialValue);
   const color    = getHabitColor(habit.color);
   const addValue = parseFloat(input) || 0;
   const numValue = currentValue + addValue;
@@ -125,7 +131,7 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0 }: {
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         className="fixed inset-0 bg-black/25 z-40 backdrop-blur-[2px]"
-        onClick={onClose}
+        onClick={saving ? undefined : onClose}
       />
       <motion.div
         initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
@@ -196,6 +202,7 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0 }: {
             </div>
           </div>
 
+          {error && <div className="px-4 pb-2"><InlineError message={error} /></div>}
           {/* Numpad */}
           <div className="px-4 pt-1 pb-2">
             {keys.map((row, ri) => (
@@ -209,8 +216,11 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue = 0 }: {
                   return (
                     <motion.button
                       key={ki} whileTap={{ scale: 0.88 }}
-                      onClick={() => isConfirm ? (canConfirm && (onLog(numValue), onClose())) : handleKey(key)}
-                      disabled={isConfirm && !canConfirm}
+                      onClick={async () => {
+                        if (!isConfirm) { handleKey(key); return; }
+                        if (canConfirm && await onLog(addValue)) onClose();
+                      }}
+                      disabled={saving || (isConfirm && !canConfirm)}
                       className="flex-1 h-[54px] rounded-[18px] flex items-center justify-center bg-card"
                       style={{
                         backgroundColor: isConfirm
@@ -447,7 +457,7 @@ function StatusBadge({ habit, entry, onTap, color, disabled }: {
     : status === 'done' ? '1/1 удаа' : '0/1 удаа';
 
   return (
-    <div className="flex flex-col items-center gap-1.5 shrink-0"
+    <button type="button" disabled={disabled || status === 'done'} aria-label={`${habit.title}: ${status === 'done' ? 'Хийсэн' : 'Бүртгэх'}`} className="flex flex-col items-center gap-1.5 shrink-0"
       style={{ width: 72, opacity: disabled ? 0.35 : 1 }}
       onClick={e => { e.stopPropagation(); if (!disabled) onTap(); }}>
       <span style={{ ...TYPOGRAPHY.micro, whiteSpace: 'nowrap', textAlign: 'center', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 72, color: PASTEL_CARD_MUTED }}>
@@ -477,13 +487,13 @@ function StatusBadge({ habit, entry, onTap, color, disabled }: {
           <AppPlusIcon className="absolute w-3.5 h-3.5" style={{ color: color.accent }} />
         </motion.div>
       ) : (
-        <motion.button whileTap={{ scale: 0.86 }}
+        <motion.span whileTap={{ scale: 0.86 }}
           className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer"
           style={{ backgroundColor: PASTEL_CARD_ACTION_BG, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}>
           <AppPlusIcon className="w-4 h-4" style={{ color: color.accent }} />
-        </motion.button>
+        </motion.span>
       )}
-    </div>
+    </button>
   );
 }
 
@@ -638,7 +648,7 @@ function SwipeableHabitCard({ habit, index, entry, onBadgeTap, onEdit, onUndo, d
         transition={{ duration: 0.2 }}
       >
         <motion.button
-          onClick={(e) => { e.stopPropagation(); setOpen(false); onEdit(); }}
+          disabled={disabled} onClick={(e) => { e.stopPropagation(); setOpen(false); onEdit(); }}
           className={`flex flex-col items-center justify-center gap-1 ${buttonStyles({ variant: 'secondary', size: 'default' })}`}
           style={{ width: 56, height: 64, backgroundColor: 'var(--surface-muted)' }}
           initial={{ scale: 0.7, opacity: 0 }}
@@ -651,7 +661,7 @@ function SwipeableHabitCard({ habit, index, entry, onBadgeTap, onEdit, onUndo, d
           <span style={{ ...TYPOGRAPHY.micro, fontSize: 10, color: 'var(--text-muted-soft)' }}>Засах</span>
         </motion.button>
         <motion.button
-          onClick={(e) => { e.stopPropagation(); setOpen(false); onUndo(); }}
+          disabled={disabled} onClick={(e) => { e.stopPropagation(); setOpen(false); onUndo(); }}
           className={`flex flex-col items-center justify-center gap-1 ${buttonStyles({ variant: 'destructive', size: 'default' })}`}
           style={{ width: 56, height: 64, backgroundColor: 'rgba(239,68,68,0.10)' }}
           initial={{ scale: 0.7, opacity: 0 }}
@@ -686,6 +696,10 @@ function SwipeableHabitCard({ habit, index, entry, onBadgeTap, onEdit, onUndo, d
           disabled={disabled}
         />
       </motion.div>
+      {hasLog && <div className="desktop-log-actions">
+        <button disabled={disabled} onClick={onEdit}><Pencil size={14} /> Засах</button>
+        <button disabled={disabled} onClick={onUndo}><Undo2 size={14} /> Буцаах</button>
+      </div>}
     </div>
   );
 }
@@ -696,6 +710,12 @@ export function DashboardPage() {
   const { userId, displayName } = useAuth();
   const { refresh: refreshSharedLogs } = useHabitLogs();
 
+  const { startTour } = useTour();
+  const [loadError, setLoadError] = useState('');
+  const [actionError, setActionError] = useState('');
+  const loadSequence = useRef(0);
+  const pendingIds = useRef(new Set<string>());
+  const [savingIds, setSavingIds] = useState(new Set<string>());
   const [habits, setHabits] = useState<HabitWithCueContext[]>([]);
   const [loading, setLoading] = useState(true);
   const [logMap, setLogMap]       = useState<Map<string, LogEntry>>(new Map());
@@ -740,11 +760,14 @@ export function DashboardPage() {
 
   const loadHabits = useCallback(async () => {
     if (!userId) return;
+    const sequence = ++loadSequence.current;
     setLoading(true);
+    setLoadError('');
     try {
       const isSameDay = selectedDate.toDateString() === new Date().toDateString();
       const dateParam = isSameDay ? undefined : toDateStr(selectedDate);
       const data = await habitsApi.listToday(userId, dateParam);
+      if (sequence !== loadSequence.current) return;
       setHabits(data);
 
       const newLogMap = new Map<string, LogEntry>();
@@ -769,20 +792,24 @@ export function DashboardPage() {
       }
       setLogMap(newLogMap);
     } catch (err) {
-      console.error('Failed to load habits:', err);
+      if (sequence !== loadSequence.current) return;
+      setLoadError(errorMessage(err, 'Дадлуудыг ачаалж чадсангүй. Дахин оролдоно уу.'));
     } finally {
-      setLoading(false);
+      if (sequence === loadSequence.current) setLoading(false);
     }
   }, [userId, selectedDate]);
 
   useEffect(() => { loadHabits(); }, [loadHabits]);
 
   const handleSelectDate = (d: Date) => {
+    if (pendingIds.current.size) return;
+    setActionError('');
     setSelectedDate(d);
   };
 
   const handleBadgeTap = (habit: HabitWithCueContext) => {
-    if (isFuture) return;
+    if (isFuture || loading || pendingIds.current.has(habit.id)) return;
+    setActionError('');
     if (logMap.get(habit.id)?.status === 'done') return;
     if (isBinaryHabit(habit)) {
       recordLog(habit, 1);
@@ -792,7 +819,7 @@ export function DashboardPage() {
   };
 
   const recordLog = async (habit: HabitWithCueContext, addedValue: number) => {
-    if (!userId) return;
+    if (!userId || pendingIds.current.has(habit.id)) return;
     const existing = logMap.get(habit.id);
     const wasDone = existing?.status === 'done';
     const totalValue = Math.round(((existing?.value ?? 0) + addedValue) * 100) / 100;
@@ -801,6 +828,9 @@ export function DashboardPage() {
     const entry: LogEntry = { value: totalValue, status, logId: existing?.logId };
     setLogMap(prev => new Map(prev).set(habit.id, entry));
 
+    pendingIds.current.add(habit.id);
+    setSavingIds(new Set(pendingIds.current));
+    setActionError('');
     try {
       let logId = existing?.logId;
       if (existing?.logId) {
@@ -829,18 +859,25 @@ export function DashboardPage() {
       }
       // Sync shared logs context so Reminders page reflects the change
       void refreshSharedLogs();
+      return true;
     } catch (err) {
-      console.error('Failed to log:', err);
+      setActionError(errorMessage(err));
+      setLogMap(prev => { const next = new Map(prev); if (existing) next.set(habit.id, existing); else next.delete(habit.id); return next; });
+      return false;
+    } finally {
+      pendingIds.current.delete(habit.id);
+      setSavingIds(new Set(pendingIds.current));
     }
   };
 
   const handleEditLog = (habit: HabitWithCueContext) => {
+    setActionError('');
     setEditMode(true);
     setLogTarget(habit);
   };
 
   const handleUndoLog = async (habit: HabitWithCueContext) => {
-    if (!userId) return;
+    if (!userId || pendingIds.current.has(habit.id)) return;
     const entry = logMap.get(habit.id);
     if (!entry?.logId) return;
 
@@ -851,6 +888,9 @@ export function DashboardPage() {
       return m;
     });
 
+    pendingIds.current.add(habit.id);
+    setSavingIds(new Set(pendingIds.current));
+    setActionError('');
     try {
       // Delete exactly the log currently represented by this card.
       // Matching by date-string was removing the wrong records around day boundaries.
@@ -860,14 +900,17 @@ export function DashboardPage() {
       // Sync shared logs context so Reminders page reflects the change
       void refreshSharedLogs();
     } catch (err) {
-      console.error('Failed to undo log:', err);
+      setActionError(errorMessage(err, 'Бүртгэлийг буцааж чадсангүй. Дахин оролдоно уу.'));
       // Rollback on failure
       setLogMap(prev => new Map(prev).set(habit.id, entry));
+    } finally {
+      pendingIds.current.delete(habit.id);
+      setSavingIds(new Set(pendingIds.current));
     }
   };
 
   const replaceLog = async (habit: HabitWithCueContext, newValue: number) => {
-    if (!userId) return;
+    if (!userId || pendingIds.current.has(habit.id)) return;
     const existing = logMap.get(habit.id);
     const wasDone = existing?.status === 'done';
     const val = Math.round(newValue * 100) / 100;
@@ -876,6 +919,9 @@ export function DashboardPage() {
     const entry: LogEntry = { value: val, status, logId: existing?.logId };
     setLogMap(prev => new Map(prev).set(habit.id, entry));
 
+    pendingIds.current.add(habit.id);
+    setSavingIds(new Set(pendingIds.current));
+    setActionError('');
     try {
       let logId = existing?.logId;
       if (existing?.logId) {
@@ -902,14 +948,20 @@ export function DashboardPage() {
       }
       // Sync shared logs context so Reminders page reflects the change
       void refreshSharedLogs();
+      return true;
     } catch (err) {
-      console.error('Failed to update log:', err);
+      setActionError(errorMessage(err));
+      setLogMap(prev => { const next = new Map(prev); if (existing) next.set(habit.id, existing); else next.delete(habit.id); return next; });
+      return false;
+    } finally {
+      pendingIds.current.delete(habit.id);
+      setSavingIds(new Set(pendingIds.current));
     }
   };
 
   const today    = new Date();
   const hour     = today.getHours();
-  const greeting = hour < 5 ? 'Унтаачээ' : hour < 12 ? 'Хаая морнийн ^^' : hour < 17 ? 'WaasUUP' : 'Хаая ^^';
+  const greeting = hour < 12 ? 'Өглөөний мэнд' : hour < 18 ? 'Өдрийн мэнд' : 'Оройн мэнд';
   const dateStr  = formatMnDate(today);
 
   const doneCount    = [...logMap.values()].filter(e => e.status === 'done').length;
@@ -1001,13 +1053,18 @@ export function DashboardPage() {
         </p>
       </div>
 
+      <div className="px-5 mb-4 flex items-center justify-between gap-4">
+        <p className="text-sm text-muted-foreground">Хийсэн дадлынхаа + товчийг дараарай.</p>
+        <button className="help-button" onClick={startTour}>Заавар</button>
+      </div>
+      {actionError && <div className="px-5 mb-4"><InlineError message={actionError} /></div>}
       {/* Habit Cards */}
-      <div id="tour-habit-list" className="px-5 flex flex-col gap-2.5">
+      <div id="tour-habit-list" className={"px-5 habit-grid " + (!loading && !loadError && habits.length ? "has-habits" : "")}>
         {loading ? (
           <div className="flex justify-center py-16">
             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
-        ) : habits.length === 0 ? (
+        ) : loadError ? <InlineError message={loadError} onRetry={loadHabits} /> : habits.length === 0 ? (
           isToday ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center py-16 text-center">
@@ -1020,7 +1077,7 @@ export function DashboardPage() {
                 Дадал байхгүй байна
               </p>
               <p style={{ ...TYPOGRAPHY.bodySm, lineHeight: 1.6 }} className="text-muted-foreground mb-8 max-w-[210px]">
-                Анхны дадлаа нэмж, хувийн өөрчлөлтийн аялалаа эхэлцгээе!
+                Өдөр бүр хийж чадах нэг жижиг зүйл нэмээрэй.
               </p>
               <motion.button whileTap={{ scale: 0.95 }} onClick={() => navigate('/create')}
                 className={buttonStyles({ variant: 'default', size: 'lg' })}
@@ -1055,7 +1112,7 @@ export function DashboardPage() {
               onBadgeTap={() => handleBadgeTap(habit)}
               onEdit={() => handleEditLog(habit)}
               onUndo={() => handleUndoLog(habit)}
-              disabled={isFuture}
+              disabled={isFuture || savingIds.has(habit.id)}
             />
           ))
         )}
@@ -1069,11 +1126,13 @@ export function DashboardPage() {
             habit={logTarget}
             currentValue={editMode ? 0 : (logMap.get(logTarget.id)?.value ?? 0)}
             onClose={() => { setLogTarget(null); setEditMode(false); }}
+            error={actionError}
+            saving={savingIds.has(logTarget.id)}
             onLog={value => {
               if (editMode) {
-                replaceLog(logTarget, value);
+                return replaceLog(logTarget, value);
               } else {
-                recordLog(logTarget, value);
+                return recordLog(logTarget, value);
               }
             }}
           />

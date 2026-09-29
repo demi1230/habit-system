@@ -12,7 +12,7 @@ const DASHBOARD_STEPS: Step[] = [
   {
     target: '#tour-week-strip',
     title: 'Огноо сонгох',
-    content: 'Долоо хоногийн шилжүүлэгч ашиглан өнгөрсөн буюу ирэх өдрүүдийн дадлуудаа харна уу.',
+    content: 'Өдөр сонгож тухайн өдрийн дадлуудаа харна.',
     placement: 'bottom',
   },
   {
@@ -26,48 +26,9 @@ const DASHBOARD_STEPS: Step[] = [
 // ── Create habit (/create/new) ───────────────────────────────────────────────
 
 const CREATE_STEPS: Step[] = [
-  {
-    target: '#tour-form-sentence',
-    title: 'Дадлаа тодорхойл',
-    content: 'Юу хийсний дараа юу хийх, ингэснээрээ танд ямар үр дүн авчрах зэргийг өгүүлбэр хэлбэрээр оруулаарай. Энэ хэсэг дадлын үндэс суурь болно.',
-    placement: 'bottom',
-  },
-  {
-    target: '#tour-form-appearance',
-    title: 'Харагдац',
-    content: 'Дадалдаа тохирох emoji болон өнгийг сонгоно.',
-    placement: 'bottom',
-  },
-  {
-    target: '#tour-form-measurement',
-    title: 'Хэмжилт',
-    content: '"Хийсэн/Хийгээгүй" - нэг товшилтоор бүртгэнэ. "Хэмжигдэхүйц" - тоо оруулж бүртгэнэ (ж: 30 минут, 10 хуудас).',
-    placement: 'bottom',
-  },
-  {
-    target: '#tour-form-schedule',
-    title: 'Хийх өдрүүд',
-    content: 'Долоо хоногийн аль өдрүүдэд хийхийг тохируулна. "Бүгд" эсвэл "Ажлын" дарж хурдан сонгох боломжтой.',
-    placement: 'bottom',
-  },
-  {
-    target: '#tour-form-benefits',
-    title: 'Ашиг тус (заавал биш)',
-    content: 'Энэ дадал ямар ашиг тустай вэ? Жишээ санал болгосон жагсаалтаас сонгох эсвэл өөрийнхөө ашиг тусыг нэмнэ. Дадал тодорхой байх тусам хийхэд амар болно',
-    placement: 'top',
-  },
-  {
-    target: '#tour-form-steps',
-    title: 'Жижиг алхмууд (заавал биш)',
-    content: 'Дадлаа 2–5 жижиг алхамд хуваана. Дасгал хийх -> Гутлаа өмсөх гэх мэт жижиг алхам нь эхлэхийг хялбар болгоно.',
-    placement: 'top',
-  },
-  {
-    target: '#tour-form-reminder',
-    title: 'Сануулга',
-    content: 'Идэвхжүүлбэл тодорхой цагт эсвэл байршилд очих үед мэдэгдэл ирнэ. Эхний удаа браузер зөвшөөрөл асуух тул зөвшөөрөөрэй.',
-    placement: 'top',
-  },
+  { target: '#tour-form-sentence', title: 'Юу хийх вэ?', content: 'Жишээ: өглөө босоод нэг аяга ус уух.', placement: 'bottom' },
+  { target: '#tour-form-measurement', title: 'Хэрхэн бүртгэх вэ?', content: 'Нэг товшилтоор эсвэл тоо оруулж бүртгэнэ.', placement: 'bottom' },
+  { target: '#tour-form-schedule', title: 'Хэзээ хийх вэ?', content: 'Дадлаа хийх өдрүүдийг сонгоорой.', placement: 'bottom' },
 ];
 
 // ── Analytics (/analytics) ───────────────────────────────────────────────────
@@ -82,13 +43,13 @@ const ANALYTICS_STEPS: Step[] = [
   {
     target: '#tour-analytics-strength',
     title: 'Дадлын хүч',
-    content: 'Тууштай байдал, контекст тогтворжилт, SRBAI автоматжилтыг нэгтгэсэн 0–100 оноо. 70+ бол дадал бэхжиж лаг дадалтай болсоон гэсэн үг ^^.',
+    content: 'Тогтмол хийж байгаа байдлыг 0–100 оноогоор харуулна.',
     placement: 'bottom',
   },
   {
     target: '#tour-analytics-srbai',
     title: 'Автоматжилтын үнэлгээ (SRBAI)',
-    content: 'Дадлын автоматжилтын үнэлгээ өгөх ба үндсэн 4-н асуулт асууж автоматжилтыг тогтоох болно. Үнэлгээ өгөх товч дээр даран үнэлгээг өгнө. Долоо хоногт 1 удаа үнэлгээ өгвөл сайн жүү',
+    content: 'Дөрвөн асуултад хариулж дадал хэр автомат болсныг үнэлээрэй.',
     placement: 'top',
   },
   {
@@ -113,11 +74,13 @@ export const PAGE_TOUR_CONFIG: Record<string, PageTourConfig> = {
     steps: DASHBOARD_STEPS,
     storageKey: 'tour_completed',
     delay: 900,
+    autoStart: false,
   },
   '/create/new': {
     steps: CREATE_STEPS,
     storageKey: 'tour_completed_create',
     delay: 700,
+    autoStart: false,
   },
   '/analytics': {
     steps: ANALYTICS_STEPS,

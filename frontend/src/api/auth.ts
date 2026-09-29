@@ -13,6 +13,7 @@ export interface RegisterResponse {
 }
 
 export const authApi = {
+  session: () => api.get<{ authenticated: boolean }>('/auth/session', { signal: AbortSignal.timeout(15000) }),
   login: (email: string, password: string) =>
     api.post<LoginResponse>('/auth/login', { email, password }),
 

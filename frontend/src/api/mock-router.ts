@@ -112,6 +112,8 @@ export async function mockRequest<T>(path: string, options: RequestInit = {}): P
   const body = options.body ? JSON.parse(options.body as string) : undefined;
   let params: Params | null;
 
+  if (path === '/auth/session') return { authenticated: true } as T;
+
   if (path === '/auth/login' && method === 'POST') {
     return { accessToken: createMockToken(), displayName: MOCK_DISPLAY_NAME } as T;
   }

@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { analyticsApi } from '@/api/analytics';
 import { authApi } from '@/api/auth';
 
@@ -29,9 +30,10 @@ interface AuthContextValue extends AuthState {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const [state, setState] = useState<AuthState>(() => {
     const token = localStorage.getItem('access_token');
-    const userId = localStorage.getItem('user_id');
+    const userId = token ? decodePayload(token)?.sub ?? null : null;
     const displayName = localStorage.getItem('display_name');
     const latStr = localStorage.getItem('current_lat');
     const lngStr = localStorage.getItem('current_lng');
@@ -52,9 +54,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { token, userId, displayName, currentLat, currentLng };
   });
 
+  const [sessionStatus, setSessionStatus] = useState<'checking' | 'ready' | 'error'>(() => state.token ? 'checking' : 'ready');
+  const [sessionAttempt, setSessionAttempt] = useState(0);
+
+  useEffect(() => {
+    const expire = () => {
+      queryClient.clear();
+      for (const key of ['access_token', 'user_id', 'display_name', 'current_lat', 'current_lng']) localStorage.removeItem(key);
+      setState({ token: null, userId: null, displayName: null, currentLat: null, currentLng: null });
+      setSessionStatus('ready');
+    };
+    window.addEventListener('auth:expired', expire);
+    return () => window.removeEventListener('auth:expired', expire);
+  }, [queryClient]);
+
+  useEffect(() => {
+    if (!state.token || sessionStatus !== 'checking') return;
+    let active = true;
+    authApi.session().then(() => {
+      if (active) setSessionStatus('ready');
+    }).catch(() => {
+      if (active) setSessionStatus('error');
+    });
+    return () => { active = false; };
+  }, [state.token, sessionStatus, sessionAttempt]);
+
   const login = (token: string, displayName?: string | null) => {
     const payload = decodePayload(token);
     const userId = payload?.sub ?? null;
+    setSessionStatus('ready');
     localStorage.setItem('access_token', token);
     if (userId) localStorage.setItem('user_id', userId);
     if (displayName) localStorage.setItem('display_name', displayName);
@@ -62,6 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    queryClient.clear();
     if (state.userId) {
       analyticsApi.log(state.userId, 'session_end').catch(() => {});
     }
@@ -89,17 +118,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Track app_open / session_start when user is already logged in
   const sessionTracked = useRef(false);
   useEffect(() => {
-    if (state.userId && state.token && !sessionTracked.current) {
+    if (sessionStatus === 'ready' && state.userId && state.token && !sessionTracked.current) {
       sessionTracked.current = true;
       analyticsApi.log(state.userId, 'app_open').catch(() => {});
       analyticsApi.log(state.userId, 'session_start').catch(() => {});
     }
-  }, [state.userId, state.token]);
+  }, [state.userId, state.token, sessionStatus]);
 
   // Auto-detect GPS location on mount and whenever the user returns to the app.
   // Runs silently — no UI feedback, no error shown if permission denied.
   useEffect(() => {
-    if (!state.userId || !navigator.geolocation) return;
+    if (sessionStatus !== 'ready' || !state.userId || !navigator.geolocation) return;
 
     const detect = () => {
       navigator.geolocation.getCurrentPosition(
@@ -124,11 +153,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     detect(); // on login / first render
     window.addEventListener('focus', detect); // when user tabs back in
     return () => window.removeEventListener('focus', detect);
-  }, [state.userId]);
+  }, [state.userId, sessionStatus]);
 
   return (
     <AuthContext.Provider value={{ ...state, login, logout, setCurrentLocation }}>
-      {children}
+      {state.token && sessionStatus !== 'ready' ? (
+        <div className="session-gate" aria-busy={sessionStatus === 'checking'}>
+          {sessionStatus === 'error' && <div role="alert">
+            <p>Холболтоо шалгаад дахин оролдоно уу.</p>
+            <button className="ux-primary" onClick={() => { setSessionStatus('checking'); setSessionAttempt(v => v + 1); }}>Дахин оролдох</button>
+            <button className="ux-secondary" onClick={logout}>Нэвтрэх хуудас руу</button>
+          </div>}
+        </div>
+      ) : children}
     </AuthContext.Provider>
   );
 }

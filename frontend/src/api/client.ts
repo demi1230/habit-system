@@ -1,5 +1,5 @@
-// In dev, Vite proxies /api → http://localhost:3000 (strips the /api prefix).
-// In prod, set VITE_API_URL to the full backend origin (e.g. https://api.example.com).
+// In dev, Vite proxies /api to http://localhost:3000, preserving the prefix.
+// In prod, set VITE_API_URL to the API base (e.g. https://api.example.com/api).
 const BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
@@ -23,14 +23,15 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   const res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
   if (!res.ok) {
-    if (res.status === 401) {
+    if (res.status === 401 && token && !['/auth/login', '/auth/register'].includes(path) && getToken() === token) {
       localStorage.removeItem('access_token');
       localStorage.removeItem('user_id');
       localStorage.removeItem('display_name');
-      window.location.href = '/login';
+      window.dispatchEvent(new Event('auth:expired'));
     }
     const body = await res.json().catch(() => ({}));
-    const err = new Error(body.message ?? res.statusText) as Error & { status: number; body: unknown };
+    const message = Array.isArray(body.message) ? body.message.join('. ') : body.message;
+    const err = new Error(message ?? res.statusText) as Error & { status: number; body: unknown };
     err.status = res.status;
     err.body = body;
     throw err;
@@ -40,7 +41,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
-  get: <T>(path: string) => request<T>(path),
+  get: <T>(path: string, options?: RequestInit) => request<T>(path, options),
   post: <T>(path: string, body: unknown) =>
     request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
   patch: <T>(path: string, body: unknown) =>

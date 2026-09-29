@@ -3,8 +3,8 @@
 > **Project context:** Thesis — Behaviour-Based Habit Formation System  
 > **Stack:** NestJS 11 · TypeScript · Prisma 7 · PostgreSQL  
 > **Build tool:** SWC (not tsc) — required for Prisma v7 ESM compatibility  
-> **API base:** `http://localhost:3000`  
-> **Swagger UI:** `http://localhost:3000/api`
+> **API base:** `http://localhost:3000/api`  
+> **Swagger UI:** `http://localhost:3000/docs`
 
 ---
 

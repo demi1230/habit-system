@@ -13,7 +13,7 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pointer-events-none">
+    <nav aria-label="Үндсэн цэс" className="mobile-nav fixed bottom-0 left-0 right-0 z-50 flex justify-center pointer-events-none">
       <div
         className="max-w-[430px] w-full pointer-events-auto"
         style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
@@ -28,6 +28,8 @@ export function BottomNav() {
             return (
               <button
                 key={item.path}
+                aria-label={item.label}
+                aria-current={isActive ? 'page' : undefined}
                 onClick={() => navigate(item.path)}
                 className={`flex items-center gap-2 transition-all duration-200 ${
                   isActive

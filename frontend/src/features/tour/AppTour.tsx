@@ -42,7 +42,8 @@ export function AppTour() {
       if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
         const config = PAGE_TOUR_CONFIG[pathname];
         if (config) localStorage.setItem(config.storageKey, '1');
-        status === STATUS.FINISHED ? finishTour() : skipTour();
+        if (status === STATUS.FINISHED) finishTour();
+        else skipTour();
       }
     },
     // pathname is read inside callback at call time — include for correctness

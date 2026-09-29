@@ -1,5 +1,6 @@
 import {
   Body,
+  Get,
   Controller,
   HttpCode,
   HttpStatus,
@@ -25,6 +26,14 @@ import { RegisterDto } from './dto/register.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get('session')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Validate the current access token' })
+  session() {
+    return { authenticated: true };
+  }
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new user account' })

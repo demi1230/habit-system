@@ -80,27 +80,28 @@ export function AuthPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    if (loading) return;
     setLoading(true);
     try {
       if (isLogin) {
-        const res = await authApi.login(email, password);
+        const res = await authApi.login(email.trim(), password);
         // flushSync ensures the auth token is in React state BEFORE the
         // route change, so RequireAuth on the destination page does not
         // bounce us to /welcome based on stale (null) state.
         flushSync(() => {
           login(res.accessToken, res.displayName);
         });
-        navigate('/dashboard');
+        const from = location.state?.from;
+        navigate(from?.pathname?.startsWith('/') && !from.pathname.startsWith('//') ? from.pathname + (from.search ?? '') : '/dashboard', { replace: true });
       } else {
-        await authApi.register(email, password, name);
-        const res = await authApi.login(email, password);
+        await authApi.register(email.trim(), password, name.trim());
+        const res = await authApi.login(email.trim(), password);
         flushSync(() => {
           login(res.accessToken, res.displayName ?? name);
         });
         navigate('/onboarding');
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(toMongolianError(err, isLogin));
     } finally {
       setLoading(false);
@@ -134,7 +135,8 @@ export function AuthPage() {
       <div className="relative z-10 px-5 pt-14 pb-2">
         <motion.button
           whileTap={{ scale: 0.9 }}
-          onClick={() => navigate(-1)}
+          aria-label="Буцах"
+          onClick={() => navigate('/welcome')}
           className={buttonStyles({ variant: 'nav', size: 'icon' })}
           style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}
         >
@@ -179,7 +181,7 @@ export function AuthPage() {
         >
           {error && (
             <div
-              className="px-4 py-3 rounded-xl text-sm"
+              role="alert" id="auth-error" className="inline-error"
               style={{
                 backgroundColor: 'rgba(239,68,68,0.09)',
                 color: 'var(--destructive, #ef4444)',
@@ -190,13 +192,14 @@ export function AuthPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form aria-describedby={error ? "auth-error" : undefined} aria-busy={loading} onSubmit={handleSubmit} className="flex flex-col gap-4">
             {!isLogin && (
               <div className="flex flex-col gap-1.5">
-                <label style={{ ...TYPOGRAPHY.caption, color: 'var(--foreground)', fontWeight: 500 }}>
+                <label htmlFor="auth-name" style={{ ...TYPOGRAPHY.caption, color: 'var(--foreground)', fontWeight: 500 }}>
                   {t('auth.fullName', 'Нэр')}
                 </label>
                 <AuthInput
+                  id="auth-name" autoComplete="name"
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
@@ -206,10 +209,11 @@ export function AuthPage() {
             )}
 
             <div className="flex flex-col gap-1.5">
-              <label style={{ ...TYPOGRAPHY.caption, color: 'var(--foreground)', fontWeight: 500 }}>
+              <label htmlFor="auth-email" style={{ ...TYPOGRAPHY.caption, color: 'var(--foreground)', fontWeight: 500 }}>
                 {t('auth.email', 'Имэйл')}
               </label>
               <AuthInput
+                id="auth-email"
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -220,11 +224,12 @@ export function AuthPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label style={{ ...TYPOGRAPHY.caption, color: 'var(--foreground)', fontWeight: 500 }}>
+              <label htmlFor="auth-password" style={{ ...TYPOGRAPHY.caption, color: 'var(--foreground)', fontWeight: 500 }}>
                 {t('auth.password', 'Нууц үг')}
               </label>
               <div className="relative">
                 <AuthInput
+                  id="auth-password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -235,6 +240,7 @@ export function AuthPage() {
                 />
                 <button
                   type="button"
+                  aria-label={showPassword ? "Нууц үг нуух" : "Нууц үг харах"}
                   onClick={() => setShowPassword(v => !v)}
                   className="absolute right-3 top-1/2 -translate-y-1/2"
                   style={{ color: 'var(--text-muted-soft)', lineHeight: 0 }}
@@ -261,7 +267,7 @@ export function AuthPage() {
               }}
             >
               {loading
-                ? '...'
+                ? 'Түр хүлээнэ үү…'
                 : isLogin
                 ? t('auth.signInBtn', 'Нэвтрэх')
                 : t('auth.createAccountBtn', 'Бүртгүүлэх')}
