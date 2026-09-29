@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 
-let themeMode: ThemeMode = (typeof localStorage !== 'undefined' && localStorage.getItem('bloom-theme') as ThemeMode) || 'system';
+let themeMode: ThemeMode = (typeof localStorage !== 'undefined' && localStorage.getItem('bloom-theme') as ThemeMode) || 'light';
 const themeListeners = new Set<() => void>();
 
 function emit() {
