@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { UserEntity } from '../../domain/entities/user.entity';
 import {
   IUserRepository,
@@ -14,8 +14,23 @@ export class UserPrismaRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findByEmail(email: string): Promise<UserEntity | null> {
-    const result = await this.prisma.user.findUnique({ where: { email } });
-    return result as UserEntity | null;
+    const normalized = email.trim();
+    // Preserve access to any legacy accounts differing only in case.
+    const exact = await this.prisma.user.findUnique({
+      where: { email: normalized },
+    });
+    if (exact) return exact as UserEntity;
+
+    const matches = await this.prisma.user.findMany({
+      where: { email: { equals: normalized, mode: 'insensitive' } },
+      take: 2,
+    });
+    if (matches.length > 1) {
+      throw new ConflictException(
+        'Multiple accounts match this email. Use the original email spelling.',
+      );
+    }
+    return (matches[0] as UserEntity | undefined) ?? null;
   }
 
   async findById(id: string): Promise<UserEntity | null> {

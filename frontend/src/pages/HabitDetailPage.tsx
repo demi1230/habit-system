@@ -35,11 +35,11 @@ function formatTime(iso: string) {
 
 // ── UI Building Blocks ────────────────────────────────────────────────────────
 
-function SectionCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function SectionCard({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
-      className="rounded-[20px] overflow-hidden bg-card" style={{ boxShadow: SHADOW.card }}>
+      className={`rounded-[20px] overflow-hidden bg-card ${className}`} style={{ boxShadow: SHADOW.card }}>
       {children}
     </motion.div>
   );
@@ -538,7 +538,7 @@ export function HabitDetailPage() {
         </SectionCard>
 
         {/* ── 8. Гүйцэтгэлийн түүх / хуанли ── */}
-        <SectionCard delay={0.18}>
+        <SectionCard delay={0.18} className="calendar-panel">
           <SectionLabel icon={<Calendar className="w-4 h-4" style={{ color: color.accent }} />} label="Гүйцэтгэлийн түүх" />
           <div className="px-4 pt-1 pb-3">
             <MonthCalendar

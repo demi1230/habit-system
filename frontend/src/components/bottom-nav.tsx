@@ -1,16 +1,9 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { BottomNavHomeIcon, BottomNavLearnIcon, BottomNavProfileIcon, BottomNavStatsIcon } from '@/shared/design';
+import { navigationItems } from './navigation-items';
 
 export function BottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const navItems = [
-    { path: '/dashboard', label: 'Нүүр', Icon: BottomNavHomeIcon },
-    { path: '/analytics', label: 'Ахиц', Icon: BottomNavStatsIcon },
-    { path: '/learn', label: 'Суръя', Icon: BottomNavLearnIcon },
-    { path: '/profile', label: 'Профайл', Icon: BottomNavProfileIcon },
-  ];
 
   return (
     <nav aria-label="Үндсэн цэс" className="mobile-nav fixed bottom-0 left-0 right-0 z-50 flex justify-center pointer-events-none">
@@ -23,7 +16,7 @@ export function BottomNav() {
           className="mx-5 mb-2 rounded-[24px] border border-border bg-card flex items-center justify-between px-6 py-3"
           style={{ boxShadow: '10px 14px 56px 0px var(--surface-muted)' }}
         >
-          {navItems.map((item) => {
+          {navigationItems.map((item) => {
             const isActive = location.pathname.startsWith(item.path);
             return (
               <button

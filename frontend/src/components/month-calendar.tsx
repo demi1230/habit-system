@@ -70,10 +70,11 @@ export function MonthCalendar({
   const monthLabel = toMnMonthLabel(month);
 
   return (
-    <div>
+    <div className="month-calendar">
       <div className="flex items-center justify-between mb-3">
         <motion.button
           whileTap={{ scale: 0.9 }}
+          aria-label="Өмнөх сар"
           onClick={() => setOffset(o => o - 1)}
           className={buttonStyles({ variant: 'nav', size: 'iconSm' })}
           style={{ backgroundColor: 'var(--surface-subtle)' }}
@@ -88,6 +89,7 @@ export function MonthCalendar({
         </p>
         <motion.button
           whileTap={{ scale: 0.9 }}
+          aria-label="Дараах сар"
           onClick={() => setOffset(o => Math.min(o + 1, 0))}
           disabled={offset >= 0}
           className={buttonStyles({ variant: 'nav', size: 'iconSm' })}

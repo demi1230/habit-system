@@ -32,7 +32,7 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(dto.password, 12);
 
     return this.userRepo.create({
-      email: dto.email,
+      email: dto.email.trim().toLowerCase(),
       passwordHash,
       displayName: dto.displayName ?? null,
     });

@@ -226,7 +226,7 @@ function AllHabitsOverview({ habits, logs, composites, loading }: {
       <p style={TYPOGRAPHY.bodySm} className="text-muted-foreground -mb-1">Бүх дадлын тойм</p>
 
       {/* Calendar — all habits combined */}
-      <SectionCard delay={0}>
+      <SectionCard delay={0} className="calendar-panel">
         <SectionLabel icon={<Calendar className="w-4 h-4" style={{ color: 'var(--foreground)' }} />} label="Хуанли" />
         <MonthCalendar logs={logs} accent="var(--foreground)" />
       </SectionCard>
@@ -848,7 +848,7 @@ export function AnalyticsPage() {
             </motion.div>
 
             {/* ═══ 3. Calendar Heatmap ═══ */}
-            <SectionCard delay={0.06}>
+            <SectionCard delay={0.06} className="calendar-panel">
               <SectionLabel icon={<Calendar className="w-4 h-4" style={{ color: color.accent }} />} label="Хуанли" />
               <MonthCalendar logs={logs} accent={color.accent} scheduleDays={selected?.scheduleDays?.map(s => s.weekday)} startDate={selected?.startDate} />
             </SectionCard>

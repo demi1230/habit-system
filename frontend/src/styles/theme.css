@@ -190,18 +190,6 @@
     background: var(--background);
   }
 
-  @media (min-width: 431px) {
-    body {
-      background:
-        radial-gradient(circle at top, var(--surface-subtle), transparent 34rem),
-        var(--background);
-    }
-
-    #root {
-      max-width: 440px;
-      box-shadow: 0 0 0 1px var(--surface-border-faint), 0 24px 70px rgba(0, 0, 0, 0.18);
-    }
-  }
 
   body::-webkit-scrollbar {
     display: none;
