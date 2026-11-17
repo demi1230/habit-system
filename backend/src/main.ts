@@ -1,10 +1,20 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { APP_TIMEZONE } from './shared/time';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Day boundaries must follow APP_TIMEZONE, not the host timezone. Logging
+  // both makes a mismatch visible in deployment logs.
+  const hostTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const hostOffsetHours = -new Date().getTimezoneOffset() / 60;
+  new Logger('Bootstrap').log(
+    `Host timezone: ${hostTimeZone} (UTC${hostOffsetHours >= 0 ? '+' : ''}${hostOffsetHours}); application timezone: ${APP_TIMEZONE}`,
+  );
+
   const corsOrigins = (
     process.env.CORS_ORIGINS ??
     process.env.APP_ORIGIN ??

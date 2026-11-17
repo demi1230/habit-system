@@ -47,7 +47,9 @@ export class PushSubscriptionsController {
 
   @Post('broadcast')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Broadcast a push notification to all subscribers (admin only)' })
+  @ApiOperation({
+    summary: 'Broadcast a push notification to all subscribers (admin only)',
+  })
   async broadcast(@Body() dto: BroadcastPushDto) {
     const adminSecret = this.configService.get<string>('ADMIN_SECRET');
     if (!adminSecret || dto.secret !== adminSecret) {

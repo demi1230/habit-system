@@ -180,3 +180,12 @@ export const RecommendationInteractionType = {
 
 export type RecommendationInteractionType =
   (typeof RecommendationInteractionType)[keyof typeof RecommendationInteractionType];
+
+export const BadgeCode = {
+  FIRST_DONE: 'FIRST_DONE',
+  STREAK_7: 'STREAK_7',
+  STREAK_21: 'STREAK_21',
+  TOTAL_30: 'TOTAL_30',
+} as const;
+
+export type BadgeCode = (typeof BadgeCode)[keyof typeof BadgeCode];

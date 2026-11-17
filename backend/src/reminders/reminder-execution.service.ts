@@ -239,7 +239,10 @@ export class ReminderExecutionService {
     }
   }
 
-  private async hasCompletedToday(habitId: string, date: Date): Promise<boolean> {
+  private async hasCompletedToday(
+    habitId: string,
+    date: Date,
+  ): Promise<boolean> {
     const todayLogs = await this.habitLogRepo.findLatestByHabitIdsForDate(
       [habitId],
       date,

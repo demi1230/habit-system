@@ -1,0 +1,18 @@
+# LaTeX build artifacts (regenerate with `latexmk -xelatex main.tex`)
+*.aux
+*.log
+*.toc
+*.out
+*.xdv
+*.fls
+*.fdb_latexmk
+*.lof
+*.lot
+*.lol
+*.nlo
+*.synctex.gz
+*.bbl
+*.blg
+
+# Compiled and signed PDFs are build outputs or personal documents, not sources
+*.pdf

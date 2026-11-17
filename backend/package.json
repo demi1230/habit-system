@@ -8,6 +8,7 @@
   "scripts": {
     "build": "nest build",
     "cleanup:habit-log-dupes": "node scripts/cleanup-duplicate-habit-logs.cjs",
+    "diagnose:log-time-offset": "node scripts/diagnose-log-time-offset.cjs",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",

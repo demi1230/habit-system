@@ -1,0 +1,11 @@
+# Local generated reports and scratch output
+/output/
+
+# Environment files with credentials (each app also ignores its own)
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db

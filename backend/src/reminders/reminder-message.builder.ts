@@ -5,7 +5,10 @@ const TIMING_SEP = '|||';
 const VALID_TIMINGS = ['дараа', 'өмнө', 'үедээ'] as const;
 type RoutineTiming = (typeof VALID_TIMINGS)[number];
 
-function parseRoutineCue(stored: string): { activity: string; timing: RoutineTiming } {
+function parseRoutineCue(stored: string): {
+  activity: string;
+  timing: RoutineTiming;
+} {
   if (stored.includes(TIMING_SEP)) {
     const idx = stored.indexOf(TIMING_SEP);
     const activity = stored.slice(0, idx);
@@ -30,8 +33,7 @@ export class ReminderMessageBuilder {
   build(habit: HabitEntity, rotationSeed = Date.now()) {
     const cue =
       habit.cues.find((item) => item.isActive && item.precedingRoutine) ?? null;
-    const rawRoutine =
-      cue?.precedingRoutine ?? habit.precedingRoutine ?? null;
+    const rawRoutine = cue?.precedingRoutine ?? habit.precedingRoutine ?? null;
     const reason = habit.motivationProfile?.reason?.trim() || null;
     const benefits = habit.benefits.filter(
       (benefit) => benefit.trim().length > 0,

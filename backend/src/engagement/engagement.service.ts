@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../infrastructure/prisma/prisma.service';
-import { BadgeCode } from '../generated/prisma/client';
+import { BadgeCode } from '../domain/enums/domain.enums';
 
 const DAILY_XP_REWARD = 10;
 

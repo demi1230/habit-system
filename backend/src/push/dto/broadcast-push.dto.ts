@@ -7,7 +7,9 @@ export class BroadcastPushDto {
   @MinLength(1)
   title!: string;
 
-  @ApiProperty({ example: 'Notification-ийн bug засагдлаа. Дахин нэвтэрч орно уу.' })
+  @ApiProperty({
+    example: 'Notification-ийн bug засагдлаа. Дахин нэвтэрч орно уу.',
+  })
   @IsString()
   @MinLength(1)
   body!: string;

@@ -7,11 +7,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { BroadcastPushDto } from './dto/broadcast-push.dto';
 import { WebPushNotificationGateway } from './web-push-notification.gateway';
 
@@ -27,7 +23,8 @@ export class AdminPushController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Broadcast push notification to all subscribers',
-    description: 'Requires `secret` field matching the `ADMIN_SECRET` environment variable.',
+    description:
+      'Requires `secret` field matching the `ADMIN_SECRET` environment variable.',
   })
   @ApiOkResponse({ schema: { example: { sent: 5, failed: 0 } } })
   async broadcast(@Body() dto: BroadcastPushDto) {
