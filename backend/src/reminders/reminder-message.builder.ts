@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { HabitEntity } from '../domain/entities/habit.entity';
+import { nowInAppTz } from '../shared/time';
 
 const TIMING_SEP = '|||';
 const VALID_TIMINGS = ['дараа', 'өмнө', 'үедээ'] as const;
@@ -56,7 +57,7 @@ export class ReminderMessageBuilder {
     }
 
     // Rotate by hour (0–23) so the same reminder window doesn't repeat the same text
-    const hourOfDay = new Date(rotationSeed).getHours();
+    const hourOfDay = nowInAppTz(new Date(rotationSeed)).hour;
     const secondSentence =
       variants.length > 0 ? variants[hourOfDay % variants.length] : null;
 

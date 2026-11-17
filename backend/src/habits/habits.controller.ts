@@ -9,7 +9,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateHabitDto } from './dto/create-habit.dto';
 import { HabitQueryDto } from './dto/habit-query.dto';
@@ -49,6 +54,13 @@ export class HabitsController {
   @ApiOperation({
     summary:
       'Get habits scheduled for today (or a given date) with cue context',
+  })
+  @ApiQuery({
+    name: 'date',
+    required: false,
+    example: '2026-03-24',
+    description:
+      'Calendar day (YYYY-MM-DD) in Asia/Ulaanbaatar. Defaults to today in that timezone.',
   })
   getTodayHabits(
     @Param('userId', new ParseUUIDPipe()) userId: string,

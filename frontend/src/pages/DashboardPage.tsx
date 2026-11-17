@@ -18,15 +18,10 @@ import { ensurePushSubscription, getNotificationPermission } from '@/lib/push';
 import type { HabitWithCueContext } from '@/api/types';
 import { CelebrationSheet, CelebrationFullScreen, decideCelebration } from '@/features/celebration';
 import type { CelebrationContext } from '@/features/celebration';
+import { parseLocalYmd, toLocalDateStr } from '@/lib/dates';
+import { useLocalToday } from '@/lib/use-local-today';
 
 const MN_DAYS = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
-
-// ── Habit Tag Pill ─────────────────────────────────────────────
-/** Local ISO string (YYYY-MM-DDTHH:mm:ss) — avoids UTC shift from toISOString */
-function toLocalISO(d: Date): string {
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-}
 
 // ── Logged entry ────────────────────────────────────────────────
 interface LogEntry { value: number; status: 'partial' | 'done'; logId?: string }
@@ -261,11 +256,13 @@ function formatMnShort(d: Date) {
 const INITIAL_WEEKS = 11;   // 5 past + current + 5 future
 const CENTER_INDEX  = 5;    // index of the current week
 
-function WeekStrip({ selectedDate, onSelectDate }: {
+function WeekStrip({ selectedDate, todayKey, onSelectDate }: {
   selectedDate: Date;
+  /** Browser-local YYYY-MM-DD; changes when the calendar day rolls over. */
+  todayKey: string;
   onSelectDate: (d: Date) => void;
 }) {
-  const today     = useMemo(() => new Date(), []);
+  const today     = useMemo(() => parseLocalYmd(todayKey), [todayKey]);
   const todayMon  = useMemo(() => getMondayOf(today), [today]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const didMount  = useRef(false);
@@ -571,16 +568,20 @@ export function DashboardPage() {
     localStorage.setItem('push_banner_dismissed', '1');
   };
 
-  /** Format Date as YYYY-MM-DD for the API */
-  const toDateStr = (d: Date) => {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  };
+  // Keep "today" selected when the calendar day rolls over while the app is
+  // open; otherwise new completions would be saved on yesterday.
+  const todayKey = useLocalToday();
+  const [trackedTodayKey, setTrackedTodayKey] = useState(todayKey);
+  if (trackedTodayKey !== todayKey) {
+    setTrackedTodayKey(todayKey);
+    if (toLocalDateStr(selectedDate) === trackedTodayKey) {
+      setSelectedDate(parseLocalYmd(todayKey));
+    }
+  }
 
-  const isToday = selectedDate.toDateString() === new Date().toDateString();
-  const isFuture = selectedDate > new Date() && !isToday;
+  const selectedKey = toLocalDateStr(selectedDate);
+  const isToday = selectedKey === todayKey;
+  const isFuture = selectedKey > todayKey;
 
   const loadHabits = useCallback(async () => {
     if (!userId) return;
@@ -588,9 +589,9 @@ export function DashboardPage() {
     setLoading(true);
     setLoadError('');
     try {
-      const isSameDay = selectedDate.toDateString() === new Date().toDateString();
-      const dateParam = isSameDay ? undefined : toDateStr(selectedDate);
-      const data = await habitsApi.listToday(userId, dateParam);
+      // Always name the calendar day explicitly so the server never has to
+      // guess "today" from its own clock.
+      const data = await habitsApi.listToday(userId, toLocalDateStr(selectedDate));
       if (sequence !== loadSequence.current) return;
       setHabits(data);
 
@@ -664,7 +665,7 @@ export function DashboardPage() {
         const logTime = isToday ? new Date() : new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 12, 0, 0);
         const result = await habitsApi.createLog(userId, habit.id, {
           actualValue: totalValue,
-          completedAt: toLocalISO(logTime),
+          completedAt: logTime.toISOString(),
           triggerSource: 'SELF_INITIATED',
         });
         logId = result.id;
@@ -754,7 +755,7 @@ export function DashboardPage() {
         const logTime = isToday ? new Date() : new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 12, 0, 0);
         const result = await habitsApi.createLog(userId, habit.id, {
           actualValue: val,
-          completedAt: toLocalISO(logTime),
+          completedAt: logTime.toISOString(),
           triggerSource: 'SELF_INITIATED',
         });
         logId = result.id;
@@ -864,7 +865,7 @@ export function DashboardPage() {
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.08 }}
         className="px-0 pt-1 pb-4"
       >
-        <WeekStrip selectedDate={selectedDate} onSelectDate={handleSelectDate} />
+        <WeekStrip selectedDate={selectedDate} todayKey={todayKey} onSelectDate={handleSelectDate} />
       </motion.div>
 
       {/* Section label */}

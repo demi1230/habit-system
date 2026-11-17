@@ -15,16 +15,20 @@ export class CreateHabitLogDto {
   actualValue!: number;
 
   @ApiProperty({
-    example: '2026-03-24T07:30:00.000Z',
-    description: 'When the habit was actually performed (ISO 8601)',
+    example: '2026-03-23T23:30:00.000Z',
+    description:
+      'When the habit was actually performed (ISO 8601). Send a UTC offset ' +
+      '(e.g. `Z`); a value without an offset is read as Asia/Ulaanbaatar ' +
+      'wall-clock time. Must not be later than today in that timezone.',
   })
   @IsISO8601()
   completedAt!: string;
 
   @ApiPropertyOptional({
-    example: '2026-03-24T07:35:00.000Z',
+    example: '2026-03-23T23:35:00.000Z',
     description:
-      'When this log entry was recorded. Defaults to now if omitted.',
+      'When this log entry was recorded (same offset rules as completedAt). ' +
+      'Defaults to now if omitted.',
   })
   @IsOptional()
   @IsISO8601()

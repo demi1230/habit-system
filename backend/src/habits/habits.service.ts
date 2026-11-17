@@ -25,6 +25,13 @@ import { CreateHabitCueDto } from './cues/dto/create-habit-cue.dto';
 import { CreateHabitMotivationProfileDto } from './motivation/dto/create-habit-motivation-profile.dto';
 import { CreateHabitScheduleDayDto } from './schedule/dto/create-habit-schedule-day.dto';
 import { AuthService } from '../auth/auth.service';
+import {
+  addDaysToYmd,
+  appDateOf,
+  appDayRange,
+  dateOnlyToYmd,
+  isValidYmd,
+} from '../shared/time';
 
 @Injectable()
 export class HabitsService {
@@ -188,24 +195,30 @@ export class HabitsService {
     return updatedHabit;
   }
 
+  /**
+   * Habits scheduled on a calendar day, with that day's latest log.
+   * `date` is an application-timezone calendar date (`YYYY-MM-DD`); when it
+   * is omitted, "today" in the application timezone is used.
+   */
   async getTodayHabits(userId: string, date?: string) {
+    if (date !== undefined && !isValidYmd(date)) {
+      throw new BadRequestException('date must be a YYYY-MM-DD calendar date');
+    }
+
     await this.authService.ensureUserExists(userId);
 
-    const targetDate = date ? new Date(date + 'T00:00:00') : new Date();
-    targetDate.setHours(0, 0, 0, 0);
-
-    const weekday = date
-      ? CueScheduleRules.weekdayOf(date)
-      : CueScheduleRules.todayWeekday();
+    const now = new Date();
+    const targetYmd = date ?? appDateOf(now);
+    const weekday = CueScheduleRules.weekdayOf(targetYmd);
     const habits = await this.habitRepo.findActiveByUserId(userId);
     const todayHabits = habits.filter(
       (habit) =>
         habit.isScheduledOn(weekday) &&
-        new Date(habit.startDate).setHours(0, 0, 0, 0) <= targetDate.getTime(),
+        dateOnlyToYmd(habit.startDate) <= targetYmd,
     );
     const todayLogs = await this.habitLogRepo.findLatestByHabitIdsForDate(
       todayHabits.map((habit) => habit.id),
-      targetDate,
+      appDayRange(targetYmd).start,
     );
     const todayLogByHabitId = new Map(
       todayLogs.map((log) => [log.habitId, log]),
@@ -218,23 +231,20 @@ export class HabitsService {
         // Current streak: count consecutive scheduled days with a DONE log
         let currentStreak = 0;
         const scheduledWds = new Set(habit.scheduleDays.map((d) => d.weekday));
-        const logDateSet = new Map<string, string>(); // dateStr → latest status
+        const logDateSet = new Map<string, string>(); // app-tz YYYY-MM-DD → latest status
         for (const log of logs) {
           if (log.completedAt) {
-            const d = new Date(log.completedAt);
-            const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            const key = appDateOf(new Date(log.completedAt));
             if (!logDateSet.has(key)) {
               logDateSet.set(key, log.status);
             }
           }
         }
-        const cursor = new Date();
-        cursor.setHours(0, 0, 0, 0);
+        let cursor = appDateOf(now);
         for (let i = 0; i < 365; i++) {
           const wd = CueScheduleRules.weekdayOf(cursor);
           if (scheduledWds.size === 0 || scheduledWds.has(wd)) {
-            const key = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`;
-            const status = logDateSet.get(key);
+            const status = logDateSet.get(cursor);
             if (status === 'DONE') {
               currentStreak++;
             } else {
@@ -244,7 +254,7 @@ export class HabitsService {
               } else break;
             }
           }
-          cursor.setDate(cursor.getDate() - 1);
+          cursor = addDaysToYmd(cursor, -1);
         }
 
         // Composite strength score — same formula as /habit-strength/composite

@@ -7,6 +7,7 @@ import {
 } from '../../domain/repositories/habit-log.repository';
 import { CompletionTriggerSource } from '../../domain/enums/domain.enums';
 import { PrismaService } from '../prisma/prisma.service';
+import { appDateOf, appDayRange } from '../../shared/time';
 
 /**
  * Infrastructure adapter — Prisma implementation of IHabitLogRepository.
@@ -75,11 +76,7 @@ export class HabitLogPrismaRepository implements IHabitLogRepository {
   > {
     if (habitIds.length === 0) return [];
 
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
+    const { start: startOfDay, end: endOfDay } = appDayRange(appDateOf(date));
 
     const results = await this.prisma.habitLog.findMany({
       where: {

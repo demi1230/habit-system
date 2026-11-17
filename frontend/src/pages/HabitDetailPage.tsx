@@ -15,7 +15,7 @@ import { MonthCalendar } from '@/components/month-calendar';
 import { WeekdayStrip } from '@/components/weekday-strip';
 import { HabitIconSlot } from '@/components/habit-icon-slot';
 import { toLocalDateStr } from '@/lib/dates';
-import { countCompletedDays, getLatestLogsByDay, toLocalISO } from '@/lib/habit-log-days';
+import { countCompletedDays, getLatestLogsByDay } from '@/lib/habit-log-days';
 import { parseRoutineCue } from '@/lib/routine-cue';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -318,7 +318,7 @@ export function HabitDetailPage() {
       } else {
         await habitsApi.createLog(userId, habit.id, {
           actualValue: value,
-          completedAt: toLocalISO(new Date()),
+          completedAt: new Date().toISOString(),
           triggerSource: 'SELF_INITIATED',
         });
       }

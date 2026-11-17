@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../infrastructure/prisma/prisma.service';
 import { BadgeCode } from '../domain/enums/domain.enums';
+import { addDaysToYmd, appDateOf, appDayRange } from '../shared/time';
 
 const DAILY_XP_REWARD = 10;
 
@@ -25,11 +26,9 @@ export class EngagementService {
     logId: string;
   }): Promise<CompletionRewardResult> {
     return this.prisma.$transaction(async (tx) => {
-      const dayStart = new Date(params.completedAt);
-      dayStart.setHours(0, 0, 0, 0);
-
-      const dayEnd = new Date(params.completedAt);
-      dayEnd.setHours(23, 59, 59, 999);
+      const { start: dayStart, end: dayEnd } = appDayRange(
+        appDateOf(params.completedAt),
+      );
 
       const earlierDoneCount = await tx.habitLog.count({
         where: {
@@ -208,31 +207,22 @@ export class EngagementService {
     };
   }
 
+  /** Consecutive application-timezone calendar days, counted from the latest. */
   private computeStreak(completedDates: Date[]) {
     if (completedDates.length === 0) {
       return 0;
     }
 
+    // YYYY-MM-DD strings sort chronologically; newest first.
     const uniqueDays = Array.from(
-      new Set(
-        completedDates.map((date) => {
-          const normalized = new Date(date);
-          normalized.setHours(0, 0, 0, 0);
-          return normalized.toISOString();
-        }),
-      ),
+      new Set(completedDates.map((date) => appDateOf(new Date(date)))),
     )
-      .map((value) => new Date(value))
-      .sort((a, b) => b.getTime() - a.getTime());
+      .sort()
+      .reverse();
 
     let streak = 1;
     for (let index = 1; index < uniqueDays.length; index += 1) {
-      const previousDay = uniqueDays[index - 1];
-      const currentDay = uniqueDays[index];
-      const dayDifference =
-        (previousDay.getTime() - currentDay.getTime()) / 86_400_000;
-
-      if (dayDifference === 1) {
+      if (addDaysToYmd(uniqueDays[index - 1], -1) === uniqueDays[index]) {
         streak += 1;
         continue;
       }

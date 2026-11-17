@@ -21,6 +21,7 @@ import {
 } from 'react';
 import { habitsApi } from '@/api/habits';
 import { useAuth } from './AuthContext';
+import { useLocalToday } from '@/lib/use-local-today';
 
 export interface TodayLogStatus {
   logId: string;
@@ -70,6 +71,9 @@ function buildTodayLogMap(
 
 export function HabitLogsProvider({ children }: { children: ReactNode }) {
   const { userId } = useAuth();
+  // The calendar day is always sent explicitly, and the map is reloaded when
+  // the day rolls over while the app stays open.
+  const today = useLocalToday();
   const [todayLogMap, setTodayLogMap] = useState<Map<string, TodayLogStatus>>(
     new Map(),
   );
@@ -77,21 +81,21 @@ export function HabitLogsProvider({ children }: { children: ReactNode }) {
   const refresh = useCallback(async () => {
     if (!userId) return;
     try {
-      const data = await habitsApi.listToday(userId);
+      const data = await habitsApi.listToday(userId, today);
       setTodayLogMap(buildTodayLogMap(data));
     } catch (err) {
       console.error('[HabitLogsContext] Failed to load today logs:', err);
     }
-  }, [userId]);
+  }, [userId, today]);
 
-  // Initial / userId-change load. Inlined (rather than calling `refresh()`)
-  // with a cancellation flag so the lint check sees a guarded async setter
-  // instead of a synchronous trampoline through a memoized callback.
+  // Initial / userId-change / day-change load. Inlined (rather than calling
+  // `refresh()`) with a cancellation flag so the lint check sees a guarded
+  // async setter instead of a synchronous trampoline through a memoized callback.
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
     habitsApi
-      .listToday(userId)
+      .listToday(userId, today)
       .then((data) => {
         if (!cancelled) setTodayLogMap(buildTodayLogMap(data));
       })
@@ -103,7 +107,7 @@ export function HabitLogsProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [userId]);
+  }, [userId, today]);
 
   return (
     <HabitLogsContext.Provider value={{ todayLogMap, refresh }}>

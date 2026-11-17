@@ -459,8 +459,18 @@ Returns: `{ shouldRemind, reason, isScheduledToday, activeCueCount, evaluatedAt 
 
 #### `CueScheduleRules` (`src/domain/rules/cue-schedule.rules.ts`)
 
-- **`isScheduledToday(scheduleDays, today)`** — checks if the given weekday is in the habit's schedule.
+- **`isScheduledToday(scheduleDays, now = new Date())`** — checks if today's weekday in the application timezone is in the habit's schedule (an empty schedule means daily).
+- **`weekdayOf(dateOrYmd)`** — weekday of a `YYYY-MM-DD` calendar date, or of the application-timezone day containing an instant.
 - **`getActiveCues(cues)`** — filters `cues.filter(c => c.isActive)`.
+
+### 5.4 Time and calendar days (`src/shared/time.ts`)
+
+The application targets one timezone, `APP_TIMEZONE = 'Asia/Ulaanbaatar'`. Production hosts run in UTC, so every "which day is it" decision goes through `shared/time.ts` instead of host-local `Date` methods (`getDay`, `setHours`, …):
+
+- **Stored timestamps are real UTC instants.** `completedAt`/`loggedAt` sent with an offset (`…Z`, `+08:00`) are used as-is. Values without an offset (sent by older app versions) are read as Ulaanbaatar wall-clock time by `parseClientTimestamp`.
+- **Calendar days are `YYYY-MM-DD` strings** in the application timezone: `appDateOf(instant)`, `appDayRange(ymd)` (first/last instant of the day), `addDaysToYmd`, `weekdayIndexOfYmd`.
+- **Applied to:** today's habits and their logs, the dashboard streak, the future-date check on `POST /logs`, the reminder "already completed today" check, daily XP and engagement streaks.
+- The backend logs the host and application timezones at startup. CI runs the backend tests with `TZ=UTC`.
 
 ---
 
@@ -493,7 +503,7 @@ All routes (except `POST /auth/*`) are protected by `JwtAuthGuard`. The bearer t
 |--------|------|-------------|
 | `POST` | `/users/:userId/habits` | Create a new habit |
 | `GET` | `/users/:userId/habits` | List all habits for a user |
-| `GET` | `/users/:userId/habits/today` | List habits scheduled for today (with cue context) |
+| `GET` | `/users/:userId/habits/today` | List habits scheduled for today, or `?date=YYYY-MM-DD` (an Asia/Ulaanbaatar calendar day), with cue context and that day's log |
 | `GET` | `/users/:userId/habits/:habitId` | Get single habit detail |
 | `PATCH` | `/users/:userId/habits/:habitId` | Update habit fields / schedule / cues |
 | `GET` | `/users/:userId/habits/:habitId/reminder-decision` | Evaluate reminder eligibility (dry run, no DB write) |
@@ -575,7 +585,7 @@ The `apply-tapering` endpoint upserts the `ReminderPolicy` record and returns co
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
 | `actualValue` | number | ✓ | The measured value for this session |
-| `completedAt` | string (ISO 8601) | ✓ | Date/time of the completion attempt |
+| `completedAt` | string (ISO 8601) | ✓ | Date/time of the completion attempt. Send an offset (`…Z`); without one it is read as Asia/Ulaanbaatar time. Rejected if its Ulaanbaatar day is after today |
 | `triggerSource` | `CompletionTriggerSource` | | `SELF_INITIATED` / `REMINDER_TRIGGERED` / `UNKNOWN` |
 | `linkedReminderId` | string (UUID) | | Required when `triggerSource` is `REMINDER_TRIGGERED` |
 | `completionHour` | number (0–23) | | Context snapshot — defaults to hour from `completedAt` |

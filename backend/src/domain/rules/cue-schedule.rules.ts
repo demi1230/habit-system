@@ -1,5 +1,6 @@
 import { Weekday } from '../enums/domain.enums';
 import { HabitCueEntity } from '../entities/habit-cue.entity';
+import { appDateOf, weekdayIndexOfYmd } from '../../shared/time';
 
 /** Maps JS Date.getDay() (0 = Sunday) to the Weekday enum. */
 export const JS_DAY_TO_WEEKDAY: Record<number, Weekday> = {
@@ -29,21 +30,27 @@ export interface CueContext {
  * "Өдөөгч нөхцөл · Cue schedule rules" from the Domain layer.
  */
 export class CueScheduleRules {
-  /** Returns today's weekday enum value. */
-  static todayWeekday(): Weekday {
-    return JS_DAY_TO_WEEKDAY[new Date().getDay()];
+  /** Weekday of "today" in the application timezone at instant `now`. */
+  static todayWeekday(now: Date = new Date()): Weekday {
+    return CueScheduleRules.weekdayOf(appDateOf(now));
   }
 
-  /** Returns the weekday enum for a given date (YYYY-MM-DD string or Date). */
+  /**
+   * Weekday of a calendar date (`YYYY-MM-DD`), or of the application-timezone
+   * day containing an instant. Never uses the host's local timezone.
+   */
   static weekdayOf(date: Date | string): Weekday {
-    const d = typeof date === 'string' ? new Date(date + 'T00:00:00') : date;
-    return JS_DAY_TO_WEEKDAY[d.getDay()];
+    const ymd = typeof date === 'string' ? date : appDateOf(date);
+    return JS_DAY_TO_WEEKDAY[weekdayIndexOfYmd(ymd)];
   }
 
   /** A habit with an empty schedule is treated as a daily habit. */
-  static isScheduledToday(scheduleDays: Array<{ weekday: Weekday }>): boolean {
+  static isScheduledToday(
+    scheduleDays: Array<{ weekday: Weekday }>,
+    now: Date = new Date(),
+  ): boolean {
     if (scheduleDays.length === 0) return true;
-    const today = CueScheduleRules.todayWeekday();
+    const today = CueScheduleRules.todayWeekday(now);
     return scheduleDays.some((d) => d.weekday === today);
   }
 

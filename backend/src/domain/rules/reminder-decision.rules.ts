@@ -24,9 +24,13 @@ export interface ReminderDecisionResult {
  * Thesis mapping: "Санууглын шийдвэр · Reminder decision rules" from the Domain layer.
  */
 export class ReminderDecisionRules {
-  static decide(input: ReminderDecisionInput): ReminderDecisionResult {
+  static decide(
+    input: ReminderDecisionInput,
+    now: Date = new Date(),
+  ): ReminderDecisionResult {
     const isScheduledToday = CueScheduleRules.isScheduledToday(
       input.scheduleDays,
+      now,
     );
     const activeCues = CueScheduleRules.getActiveCues(input.cues);
     const activeCueCount = activeCues.length;
@@ -49,7 +53,7 @@ export class ReminderDecisionRules {
       reason,
       isScheduledToday,
       activeCueCount,
-      evaluatedAt: new Date().toISOString(),
+      evaluatedAt: now.toISOString(),
     };
   }
 }

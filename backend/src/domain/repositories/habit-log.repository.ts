@@ -36,7 +36,8 @@ export interface IHabitLogRepository {
   delete(id: string): Promise<void>;
   findAllByHabitId(habitId: string): Promise<HabitLogEntity[]>;
   /**
-   * Returns the latest log on a specific calendar day for each habit id.
+   * Returns the latest log for each habit id on the application-timezone
+   * calendar day that contains the instant `date` (see shared/time.ts).
    * Used by dashboard/today views to avoid one HTTP + DB call per habit.
    */
   findLatestByHabitIdsForDate(

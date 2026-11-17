@@ -18,6 +18,7 @@ import {
   ENGAGEMENT_SERVICE,
   type IEngagementService,
 } from '../engagement/engagement.constants';
+import { appDateOf, parseClientTimestamp } from '../shared/time';
 
 @Injectable()
 export class ProgressService {
@@ -193,26 +194,24 @@ export class ProgressService {
     },
     createHabitLogDto: CreateHabitLogDto,
   ) {
-    const completedAt = new Date(createHabitLogDto.completedAt);
+    const completedAt = parseClientTimestamp(createHabitLogDto.completedAt);
+    if (Number.isNaN(completedAt.getTime())) {
+      throw new BadRequestException('completedAt is not a valid timestamp');
+    }
 
-    // Reject future-dated logs
+    // Reject logs for a later calendar day than today. Both days are taken in
+    // the application timezone, so this does not depend on the host timezone.
     const now = new Date();
-    const endOfToday = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      23,
-      59,
-      59,
-      999,
-    );
-    if (completedAt > endOfToday) {
+    if (appDateOf(completedAt) > appDateOf(now)) {
       throw new BadRequestException('Cannot log habits for future dates');
     }
 
     const loggedAt = createHabitLogDto.loggedAt
-      ? new Date(createHabitLogDto.loggedAt)
-      : new Date();
+      ? parseClientTimestamp(createHabitLogDto.loggedAt)
+      : now;
+    if (Number.isNaN(loggedAt.getTime())) {
+      throw new BadRequestException('loggedAt is not a valid timestamp');
+    }
 
     return {
       status:

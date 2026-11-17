@@ -93,4 +93,90 @@ describe('HabitsService', () => {
       }),
     ).rejects.toBeInstanceOf(BadRequestException);
   });
+
+  describe('getTodayHabits day boundaries (application timezone)', () => {
+    const makeHabit = (id: string, weekdays: string[], startDate: string) => {
+      const scheduleDays = weekdays.map((weekday) => ({ weekday }));
+      return {
+        id,
+        userId,
+        title: id,
+        startDate: new Date(`${startDate}T00:00:00.000Z`),
+        scheduleDays,
+        cues: [],
+        motivationProfile: null,
+        isScheduledOn: (weekday: string) =>
+          scheduleDays.length === 0 ||
+          scheduleDays.some((d) => d.weekday === weekday),
+      };
+    };
+
+    const findLatestByHabitIdsForDate = jest.fn().mockResolvedValue([]);
+
+    beforeEach(() => {
+      Object.assign(habitLogRepo, { findLatestByHabitIdsForDate });
+      habitLogRepo.findSummaryByHabitId.mockResolvedValue([]);
+      habitRepo.findActiveByUserId.mockResolvedValue([
+        makeHabit('monday-habit', ['MONDAY'], '2026-03-01'),
+        makeHabit('sunday-habit', ['SUNDAY'], '2026-03-01'),
+        makeHabit('starts-tomorrow', [], '2026-03-24'),
+      ]);
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('uses the Ulaanbaatar weekday early in the morning', async () => {
+      // Monday 2026-03-23 01:00 in Ulaanbaatar is still Sunday in UTC.
+      jest.useFakeTimers({ now: new Date('2026-03-22T17:00:00.000Z') });
+
+      const result = await habitsService.getTodayHabits(userId);
+
+      expect(result.map((h) => h.id)).toEqual(['monday-habit']);
+      // The day's logs are looked up for the Ulaanbaatar day 2026-03-23.
+      const [, dayInstant] = findLatestByHabitIdsForDate.mock.calls[0] as [
+        string[],
+        Date,
+      ];
+      expect(dayInstant.toISOString()).toBe('2026-03-22T16:00:00.000Z');
+    });
+
+    it('treats an explicit date as an application-timezone calendar day', async () => {
+      const result = await habitsService.getTodayHabits(userId, '2026-03-22');
+
+      expect(result.map((h) => h.id)).toEqual(['sunday-habit']);
+    });
+
+    it('counts the streak over Ulaanbaatar days, not host-local days', async () => {
+      // Monday 2026-03-30 09:00 Ulaanbaatar.
+      jest.useFakeTimers({ now: new Date('2026-03-30T01:00:00.000Z') });
+      habitLogRepo.findSummaryByHabitId.mockResolvedValue([
+        // Logged at 23:30 Ulaanbaatar on Monday 2026-03-23 (15:30 UTC).
+        {
+          status: 'DONE',
+          completedAt: new Date('2026-03-23T15:30:00.000Z'),
+          triggerSource: 'SELF_INITIATED',
+        },
+        // Logged at 06:00 Ulaanbaatar on Monday 2026-03-16 (Sunday in UTC).
+        {
+          status: 'DONE',
+          completedAt: new Date('2026-03-15T22:00:00.000Z'),
+          triggerSource: 'SELF_INITIATED',
+        },
+      ]);
+
+      const [mondayHabit] = await habitsService.getTodayHabits(userId);
+
+      // Today (no log yet) does not break the streak; the two previous
+      // Mondays both count.
+      expect(mondayHabit.currentStreak).toBe(2);
+    });
+
+    it('rejects a date that is not YYYY-MM-DD', async () => {
+      await expect(
+        habitsService.getTodayHabits(userId, '2026-02-30'),
+      ).rejects.toBeInstanceOf(BadRequestException);
+    });
+  });
 });
