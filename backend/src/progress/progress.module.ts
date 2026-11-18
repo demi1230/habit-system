@@ -11,6 +11,8 @@ import { DifficultyFeedbackPrismaRepository } from '../infrastructure/persistenc
 import { ReflectionPrismaRepository } from '../infrastructure/persistence/reflection.prisma-repository';
 import { ReminderPolicyPrismaRepository } from '../infrastructure/persistence/reminder-policy.prisma-repository';
 import { AdaptationRecommendationPrismaRepository } from '../infrastructure/persistence/adaptation-recommendation.prisma-repository';
+import { REMINDER_REPOSITORY } from '../domain/repositories/reminder.repository';
+import { ReminderPrismaRepository } from '../infrastructure/persistence/reminder.prisma-repository';
 import { EngagementModule } from '../engagement/engagement.module';
 import { ProgressController } from './progress.controller';
 import { ProgressService } from './progress.service';
@@ -46,6 +48,7 @@ import { RecommendationGenerationService } from './recommendation-generation.ser
       provide: ADAPTATION_RECOMMENDATION_REPOSITORY,
       useClass: AdaptationRecommendationPrismaRepository,
     },
+    { provide: REMINDER_REPOSITORY, useClass: ReminderPrismaRepository },
   ],
   exports: [ProgressService, RecommendationGenerationService],
 })

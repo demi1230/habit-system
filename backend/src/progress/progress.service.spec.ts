@@ -32,6 +32,10 @@ describe('ProgressService', () => {
     awardCompletionRewards: jest.fn(),
   };
 
+  const reminderRepo = {
+    findLatestDeliveredForHabitBetween: jest.fn(),
+  };
+
   let progressService: ProgressService;
 
   beforeEach(() => {
@@ -44,6 +48,7 @@ describe('ProgressService', () => {
       ...rest,
     }));
     habitLogRepo.findLatestByHabitIdsForDate.mockResolvedValue([]);
+    reminderRepo.findLatestDeliveredForHabitBetween.mockResolvedValue(null);
     habitLogRepo.update.mockImplementation((id: string, data: object) =>
       Promise.resolve({ id, habitId, completedAt: new Date(), ...data }),
     );
@@ -53,6 +58,7 @@ describe('ProgressService', () => {
       habitsService as never,
       analyticsService as never,
       engagementService as never,
+      reminderRepo as never,
     );
   });
 
@@ -170,6 +176,28 @@ describe('ProgressService', () => {
 
       expect(result.id).toBe('log-existing');
       expect(engagementService.awardCompletionRewards).not.toHaveBeenCalled();
+    });
+
+    it('classifies the trigger source on the server, ignoring the client claim', async () => {
+      jest.useFakeTimers({ now: new Date('2026-03-23T02:05:00.000Z') });
+      reminderRepo.findLatestDeliveredForHabitBetween.mockResolvedValue({
+        id: 'reminder-1',
+        sentAt: new Date('2026-03-23T01:45:00.000Z'), // 15 min before
+      });
+
+      await progressService.createHabitLog(userId, habitId, {
+        actualValue: 10,
+        completedAt: '2026-03-23T02:00:00.000Z',
+        triggerSource: CompletionTriggerSource.SELF_INITIATED,
+      });
+
+      expect(habitLogRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          triggerSource: CompletionTriggerSource.REMINDER_TRIGGERED,
+          linkedReminderId: 'reminder-1',
+        }),
+      );
+      jest.useRealTimers();
     });
 
     it('still reports success when rewards fail after the log is saved', async () => {

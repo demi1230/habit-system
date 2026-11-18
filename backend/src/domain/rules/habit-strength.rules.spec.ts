@@ -116,6 +116,12 @@ describe('HabitStrengthRules.recommendTaperingPolicy', () => {
     expect(result.recommendedMode).toBe(ReminderPolicyMode.FADE_OUT);
   });
 
+  it('keeps MODERATE_SUPPORT for a strong habit that still depends on reminders', () => {
+    const result = HabitStrengthRules.recommendTaperingPolicy('strong', 0.2);
+    expect(result.recommendedMode).toBe(ReminderPolicyMode.MODERATE_SUPPORT);
+    expect(result.maxPerDay).toBe(3);
+  });
+
   it('recommends MODERATE_SUPPORT for building habit', () => {
     const result = HabitStrengthRules.recommendTaperingPolicy('building', 0.3);
     expect(result.recommendedMode).toBe(ReminderPolicyMode.MODERATE_SUPPORT);

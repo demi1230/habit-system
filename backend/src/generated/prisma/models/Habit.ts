@@ -823,10 +823,6 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type HabitCreateNestedOneWithoutStepsInput = {
   create?: Prisma.XOR<Prisma.HabitCreateWithoutStepsInput, Prisma.HabitUncheckedCreateWithoutStepsInput>
   connectOrCreate?: Prisma.HabitCreateOrConnectWithoutStepsInput

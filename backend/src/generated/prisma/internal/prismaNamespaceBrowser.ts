@@ -97,6 +97,7 @@ export const UserScalarFieldEnum = {
   totalXp: 'totalXp',
   currentLat: 'currentLat',
   currentLng: 'currentLng',
+  currentLocationAt: 'currentLocationAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

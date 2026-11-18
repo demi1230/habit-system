@@ -14,6 +14,7 @@ export interface CreateHabitLogPayload {
   actualValue: number;
   completedAt: string;
   loggedAt?: string;
+  /** @deprecated Ignored by the server, which classifies the source itself. */
   triggerSource?: CompletionTriggerSource;
 }
 

@@ -237,8 +237,13 @@ export class HabitStrengthRules {
    *
    *   strong + selfInitiatedRate >= 0.7  → MINIMAL
    *   strong + selfInitiatedRate >= 0.4  → FADE_OUT
+   *   strong + selfInitiatedRate <  0.4  → MODERATE_SUPPORT (still reminder-dependent)
    *   building any                       → MODERATE_SUPPORT
    *   weak any                           → FULL_SUPPORT
+   *
+   * Support never increases because a habit is strong: a strong habit that
+   * still depends on reminders keeps moderate support rather than falling
+   * through to the full support meant for weak habits.
    */
   static recommendTaperingPolicy(
     stage: CompositeStage,
@@ -264,7 +269,7 @@ export class HabitStrengthRules {
           'Habit is strong but still partially reminder-dependent. Fade-out support.',
       };
     }
-    if (stage === 'building') {
+    if (stage === 'building' || stage === 'strong') {
       return {
         recommendedMode: ReminderPolicyMode.MODERATE_SUPPORT,
         cooldownMinutes: 60,

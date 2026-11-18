@@ -59,6 +59,7 @@ export class HabitsService {
     const cues =
       createHabitDto.cues?.map((c) => this.buildCuePayload(c)) ??
       this.buildCuesFromReminder(createHabitDto.reminder);
+    this.assertLocationCuesHaveTimeWindow(cues);
 
     // Build motivation profile: merge top-level reason into motivationProfile
     const motivationProfile = this.mergeMotivationProfile(
@@ -145,6 +146,7 @@ export class HabitsService {
       (updateHabitDto.reminder
         ? this.buildCuesFromReminder(updateHabitDto.reminder)
         : undefined);
+    this.assertLocationCuesHaveTimeWindow(cues);
 
     const motivationProfile =
       updateHabitDto.motivationProfile !== undefined ||
@@ -355,6 +357,32 @@ export class HabitsService {
           'Each tiny step must have a unique orderIndex.',
         );
       }
+    }
+  }
+
+  /**
+   * Reminders fire only when a time window AND (if set) a place match
+   * (CueWindowRules), so a place without a time window would never remind.
+   */
+  private assertLocationCuesHaveTimeWindow(
+    cues?: Array<{
+      isActive: boolean;
+      startTime: string | null;
+      endTime: string | null;
+      locationLat: number | null;
+      locationLng: number | null;
+    }>,
+  ) {
+    if (!cues) return;
+    const active = cues.filter((cue) => cue.isActive);
+    const hasPlace = active.some(
+      (cue) => cue.locationLat !== null && cue.locationLng !== null,
+    );
+    const hasTimeWindow = active.some((cue) => cue.startTime && cue.endTime);
+    if (hasPlace && !hasTimeWindow) {
+      throw new BadRequestException(
+        'Location reminders need at least one time window.',
+      );
     }
   }
 

@@ -58,4 +58,19 @@ export interface IReminderRepository {
    * with the start of today in the application timezone). Returns the count.
    */
   expireScheduledBefore(cutoff: Date): Promise<number>;
+  /** Reminders for the habit that reached a device (deliveredAt set) in [from, to]. */
+  countDeliveredForHabitBetween(
+    habitId: string,
+    from: Date,
+    to: Date,
+  ): Promise<number>;
+  /**
+   * The latest reminder for the habit that reached a device with sentAt in
+   * [from, to], or null. Used to tell reminder-triggered completions apart.
+   */
+  findLatestDeliveredForHabitBetween(
+    habitId: string,
+    from: Date,
+    to: Date,
+  ): Promise<ReminderEntity | null>;
 }

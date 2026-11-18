@@ -35,6 +35,21 @@ export type HabitFormInitialValues = Partial<HabitFormValues>;
 export const MIN_ABOVE_TARGET_MESSAGE =
   'Доод хэмжээ нь зорилтот хэмжээнээс их байж болохгүй.';
 
+export const PLACE_NEEDS_TIME_MESSAGE =
+  'Байршилтай сануулгад дор хаяж нэг цагийн хүрээ нэмнэ үү: сануулга тухайн цагт тухайн газарт байхад ирнэ.';
+
+/**
+ * Reminders fire when a time window AND (if chosen) a place match, so a place
+ * without a time window would never remind. Returns a message or null.
+ */
+export function validateReminderCues(values: HabitFormValues): string | null {
+  const hasTimeWindow = values.timeWindows.some((tw) => tw.start && tw.end);
+  if (values.selectedLocations.length > 0 && !hasTimeWindow) {
+    return PLACE_NEEDS_TIME_MESSAGE;
+  }
+  return null;
+}
+
 function targetValueOf(values: HabitFormValues): number {
   return values.habitType === 'binary' ? 1 : parseFloat(values.targetNum) || 1;
 }

@@ -657,7 +657,7 @@ export function DashboardPage() {
               ? new Date()
               : new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 12, 0, 0)
             ).toISOString(),
-            triggerSource: 'SELF_INITIATED',
+            // No triggerSource: the server classifies it from delivered reminders.
           });
       const savedStatus = statusFromServerLog(saved);
       setLogMap(prev => new Map(prev).set(habit.id, {
@@ -667,7 +667,7 @@ export function DashboardPage() {
       }));
       // Celebrate only when the saved log is newly done
       if (savedStatus === 'done' && !wasDone) {
-        const ctx = decideCelebration(habit.currentStreak, 0, 'SELF_INITIATED');
+        const ctx = decideCelebration(habit.currentStreak, 0, saved.triggerSource ?? 'UNKNOWN');
         setCelebrationTarget({ habit, logId: saved.id, ctx });
       }
       // Sync shared logs context so Reminders page reflects the change

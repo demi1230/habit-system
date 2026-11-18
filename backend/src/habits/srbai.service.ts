@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   HabitStrengthRules,
   CompositeScoreResult,
@@ -25,6 +25,8 @@ import { CreateSrbaiAssessmentDto } from '../habits/dto/create-srbai-assessment.
  */
 @Injectable()
 export class SrbaiService {
+  private readonly logger = new Logger(SrbaiService.name);
+
   constructor(
     @Inject(SRBAI_ASSESSMENT_REPOSITORY)
     private readonly srbaiRepo: ISrbaiAssessmentRepository,
@@ -65,6 +67,18 @@ export class SrbaiService {
     });
 
     await this.analyticsService.recordActivity(userId, 'srbai_submitted');
+
+    // A new automaticity rating is the evidence the tapering rule needs, so
+    // the reminder policy is re-derived here. Failure must not lose the
+    // already-saved assessment.
+    try {
+      await this.computeAndApplyTaperingPolicy(userId, habitId);
+    } catch (error) {
+      this.logger.warn(
+        `Reminder policy update failed for habit ${habitId}: ${String(error)}`,
+      );
+    }
+
     return assessment;
   }
 

@@ -7,6 +7,7 @@ import { REMINDER_REPOSITORY } from '../domain/repositories/reminder.repository'
 import type { IReminderRepository } from '../domain/repositories/reminder.repository';
 import { Inject } from '@nestjs/common';
 import { appDateOf, appDayRange, nowInAppTz } from '../shared/time';
+import { CueWindowRules } from '../domain/rules/cue-window.rules';
 
 @Injectable()
 export class ReminderSchedulerService {
@@ -62,18 +63,37 @@ export class ReminderSchedulerService {
         },
         include: {
           cues: true,
-          user: { select: { currentLat: true, currentLng: true } },
+          user: {
+            select: {
+              currentLat: true,
+              currentLng: true,
+              currentLocationAt: true,
+            },
+          },
         },
       });
 
+      // Wall-clock time in the application timezone, not the host's (UTC).
+      const now = new Date();
+      const local = nowInAppTz(now);
+      const minuteOfDay = local.hour * 60 + local.minute;
+
       for (const habit of habits) {
-        if (
-          !this.isWithinAnyActiveWindow(
-            habit.cues,
-            habit.user.currentLat,
-            habit.user.currentLng,
-          )
-        ) {
+        const { currentLat, currentLng, currentLocationAt } = habit.user;
+        const window = CueWindowRules.evaluate({
+          cues: habit.cues,
+          minuteOfDay,
+          userLocation:
+            currentLat !== null && currentLng !== null
+              ? {
+                  lat: currentLat,
+                  lng: currentLng,
+                  updatedAt: currentLocationAt,
+                }
+              : null,
+          now,
+        });
+        if (!window.open) {
           continue;
         }
 
@@ -91,7 +111,6 @@ export class ReminderSchedulerService {
       }
 
       // Deliver any snooze follow-up reminders whose scheduled time has arrived
-      const now = new Date();
       const snoozeFollowUps =
         await this.reminderRepo.findDuePendingSnoozeFollowUps(now);
 
@@ -120,75 +139,5 @@ export class ReminderSchedulerService {
     } finally {
       this.isRunning = false;
     }
-  }
-
-  private isWithinAnyActiveWindow(
-    cues: Array<{
-      isActive: boolean;
-      startTime: string | null;
-      endTime: string | null;
-      coarseLocation: string | null;
-      locationLat: number | null;
-      locationLng: number | null;
-    }>,
-    userLat: number | null,
-    userLng: number | null,
-  ) {
-    const activeCues = cues.filter((cue) => cue.isActive);
-    if (activeCues.length === 0) {
-      return false;
-    }
-
-    // Compute the current wall-clock time in the application timezone, not
-    // the server's local timezone — Railway and most cloud hosts run in UTC,
-    // so `new Date().getHours()` would otherwise produce the wrong window.
-    const local = nowInAppTz();
-    const currentMinutes = local.hour * 60 + local.minute;
-
-    return activeCues.some((cue) => {
-      // GPS location gate: cue has precise coordinates → user must be within 100 m
-      if (cue.locationLat !== null && cue.locationLng !== null) {
-        if (userLat === null || userLng === null) return false;
-        if (
-          !this.isWithin100m(userLat, userLng, cue.locationLat, cue.locationLng)
-        )
-          return false;
-      }
-
-      // Time window check
-      if (!cue.startTime || !cue.endTime) {
-        return true;
-      }
-
-      const [startHour, startMinute] = cue.startTime.split(':').map(Number);
-      const [endHour, endMinute] = cue.endTime.split(':').map(Number);
-      const startTotal = startHour * 60 + startMinute;
-      const endTotal = endHour * 60 + endMinute;
-
-      if (endTotal >= startTotal) {
-        return currentMinutes >= startTotal && currentMinutes <= endTotal;
-      }
-
-      return currentMinutes >= startTotal || currentMinutes <= endTotal;
-    });
-  }
-
-  /** Returns true if two GPS points are within 100 metres of each other (Haversine). */
-  private isWithin100m(
-    lat1: number,
-    lng1: number,
-    lat2: number,
-    lng2: number,
-    thresholdMetres = 100,
-  ): boolean {
-    const R = 6_371_000; // Earth radius in metres
-    const toRad = (deg: number) => (deg * Math.PI) / 180;
-    const dLat = toRad(lat2 - lat1);
-    const dLng = toRad(lng2 - lng1);
-    const a =
-      Math.sin(dLat / 2) ** 2 +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
-    const distance = 2 * R * Math.asin(Math.sqrt(a));
-    return distance <= thresholdMetres;
   }
 }

@@ -154,14 +154,17 @@ Final score → Stage:
 
 `recommendTaperingPolicy(stage, selfInitiatedRate)` → `TaperingRecommendation`:
 
+> **Historical design note.** The table below was the original phase 4 design. The implemented rule (`src/domain/rules/habit-strength.rules.ts`) and how it is applied are described in `docs/BACKEND.md` §6.5. Current values:
+
 | Stage | Self-initiated rate | Mode | Cooldown | Max/day |
 |---|---|---|---|---|
-| `strong` | ≥ 0.7 | `MINIMAL` | 1440 min | 1 |
-| `strong` | < 0.7 | `TAPERED` | 720 min | 2 |
-| `building` | — | `TAPERED` | 480 min | 3 |
-| `weak` | — | `STANDARD` | 240 min | 4 |
+| `strong` | ≥ 0.7 | `MINIMAL` | 240 min | 1 |
+| `strong` | 0.4–0.69 | `FADE_OUT` | 120 min | 2 |
+| `strong` | < 0.4 | `MODERATE_SUPPORT` | 60 min | 3 |
+| `building` | — | `MODERATE_SUPPORT` | 60 min | 3 |
+| `weak` | — | `FULL_SUPPORT` | 30 min | 4 |
 
-Policy is persisted/upserted in the `ReminderPolicy` table and returned.
+Policy is persisted/upserted in the `ReminderPolicy` table and returned. It is also re-applied automatically after each SRBAI submission; the scheduler enforces `cooldownMinutes` and `maxPerDay`.
 
 #### Analytics events wired
 | Event | Trigger |

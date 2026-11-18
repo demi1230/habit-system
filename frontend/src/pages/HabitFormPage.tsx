@@ -24,6 +24,7 @@ import { toLocalDateStr } from '@/lib/dates';
 import {
   buildHabitPayload,
   validateHabitTargets,
+  validateReminderCues,
   type HabitFormInitialValues,
   type HabitFormValues,
 } from '@/features/habits/habit-form-payload';
@@ -680,9 +681,9 @@ export function HabitFormPage({
     };
 
     // Catch mistakes the user can fix here instead of a generic save error.
-    const targetError = validateHabitTargets(values);
-    if (targetError) {
-      setErrorMsg(targetError);
+    const validationError = validateHabitTargets(values) ?? validateReminderCues(values);
+    if (validationError) {
+      setErrorMsg(validationError);
       return;
     }
 

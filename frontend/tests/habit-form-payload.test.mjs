@@ -7,7 +7,9 @@ const {
   buildHabitPayload,
   habitToFormValues,
   validateHabitTargets,
+  validateReminderCues,
   MIN_ABOVE_TARGET_MESSAGE,
+  PLACE_NEEDS_TIME_MESSAGE,
 } = loadTsModule(new URL('../src/features/habits/habit-form-payload.ts', import.meta.url), {
   modules: { '@/lib/routine-cue': routineCue },
 });
@@ -101,4 +103,14 @@ test('a minimum above the target is rejected before saving', () => {
   assert.equal(validateHabitTargets({ ...baseValues, minNum: '40' }), MIN_ABOVE_TARGET_MESSAGE);
   assert.equal(validateHabitTargets({ ...baseValues, minNum: '10' }), null);
   assert.equal(validateHabitTargets({ ...baseValues, habitType: 'binary', minNum: '40' }), null);
+});
+
+test('a reminder place needs a time window (reminders need time and place)', () => {
+  const home = [{ lat: 47.9184, lng: 106.9177, label: 'Гэр' }];
+  assert.equal(validateReminderCues({ ...baseValues, selectedLocations: home }), PLACE_NEEDS_TIME_MESSAGE);
+  assert.equal(
+    validateReminderCues({ ...baseValues, selectedLocations: home, timeWindows: [{ start: '07:00', end: '08:00' }] }),
+    null,
+  );
+  assert.equal(validateReminderCues(baseValues), null);
 });

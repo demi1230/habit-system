@@ -46,6 +46,7 @@ export type UserMinAggregateOutputType = {
   totalXp: number | null
   currentLat: number | null
   currentLng: number | null
+  currentLocationAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -58,6 +59,7 @@ export type UserMaxAggregateOutputType = {
   totalXp: number | null
   currentLat: number | null
   currentLng: number | null
+  currentLocationAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -70,6 +72,7 @@ export type UserCountAggregateOutputType = {
   totalXp: number
   currentLat: number
   currentLng: number
+  currentLocationAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -96,6 +99,7 @@ export type UserMinAggregateInputType = {
   totalXp?: true
   currentLat?: true
   currentLng?: true
+  currentLocationAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -108,6 +112,7 @@ export type UserMaxAggregateInputType = {
   totalXp?: true
   currentLat?: true
   currentLng?: true
+  currentLocationAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -120,6 +125,7 @@ export type UserCountAggregateInputType = {
   totalXp?: true
   currentLat?: true
   currentLng?: true
+  currentLocationAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -219,6 +225,7 @@ export type UserGroupByOutputType = {
   totalXp: number
   currentLat: number | null
   currentLng: number | null
+  currentLocationAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -254,6 +261,7 @@ export type UserWhereInput = {
   totalXp?: Prisma.IntFilter<"User"> | number
   currentLat?: Prisma.FloatNullableFilter<"User"> | number | null
   currentLng?: Prisma.FloatNullableFilter<"User"> | number | null
+  currentLocationAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   habits?: Prisma.HabitListRelationFilter
@@ -278,6 +286,7 @@ export type UserOrderByWithRelationInput = {
   totalXp?: Prisma.SortOrder
   currentLat?: Prisma.SortOrderInput | Prisma.SortOrder
   currentLng?: Prisma.SortOrderInput | Prisma.SortOrder
+  currentLocationAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   habits?: Prisma.HabitOrderByRelationAggregateInput
@@ -305,6 +314,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   totalXp?: Prisma.IntFilter<"User"> | number
   currentLat?: Prisma.FloatNullableFilter<"User"> | number | null
   currentLng?: Prisma.FloatNullableFilter<"User"> | number | null
+  currentLocationAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   habits?: Prisma.HabitListRelationFilter
@@ -329,6 +339,7 @@ export type UserOrderByWithAggregationInput = {
   totalXp?: Prisma.SortOrder
   currentLat?: Prisma.SortOrderInput | Prisma.SortOrder
   currentLng?: Prisma.SortOrderInput | Prisma.SortOrder
+  currentLocationAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -349,6 +360,7 @@ export type UserScalarWhereWithAggregatesInput = {
   totalXp?: Prisma.IntWithAggregatesFilter<"User"> | number
   currentLat?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
   currentLng?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
+  currentLocationAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -361,6 +373,7 @@ export type UserCreateInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -385,6 +398,7 @@ export type UserUncheckedCreateInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -409,6 +423,7 @@ export type UserUpdateInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -433,6 +448,7 @@ export type UserUncheckedUpdateInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -457,6 +473,7 @@ export type UserCreateManyInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -469,6 +486,7 @@ export type UserUpdateManyMutationInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -481,6 +499,7 @@ export type UserUncheckedUpdateManyInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -493,6 +512,7 @@ export type UserCountOrderByAggregateInput = {
   totalXp?: Prisma.SortOrder
   currentLat?: Prisma.SortOrder
   currentLng?: Prisma.SortOrder
+  currentLocationAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -511,6 +531,7 @@ export type UserMaxOrderByAggregateInput = {
   totalXp?: Prisma.SortOrder
   currentLat?: Prisma.SortOrder
   currentLng?: Prisma.SortOrder
+  currentLocationAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -523,6 +544,7 @@ export type UserMinOrderByAggregateInput = {
   totalXp?: Prisma.SortOrder
   currentLat?: Prisma.SortOrder
   currentLng?: Prisma.SortOrder
+  currentLocationAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -560,6 +582,10 @@ export type NullableFloatFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -742,6 +768,7 @@ export type UserCreateWithoutHabitsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   activityLogs?: Prisma.UserActivityLogCreateNestedManyWithoutUserInput
@@ -765,6 +792,7 @@ export type UserUncheckedCreateWithoutHabitsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   activityLogs?: Prisma.UserActivityLogUncheckedCreateNestedManyWithoutUserInput
@@ -804,6 +832,7 @@ export type UserUpdateWithoutHabitsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activityLogs?: Prisma.UserActivityLogUpdateManyWithoutUserNestedInput
@@ -827,6 +856,7 @@ export type UserUncheckedUpdateWithoutHabitsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activityLogs?: Prisma.UserActivityLogUncheckedUpdateManyWithoutUserNestedInput
@@ -850,6 +880,7 @@ export type UserCreateWithoutDifficultyFeedbackInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -873,6 +904,7 @@ export type UserUncheckedCreateWithoutDifficultyFeedbackInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -912,6 +944,7 @@ export type UserUpdateWithoutDifficultyFeedbackInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -935,6 +968,7 @@ export type UserUncheckedUpdateWithoutDifficultyFeedbackInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -958,6 +992,7 @@ export type UserCreateWithoutReflectionsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -981,6 +1016,7 @@ export type UserUncheckedCreateWithoutReflectionsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1020,6 +1056,7 @@ export type UserUpdateWithoutReflectionsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1043,6 +1080,7 @@ export type UserUncheckedUpdateWithoutReflectionsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1066,6 +1104,7 @@ export type UserCreateWithoutActivityLogsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1089,6 +1128,7 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1128,6 +1168,7 @@ export type UserUpdateWithoutActivityLogsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1151,6 +1192,7 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1174,6 +1216,7 @@ export type UserCreateWithoutRemindersInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1197,6 +1240,7 @@ export type UserUncheckedCreateWithoutRemindersInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1236,6 +1280,7 @@ export type UserUpdateWithoutRemindersInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1259,6 +1304,7 @@ export type UserUncheckedUpdateWithoutRemindersInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1282,6 +1328,7 @@ export type UserCreateWithoutReminderActionsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1305,6 +1352,7 @@ export type UserUncheckedCreateWithoutReminderActionsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1344,6 +1392,7 @@ export type UserUpdateWithoutReminderActionsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1367,6 +1416,7 @@ export type UserUncheckedUpdateWithoutReminderActionsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1390,6 +1440,7 @@ export type UserCreateWithoutAdaptationRecommendationsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1413,6 +1464,7 @@ export type UserUncheckedCreateWithoutAdaptationRecommendationsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1452,6 +1504,7 @@ export type UserUpdateWithoutAdaptationRecommendationsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1475,6 +1528,7 @@ export type UserUncheckedUpdateWithoutAdaptationRecommendationsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1498,6 +1552,7 @@ export type UserCreateWithoutArticleInteractionsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1521,6 +1576,7 @@ export type UserUncheckedCreateWithoutArticleInteractionsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1560,6 +1616,7 @@ export type UserUpdateWithoutArticleInteractionsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1583,6 +1640,7 @@ export type UserUncheckedUpdateWithoutArticleInteractionsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1606,6 +1664,7 @@ export type UserCreateWithoutRecommendationInteractionsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1629,6 +1688,7 @@ export type UserUncheckedCreateWithoutRecommendationInteractionsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1668,6 +1728,7 @@ export type UserUpdateWithoutRecommendationInteractionsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1691,6 +1752,7 @@ export type UserUncheckedUpdateWithoutRecommendationInteractionsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1714,6 +1776,7 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1737,6 +1800,7 @@ export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1776,6 +1840,7 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1799,6 +1864,7 @@ export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1822,6 +1888,7 @@ export type UserCreateWithoutBadgesInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1845,6 +1912,7 @@ export type UserUncheckedCreateWithoutBadgesInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1884,6 +1952,7 @@ export type UserUpdateWithoutBadgesInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -1907,6 +1976,7 @@ export type UserUncheckedUpdateWithoutBadgesInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -1930,6 +2000,7 @@ export type UserCreateWithoutFeedbacksInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitCreateNestedManyWithoutUserInput
@@ -1953,6 +2024,7 @@ export type UserUncheckedCreateWithoutFeedbacksInput = {
   totalXp?: number
   currentLat?: number | null
   currentLng?: number | null
+  currentLocationAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
@@ -1992,6 +2064,7 @@ export type UserUpdateWithoutFeedbacksInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
@@ -2015,6 +2088,7 @@ export type UserUncheckedUpdateWithoutFeedbacksInput = {
   totalXp?: Prisma.IntFieldUpdateOperationsInput | number
   currentLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   currentLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  currentLocationAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
@@ -2168,6 +2242,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   totalXp?: boolean
   currentLat?: boolean
   currentLng?: boolean
+  currentLocationAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   habits?: boolean | Prisma.User$habitsArgs<ExtArgs>
@@ -2193,6 +2268,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   totalXp?: boolean
   currentLat?: boolean
   currentLng?: boolean
+  currentLocationAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2205,6 +2281,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   totalXp?: boolean
   currentLat?: boolean
   currentLng?: boolean
+  currentLocationAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2217,11 +2294,12 @@ export type UserSelectScalar = {
   totalXp?: boolean
   currentLat?: boolean
   currentLng?: boolean
+  currentLocationAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "displayName" | "totalXp" | "currentLat" | "currentLng" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "displayName" | "totalXp" | "currentLat" | "currentLng" | "currentLocationAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habits?: boolean | Prisma.User$habitsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.User$activityLogsArgs<ExtArgs>
@@ -2264,6 +2342,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     totalXp: number
     currentLat: number | null
     currentLng: number | null
+    currentLocationAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -2708,6 +2787,7 @@ export interface UserFieldRefs {
   readonly totalXp: Prisma.FieldRef<"User", 'Int'>
   readonly currentLat: Prisma.FieldRef<"User", 'Float'>
   readonly currentLng: Prisma.FieldRef<"User", 'Float'>
+  readonly currentLocationAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

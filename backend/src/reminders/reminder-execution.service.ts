@@ -17,10 +17,12 @@ import { HabitsService } from '../habits/habits.service';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { EvaluateAndCreateReminderDto } from './dto/evaluate-and-create-reminder.dto';
 import { ReminderMessageBuilder } from './reminder-message.builder';
-import { nowInAppTz } from '../shared/time';
+import { appDateOf, appDayRange, nowInAppTz } from '../shared/time';
 
 /** Default cooldown (minutes) when no ReminderPolicy exists for the habit. */
 const DEFAULT_COOLDOWN_MINUTES = 60;
+/** Same as the reminder_policies.max_per_day column default. */
+const DEFAULT_MAX_PER_DAY = 3;
 
 /**
  * Application service — Reminder execution
@@ -110,6 +112,26 @@ export class ReminderExecutionService {
     const policy = await this.policyRepo.findByHabitId(habitId);
     const cooldownMinutes = policy?.cooldownMinutes ?? DEFAULT_COOLDOWN_MINUTES;
 
+    // Daily cap from the reminder policy; tapering lowers it as the habit
+    // becomes self-initiated. Only reminders that reached a device count.
+    const maxPerDay = policy?.maxPerDay ?? DEFAULT_MAX_PER_DAY;
+    const today = appDayRange(appDateOf(now));
+    const deliveredToday =
+      await this.reminderRepo.countDeliveredForHabitBetween(
+        habitId,
+        today.start,
+        today.end,
+      );
+    if (deliveredToday >= maxPerDay) {
+      return {
+        persisted: false,
+        decisionReason,
+        evaluatedAt: decision.evaluatedAt,
+        reminder: null,
+        skippedReason: 'DAILY_LIMIT_REACHED',
+      };
+    }
+
     // Habit-scoped dedup: reject if any active PENDING/SENT reminder for this
     // habit still has effectiveUntil > now. Timezone-agnostic by construction
     // (no bucket strings involved), so it stays correct on Railway/UTC hosts
@@ -169,7 +191,12 @@ export class ReminderExecutionService {
         deliveredAt: delivery.deliveredAt ?? undefined,
       });
 
-      await this.analyticsService.recordActivity(userId, 'reminder_sent');
+      // Only reminders that reached a device count as sent in the activity
+      // log (e.g. not when the user has no push subscription).
+      await this.analyticsService.recordActivity(
+        userId,
+        delivery.delivered ? 'reminder_sent' : 'reminder_undelivered',
+      );
     } catch (err) {
       this.logger.error(
         `Notification gateway failed for reminderId=${reminder.id}: ${String(err)}`,
@@ -259,5 +286,5 @@ export interface EvaluateAndCreateResult {
   decisionReason: ReminderDecisionReason;
   evaluatedAt: string;
   reminder: ReminderEntity | null;
-  skippedReason?: 'ALREADY_COMPLETED_TODAY';
+  skippedReason?: 'ALREADY_COMPLETED_TODAY' | 'DAILY_LIMIT_REACHED';
 }

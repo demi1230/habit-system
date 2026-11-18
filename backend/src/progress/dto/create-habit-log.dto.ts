@@ -36,9 +36,11 @@ export class CreateHabitLogDto {
 
   @ApiPropertyOptional({
     enum: CompletionTriggerSource,
-    example: CompletionTriggerSource.SELF_INITIATED,
+    deprecated: true,
     description:
-      'What initiated this completion — used for habit-strength self-initiated rate.',
+      'Ignored. Accepted for older app versions; the server classifies the ' +
+      'source from delivered reminders (REMINDER_TRIGGERED within 60 minutes ' +
+      'of a reminder, UNKNOWN for earlier days, otherwise SELF_INITIATED).',
   })
   @IsOptional()
   @IsEnum(CompletionTriggerSource)

@@ -635,19 +635,28 @@ The client never sends `status` — it is always derived, ensuring data integrit
 | `GET` | `/users/:userId/reminders/:reminderId` | Single reminder detail |
 | `POST` | `/users/:userId/reminders/:reminderId/actions` | Submit a user action (`DONE` or `SNOOZE`) |
 
+**Scheduler gate (`CueWindowRules`, `src/domain/rules/cue-window.rules.ts`).** Each minute the scheduler considers a habit only when its cues allow a reminder now — **time AND place**:
+
+- an active time window must contain the current Asia/Ulaanbaatar time (windows may cross midnight); a habit without a time window gets no scheduled reminders, and the API rejects location cues without a time window (400);
+- if the habit has location cues, the user's last location must be at most 30 minutes old (`users.current_location_at`) and within 100 m of one of them. Location is only reported when the user turned location sharing on in the app.
+
 **`evaluate-and-create` flow:**
 
 1. `ReminderDecisionRules.decide()` is called (pure function — no I/O).
 2. If `shouldRemind === false`, returns the decision reason without persisting anything.
-3. Computes a **cooldown key**: `habitId:YYYY-MM-DDTHH` (hourly bucket) and queries for any `PENDING`/`SENT` reminder with the same key whose `effectiveUntil` is still in the future.
-4. If a live dedup match exists, throws `ConflictException` — one reminder per hourly window.
-5. Otherwise creates a new `Reminder` record (`PENDING`), calls the notification gateway to mark it `SENT`, and returns the result.
+3. Skips (`ALREADY_COMPLETED_TODAY`) when today's log is already DONE, and (`DAILY_LIMIT_REACHED`) when the habit already had `maxPerDay` delivered reminders today (policy value, default 3).
+4. If a `PENDING`/`SENT` reminder for the habit still has `effectiveUntil` in the future, throws `ConflictException` (cooldown).
+5. Otherwise creates a new `Reminder` record (`PENDING`), calls the notification gateway to mark it `SENT`, and records `reminder_sent` — or `reminder_undelivered` when no device received it (e.g. no push subscription).
+
+**Tapering.** `HabitStrengthRules.recommendTaperingPolicy(stage, selfInitiatedRate)` is re-applied automatically after every SRBAI submission (and still available via `POST …/reminder-policy/apply-tapering`). Policies: weak → `FULL_SUPPORT` (30 min cooldown, 4/day); building, or strong but self-initiated rate < 0.4 → `MODERATE_SUPPORT` (60 min, 3/day); strong and ≥ 0.4 → `FADE_OUT` (120 min, 2/day); strong and ≥ 0.7 → `MINIMAL` (240 min, 1/day). The scheduler enforces `cooldownMinutes` and `maxPerDay`; `mode` and `narrowingLevel` are stored for explanation only.
+
+**Completion trigger source (`TriggerSourceRules`).** `POST /logs` ignores the client's `triggerSource`. The server classifies a new log as `REMINDER_TRIGGERED` (linked to the reminder) when a reminder for the habit reached a device within 60 minutes before `completedAt`, `UNKNOWN` when it is logged for an earlier day, otherwise `SELF_INITIATED`. This is a time-window heuristic: `completedAt` is when the completion was logged, not necessarily when it was performed.
 
 > **`effectiveUntil`** is set to `scheduledFor + cooldownMinutes` where `cooldownMinutes` comes from the habit's `ReminderPolicy` (default: 60 min). This allows multiple reminder windows per day (e.g. morning cue + evening cue) without cross-window duplicates.
 
 **Action handling in `RemindersService`:**
 
-- **DONE**: Marks reminder `ACTED`. Idempotently creates a `HabitLog` with `triggerSource: REMINDER_TRIGGERED` and `linkedReminderId` set. Throws `ConflictException` if a DONE action already exists for this reminder.
+- **DONE**: Saves the day's completion first (see "Reminder `DONE`" under the Progress module), then marks the reminder `ACTED`. A new log gets `triggerSource: REMINDER_TRIGGERED` and `linkedReminderId`. Throws `ConflictException` if a DONE action already exists or the reminder is from an earlier day.
 - **SNOOZE**: Records the action with `snoozedUntil = actedAt + snoozeMinutes` (default 30). Creates a follow-up `Reminder` starting at `snoozedUntil`.
 
 > **`DISMISS` does not exist.** The only valid actions are `DONE` and `SNOOZE`. Sending any other `actionType` returns `BadRequestException`.

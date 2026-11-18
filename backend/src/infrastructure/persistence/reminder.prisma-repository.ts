@@ -106,6 +106,36 @@ export class ReminderPrismaRepository implements IReminderRepository {
     return results as unknown as ReminderEntity[];
   }
 
+  async countDeliveredForHabitBetween(
+    habitId: string,
+    from: Date,
+    to: Date,
+  ): Promise<number> {
+    return this.prisma.reminder.count({
+      where: {
+        habitId,
+        deliveredAt: { not: null },
+        sentAt: { gte: from, lte: to },
+      },
+    });
+  }
+
+  async findLatestDeliveredForHabitBetween(
+    habitId: string,
+    from: Date,
+    to: Date,
+  ): Promise<ReminderEntity | null> {
+    const result = await this.prisma.reminder.findFirst({
+      where: {
+        habitId,
+        deliveredAt: { not: null },
+        sentAt: { gte: from, lte: to },
+      },
+      orderBy: { sentAt: 'desc' },
+    });
+    return result as unknown as ReminderEntity | null;
+  }
+
   async expireScheduledBefore(cutoff: Date): Promise<number> {
     const result = await this.prisma.reminder.updateMany({
       where: {

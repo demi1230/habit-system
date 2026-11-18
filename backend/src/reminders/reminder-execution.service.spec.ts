@@ -51,6 +51,7 @@ const reminderRepo = {
   findAllByUserId: jest.fn(),
   update: jest.fn(),
   findActiveByHabitId: jest.fn(),
+  countDeliveredForHabitBetween: jest.fn(),
 };
 
 const policyRepo = {
@@ -98,6 +99,7 @@ describe('ReminderExecutionService', () => {
     policyRepo.findByHabitId.mockResolvedValue(null);
     habitLogRepo.findLatestByHabitIdsForDate.mockResolvedValue([]);
     reminderRepo.findActiveByHabitId.mockResolvedValue(null);
+    reminderRepo.countDeliveredForHabitBetween.mockResolvedValue(0);
     service = new ReminderExecutionService(
       reminderRepo as never,
       notificationGateway as never,
@@ -186,6 +188,52 @@ describe('ReminderExecutionService', () => {
       REMINDER_ID,
       expect.objectContaining({ status: ReminderStatus.SENT }),
     );
+    expect(analyticsService.recordActivity).toHaveBeenCalledWith(
+      USER_ID,
+      'reminder_sent',
+    );
+  });
+
+  it('logs an undelivered reminder separately from a sent one', async () => {
+    habitsService.getOwnedHabitOrThrow.mockResolvedValue(
+      makeHabitWithReminders(),
+    );
+    reminderRepo.create.mockResolvedValue({ id: REMINDER_ID });
+    reminderRepo.update.mockResolvedValue({ id: REMINDER_ID });
+    notificationGateway.send.mockResolvedValueOnce({
+      delivered: false,
+      deliveredAt: null,
+      providerResponse: 'no-subscriptions',
+    });
+
+    await service.evaluateAndCreate(USER_ID, HABIT_ID, {});
+
+    expect(analyticsService.recordActivity).toHaveBeenCalledWith(
+      USER_ID,
+      'reminder_undelivered',
+    );
+    expect(analyticsService.recordActivity).not.toHaveBeenCalledWith(
+      USER_ID,
+      'reminder_sent',
+    );
+  });
+
+  it("stops at the policy's daily limit", async () => {
+    habitsService.getOwnedHabitOrThrow.mockResolvedValue(
+      makeHabitWithReminders(),
+    );
+    policyRepo.findByHabitId.mockResolvedValue({
+      cooldownMinutes: 240,
+      maxPerDay: 1,
+    });
+    reminderRepo.countDeliveredForHabitBetween.mockResolvedValue(1);
+
+    const result = await service.evaluateAndCreate(USER_ID, HABIT_ID, {});
+
+    expect(result.persisted).toBe(false);
+    expect(result.skippedReason).toBe('DAILY_LIMIT_REACHED');
+    expect(reminderRepo.create).not.toHaveBeenCalled();
+    expect(notificationGateway.send).not.toHaveBeenCalled();
   });
 
   it('throws ConflictException when an active reminder already exists for the habit', async () => {

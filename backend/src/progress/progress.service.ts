@@ -28,6 +28,9 @@ import {
   type IEngagementService,
 } from '../engagement/engagement.constants';
 import { appDateOf, parseClientTimestamp } from '../shared/time';
+import type { IReminderRepository } from '../domain/repositories/reminder.repository';
+import { REMINDER_REPOSITORY } from '../domain/repositories/reminder.repository';
+import { TriggerSourceRules } from '../domain/rules/trigger-source.rules';
 
 @Injectable()
 export class ProgressService {
@@ -40,6 +43,8 @@ export class ProgressService {
     private readonly analyticsService: AnalyticsService,
     @Inject(ENGAGEMENT_SERVICE)
     private readonly engagementService: IEngagementService,
+    @Inject(REMINDER_REPOSITORY)
+    private readonly reminderRepo: IReminderRepository,
   ) {}
 
   /**
@@ -69,7 +74,11 @@ export class ProgressService {
       habitLog = await this.raiseDayValue(habit, existing, logData.actualValue);
     } else {
       try {
-        habitLog = await this.habitLogRepo.create({ habitId, ...logData });
+        habitLog = await this.habitLogRepo.create({
+          habitId,
+          ...logData,
+          ...(await this.classifyTriggerSource(habitId, logData.completedAt)),
+        });
       } catch (error) {
         // A concurrent request created the day's log first.
         if (!(error instanceof HabitLogDayConflictError)) throw error;
@@ -112,6 +121,30 @@ export class ProgressService {
     }
 
     return updatedLog;
+  }
+
+  /**
+   * What prompted the completion, decided on the server from delivered
+   * reminders (TriggerSourceRules); the client's own claim is not used.
+   */
+  private async classifyTriggerSource(habitId: string, completedAt: Date) {
+    const lastDeliveredReminder =
+      await this.reminderRepo.findLatestDeliveredForHabitBetween(
+        habitId,
+        TriggerSourceRules.attributionWindowStart(completedAt),
+        completedAt,
+      );
+    return TriggerSourceRules.classify({
+      completedAt,
+      now: new Date(),
+      lastDeliveredReminder:
+        lastDeliveredReminder?.sentAt != null
+          ? {
+              id: lastDeliveredReminder.id,
+              sentAt: new Date(lastDeliveredReminder.sentAt),
+            }
+          : null,
+    });
   }
 
   /** DONE once the value reaches the habit's minimum target. */
@@ -281,8 +314,6 @@ export class ProgressService {
       actualValue: createHabitLogDto.actualValue,
       completedAt,
       loggedAt,
-      triggerSource:
-        createHabitLogDto.triggerSource ?? CompletionTriggerSource.UNKNOWN,
     };
   }
 }

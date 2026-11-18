@@ -78,6 +78,9 @@ model User {
   totalXp         Int               @default(0) @map("total_xp")
   currentLat      Float?            @map("current_lat")
   currentLng      Float?            @map("current_lng")
+  // When currentLat/currentLng were last reported; old locations are ignored
+  // by location-based reminders.
+  currentLocationAt DateTime?       @map("current_location_at")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt    DateTime          @updatedAt @map("updated_at")
   habits                       Habit[]

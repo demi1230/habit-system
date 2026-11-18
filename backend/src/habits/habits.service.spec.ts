@@ -134,6 +134,18 @@ describe('HabitsService', () => {
       expect(lastUpdate().cues).toEqual([]);
     });
 
+    it('rejects a reminder place without a time window', async () => {
+      await expect(
+        habitsService.updateHabit(userId, habitId, {
+          reminder: {
+            timeWindows: [],
+            locations: [{ label: 'Гэр', lat: 47.9184, lng: 106.9177 }],
+          },
+        }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      expect(habitRepo.update).not.toHaveBeenCalled();
+    });
+
     it('stores location cues with their coordinates', async () => {
       await habitsService.updateHabit(userId, habitId, {
         reminder: {
