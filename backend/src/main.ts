@@ -1,11 +1,14 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { configureApp } from './app.setup';
 import { APP_TIMEZONE } from './shared/time';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  configureApp(app);
 
   // Day boundaries must follow APP_TIMEZONE, not the host timezone. Logging
   // both makes a mismatch visible in deployment logs.
@@ -24,30 +27,26 @@ async function bootstrap() {
     .map((origin) => origin.trim())
     .filter(Boolean);
 
-  app.setGlobalPrefix('api');
+  // API docs are public when enabled, so they are off in production unless
+  // SWAGGER_ENABLED=true is set explicitly.
+  const swaggerEnabled =
+    process.env.SWAGGER_ENABLED !== undefined
+      ? process.env.SWAGGER_ENABLED === 'true'
+      : process.env.NODE_ENV !== 'production';
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-    }),
-  );
+  if (swaggerEnabled) {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('Habit Formation System API')
+      .setDescription(
+        'Backend API for the Behavior-Based Habit Formation System thesis project.',
+      )
+      .setVersion('2.0')
+      .addBearerAuth()
+      .build();
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('Habit Formation System API')
-    .setDescription(
-      'Backend API for the Behavior-Based Habit Formation System thesis project.',
-    )
-    .setVersion('2.0')
-    .addBearerAuth()
-    .build();
-
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('docs', app, document);
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('docs', app, document);
+  }
 
   app.enableCors({
     origin: corsOrigins,

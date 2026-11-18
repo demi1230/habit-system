@@ -5,11 +5,11 @@ import { useAuth } from '@/context/AuthContext';
 import { TYPOGRAPHY } from '@/shared/design';
 
 export function LocationSelector() {
-  const { currentLat, currentLng, setCurrentLocation } = useAuth();
+  const { currentLat, currentLng, setCurrentLocation, locationSharing, setLocationSharing } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const hasLocation = currentLat !== null && currentLng !== null;
+  const hasLocation = locationSharing && currentLat !== null && currentLng !== null;
 
   const handleDetect = async () => {
     if (!navigator.geolocation) {
@@ -18,10 +18,15 @@ export function LocationSelector() {
     }
     setLoading(true);
     setError(null);
+    // Turning sharing on is an explicit choice; the app then keeps the
+    // location current while it is open.
+    await setLocationSharing(true);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
           await setCurrentLocation(pos.coords.latitude, pos.coords.longitude);
+        } catch {
+          setError('Байршлыг хадгалж чадсангүй. Дахин оролдоно уу.');
         } finally {
           setLoading(false);
         }
@@ -36,8 +41,12 @@ export function LocationSelector() {
 
   const handleClear = async () => {
     setLoading(true);
+    setError(null);
     try {
-      await setCurrentLocation(null, null);
+      // Stops sharing on this device and deletes the saved location.
+      await setLocationSharing(false);
+    } catch {
+      setError('Байршлыг устгаж чадсангүй. Дахин оролдоно уу.');
     } finally {
       setLoading(false);
     }
@@ -101,7 +110,7 @@ export function LocationSelector() {
         ) : (
           <LocateFixed className="w-4 h-4" />
         )}
-        {hasLocation ? 'Байршил арилгах' : 'GPS байршил тогтоох'}
+        {hasLocation ? 'Байршил ашиглахгүй' : 'Байршил ашиглах'}
       </button>
 
       {error && (
@@ -109,7 +118,9 @@ export function LocationSelector() {
       )}
 
       <p style={{ ...TYPOGRAPHY.caption, color: 'var(--muted-foreground)' }}>
-        Байршилтай сануулга таны одоогийн байршлаас 100 м дотор байх үед л явуулна.
+        Асаасан үед апп нээгдэх бүрт таны байршлыг шинэчилж, зөвхөн байршилтай
+        сануулгад ашиглана: сануулга сонгосон газраас 100 м дотор байхад л ирнэ.
+        Унтраавал хадгалсан байршил устгагдана.
       </p>
     </div>
   );

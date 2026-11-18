@@ -36,7 +36,8 @@ import { Spinner } from '@/components/spinner';
 import { useTheme, setTheme } from '@/lib/theme-store';
 import type { ThemeMode } from '@/lib/theme-store';
 import { getHabitColor } from '@/lib/habit-colors';
-import { ensurePushSubscription, getNotificationPermission } from '@/lib/push';
+import { ensurePushSubscription, getCurrentPushSubscription, getNotificationPermission } from '@/lib/push';
+import { savePushOptedOut } from '@/lib/device-preferences';
 import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
 import type { Habit } from '@/api/types';
 
@@ -123,15 +124,18 @@ function MenuItem({
 }
 
 function PushToggleRow({
-  permission, busy, subscriptionCount, onEnable, onDisable,
+  permission, busy, subscriptionCount, deviceSubscribed, onEnable, onDisable,
 }: {
   permission: string;
   busy: boolean;
   subscriptionCount: number;
+  /** Whether this browser currently has a push subscription. */
+  deviceSubscribed: boolean;
   onEnable: () => void;
   onDisable?: () => void;
 }) {
-  const isOn = permission === 'granted' && subscriptionCount > 0;
+  // The switch controls this device; other devices are counted in the subtitle.
+  const isOn = permission === 'granted' && deviceSubscribed;
   const isDenied = permission === 'denied';
   const handleToggle = () => {
     if (isDenied || busy) return;
@@ -149,7 +153,13 @@ function PushToggleRow({
       <div className="flex-1 min-w-0">
         <p className="text-foreground" style={{ ...TYPOGRAPHY.sectionTitle, fontWeight: 500 }}>Сануулга</p>
         <p className="text-muted-foreground mt-0.5" style={TYPOGRAPHY.micro}>
-          {isDenied ? 'Браузерийн тохиргооноос зөвшөөрнө үү' : isOn ? `${subscriptionCount} төхөөрөмж идэвхтэй` : 'Цагтаа сануулга хүлээн авах'}
+          {isDenied
+            ? 'Браузерийн тохиргооноос зөвшөөрнө үү'
+            : isOn
+              ? `Энэ төхөөрөмж дээр идэвхтэй · нийт ${Math.max(subscriptionCount, 1)} төхөөрөмж`
+              : subscriptionCount > 0
+                ? `Энэ төхөөрөмж дээр унтраалттай · ${subscriptionCount} төхөөрөмж идэвхтэй`
+                : 'Цагтаа сануулга хүлээн авах'}
         </p>
       </div>
       <motion.button
@@ -188,6 +198,17 @@ export function SettingsPage() {
 
   const [pushPermission, setPushPermission] = useState(getNotificationPermission());
   const [pushBusy, setPushBusy] = useState(false);
+  const [deviceSubscribed, setDeviceSubscribed] = useState(false);
+
+  const refreshDeviceSubscription = useCallback(() => {
+    getCurrentPushSubscription()
+      .then((subscription) => setDeviceSubscribed(subscription !== null))
+      .catch(() => setDeviceSubscribed(false));
+  }, []);
+
+  useEffect(() => {
+    refreshDeviceSubscription();
+  }, [refreshDeviceSubscription]);
 
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -237,31 +258,39 @@ export function SettingsPage() {
     try {
       const subscription = await ensurePushSubscription();
       await pushApi.register(userId, subscription, navigator.userAgent);
+      savePushOptedOut(userId, false);
       setPushPermission(getNotificationPermission());
       loadEngagement();
     } catch (err) {
       console.error('Push subscription failed:', err);
     } finally {
+      refreshDeviceSubscription();
       setPushBusy(false);
     }
   };
 
+  /** Turns reminders off on this device only; other devices keep theirs. */
   const handleDisablePush = async () => {
     if (!userId || pushBusy) return;
     setPushBusy(true);
     try {
-      const registration = await navigator.serviceWorker?.getRegistration();
-      if (registration) {
-        const sub = await registration.pushManager.getSubscription();
-        if (sub) await sub.unsubscribe();
+      const subscription = await getCurrentPushSubscription();
+      if (subscription) {
+        const endpoint = subscription.endpoint;
+        await subscription.unsubscribe();
+        const subs = await pushApi.list(userId);
+        await Promise.all(
+          subs.filter((s) => s.endpoint === endpoint).map((s) => pushApi.remove(userId, s.id)),
+        );
       }
-      const subs = await pushApi.list(userId);
-      await Promise.all(subs.map((s) => pushApi.remove(userId, s.id)));
+      // Remember the choice so signing in again does not re-enable reminders.
+      savePushOptedOut(userId, true);
       setPushPermission(getNotificationPermission());
       loadEngagement();
     } catch (err) {
       console.error('Push unsubscription failed:', err);
     } finally {
+      refreshDeviceSubscription();
       setPushBusy(false);
     }
   };
@@ -326,6 +355,7 @@ export function SettingsPage() {
               permission={pushPermission}
               busy={pushBusy}
               subscriptionCount={engagementSubCount}
+              deviceSubscribed={deviceSubscribed}
               onEnable={handleEnablePush}
               onDisable={handleDisablePush}
             />

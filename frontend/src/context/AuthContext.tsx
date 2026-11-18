@@ -2,6 +2,13 @@ import { createContext, useContext, useState, useEffect, useRef, useCallback, ty
 import { useQueryClient } from '@tanstack/react-query';
 import { analyticsApi } from '@/api/analytics';
 import { authApi } from '@/api/auth';
+import { pushApi } from '@/api/push';
+import {
+  isLocationSharingOn,
+  isPushOptedOut,
+  saveLocationSharing,
+} from '@/lib/device-preferences';
+import { ensurePushSubscription, getNotificationPermission, unsubscribeThisDevice } from '@/lib/push';
 
 /** Decode JWT payload without a library */
 function decodePayload(token: string): { sub: string; email: string } | null {
@@ -25,6 +32,10 @@ interface AuthContextValue extends AuthState {
   login: (token: string, displayName?: string | null) => void;
   logout: () => void;
   setCurrentLocation: (lat: number | null, lng: number | null) => Promise<void>;
+  /** Whether this user allowed location sharing on this device. */
+  locationSharing: boolean;
+  /** Turns location sharing on, or off (which also clears the saved location). */
+  setLocationSharing: (on: boolean) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -94,6 +105,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (state.userId) {
       analyticsApi.log(state.userId, 'session_end').catch(() => {});
     }
+    // Stop this device from receiving the signed-out user's reminders.
+    unsubscribeThisDevice().catch(() => {});
     localStorage.removeItem('access_token');
     localStorage.removeItem('user_id');
     localStorage.removeItem('display_name');
@@ -125,10 +138,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [state.userId, state.token, sessionStatus]);
 
-  // Auto-detect GPS location on mount and whenever the user returns to the app.
-  // Runs silently — no UI feedback, no error shown if permission denied.
+  // Re-attach push on sign-in: logout unsubscribes this device, so when the
+  // browser permission is already granted (no prompt) and the user has not
+  // turned reminders off here, subscribe again for the signed-in user.
   useEffect(() => {
-    if (sessionStatus !== 'ready' || !state.userId || !navigator.geolocation) return;
+    if (sessionStatus !== 'ready' || !state.userId) return;
+    if (getNotificationPermission() !== 'granted' || isPushOptedOut(state.userId)) return;
+    const userId = state.userId;
+    ensurePushSubscription()
+      .then((subscription) => pushApi.register(userId, subscription, navigator.userAgent))
+      .catch(() => {}); // push stays off; the Settings toggle shows the real state
+  }, [state.userId, sessionStatus]);
+
+  const [locationSharing, setLocationSharingState] = useState(
+    () => (state.userId ? isLocationSharingOn(state.userId) : false),
+  );
+  const [locationSharingUser, setLocationSharingUser] = useState(state.userId);
+  if (locationSharingUser !== state.userId) {
+    setLocationSharingUser(state.userId);
+    setLocationSharingState(state.userId ? isLocationSharingOn(state.userId) : false);
+  }
+
+  const setLocationSharing = useCallback(async (on: boolean) => {
+    if (!state.userId) return;
+    saveLocationSharing(state.userId, on);
+    setLocationSharingState(on);
+    if (!on) await setCurrentLocation(null, null);
+  }, [state.userId, setCurrentLocation]);
+
+  // Location is used only for location-based reminders and only after the
+  // user turned sharing on (Settings, or by adding a place to a habit). While
+  // on, it is refreshed when the app opens or regains focus.
+  useEffect(() => {
+    if (sessionStatus !== 'ready' || !state.userId || !locationSharing || !navigator.geolocation) return;
 
     const detect = () => {
       navigator.geolocation.getCurrentPosition(
@@ -153,10 +195,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     detect(); // on login / first render
     window.addEventListener('focus', detect); // when user tabs back in
     return () => window.removeEventListener('focus', detect);
-  }, [state.userId, sessionStatus]);
+  }, [state.userId, sessionStatus, locationSharing]);
 
   return (
-    <AuthContext.Provider value={{ ...state, login, logout, setCurrentLocation }}>
+    <AuthContext.Provider value={{ ...state, login, logout, setCurrentLocation, locationSharing, setLocationSharing }}>
       {state.token && sessionStatus !== 'ready' ? (
         <div className="session-gate" aria-busy={sessionStatus === 'checking'}>
           {sessionStatus === 'error' && <div role="alert">

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type { IDifficultyFeedbackRepository } from '../domain/repositories/difficulty-feedback.repository';
 import { DIFFICULTY_FEEDBACK_REPOSITORY } from '../domain/repositories/difficulty-feedback.repository';
 import type { IReflectionRepository } from '../domain/repositories/reflection.repository';
@@ -65,13 +65,25 @@ export class FeedbackService {
 
   // ── Difficulty rating ──────────────────────────────────────────────────────
 
+  /**
+   * The habit must belong to the user and the log to that habit; otherwise a
+   * rating or reflection could be attached to another user's log by id.
+   */
+  private async assertOwnedLog(userId: string, habitId: string, logId: string) {
+    await this.habitsService.getOwnedHabitOrThrow(userId, habitId);
+    const log = await this.habitLogRepo.findById(logId);
+    if (!log || log.habitId !== habitId) {
+      throw new NotFoundException('Log not found');
+    }
+  }
+
   async submitDifficulty(
     userId: string,
     habitId: string,
     logId: string,
     dto: SubmitDifficultyDto,
   ) {
-    await this.habitsService.getOwnedHabitOrThrow(userId, habitId);
+    await this.assertOwnedLog(userId, habitId, logId);
 
     const entry = await this.difficultyRepo.create({
       userId,
@@ -111,7 +123,7 @@ export class FeedbackService {
     logId: string,
     dto: SubmitReflectionDto,
   ) {
-    await this.habitsService.getOwnedHabitOrThrow(userId, habitId);
+    await this.assertOwnedLog(userId, habitId, logId);
 
     const entry = await this.reflectionRepo.create({
       userId,

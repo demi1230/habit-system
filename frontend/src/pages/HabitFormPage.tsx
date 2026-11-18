@@ -1,4 +1,5 @@
 import { useTour } from '@/context/TourContext';
+import { useAuth } from '@/context/AuthContext';
 import { errorMessage } from '@/lib/error-message';
 /**
  * HabitFormPage — shared form template used by both CreateHabitPage and EditHabitPage.
@@ -532,6 +533,7 @@ export function HabitFormPage({
 }: HabitFormPageProps) {
   const navigate = useNavigate();
   const { startTour } = useTour();
+  const { locationSharing, setLocationSharing } = useAuth();
   const [showSuccess, setShowSuccess] = useState(false);
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -693,6 +695,11 @@ export function HabitFormPage({
 
     try {
       await onSubmit(payload);
+      // Saving a place for reminders is the user's choice to use location
+      // (explained under the "Байршил" field); turning it off is in Settings.
+      if (values.reminderEnabled && values.selectedLocations.length > 0 && !locationSharing) {
+        setLocationSharing(true).catch(() => {});
+      }
       if (onSuccess) {
         onSuccess();
       } else {
@@ -1125,6 +1132,12 @@ export function HabitFormPage({
                         </div>
                       ))}
                     </div>
+                  )}
+                  {selectedLocations.length > 0 && (
+                    <p style={TYPOGRAPHY.micro} className="text-muted-foreground">
+                      Байршилтай сануулга ажиллахын тулд апп нээлттэй үед таны байршлыг
+                      ашиглана. Тохиргооноос хэдийд ч унтраах боломжтой.
+                    </p>
                   )}
                 </div>
                 <AnimatePresence>

@@ -41,6 +41,23 @@ export async function ensurePushSubscription() {
   });
 }
 
+/** This browser's current push subscription, if any (never prompts). */
+export async function getCurrentPushSubscription(): Promise<PushSubscription | null> {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return null;
+  const registration = await navigator.serviceWorker.getRegistration();
+  return (await registration?.pushManager.getSubscription()) ?? null;
+}
+
+/**
+ * Stops push on this device without calling the API (used at logout, when
+ * the session is already gone). The push service then rejects later sends,
+ * and the server deletes the stale subscription on its next attempt.
+ */
+export async function unsubscribeThisDevice(): Promise<void> {
+  const subscription = await getCurrentPushSubscription();
+  if (subscription) await subscription.unsubscribe();
+}
+
 export function getNotificationPermission() {
   if (typeof Notification === 'undefined') {
     return 'unsupported';

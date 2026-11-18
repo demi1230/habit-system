@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
+import { HabitsModule } from '../habits/habits.module';
 import { ProgressModule } from '../progress/progress.module';
 import { ADAPTATION_RECOMMENDATION_REPOSITORY } from '../domain/repositories/adaptation-recommendation.repository';
 import { ARTICLE_INTERACTION_REPOSITORY } from '../domain/repositories/article-interaction.repository';
@@ -15,7 +16,7 @@ import { LearningService } from './learning.service';
  * Manages learning recommendations, article interactions, and user support flows.
  */
 @Module({
-  imports: [AuthModule, ProgressModule],
+  imports: [AuthModule, HabitsModule, ProgressModule],
   controllers: [LearningController, ArticleController],
   providers: [
     LearningService,

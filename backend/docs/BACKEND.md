@@ -839,15 +839,20 @@ npm run start:dev
 ```
 
 Server listens on `http://localhost:3000`.  
-Swagger UI: `http://localhost:3000/api`
+Swagger UI: `http://localhost:3000/docs` (disabled in production unless `SWAGGER_ENABLED=true`)
 
 ### Environment variables
 
 | Variable | Default | Notes |
 |----------|---------|-------|
 | `DATABASE_URL` | — | PostgreSQL connection string |
-| `JWT_SECRET` | — | Secret for signing JWT tokens |
+| `JWT_SECRET` | — | Secret for signing JWT tokens. Required: the API does not start without it |
 | `PORT` | `3000` | HTTP port |
+| `SWAGGER_ENABLED` | `true`, or `false` when `NODE_ENV=production` | Serves Swagger UI at `/docs` |
+| `TRUST_PROXY_HOPS` | `1` | Proxy hops to trust for the client IP used by rate limits; `0` when the API is reached directly |
+| `ADMIN_SECRET` | — | Enables `POST /api/admin/push/broadcast` (body field `secret`, compared in constant time, 5 requests/min per IP) |
+
+Rate limits (HTTP 429 when exceeded, per client IP): login 10/min, register 5/min, change password 5/min, admin broadcast 5/min. Push subscription endpoints must be HTTPS URLs of browser push services (FCM, Mozilla, WNS, Apple).
 
 ### Building for production
 

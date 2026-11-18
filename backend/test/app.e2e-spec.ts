@@ -10,11 +10,11 @@ jest.mock('./../src/generated/prisma/client', () => ({
   Prisma: { JsonNull: null },
 }));
 
-import { INestApplication } from '@nestjs/common';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import { App } from 'supertest/types';
+import { configureApp } from './../src/app.setup';
 import { AppModule } from './../src/app.module';
 import { PrismaService } from './../src/infrastructure/prisma/prisma.service';
 
@@ -28,20 +28,15 @@ describe('Backend foundation (e2e)', () => {
     $connect: jest.fn(),
     $disconnect: jest.fn(),
     user: {
-      findUnique: jest.fn().mockResolvedValue({
-        id: userId,
-        email: 'user@example.com',
-        passwordHash: 'hash',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }),
+      findUnique: jest.fn(),
+      findMany: jest.fn().mockResolvedValue([]),
     },
     habit: {
       findMany: jest.fn().mockResolvedValue([]),
     },
   };
 
-  let app: INestApplication<App>;
+  let app: NestExpressApplication;
   let originalJwtSecret: string | undefined;
 
   const tokenFor = (sub: string) =>
@@ -65,6 +60,13 @@ describe('Backend foundation (e2e)', () => {
   });
 
   beforeEach(async () => {
+    prismaMock.user.findUnique.mockResolvedValue({
+      id: userId,
+      email: 'user@example.com',
+      passwordHash: 'hash',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
@@ -72,7 +74,9 @@ describe('Backend foundation (e2e)', () => {
       .useValue(prismaMock)
       .compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleFixture.createNestApplication<NestExpressApplication>();
+    // Same prefix and validation as production (src/main.ts).
+    configureApp(app);
     await app.init();
   });
 
@@ -81,7 +85,7 @@ describe('Backend foundation (e2e)', () => {
   });
 
   it('/ (GET) reports service health', async () => {
-    const response = await request(app.getHttpServer()).get('/').expect(200);
+    const response = await request(app.getHttpServer()).get('/api').expect(200);
     const body = response.body as {
       status: string;
       service: string;
@@ -95,23 +99,48 @@ describe('Backend foundation (e2e)', () => {
 
   it('/users/:userId/habits (GET) rejects requests without a token', async () => {
     await request(app.getHttpServer())
-      .get(`/users/${userId}/habits`)
+      .get(`/api/users/${userId}/habits`)
       .expect(401);
   });
 
   it("/users/:userId/habits (GET) rejects another user's token", async () => {
     await request(app.getHttpServer())
-      .get(`/users/${userId}/habits`)
+      .get(`/api/users/${userId}/habits`)
       .set('Authorization', `Bearer ${tokenFor(otherUserId)}`)
       .expect(403);
   });
 
   it('/users/:userId/habits (GET) returns the owner habits', async () => {
     const response = await request(app.getHttpServer())
-      .get(`/users/${userId}/habits`)
+      .get(`/api/users/${userId}/habits`)
       .set('Authorization', `Bearer ${tokenFor(userId)}`)
       .expect(200);
 
     expect(response.body).toEqual([]);
+  });
+
+  it('/auth/login (POST) is rate-limited per client', async () => {
+    prismaMock.user.findUnique.mockResolvedValue(null);
+    const attempt = () =>
+      request(app.getHttpServer())
+        .post('/api/auth/login')
+        .send({ email: 'nobody@example.com', password: 'wrong-password' });
+
+    for (let i = 0; i < 10; i += 1) {
+      await attempt().expect(401);
+    }
+    await attempt().expect(429);
+  }, 30_000);
+
+  it('/users/:userId/push-subscriptions (POST) rejects non-push-service endpoints', async () => {
+    await request(app.getHttpServer())
+      .post(`/api/users/${userId}/push-subscriptions`)
+      .set('Authorization', `Bearer ${tokenFor(userId)}`)
+      .send({
+        endpoint: 'https://169.254.169.254/latest/meta-data',
+        p256dh: 'key',
+        auth: 'secret',
+      })
+      .expect(400);
   });
 });

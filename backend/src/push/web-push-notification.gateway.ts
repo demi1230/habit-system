@@ -7,6 +7,7 @@ import {
   NotificationDeliveryResult,
 } from '../reminders/notification/notification.gateway.interface';
 import { PushSubscriptionsService } from './push-subscriptions.service';
+import { isAllowedPushEndpoint } from './push-endpoint';
 
 @Injectable()
 export class WebPushNotificationGateway implements INotificationGateway {
@@ -30,12 +31,28 @@ export class WebPushNotificationGateway implements INotificationGateway {
     }
   }
 
+  /**
+   * Never POST to an endpoint outside the browser push services, including
+   * rows saved before registration validated the endpoint.
+   */
+  private deliverable<T extends { endpoint: string }>(subscriptions: T[]): T[] {
+    return subscriptions.filter((subscription) => {
+      if (isAllowedPushEndpoint(subscription.endpoint)) return true;
+      this.logger.warn(
+        'Skipping a push subscription with a disallowed endpoint.',
+      );
+      return false;
+    });
+  }
+
   async broadcast(
     title: string,
     body: string,
   ): Promise<{ sent: number; failed: number }> {
     if (!this.vapidReady) return { sent: 0, failed: 0 };
-    const subscriptions = await this.pushSubscriptionsService.listAll();
+    const subscriptions = this.deliverable(
+      await this.pushSubscriptionsService.listAll(),
+    );
     let sent = 0,
       failed = 0;
     const message = JSON.stringify({ title, body, url: '/dashboard' });
@@ -64,8 +81,8 @@ export class WebPushNotificationGateway implements INotificationGateway {
   async send(
     payload: NotificationPayload,
   ): Promise<NotificationDeliveryResult> {
-    const subscriptions = await this.pushSubscriptionsService.listByUserId(
-      payload.userId,
+    const subscriptions = this.deliverable(
+      await this.pushSubscriptionsService.listByUserId(payload.userId),
     );
 
     if (!this.vapidReady) {

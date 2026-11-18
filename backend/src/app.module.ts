@@ -13,11 +13,15 @@ import { RemindersModule } from './reminders/reminders.module';
 import { LearningModule } from './learning/learning.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
+    // Limits are applied per route with ThrottlerGuard (credential and admin
+    // endpoints); this is the default when a route sets no @Throttle.
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 30 }]),
     PrismaModule,
     AuthModule,
     AnalyticsModule,

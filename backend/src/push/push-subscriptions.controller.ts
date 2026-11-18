@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -11,14 +10,12 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RegisterPushSubscriptionDto } from './dto/register-push-subscription.dto';
-import { BroadcastPushDto } from './dto/broadcast-push.dto';
 import { PushSubscriptionsService } from './push-subscriptions.service';
-import { WebPushNotificationGateway } from './web-push-notification.gateway';
 
+// Broadcasting to all subscribers is only available at POST /admin/push/broadcast.
 @ApiTags('push-subscriptions')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -26,8 +23,6 @@ import { WebPushNotificationGateway } from './web-push-notification.gateway';
 export class PushSubscriptionsController {
   constructor(
     private readonly pushSubscriptionsService: PushSubscriptionsService,
-    private readonly notificationGateway: WebPushNotificationGateway,
-    private readonly configService: ConfigService,
   ) {}
 
   @Get()
@@ -43,19 +38,6 @@ export class PushSubscriptionsController {
     @Body() dto: RegisterPushSubscriptionDto,
   ) {
     return this.pushSubscriptionsService.register(userId, dto);
-  }
-
-  @Post('broadcast')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({
-    summary: 'Broadcast a push notification to all subscribers (admin only)',
-  })
-  async broadcast(@Body() dto: BroadcastPushDto) {
-    const adminSecret = this.configService.get<string>('ADMIN_SECRET');
-    if (!adminSecret || dto.secret !== adminSecret) {
-      throw new ForbiddenException('Invalid admin secret.');
-    }
-    return this.notificationGateway.broadcast(dto.title, dto.body);
   }
 
   @Delete(':subscriptionId')

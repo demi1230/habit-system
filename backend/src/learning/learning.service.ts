@@ -17,6 +17,7 @@ import {
   RecommendationStatus,
 } from '../domain/enums/domain.enums';
 import { RecommendationGenerationService } from '../progress/recommendation-generation.service';
+import { HabitsService } from '../habits/habits.service';
 import type { AdaptationRecommendationEntity } from '../domain/entities/adaptation-recommendation.entity';
 import type { ArticleInteractionEntity } from '../domain/entities/article-interaction.entity';
 import {
@@ -53,6 +54,7 @@ export class LearningService {
     @Inject(RECOMMENDATION_INTERACTION_REPOSITORY)
     private readonly recommendationInteractionRepo: IRecommendationInteractionRepository,
     private readonly recommendationGenerationService: RecommendationGenerationService,
+    private readonly habitsService: HabitsService,
   ) {}
 
   /**
@@ -169,6 +171,11 @@ export class LearningService {
 
     if (!Object.values(SourceType).includes(dto.sourceType)) {
       throw new BadRequestException('Invalid source type');
+    }
+
+    // Only link the interaction to a habit the user owns.
+    if (dto.habitId) {
+      await this.habitsService.getOwnedHabitOrThrow(userId, dto.habitId);
     }
 
     const interaction = await this.articleInteractionRepo.create({

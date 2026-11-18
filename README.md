@@ -68,7 +68,7 @@ npm run start:dev
 
 Check that `DATABASE_URL` points to the intended local database before applying migrations. Prisma CLI configuration reads this variable directly.
 
-The default API base is `http://localhost:3000/api`, and Swagger documentation is available at `http://localhost:3000/docs`.
+The default API base is `http://localhost:3000/api`, and Swagger documentation is available at `http://localhost:3000/docs` (disabled when `NODE_ENV=production` unless `SWAGGER_ENABLED=true`).
 
 ### 2. Start the frontend
 

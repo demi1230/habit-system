@@ -62,7 +62,21 @@ function renderAuth(token) {
   const storage = new Map(token ? [['access_token', token]] : []);
   const { AuthProvider } = loadModule('../src/context/AuthContext.tsx', {
     localStorage: { getItem: key => storage.get(key) ?? null, removeItem: key => storage.delete(key) }, atob,
-  }, { '@/api/auth': { authApi: {} }, '@/api/analytics': { analyticsApi: {} } });
+  }, {
+    '@/api/auth': { authApi: {} },
+    '@/api/analytics': { analyticsApi: {} },
+    '@/api/push': { pushApi: {} },
+    '@/lib/push': {
+      ensurePushSubscription: async () => {},
+      getNotificationPermission: () => 'default',
+      unsubscribeThisDevice: async () => {},
+    },
+    '@/lib/device-preferences': {
+      isLocationSharingOn: () => false,
+      isPushOptedOut: () => false,
+      saveLocationSharing: () => {},
+    },
+  });
   return renderToStaticMarkup(React.createElement(QueryClientProvider, { client: new QueryClient() },
     React.createElement(AuthProvider, null, React.createElement('p', null, 'PRIVATE CONTENT'))));
 }

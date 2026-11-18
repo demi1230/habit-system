@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { randomUUID } from 'node:crypto';
 import type { IUserRepository } from '../domain/repositories/user.repository';
 import { USER_REPOSITORY } from '../domain/repositories/user.repository';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -38,10 +39,19 @@ export class AuthService {
     });
   }
 
+  /**
+   * Hash compared against when the email is unknown, so unknown and known
+   * emails both take one bcrypt comparison and response time does not reveal
+   * which emails are registered. Created on first use.
+   */
+  private unknownUserHash?: Promise<string>;
+
   async login(dto: LoginDto) {
     const user = await this.userRepo.findByEmail(dto.email);
 
     if (!user) {
+      this.unknownUserHash ??= bcrypt.hash(randomUUID(), 12);
+      await bcrypt.compare(dto.password, await this.unknownUserHash);
       throw new UnauthorizedException('Invalid credentials.');
     }
 
