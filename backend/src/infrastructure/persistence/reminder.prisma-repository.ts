@@ -105,4 +105,15 @@ export class ReminderPrismaRepository implements IReminderRepository {
     });
     return results as unknown as ReminderEntity[];
   }
+
+  async expireScheduledBefore(cutoff: Date): Promise<number> {
+    const result = await this.prisma.reminder.updateMany({
+      where: {
+        status: { in: [ReminderStatus.PENDING, ReminderStatus.SENT] },
+        scheduledFor: { lt: cutoff },
+      },
+      data: { status: ReminderStatus.EXPIRED },
+    });
+    return result.count;
+  }
 }

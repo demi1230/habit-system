@@ -5,6 +5,7 @@ import {
   CompletionTriggerSource,
   HabitLogStatus,
 } from '../domain/enums/domain.enums';
+import { HabitLogDayConflictError } from '../domain/repositories/habit-log.repository';
 import { ProgressService } from './progress.service';
 
 describe('ProgressService', () => {
@@ -13,8 +14,10 @@ describe('ProgressService', () => {
 
   const habitLogRepo = {
     create: jest.fn(),
+    update: jest.fn(),
     findAllByHabitId: jest.fn(),
     findSummaryByHabitId: jest.fn(),
+    findLatestByHabitIdsForDate: jest.fn(),
   };
 
   const habitsService = {
@@ -40,6 +43,10 @@ describe('ProgressService', () => {
       habitId: hid,
       ...rest,
     }));
+    habitLogRepo.findLatestByHabitIdsForDate.mockResolvedValue([]);
+    habitLogRepo.update.mockImplementation((id: string, data: object) =>
+      Promise.resolve({ id, habitId, completedAt: new Date(), ...data }),
+    );
 
     progressService = new ProgressService(
       habitLogRepo as never,
@@ -91,6 +98,92 @@ describe('ProgressService', () => {
       userId,
       'habit_logged',
     );
+  });
+
+  describe('one log per habit per day', () => {
+    const existingLog = (status: string, actualValue: number) => ({
+      id: 'log-existing',
+      habitId,
+      status,
+      actualValue,
+      completedAt: new Date('2026-03-23T01:00:00.000Z'),
+      loggedAt: new Date('2026-03-23T01:00:00.000Z'),
+    });
+
+    beforeEach(() => {
+      habitsService.getOwnedHabitOrThrow.mockResolvedValue({
+        id: habitId,
+        measurementUnit: 'минут',
+        minimumTarget: 10,
+        targetValue: 30,
+      });
+    });
+
+    it('raises the existing log of that day instead of creating a duplicate', async () => {
+      habitLogRepo.findLatestByHabitIdsForDate.mockResolvedValue([
+        existingLog(HabitLogStatus.NOT_DONE, 5),
+      ]);
+
+      const result = await progressService.createHabitLog(userId, habitId, {
+        actualValue: 12,
+        completedAt: '2026-03-23T02:00:00.000Z',
+      });
+
+      expect(habitLogRepo.create).not.toHaveBeenCalled();
+      expect(habitLogRepo.update).toHaveBeenCalledWith('log-existing', {
+        status: HabitLogStatus.DONE,
+        actualValue: 12,
+      });
+      expect(result.status).toBe(HabitLogStatus.DONE);
+      expect(engagementService.awardCompletionRewards).toHaveBeenCalledTimes(1);
+    });
+
+    it('never lowers the day value and does not reward twice (retried request)', async () => {
+      habitLogRepo.findLatestByHabitIdsForDate.mockResolvedValue([
+        existingLog(HabitLogStatus.DONE, 20),
+      ]);
+
+      await progressService.createHabitLog(userId, habitId, {
+        actualValue: 15,
+        completedAt: '2026-03-23T02:00:00.000Z',
+      });
+
+      expect(habitLogRepo.update).toHaveBeenCalledWith('log-existing', {
+        status: HabitLogStatus.DONE,
+        actualValue: 20,
+      });
+      expect(engagementService.awardCompletionRewards).not.toHaveBeenCalled();
+    });
+
+    it('falls back to the existing log when a concurrent request wins the race', async () => {
+      habitLogRepo.findLatestByHabitIdsForDate
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([existingLog(HabitLogStatus.DONE, 10)]);
+      habitLogRepo.create.mockRejectedValueOnce(
+        new HabitLogDayConflictError(habitId, '2026-03-23'),
+      );
+
+      const result = await progressService.createHabitLog(userId, habitId, {
+        actualValue: 10,
+        completedAt: '2026-03-23T02:00:00.000Z',
+      });
+
+      expect(result.id).toBe('log-existing');
+      expect(engagementService.awardCompletionRewards).not.toHaveBeenCalled();
+    });
+
+    it('still reports success when rewards fail after the log is saved', async () => {
+      engagementService.awardCompletionRewards.mockRejectedValueOnce(
+        new Error('reward store unavailable'),
+      );
+
+      await expect(
+        progressService.createHabitLog(userId, habitId, {
+          actualValue: 10,
+          completedAt: '2026-03-23T02:00:00.000Z',
+        }),
+      ).resolves.toMatchObject({ status: HabitLogStatus.DONE });
+    });
   });
 
   describe('completedAt and the application-timezone day', () => {

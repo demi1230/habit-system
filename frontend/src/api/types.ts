@@ -87,6 +87,8 @@ export interface HabitLog {
   status: HabitLogStatus;
   actualValue: number | null;
   completedAt: string;
+  /** Calendar day of the log in Asia/Ulaanbaatar (date at UTC midnight). */
+  logDate?: string;
   loggedAt: string;
   triggerSource: CompletionTriggerSource | null;
 }

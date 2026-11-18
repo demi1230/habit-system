@@ -59,18 +59,21 @@ const reminderActionRepo = {
 
 const habitLogRepo = {
   create: jest.fn(),
+  update: jest.fn(),
   findById: jest.fn(),
   findAllByHabitId: jest.fn(),
   findSummaryByHabitId: jest.fn(),
   findByLinkedReminderId: jest.fn(),
-  findLatestByHabitIdsForDate: jest.fn().mockResolvedValue([]),
+  findLatestByHabitIdsForDate: jest.fn(),
 };
 
 const analyticsService = { recordActivity: jest.fn() };
 
 const habitsService = {
-  getOwnedHabitOrThrow: jest.fn().mockResolvedValue({ targetValue: 1 }),
+  getOwnedHabitOrThrow: jest.fn(),
 };
+
+const engagementService = { awardCompletionRewards: jest.fn() };
 
 // ─── Test suite ──────────────────────────────────────────────────────────────
 
@@ -79,12 +82,15 @@ describe('RemindersService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    habitLogRepo.findLatestByHabitIdsForDate.mockResolvedValue([]);
+    habitsService.getOwnedHabitOrThrow.mockResolvedValue({ targetValue: 1 });
     service = new RemindersService(
       reminderRepo as never,
       reminderActionRepo as never,
       habitLogRepo as never,
       analyticsService as never,
       habitsService as never,
+      engagementService as never,
     );
   });
 
@@ -185,6 +191,64 @@ describe('RemindersService', () => {
         }),
       );
       expect(result.habitLog).toEqual(createdLog);
+      expect(engagementService.awardCompletionRewards).toHaveBeenCalledTimes(1);
+    });
+
+    it("upgrades the day's partial log to DONE instead of keeping it NOT_DONE", async () => {
+      const reminder = makePendingReminder();
+      reminderRepo.findByIdAndUserId.mockResolvedValue(reminder);
+      reminderActionRepo.hasDoneAction.mockResolvedValue(false);
+      habitLogRepo.findByLinkedReminderId.mockResolvedValue(null);
+      habitsService.getOwnedHabitOrThrow.mockResolvedValue({ targetValue: 30 });
+      habitLogRepo.findLatestByHabitIdsForDate.mockResolvedValue([
+        {
+          id: 'partial-log',
+          habitId: HABIT_ID,
+          status: HabitLogStatus.NOT_DONE,
+        },
+      ]);
+      habitLogRepo.findById.mockResolvedValue({
+        id: 'partial-log',
+        status: HabitLogStatus.NOT_DONE,
+        actualValue: 5,
+      });
+      habitLogRepo.update.mockResolvedValue({
+        id: 'partial-log',
+        status: HabitLogStatus.DONE,
+        actualValue: 30,
+      });
+      reminderActionRepo.create.mockResolvedValue({ id: 'action-id' });
+
+      const result = (await service.submitAction(USER_ID, REMINDER_ID, {
+        actionType: ReminderActionType.DONE,
+      })) as DoneActionResult;
+
+      expect(habitLogRepo.create).not.toHaveBeenCalled();
+      expect(habitLogRepo.update).toHaveBeenCalledWith('partial-log', {
+        status: HabitLogStatus.DONE,
+        actualValue: 30,
+      });
+      expect(result.habitLog.status).toBe(HabitLogStatus.DONE);
+      expect(engagementService.awardCompletionRewards).toHaveBeenCalledTimes(1);
+    });
+
+    it('rejects and expires a reminder from an earlier day', async () => {
+      reminderRepo.findByIdAndUserId.mockResolvedValue(
+        makePendingReminder({
+          status: ReminderStatus.SENT,
+          scheduledFor: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+        }),
+      );
+
+      await expect(
+        service.submitAction(USER_ID, REMINDER_ID, {
+          actionType: ReminderActionType.DONE,
+        }),
+      ).rejects.toBeInstanceOf(ConflictException);
+      expect(reminderRepo.update).toHaveBeenCalledWith(REMINDER_ID, {
+        status: ReminderStatus.EXPIRED,
+      });
+      expect(habitLogRepo.create).not.toHaveBeenCalled();
     });
 
     it('does NOT create a duplicate HabitLog when one already exists', async () => {

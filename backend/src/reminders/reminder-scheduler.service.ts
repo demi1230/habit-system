@@ -6,7 +6,7 @@ import { ReminderExecutionService } from './reminder-execution.service';
 import { REMINDER_REPOSITORY } from '../domain/repositories/reminder.repository';
 import type { IReminderRepository } from '../domain/repositories/reminder.repository';
 import { Inject } from '@nestjs/common';
-import { nowInAppTz } from '../shared/time';
+import { appDateOf, appDayRange, nowInAppTz } from '../shared/time';
 
 @Injectable()
 export class ReminderSchedulerService {
@@ -48,6 +48,12 @@ export class ReminderSchedulerService {
     this.isRunning = true;
 
     try {
+      // Reminders from earlier days can no longer be acted on, and overdue
+      // snooze follow-ups from those days must not all fire at once.
+      await this.reminderRepo.expireScheduledBefore(
+        appDayRange(appDateOf(new Date())).start,
+      );
+
       const habits = await this.prisma.habit.findMany({
         where: {
           status: 'ACTIVE',

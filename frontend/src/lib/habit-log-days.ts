@@ -21,7 +21,11 @@ export function getLatestLogsByDay(logs: HabitLog[]): Map<string, HabitLog> {
 
   const latestByDay = new Map<string, HabitLog>();
   for (const log of sorted) {
-    const key = toLocalDateStr(new Date(log.completedAt));
+    // Prefer the server's calendar day (Asia/Ulaanbaatar, one log per day);
+    // fall back to the browser-local day for data without it (mock mode).
+    const key = log.logDate
+      ? log.logDate.slice(0, 10)
+      : toLocalDateStr(new Date(log.completedAt));
     if (!latestByDay.has(key)) {
       latestByDay.set(key, log);
     }

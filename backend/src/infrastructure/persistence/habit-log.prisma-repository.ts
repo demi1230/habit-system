@@ -3,6 +3,7 @@ import { HabitLogEntity } from '../../domain/entities/habit-log.entity';
 import {
   IHabitLogRepository,
   CreateHabitLogData,
+  HabitLogDayConflictError,
   UpdateHabitLogData,
 } from '../../domain/repositories/habit-log.repository';
 import { CompletionTriggerSource } from '../../domain/enums/domain.enums';
@@ -17,22 +18,33 @@ export class HabitLogPrismaRepository implements IHabitLogRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateHabitLogData): Promise<HabitLogEntity> {
-    const result = await this.prisma.habitLog.create({
-      data: {
-        habitId: data.habitId,
-        status: data.status,
-        actualValue: data.actualValue ?? null,
-        completedAt: data.completedAt,
-        loggedAt: data.loggedAt,
-        triggerSource: data.triggerSource ?? CompletionTriggerSource.UNKNOWN,
-        linkedReminderId: data.linkedReminderId ?? null,
-        sourceConfidence: data.sourceConfidence ?? null,
-        completionHour: data.completionHour ?? null,
-        coarseLocation: data.coarseLocation ?? null,
-        precedingRoutine: data.precedingRoutine ?? null,
-      },
-    });
-    return result as unknown as HabitLogEntity;
+    const logDate = appDateOf(data.completedAt);
+    try {
+      const result = await this.prisma.habitLog.create({
+        data: {
+          habitId: data.habitId,
+          status: data.status,
+          actualValue: data.actualValue ?? null,
+          completedAt: data.completedAt,
+          // DATE column: Prisma writes the UTC calendar date of this value.
+          logDate: new Date(`${logDate}T00:00:00.000Z`),
+          loggedAt: data.loggedAt,
+          triggerSource: data.triggerSource ?? CompletionTriggerSource.UNKNOWN,
+          linkedReminderId: data.linkedReminderId ?? null,
+          sourceConfidence: data.sourceConfidence ?? null,
+          completionHour: data.completionHour ?? null,
+          coarseLocation: data.coarseLocation ?? null,
+          precedingRoutine: data.precedingRoutine ?? null,
+        },
+      });
+      return result as unknown as HabitLogEntity;
+    } catch (error) {
+      // P2002: unique constraint (habit_id, log_date) — the day already has a log.
+      if ((error as { code?: string } | null)?.code === 'P2002') {
+        throw new HabitLogDayConflictError(data.habitId, logDate);
+      }
+      throw error;
+    }
   }
 
   async findById(id: string): Promise<HabitLogEntity | null> {

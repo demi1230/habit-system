@@ -187,6 +187,7 @@ One completion attempt per session.
 | `id` | UUID PK | |
 | `habitId` | UUID FK | |
 | `completedAt` | DateTime | client-supplied date/time of completion |
+| `logDate` | Date | Asia/Ulaanbaatar calendar day of `completedAt`; unique per habit (`@@unique([habitId, logDate])`) |
 | `loggedAt` | DateTime | server-assigned timestamp when record was created |
 | `actualValue` | Float? | measured value (compared with `minimumTarget`) |
 | `status` | Enum | **DONE** or **NOT_DONE** (server-derived — never client-set directly) |
@@ -592,6 +593,10 @@ The `apply-tapering` endpoint upserts the `ReminderPolicy` record and returns co
 | `coarseLocation` | string | | Context snapshot |
 | `precedingRoutine` | string | | Context snapshot |
 
+**One log per habit per day.** `POST /logs` records the value for the Asia/Ulaanbaatar day of `completedAt`. When that day already has a log, the existing log is updated and the larger of the two values is kept, so a retried request or a second device never creates a duplicate or lowers the value. Use `PATCH /logs/:logId` to change a value deliberately. XP/badge failures are logged and do not fail the request.
+
+**Reminder `DONE`** reuses the day's log: a log already linked to the reminder is returned as-is, a `NOT_DONE` log is raised to `DONE` (value at least the habit's `targetValue`), otherwise a `REMINDER_TRIGGERED` log is created. Reminders from an earlier day are rejected (409) and marked `EXPIRED`; the scheduler also expires unanswered reminders from earlier days on each tick.
+
 **Server-side DONE/NOT_DONE derivation:**
 ```typescript
 status = actualValue >= habit.minimumTarget ? 'DONE' : 'NOT_DONE'
@@ -866,6 +871,16 @@ npx prisma migrate reset --force
 # Open Prisma Studio (GUI browser for the DB)
 npx prisma studio
 ```
+
+#### Deploying the one-log-per-day migration (`20261118090000_habit_log_one_per_day`)
+
+The migration adds `habit_logs.log_date` with a unique `(habit_id, log_date)` index. It refuses to run (and changes nothing) while a habit has more than one log on the same Asia/Ulaanbaatar day. The new backend code writes `log_date`, and older code does not, so apply the migration and deploy the backend together:
+
+1. Back up the database.
+2. `npm run diagnose:log-time-offset` — read-only; shows whether old dashboard logs were stored with a host-timezone shift (an offset cluster at +8 h).
+3. `npm run cleanup:habit-log-dupes` — dry run; review which logs would be merged.
+4. `npm run cleanup:habit-log-dupes -- --apply` — only if step 3 found duplicates.
+5. `npx prisma migrate deploy`, then deploy the backend, then the frontend.
 
 ### Adding a new feature
 

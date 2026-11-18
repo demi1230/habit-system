@@ -3,6 +3,7 @@ import {
   ConflictException,
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import {
@@ -19,16 +20,25 @@ import { REMINDER_REPOSITORY } from '../domain/repositories/reminder.repository'
 import type { IReminderActionRepository } from '../domain/repositories/reminder-action.repository';
 import { REMINDER_ACTION_REPOSITORY } from '../domain/repositories/reminder-action.repository';
 import type { IHabitLogRepository } from '../domain/repositories/habit-log.repository';
-import { HABIT_LOG_REPOSITORY } from '../domain/repositories/habit-log.repository';
+import {
+  HABIT_LOG_REPOSITORY,
+  HabitLogDayConflictError,
+} from '../domain/repositories/habit-log.repository';
 import { CreateReminderActionDto } from './dto/create-reminder-action.dto';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { HabitsService } from '../habits/habits.service';
+import {
+  awardCompletionRewardsSafely,
+  ENGAGEMENT_SERVICE,
+  type IEngagementService,
+} from '../engagement/engagement.constants';
+import { appDateOf } from '../shared/time';
 
 /** Return shape for a DONE action. */
 export interface DoneActionResult {
   reminder: ReminderEntity;
   action: ReminderActionEntity;
-  habitLog: HabitLogEntity | null;
+  habitLog: HabitLogEntity;
 }
 
 /** Return shape for a SNOOZE action. */
@@ -49,6 +59,8 @@ const DEFAULT_SNOOZE_MINUTES = 30;
  */
 @Injectable()
 export class RemindersService {
+  private readonly logger = new Logger(RemindersService.name);
+
   constructor(
     @Inject(REMINDER_REPOSITORY)
     private readonly reminderRepo: IReminderRepository,
@@ -58,6 +70,8 @@ export class RemindersService {
     private readonly habitLogRepo: IHabitLogRepository,
     private readonly analyticsService: AnalyticsService,
     private readonly habitsService: HabitsService,
+    @Inject(ENGAGEMENT_SERVICE)
+    private readonly engagementService: IEngagementService,
   ) {}
 
   async listReminders(userId: string): Promise<ReminderEntity[]> {
@@ -137,6 +151,18 @@ export class RemindersService {
     userId: string,
     actedAt: Date,
   ): Promise<DoneActionResult> {
+    const now = new Date();
+    const today = appDateOf(now);
+
+    // A reminder belongs to the day it was sent; it cannot complete a later
+    // day (e.g. tapping "done" on last week's reminder).
+    if (appDateOf(new Date(reminder.scheduledFor)) < today) {
+      await this.reminderRepo.update(reminder.id, {
+        status: ReminderStatus.EXPIRED,
+      });
+      throw new ConflictException(`Reminder ${reminder.id} has expired.`);
+    }
+
     // Idempotency: prevent double DONE
     const alreadyDone = await this.reminderActionRepo.hasDoneAction(
       reminder.id,
@@ -147,12 +173,19 @@ export class RemindersService {
       );
     }
 
-    // Mark reminder as ACTED
+    // Save the completion first: if a later step fails, repeating the request
+    // finds and reuses this log instead of creating another one.
+    const completedAt = appDateOf(actedAt) === today ? actedAt : now;
+    const { habitLog, becameDone } = await this.completeDayLog(
+      reminder,
+      userId,
+      completedAt,
+    );
+
     await this.reminderRepo.update(reminder.id, {
       status: ReminderStatus.ACTED,
     });
 
-    // Record the action
     const action = await this.reminderActionRepo.create({
       reminderId: reminder.id,
       userId,
@@ -160,47 +193,12 @@ export class RemindersService {
       actedAt,
     });
 
-    // Auto-create HabitLog if none already exists for this habit today.
-    // Check two things:
-    //  1. A log already linked to this specific reminder (strict idempotency).
-    //  2. ANY log for today's date for this habit (prevents double-log when
-    //     the user also manually completed the habit in the Dashboard).
-    const todayDate = new Date();
-    const [existingLinkedLog, todayLogs] = await Promise.all([
-      this.habitLogRepo.findByLinkedReminderId(reminder.id),
-      this.habitLogRepo.findLatestByHabitIdsForDate(
-        [reminder.habitId],
-        todayDate,
-      ),
-    ]);
-
-    const existingTodayLog = todayLogs.find(
-      (l) => l.habitId === reminder.habitId,
-    );
-
-    let habitLog: HabitLogEntity | null;
-    if (existingLinkedLog) {
-      // Already linked to this reminder — fully idempotent, reuse
-      habitLog = existingLinkedLog;
-    } else if (existingTodayLog) {
-      // Habit already logged today (e.g., from Dashboard) — reuse that log,
-      // don't create a second one
-      habitLog = await this.habitLogRepo.findById(existingTodayLog.id);
-    } else {
-      // No log for today — create one using the habit's targetValue
-      const habit = await this.habitsService.getOwnedHabitOrThrow(
+    if (becameDone) {
+      await awardCompletionRewardsSafely(this.engagementService, this.logger, {
         userId,
-        reminder.habitId,
-      );
-      habitLog = await this.habitLogRepo.create({
         habitId: reminder.habitId,
-        status: HabitLogStatus.DONE,
-        actualValue: habit.targetValue,
-        completedAt: actedAt,
-        loggedAt: new Date(),
-        triggerSource: CompletionTriggerSource.REMINDER_TRIGGERED,
-        linkedReminderId: reminder.id,
-        sourceConfidence: 1.0,
+        completedAt: habitLog.completedAt,
+        logId: habitLog.id,
       });
     }
 
@@ -211,6 +209,76 @@ export class RemindersService {
       action,
       habitLog,
     };
+  }
+
+  /**
+   * Makes sure the habit's log for the day of `completedAt` is DONE:
+   * reuses a log already linked to this reminder, upgrades the day's log
+   * (e.g. a partial value from the dashboard), or creates a new one.
+   */
+  private async completeDayLog(
+    reminder: ReminderEntity,
+    userId: string,
+    completedAt: Date,
+  ): Promise<{ habitLog: HabitLogEntity; becameDone: boolean }> {
+    const linkedLog = await this.habitLogRepo.findByLinkedReminderId(
+      reminder.id,
+    );
+    if (linkedLog) {
+      return { habitLog: linkedLog, becameDone: false };
+    }
+
+    const habit = await this.habitsService.getOwnedHabitOrThrow(
+      userId,
+      reminder.habitId,
+    );
+
+    const markDone = async (logId: string) => {
+      const existing = await this.habitLogRepo.findById(logId);
+      if (!existing) {
+        throw new NotFoundException(`Habit log ${logId} was not found.`);
+      }
+      if (existing.status === HabitLogStatus.DONE) {
+        return { habitLog: existing, becameDone: false };
+      }
+      // The user confirmed doing the habit: count at least the full target.
+      const updated = await this.habitLogRepo.update(existing.id, {
+        status: HabitLogStatus.DONE,
+        actualValue: Math.max(existing.actualValue ?? 0, habit.targetValue),
+      });
+      return { habitLog: updated, becameDone: true };
+    };
+
+    const [dayLog] = await this.habitLogRepo.findLatestByHabitIdsForDate(
+      [reminder.habitId],
+      completedAt,
+    );
+    if (dayLog) {
+      return markDone(dayLog.id);
+    }
+
+    try {
+      const created = await this.habitLogRepo.create({
+        habitId: reminder.habitId,
+        status: HabitLogStatus.DONE,
+        actualValue: habit.targetValue,
+        completedAt,
+        loggedAt: new Date(),
+        triggerSource: CompletionTriggerSource.REMINDER_TRIGGERED,
+        linkedReminderId: reminder.id,
+        sourceConfidence: 1.0,
+      });
+      return { habitLog: created, becameDone: true };
+    } catch (error) {
+      // A concurrent request created the day's log first.
+      if (!(error instanceof HabitLogDayConflictError)) throw error;
+      const [raced] = await this.habitLogRepo.findLatestByHabitIdsForDate(
+        [reminder.habitId],
+        completedAt,
+      );
+      if (!raced) throw error;
+      return markDone(raced.id);
+    }
   }
 
   private async handleSnooze(

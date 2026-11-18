@@ -53,4 +53,9 @@ export interface IReminderRepository {
    * have not yet been delivered via push.
    */
   findDuePendingSnoozeFollowUps(now: Date): Promise<ReminderEntity[]>;
+  /**
+   * Marks PENDING/SENT reminders scheduled before `cutoff` as EXPIRED (used
+   * with the start of today in the application timezone). Returns the count.
+   */
+  expireScheduledBefore(cutoff: Date): Promise<number>;
 }

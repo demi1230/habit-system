@@ -197,6 +197,9 @@ model HabitLog {
   status            HabitLogStatus
   actualValue       Float?                   @map("actual_value")
   completedAt       DateTime                 @map("completed_at")
+  // Calendar day of completedAt in the application timezone (Asia/Ulaanbaatar,
+  // see src/shared/time.ts). At most one log per habit per day.
+  logDate           DateTime                 @map("log_date") @db.Date
   loggedAt          DateTime                 @default(now()) @map("logged_at")
   triggerSource     CompletionTriggerSource  @default(UNKNOWN) @map("trigger_source")
   linkedReminderId  String?                  @map("linked_reminder_id") @db.Uuid
@@ -210,6 +213,7 @@ model HabitLog {
   difficultyFeedback DifficultyFeedback[]
   reflections        Reflection[]
 
+  @@unique([habitId, logDate])
   @@index([habitId, completedAt])
   @@index([habitId, loggedAt])
   @@index([triggerSource])

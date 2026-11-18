@@ -2,12 +2,20 @@
   BadRequestException,
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { AnalyticsService } from '../analytics/analytics.service';
-import { CompletionTriggerSource } from '../domain/enums/domain.enums';
+import { HabitLogEntity } from '../domain/entities/habit-log.entity';
+import {
+  CompletionTriggerSource,
+  HabitLogStatus,
+} from '../domain/enums/domain.enums';
 import type { IHabitLogRepository } from '../domain/repositories/habit-log.repository';
-import { HABIT_LOG_REPOSITORY } from '../domain/repositories/habit-log.repository';
+import {
+  HABIT_LOG_REPOSITORY,
+  HabitLogDayConflictError,
+} from '../domain/repositories/habit-log.repository';
 import { HabitStrengthRules } from '../domain/rules/habit-strength.rules';
 import { HabitsService } from '../habits/habits.service';
 import { CreateHabitLogDto } from './dto/create-habit-log.dto';
@@ -15,6 +23,7 @@ import { UpdateHabitLogDto } from './dto/update-habit-log.dto';
 import { ProgressSummary } from './interfaces/progress-summary.interface';
 import { HabitStrengthSignals } from './foundation/habit-strength/habit-strength.interface';
 import {
+  awardCompletionRewardsSafely,
   ENGAGEMENT_SERVICE,
   type IEngagementService,
 } from '../engagement/engagement.constants';
@@ -22,6 +31,8 @@ import { appDateOf, parseClientTimestamp } from '../shared/time';
 
 @Injectable()
 export class ProgressService {
+  private readonly logger = new Logger(ProgressService.name);
+
   constructor(
     @Inject(HABIT_LOG_REPOSITORY)
     private readonly habitLogRepo: IHabitLogRepository,
@@ -31,6 +42,13 @@ export class ProgressService {
     private readonly engagementService: IEngagementService,
   ) {}
 
+  /**
+   * Records the habit's value for the application-timezone day of
+   * `completedAt`. Each habit has at most one log per day: when that day
+   * already has a log, the larger value is kept. A retried request or a
+   * second device therefore never duplicates or lowers the day's value; use
+   * PATCH to change it deliberately.
+   */
   async createHabitLog(
     userId: string,
     habitId: string,
@@ -42,15 +60,28 @@ export class ProgressService {
     );
     const logData = this.buildLogPayload(habit, createHabitLogDto);
 
-    const habitLog = await this.habitLogRepo.create({ habitId, ...logData });
+    let habitLog: HabitLogEntity;
+    let previousStatus: string | null = null;
 
-    if (habitLog.status === 'DONE') {
-      await this.engagementService.awardCompletionRewards({
-        userId,
-        habitId,
-        completedAt: habitLog.completedAt,
-        logId: habitLog.id,
-      });
+    const existing = await this.findLogOnDay(habitId, logData.completedAt);
+    if (existing) {
+      previousStatus = existing.status;
+      habitLog = await this.raiseDayValue(habit, existing, logData.actualValue);
+    } else {
+      try {
+        habitLog = await this.habitLogRepo.create({ habitId, ...logData });
+      } catch (error) {
+        // A concurrent request created the day's log first.
+        if (!(error instanceof HabitLogDayConflictError)) throw error;
+        const raced = await this.findLogOnDay(habitId, logData.completedAt);
+        if (!raced) throw error;
+        previousStatus = raced.status;
+        habitLog = await this.raiseDayValue(habit, raced, logData.actualValue);
+      }
+    }
+
+    if (habitLog.status === 'DONE' && previousStatus !== 'DONE') {
+      await this.awardRewardsSafely(userId, habitId, habitLog);
     }
 
     await this.analyticsService.recordActivity(userId, 'habit_logged');
@@ -71,25 +102,57 @@ export class ProgressService {
     if (!log || log.habitId !== habitId) {
       throw new NotFoundException('Log not found');
     }
-    const status =
-      dto.actualValue >= habit.minimumTarget
-        ? ('DONE' as const)
-        : ('NOT_DONE' as const);
     const updatedLog = await this.habitLogRepo.update(logId, {
-      status,
+      status: this.statusFor(habit, dto.actualValue),
       actualValue: dto.actualValue,
     });
 
     if (log.status !== 'DONE' && updatedLog.status === 'DONE') {
-      await this.engagementService.awardCompletionRewards({
-        userId,
-        habitId,
-        completedAt: updatedLog.completedAt,
-        logId: updatedLog.id,
-      });
+      await this.awardRewardsSafely(userId, habitId, updatedLog);
     }
 
     return updatedLog;
+  }
+
+  /** DONE once the value reaches the habit's minimum target. */
+  private statusFor(habit: { minimumTarget: number }, actualValue: number) {
+    return actualValue >= habit.minimumTarget
+      ? HabitLogStatus.DONE
+      : HabitLogStatus.NOT_DONE;
+  }
+
+  private async findLogOnDay(habitId: string, completedAt: Date) {
+    const [log] = await this.habitLogRepo.findLatestByHabitIdsForDate(
+      [habitId],
+      completedAt,
+    );
+    return log ?? null;
+  }
+
+  /** Keeps the larger of the stored and the newly sent value for the day. */
+  private async raiseDayValue(
+    habit: { minimumTarget: number },
+    existing: { id: string; actualValue: number | null },
+    actualValue: number,
+  ): Promise<HabitLogEntity> {
+    const value = Math.max(existing.actualValue ?? 0, actualValue);
+    return this.habitLogRepo.update(existing.id, {
+      status: this.statusFor(habit, value),
+      actualValue: value,
+    });
+  }
+
+  private awardRewardsSafely(
+    userId: string,
+    habitId: string,
+    log: HabitLogEntity,
+  ) {
+    return awardCompletionRewardsSafely(this.engagementService, this.logger, {
+      userId,
+      habitId,
+      completedAt: log.completedAt,
+      logId: log.id,
+    });
   }
 
   async deleteHabitLog(userId: string, habitId: string, logId: string) {
@@ -214,10 +277,7 @@ export class ProgressService {
     }
 
     return {
-      status:
-        createHabitLogDto.actualValue >= habit.minimumTarget
-          ? ('DONE' as const)
-          : ('NOT_DONE' as const),
+      status: this.statusFor(habit, createHabitLogDto.actualValue),
       actualValue: createHabitLogDto.actualValue,
       completedAt,
       loggedAt,

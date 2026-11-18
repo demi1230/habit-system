@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AnalyticsModule } from '../analytics/analytics.module';
+import { EngagementModule } from '../engagement/engagement.module';
 import { HabitsModule } from '../habits/habits.module';
 import { HABIT_LOG_REPOSITORY } from '../domain/repositories/habit-log.repository';
 import { REMINDER_REPOSITORY } from '../domain/repositories/reminder.repository';
@@ -26,7 +27,7 @@ import { RemindersController } from './reminders.controller';
  * Thesis mapping: "Сануулга модуль · Reminders module"
  */
 @Module({
-  imports: [HabitsModule, AnalyticsModule, PushModule],
+  imports: [HabitsModule, AnalyticsModule, PushModule, EngagementModule],
   controllers: [RemindersController],
   providers: [
     ReminderExecutionService,

@@ -2038,6 +2038,7 @@ export const HabitLogScalarFieldEnum = {
   status: 'status',
   actualValue: 'actualValue',
   completedAt: 'completedAt',
+  logDate: 'logDate',
   loggedAt: 'loggedAt',
   triggerSource: 'triggerSource',
   linkedReminderId: 'linkedReminderId',

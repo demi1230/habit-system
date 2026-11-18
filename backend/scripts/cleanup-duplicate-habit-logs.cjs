@@ -3,6 +3,9 @@ const path = require('node:path');
 const process = require('node:process');
 const { Client } = require('pg');
 
+// Must match APP_TIMEZONE in src/shared/time.ts.
+const APP_TIMEZONE = 'Asia/Ulaanbaatar';
+
 function parseArgs(argv) {
   if (argv.includes('--help')) {
     printHelp();
@@ -45,7 +48,8 @@ Usage:
   npm run cleanup:habit-log-dupes -- --habit-id=<uuid> --preview=20
 
 Behavior:
-  - Groups logs by habit + local calendar day
+  - Groups logs by habit + Asia/Ulaanbaatar calendar day (the same day rule
+    as the API and the habit_logs (habit_id, log_date) unique index)
   - Keeps the latest log for each day using completedAt desc, loggedAt desc
   - Repoints related difficulty feedback and reflections to the kept log
   - Deletes the older duplicate logs
@@ -118,13 +122,6 @@ function getConnectionString() {
   return directUrl;
 }
 
-function toLocalDayKey(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
 function compareLogsDesc(left, right) {
   const completedDiff = right.completedAt.getTime() - left.completedAt.getTime();
   if (completedDiff !== 0) {
@@ -143,7 +140,7 @@ function buildDuplicatePlans(logs) {
   const grouped = new Map();
 
   for (const log of logs) {
-    const dayKey = toLocalDayKey(log.completedAt);
+    const dayKey = log.dayKey;
     const groupKey = `${log.habitId}:${dayKey}`;
     const current = grouped.get(groupKey) ?? [];
     current.push(log);
@@ -248,7 +245,12 @@ async function fetchLogs(client, habitId) {
       habit_id AS "habitId",
       status,
       completed_at AS "completedAt",
-      logged_at AS "loggedAt"
+      logged_at AS "loggedAt",
+      -- Calendar day in the application timezone, computed by PostgreSQL so it
+      -- does not depend on this machine's timezone. completed_at holds UTC
+      -- without a zone, so it is first marked as UTC and then converted.
+      ((completed_at AT TIME ZONE 'UTC') AT TIME ZONE '${APP_TIMEZONE}')::date::text
+        AS "dayKey"
     FROM habit_logs
     ${whereClause}
     ORDER BY completed_at DESC, logged_at DESC, id DESC
@@ -261,6 +263,7 @@ async function fetchLogs(client, habitId) {
     status: row.status,
     completedAt: new Date(row.completedAt),
     loggedAt: new Date(row.loggedAt),
+    dayKey: row.dayKey,
   }));
 }
 

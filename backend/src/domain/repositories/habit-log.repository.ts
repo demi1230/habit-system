@@ -4,6 +4,20 @@ import { HabitLogStatus, CompletionTriggerSource } from '../enums/domain.enums';
 /** Injection token for the habit-log repository port. */
 export const HABIT_LOG_REPOSITORY = Symbol('IHabitLogRepository');
 
+/**
+ * Raised by `create` when the habit already has a log on that
+ * application-timezone calendar day (one log per habit per day).
+ */
+export class HabitLogDayConflictError extends Error {
+  constructor(
+    readonly habitId: string,
+    readonly logDate: string,
+  ) {
+    super(`Habit ${habitId} already has a log on ${logDate}.`);
+    this.name = 'HabitLogDayConflictError';
+  }
+}
+
 export interface CreateHabitLogData {
   habitId: string;
   status: HabitLogStatus;
@@ -30,6 +44,10 @@ export interface UpdateHabitLogData {
  * Repository port (interface) for HabitLogEntity persistence.
  */
 export interface IHabitLogRepository {
+  /**
+   * Stores a log on the application-timezone day of `completedAt`.
+   * @throws HabitLogDayConflictError when that day already has a log.
+   */
   create(data: CreateHabitLogData): Promise<HabitLogEntity>;
   findById(id: string): Promise<HabitLogEntity | null>;
   update(id: string, data: UpdateHabitLogData): Promise<HabitLogEntity>;

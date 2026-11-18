@@ -44,6 +44,7 @@ export type HabitLogMinAggregateOutputType = {
   status: $Enums.HabitLogStatus | null
   actualValue: number | null
   completedAt: Date | null
+  logDate: Date | null
   loggedAt: Date | null
   triggerSource: $Enums.CompletionTriggerSource | null
   linkedReminderId: string | null
@@ -59,6 +60,7 @@ export type HabitLogMaxAggregateOutputType = {
   status: $Enums.HabitLogStatus | null
   actualValue: number | null
   completedAt: Date | null
+  logDate: Date | null
   loggedAt: Date | null
   triggerSource: $Enums.CompletionTriggerSource | null
   linkedReminderId: string | null
@@ -74,6 +76,7 @@ export type HabitLogCountAggregateOutputType = {
   status: number
   actualValue: number
   completedAt: number
+  logDate: number
   loggedAt: number
   triggerSource: number
   linkedReminderId: number
@@ -103,6 +106,7 @@ export type HabitLogMinAggregateInputType = {
   status?: true
   actualValue?: true
   completedAt?: true
+  logDate?: true
   loggedAt?: true
   triggerSource?: true
   linkedReminderId?: true
@@ -118,6 +122,7 @@ export type HabitLogMaxAggregateInputType = {
   status?: true
   actualValue?: true
   completedAt?: true
+  logDate?: true
   loggedAt?: true
   triggerSource?: true
   linkedReminderId?: true
@@ -133,6 +138,7 @@ export type HabitLogCountAggregateInputType = {
   status?: true
   actualValue?: true
   completedAt?: true
+  logDate?: true
   loggedAt?: true
   triggerSource?: true
   linkedReminderId?: true
@@ -235,6 +241,7 @@ export type HabitLogGroupByOutputType = {
   status: $Enums.HabitLogStatus
   actualValue: number | null
   completedAt: Date
+  logDate: Date
   loggedAt: Date
   triggerSource: $Enums.CompletionTriggerSource
   linkedReminderId: string | null
@@ -273,6 +280,7 @@ export type HabitLogWhereInput = {
   status?: Prisma.EnumHabitLogStatusFilter<"HabitLog"> | $Enums.HabitLogStatus
   actualValue?: Prisma.FloatNullableFilter<"HabitLog"> | number | null
   completedAt?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
+  logDate?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
   loggedAt?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFilter<"HabitLog"> | $Enums.CompletionTriggerSource
   linkedReminderId?: Prisma.UuidNullableFilter<"HabitLog"> | string | null
@@ -292,6 +300,7 @@ export type HabitLogOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   actualValue?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  logDate?: Prisma.SortOrder
   loggedAt?: Prisma.SortOrder
   triggerSource?: Prisma.SortOrder
   linkedReminderId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -307,6 +316,7 @@ export type HabitLogOrderByWithRelationInput = {
 
 export type HabitLogWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  habitId_logDate?: Prisma.HabitLogHabitIdLogDateCompoundUniqueInput
   AND?: Prisma.HabitLogWhereInput | Prisma.HabitLogWhereInput[]
   OR?: Prisma.HabitLogWhereInput[]
   NOT?: Prisma.HabitLogWhereInput | Prisma.HabitLogWhereInput[]
@@ -314,6 +324,7 @@ export type HabitLogWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumHabitLogStatusFilter<"HabitLog"> | $Enums.HabitLogStatus
   actualValue?: Prisma.FloatNullableFilter<"HabitLog"> | number | null
   completedAt?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
+  logDate?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
   loggedAt?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFilter<"HabitLog"> | $Enums.CompletionTriggerSource
   linkedReminderId?: Prisma.UuidNullableFilter<"HabitLog"> | string | null
@@ -325,7 +336,7 @@ export type HabitLogWhereUniqueInput = Prisma.AtLeast<{
   linkedReminder?: Prisma.XOR<Prisma.ReminderNullableScalarRelationFilter, Prisma.ReminderWhereInput> | null
   difficultyFeedback?: Prisma.DifficultyFeedbackListRelationFilter
   reflections?: Prisma.ReflectionListRelationFilter
-}, "id">
+}, "id" | "habitId_logDate">
 
 export type HabitLogOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -333,6 +344,7 @@ export type HabitLogOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   actualValue?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  logDate?: Prisma.SortOrder
   loggedAt?: Prisma.SortOrder
   triggerSource?: Prisma.SortOrder
   linkedReminderId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -356,6 +368,7 @@ export type HabitLogScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumHabitLogStatusWithAggregatesFilter<"HabitLog"> | $Enums.HabitLogStatus
   actualValue?: Prisma.FloatNullableWithAggregatesFilter<"HabitLog"> | number | null
   completedAt?: Prisma.DateTimeWithAggregatesFilter<"HabitLog"> | Date | string
+  logDate?: Prisma.DateTimeWithAggregatesFilter<"HabitLog"> | Date | string
   loggedAt?: Prisma.DateTimeWithAggregatesFilter<"HabitLog"> | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceWithAggregatesFilter<"HabitLog"> | $Enums.CompletionTriggerSource
   linkedReminderId?: Prisma.UuidNullableWithAggregatesFilter<"HabitLog"> | string | null
@@ -370,6 +383,7 @@ export type HabitLogCreateInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   sourceConfidence?: number | null
@@ -388,6 +402,7 @@ export type HabitLogUncheckedCreateInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   linkedReminderId?: string | null
@@ -404,6 +419,7 @@ export type HabitLogUpdateInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -422,6 +438,7 @@ export type HabitLogUncheckedUpdateInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   linkedReminderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -439,6 +456,7 @@ export type HabitLogCreateManyInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   linkedReminderId?: string | null
@@ -453,6 +471,7 @@ export type HabitLogUpdateManyMutationInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -467,6 +486,7 @@ export type HabitLogUncheckedUpdateManyInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   linkedReminderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -486,12 +506,18 @@ export type HabitLogOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type HabitLogHabitIdLogDateCompoundUniqueInput = {
+  habitId: string
+  logDate: Date | string
+}
+
 export type HabitLogCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   habitId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   actualValue?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  logDate?: Prisma.SortOrder
   loggedAt?: Prisma.SortOrder
   triggerSource?: Prisma.SortOrder
   linkedReminderId?: Prisma.SortOrder
@@ -513,6 +539,7 @@ export type HabitLogMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   actualValue?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  logDate?: Prisma.SortOrder
   loggedAt?: Prisma.SortOrder
   triggerSource?: Prisma.SortOrder
   linkedReminderId?: Prisma.SortOrder
@@ -528,6 +555,7 @@ export type HabitLogMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   actualValue?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  logDate?: Prisma.SortOrder
   loggedAt?: Prisma.SortOrder
   triggerSource?: Prisma.SortOrder
   linkedReminderId?: Prisma.SortOrder
@@ -681,6 +709,7 @@ export type HabitLogCreateWithoutHabitInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   sourceConfidence?: number | null
@@ -697,6 +726,7 @@ export type HabitLogUncheckedCreateWithoutHabitInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   linkedReminderId?: string | null
@@ -743,6 +773,7 @@ export type HabitLogScalarWhereInput = {
   status?: Prisma.EnumHabitLogStatusFilter<"HabitLog"> | $Enums.HabitLogStatus
   actualValue?: Prisma.FloatNullableFilter<"HabitLog"> | number | null
   completedAt?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
+  logDate?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
   loggedAt?: Prisma.DateTimeFilter<"HabitLog"> | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFilter<"HabitLog"> | $Enums.CompletionTriggerSource
   linkedReminderId?: Prisma.UuidNullableFilter<"HabitLog"> | string | null
@@ -757,6 +788,7 @@ export type HabitLogCreateWithoutDifficultyFeedbackInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   sourceConfidence?: number | null
@@ -774,6 +806,7 @@ export type HabitLogUncheckedCreateWithoutDifficultyFeedbackInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   linkedReminderId?: string | null
@@ -805,6 +838,7 @@ export type HabitLogUpdateWithoutDifficultyFeedbackInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -822,6 +856,7 @@ export type HabitLogUncheckedUpdateWithoutDifficultyFeedbackInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   linkedReminderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -837,6 +872,7 @@ export type HabitLogCreateWithoutReflectionsInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   sourceConfidence?: number | null
@@ -854,6 +890,7 @@ export type HabitLogUncheckedCreateWithoutReflectionsInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   linkedReminderId?: string | null
@@ -885,6 +922,7 @@ export type HabitLogUpdateWithoutReflectionsInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -902,6 +940,7 @@ export type HabitLogUncheckedUpdateWithoutReflectionsInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   linkedReminderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -917,6 +956,7 @@ export type HabitLogCreateWithoutLinkedReminderInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   sourceConfidence?: number | null
@@ -934,6 +974,7 @@ export type HabitLogUncheckedCreateWithoutLinkedReminderInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   sourceConfidence?: number | null
@@ -975,6 +1016,7 @@ export type HabitLogCreateManyHabitInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   linkedReminderId?: string | null
@@ -989,6 +1031,7 @@ export type HabitLogUpdateWithoutHabitInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1005,6 +1048,7 @@ export type HabitLogUncheckedUpdateWithoutHabitInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   linkedReminderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1021,6 +1065,7 @@ export type HabitLogUncheckedUpdateManyWithoutHabitInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   linkedReminderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1036,6 +1081,7 @@ export type HabitLogCreateManyLinkedReminderInput = {
   status: $Enums.HabitLogStatus
   actualValue?: number | null
   completedAt: Date | string
+  logDate: Date | string
   loggedAt?: Date | string
   triggerSource?: $Enums.CompletionTriggerSource
   sourceConfidence?: number | null
@@ -1049,6 +1095,7 @@ export type HabitLogUpdateWithoutLinkedReminderInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1066,6 +1113,7 @@ export type HabitLogUncheckedUpdateWithoutLinkedReminderInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1082,6 +1130,7 @@ export type HabitLogUncheckedUpdateManyWithoutLinkedReminderInput = {
   status?: Prisma.EnumHabitLogStatusFieldUpdateOperationsInput | $Enums.HabitLogStatus
   actualValue?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   triggerSource?: Prisma.EnumCompletionTriggerSourceFieldUpdateOperationsInput | $Enums.CompletionTriggerSource
   sourceConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1136,6 +1185,7 @@ export type HabitLogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   status?: boolean
   actualValue?: boolean
   completedAt?: boolean
+  logDate?: boolean
   loggedAt?: boolean
   triggerSource?: boolean
   linkedReminderId?: boolean
@@ -1156,6 +1206,7 @@ export type HabitLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   actualValue?: boolean
   completedAt?: boolean
+  logDate?: boolean
   loggedAt?: boolean
   triggerSource?: boolean
   linkedReminderId?: boolean
@@ -1173,6 +1224,7 @@ export type HabitLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   actualValue?: boolean
   completedAt?: boolean
+  logDate?: boolean
   loggedAt?: boolean
   triggerSource?: boolean
   linkedReminderId?: boolean
@@ -1190,6 +1242,7 @@ export type HabitLogSelectScalar = {
   status?: boolean
   actualValue?: boolean
   completedAt?: boolean
+  logDate?: boolean
   loggedAt?: boolean
   triggerSource?: boolean
   linkedReminderId?: boolean
@@ -1199,7 +1252,7 @@ export type HabitLogSelectScalar = {
   precedingRoutine?: boolean
 }
 
-export type HabitLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "habitId" | "status" | "actualValue" | "completedAt" | "loggedAt" | "triggerSource" | "linkedReminderId" | "sourceConfidence" | "completionHour" | "coarseLocation" | "precedingRoutine", ExtArgs["result"]["habitLog"]>
+export type HabitLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "habitId" | "status" | "actualValue" | "completedAt" | "logDate" | "loggedAt" | "triggerSource" | "linkedReminderId" | "sourceConfidence" | "completionHour" | "coarseLocation" | "precedingRoutine", ExtArgs["result"]["habitLog"]>
 export type HabitLogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>
   linkedReminder?: boolean | Prisma.HabitLog$linkedReminderArgs<ExtArgs>
@@ -1230,6 +1283,7 @@ export type $HabitLogPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     status: $Enums.HabitLogStatus
     actualValue: number | null
     completedAt: Date
+    logDate: Date
     loggedAt: Date
     triggerSource: $Enums.CompletionTriggerSource
     linkedReminderId: string | null
@@ -1669,6 +1723,7 @@ export interface HabitLogFieldRefs {
   readonly status: Prisma.FieldRef<"HabitLog", 'HabitLogStatus'>
   readonly actualValue: Prisma.FieldRef<"HabitLog", 'Float'>
   readonly completedAt: Prisma.FieldRef<"HabitLog", 'DateTime'>
+  readonly logDate: Prisma.FieldRef<"HabitLog", 'DateTime'>
   readonly loggedAt: Prisma.FieldRef<"HabitLog", 'DateTime'>
   readonly triggerSource: Prisma.FieldRef<"HabitLog", 'CompletionTriggerSource'>
   readonly linkedReminderId: Prisma.FieldRef<"HabitLog", 'String'>
