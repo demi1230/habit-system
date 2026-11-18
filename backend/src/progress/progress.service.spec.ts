@@ -22,6 +22,9 @@ describe('ProgressService', () => {
 
   const habitsService = {
     getOwnedHabitOrThrow: jest.fn(),
+    captureContext: jest
+      .fn()
+      .mockResolvedValue({ completionHour: 9, coarseLocation: null }),
   };
 
   const analyticsService = {

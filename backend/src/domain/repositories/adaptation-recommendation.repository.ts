@@ -51,4 +51,9 @@ export interface IAdaptationRecommendationRepository {
   ): Promise<AdaptationRecommendationEntity>;
   /** Expire old active recommendations for a habit (e.g., when regenerating). */
   expireActiveByHabit(habitId: string): Promise<number>;
+  /** Recommendation codes the user dismissed for this habit since `since`. */
+  findCodesDismissedSince(
+    habitId: string,
+    since: Date,
+  ): Promise<RecommendationCode[]>;
 }

@@ -110,6 +110,22 @@ export class AdaptationRecommendationPrismaRepository implements IAdaptationReco
     return this.mapToEntity(recommendation);
   }
 
+  async findCodesDismissedSince(
+    habitId: string,
+    since: Date,
+  ): Promise<RecommendationCode[]> {
+    const rows = await this.prisma.adaptationRecommendation.findMany({
+      where: {
+        habitId,
+        status: RecommendationStatus.DISMISSED,
+        updatedAt: { gte: since },
+      },
+      select: { recommendationCode: true },
+      distinct: ['recommendationCode'],
+    });
+    return rows.map((row) => row.recommendationCode as RecommendationCode);
+  }
+
   async expireActiveByHabit(habitId: string): Promise<number> {
     const result = await this.prisma.adaptationRecommendation.updateMany({
       where: {

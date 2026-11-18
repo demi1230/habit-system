@@ -18,7 +18,6 @@ import {
   computeProgress,
   computeStrength,
   computeCompositeScore,
-  computeAdaptation,
 } from './mock-data';
 import type { Habit, HabitLog, Weekday } from './types';
 import type { SrbaiAssessment } from './srbai';
@@ -170,10 +169,6 @@ export async function mockRequest<T>(path: string, options: RequestInit = {}): P
     return computeProgress(params.habitId) as T;
   }
 
-  params = match('/users/:userId/habits/:habitId/adaptation-recommendation', path);
-  if (params && method === 'GET') {
-    return computeAdaptation(params.habitId) as T;
-  }
 
   params = match('/users/:userId/habits/:habitId/logs/:logId', path);
   if (params && method === 'PATCH') {

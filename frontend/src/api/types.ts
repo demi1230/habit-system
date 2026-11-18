@@ -74,7 +74,8 @@ export interface CueContext {
 export interface HabitWithCueContext extends Habit {
   cueContext: CueContext[];
   currentStreak: number;
-  strengthScore: number;
+  /** Rounded composite estimate; null while there is not enough evidence. */
+  strengthScore: number | null;
   todayLog?: Pick<
     HabitLog,
     'id' | 'habitId' | 'status' | 'actualValue' | 'completedAt' | 'loggedAt'
@@ -123,15 +124,7 @@ export interface HabitStrengthSignals {
   evaluatedAt: string;
 }
 
-export interface CompositeScore {
-  srbaiScore: number;
-  consistencyScore: number;
-  contextStabilityScore: number;
-  selfInitiatedRate: number;
-  finalScore: number;
-  stage: 'weak' | 'building' | 'strong';
-  evaluatedAt: string;
-}
+// Habit-strength composite: see SrbaiCompositeScore in src/api/srbai.ts.
 
 export interface PushSubscriptionRecord {
   id: string;

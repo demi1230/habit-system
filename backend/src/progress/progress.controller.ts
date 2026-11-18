@@ -141,17 +141,4 @@ export class ProgressController {
   ) {
     return this.feedbackService.listReflections(userId, habitId);
   }
-
-  // ── Phase 4C: Adaptation recommendation ───────────────────────────────────
-
-  @Get('adaptation-recommendation')
-  @ApiOperation({
-    summary: 'Get an adaptation recommendation computed fully server-side',
-  })
-  getAdaptationRecommendation(
-    @Param('userId', new ParseUUIDPipe()) userId: string,
-    @Param('habitId', new ParseUUIDPipe()) habitId: string,
-  ) {
-    return this.feedbackService.getAdaptationRecommendation(userId, habitId);
-  }
 }

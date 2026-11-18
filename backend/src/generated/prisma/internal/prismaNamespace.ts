@@ -2131,6 +2131,7 @@ export const SrbaiAssessmentScalarFieldEnum = {
   item2: 'item2',
   item3: 'item3',
   item4: 'item4',
+  instrumentVersion: 'instrumentVersion',
   rawAverage: 'rawAverage',
   normalizedScore100: 'normalizedScore100',
   assessedAt: 'assessedAt',

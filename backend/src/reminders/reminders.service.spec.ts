@@ -71,6 +71,9 @@ const analyticsService = { recordActivity: jest.fn() };
 
 const habitsService = {
   getOwnedHabitOrThrow: jest.fn(),
+  captureContext: jest
+    .fn()
+    .mockResolvedValue({ completionHour: 9, coarseLocation: null }),
 };
 
 const engagementService = { awardCompletionRewards: jest.fn() };

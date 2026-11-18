@@ -1,5 +1,7 @@
 # Habit System — Backend Архитектур
 
+> **Тэмдэглэл (2026-11):** Энэ нь 2026 оны хаврын үеийн танилцуулга. Түүнээс хойш `AdaptationRules` болон `/adaptation-recommendation` хасагдаж, зөвлөмж `RecommendationRules`-ээр гардаг болсон; дадлын хүчний "тууштай" бүрэлдэхүүн төлөвлөсөн өдрүүдээр тооцогддог, өгөгдөл хангалтгүй үед оноо `null` байна. Одоогийн байдлыг `docs/BACKEND.md`-ээс үзнэ үү.
+
 > **Thesis demo · 2026 Spring**
 > NestJS v11 · TypeScript · Prisma v7 · PostgreSQL
 

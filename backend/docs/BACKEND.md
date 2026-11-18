@@ -47,7 +47,7 @@ The backend follows a **layered hexagonal architecture**:
 
 **Key principles applied:**
 
-- **Domain rules are pure functions** — `HabitStrengthRules`, `AdaptationRules`, `ReminderDecisionRules`, and `CueScheduleRules` contain zero I/O. They receive plain data objects and return plain results, making them trivially unit-testable.
+- **Domain rules are pure functions** — `HabitStrengthRules`, `RecommendationRules`, `ReminderDecisionRules`, `CueScheduleRules`, `CueWindowRules`, `TriggerSourceRules` and `ContextSnapshotRules` contain no I/O. They receive plain data objects and return plain results, making them trivially unit-testable.
 - **Repository pattern** — Services talk to interfaces (`IHabitRepository`, `IHabitLogRepository`, etc.) defined in `src/domain/repositories/`. The Prisma implementations live in `src/infrastructure/persistence/`. This means the persistence layer can be swapped without touching business logic.
 - **Dependency injection tokens** — Each repository interface has a string token (e.g. `HABIT_REPOSITORY`) used with `@Inject()` so NestJS can resolve the correct Prisma implementation at runtime.
 
@@ -397,48 +397,35 @@ Pure computations that quantify how automatic a habit has become.
 Uses log history to derive:
 | Signal | Formula |
 |--------|---------|
-| `doneRate` | `doneCount / totalLogs` |
+| `doneRate` | `doneCount / totalLogs` (logged days only; not used for the composite) |
 | `selfInitiatedRate` | `selfInitiatedDoneCount / doneCount` |
-| `stage` | `insufficient_data` (<7 logs) → `early_stage` → `building` → `established` |
+| `stage` | `insufficient_data` (<5 logs) → `early_stage` → `building` → `established` |
 
-**`computeComposite(input: CompositeScoreInput): CompositeScoreResult`**
+**`evaluateComposite(...)` / `computeComposite(input)`** — the single habit-strength estimate used by the dashboard (`strengthScore`) and `GET …/habit-strength/composite`:
 
-Combines three signals into one score (0–100):
+| Component | Definition | Missing when |
+|-----------|-----------|--------------|
+| `srbaiScore` | Latest SRBAI, normalised 0–100 | no SRBAI answer |
+| `consistencyScore` | `computeScheduleAdherence`: share of **scheduled** days done in the last 28 Ulaanbaatar days (not before `startDate`; today counts only once done) | fewer than 7 scheduled days |
+| `contextStabilityScore` | `computeContextStability`: share of recent DONE completions within ±1 h of the best centre hour, averaged with the share at the most common saved place when any completion was observed at one | fewer than 5 completions with a known hour |
 
 ```
-finalScore = 0.60 × srbaiScore
-           + 0.25 × consistencyScore    (doneRate × 100)
-           + 0.15 × contextStabilityScore
+finalScore = (0.60 × srbai + 0.25 × consistency + 0.15 × context) / (sum of weights used)
 ```
 
-Stage thresholds:
-- 0–39: `weak`
-- 40–69: `building`
-- 70–100: `strong`
+- No SRBAI or no consistency → `finalScore: null`, `stage: 'insufficient_data'` (never scored as 0).
+- No context yet → weights 0.60 and 0.25 are rescaled to sum to 1.
+- Stages: 0–39 `weak`, 40–69 `building`, 70–100 `strong`. The score is a heuristic estimate, not a validated measure.
 
-`contextStabilityScore` is derived from the consistency of `completionHour`, `coarseLocation`, and `precedingRoutine` snapshots across the last 20 logs — high variance = low stability.
+**Context snapshot (`ContextSnapshotRules`).** When a completion is logged for the current day, the server stores `completionHour` (Ulaanbaatar hour) and `coarseLocation` (the saved reminder place within 100 m, only if the user's location was reported within 30 minutes). Catch-up entries for earlier days store neither. `precedingRoutine` is not snapshotted: copying the habit's setting into every log would look perfectly stable without observing anything.
+
+**SRBAI items.** The app shows the four Gardner et al. (2012) items ("…something I do automatically / without having to consciously remember / without thinking / start doing before I realize I'm doing it"), in the project's own (unvalidated) Mongolian translation. Answers record `instrumentVersion = 2`; earlier answers (version 1) used different wording and should not be pooled with them.
 
 ---
 
-#### `AdaptationRules` (`src/domain/rules/adaptation.rules.ts`)
+#### `RecommendationRules` (`src/domain/rules/recommendation.rules.ts`)
 
-Stateless recommendation engine for what support type the user needs next.
-
-**`recommend(input): AdaptationRecommendation`**
-
-Inputs: composite score, difficulty rating, doneRate, selfInitiatedRate, totalDone.
-
-Outputs a `focusType`:
-
-| Focus | When |
-|-------|------|
-| `reduce_reminders` | Score ≥ 70 and selfInitiatedRate ≥ 0.7 |
-| `celebrate_consistency` | Milestone (7 / 21 / 66 completions) |
-| `review_difficulty` | Difficulty ≥ HARD and doneRate < 0.5 |
-| `increase_support` | Score < 40 and doneRate < 0.4 |
-| `maintain` | Default (steady progress) |
-
-Milestones 7, 21, and 66 correspond to the thesis literature on habit formation stages.
+Priority-ordered rules that choose one primary learning recommendation (`REDUCE_TARGET`, `SIMPLIFY_HABIT`, `REVIEW_REMINDER_DEPENDENCE`, `ADJUST_CUE`, `INCREASE_SUPPORT`, `BUILD_CONSISTENCY`, `CELEBRATE_CONSISTENCY`; thresholds are listed in the file). Missing evidence never triggers a rule (e.g. `ADJUST_CUE` needs a known context stability). `RecommendationGenerationService` regenerates at most once per Ulaanbaatar day while an active recommendation exists and skips codes the user dismissed in the last 7 days. The former `AdaptationRules` and `GET …/adaptation-recommendation` endpoint were removed (no client used them).
 
 ---
 

@@ -185,8 +185,13 @@ export function DashboardHabitCard({ habit, index, entry, onBadgeTap, disabled }
               )}
               <HabitTag
                 icon="dumbbell"
-                value={habit.strengthScore}
-                onClick={e => { e.stopPropagation(); flash(`"${habit.title}" дадлын хүч ${habit.strengthScore} оноо байна.`); }}
+                value={habit.strengthScore ?? '—'}
+                onClick={e => {
+                  e.stopPropagation();
+                  flash(habit.strengthScore === null
+                    ? `"${habit.title}" дадлын хүчийг тооцоолоход өгөгдөл хангалтгүй байна (SRBAI үнэлгээ болон 7+ төлөвлөсөн өдөр хэрэгтэй).`
+                    : `"${habit.title}" дадлын хүч (тооцоолсон үнэлгээ) ${habit.strengthScore} оноо байна.`);
+                }}
               />
             </div>
           </div>

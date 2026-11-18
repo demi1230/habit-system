@@ -55,13 +55,6 @@ export interface CreateHabitPayload {
   };
 }
 
-export interface AdaptationRecommendation {
-  focus: 'reduce_reminders' | 'maintain' | 'increase_support' | 'review_difficulty' | 'celebrate_consistency';
-  summary: string;
-  suggestedPolicyMode: string | null;
-  milestoneReached: boolean;
-  evaluatedAt: string;
-}
 
 export const habitsApi = {
   listToday: (userId: string, date?: string) =>
@@ -101,6 +94,4 @@ export const habitsApi = {
   deleteLog: (userId: string, habitId: string, logId: string) =>
     api.del<void>(`/users/${userId}/habits/${habitId}/logs/${logId}`),
 
-  getAdaptationRecommendation: (userId: string, habitId: string) =>
-    api.get<AdaptationRecommendation>(`/users/${userId}/habits/${habitId}/adaptation-recommendation`),
 };

@@ -3,7 +3,9 @@ import {
   CompletionTriggerSource,
   HabitStrengthStage as CompositeStage,
   ReminderPolicyMode,
+  Weekday,
 } from '../enums/domain.enums';
+import { addDaysToYmd, appDateOf, weekdayIndexOfYmd } from '../../shared/time';
 
 export type HabitStrengthStage =
   | 'insufficient_data'
@@ -25,22 +27,48 @@ export interface SrbaiScoreResult {
   normalizedScore100: number;
 }
 
+/** null = not enough evidence to compute this component. */
 export interface CompositeScoreInput {
-  srbaiScore: number; // 0–100
-  consistencyScore: number; // 0–100
-  contextStabilityScore: number; // 0–100
+  srbaiScore: number | null; // 0–100
+  consistencyScore: number | null; // 0–100
+  contextStabilityScore: number | null; // 0–100
   selfInitiatedRate: number; // 0–1
 }
 
+export type CompositeStageResult = CompositeStage | 'insufficient_data';
+
 export interface CompositeScoreResult {
-  srbaiScore: number;
-  consistencyScore: number;
-  contextStabilityScore: number;
+  srbaiScore: number | null;
+  consistencyScore: number | null;
+  contextStabilityScore: number | null;
   selfInitiatedRate: number;
-  finalScore: number;
-  stage: CompositeStage;
+  /** null when SRBAI or schedule adherence is missing (insufficient data). */
+  finalScore: number | null;
+  stage: CompositeStageResult;
   evaluatedAt: string;
+  /** Scheduled days and completed scheduled days behind consistencyScore. */
+  scheduledDays?: number;
+  completedScheduledDays?: number;
 }
+
+/** Window and minimum evidence for schedule adherence (consistency). */
+export const ADHERENCE_WINDOW_DAYS = 28;
+export const MIN_SCHEDULED_DAYS = 7;
+/** Minimum completions with a known hour before context stability is scored. */
+export const MIN_CONTEXT_SNAPSHOTS = 5;
+
+/** Version of the SRBAI items shown to users (2 = Gardner et al. 2012 wording). */
+export const CURRENT_SRBAI_INSTRUMENT_VERSION = 2;
+
+const JS_DAY_TO_WEEKDAY: Weekday[] = [
+  Weekday.SUNDAY,
+  Weekday.MONDAY,
+  Weekday.TUESDAY,
+  Weekday.WEDNESDAY,
+  Weekday.THURSDAY,
+  Weekday.FRIDAY,
+  Weekday.SATURDAY,
+];
 
 export interface TaperingRecommendation {
   recommendedMode: ReminderPolicyMode;
@@ -135,48 +163,164 @@ export class HabitStrengthRules {
   }
 
   /**
-   * Computes a context-stability score (0–100) from the last N DONE log snapshots.
+   * Context stability (0–100) from recent DONE completions, using only
+   * context the app actually observed when the completion was logged:
    *
-   * Three sub-dimensions are measured: hour-of-completion, coarse location, and
-   * preceding routine. For each dimension, the "modal value rate" measures how
-   * consistently a single value dominates. The final score is the average of
-   * whichever dimensions have at least one recorded value.
+   *  - Time: share of completions within ±1 hour of the best centre hour
+   *    (Ulaanbaatar time), i.e. how often the habit happens in the same
+   *    3-hour band.
+   *  - Place: share of completions at the most common saved reminder place.
+   *    Used only when at least one completion was observed at a saved place
+   *    (requires location sharing).
    *
-   * With no snapshots the score is 0.
-   *
-   * Example: if 8/10 completions happen at the same hour, location rate is 7/10,
-   * and routine rate is 9/10 → contextStabilityScore = round((0.8+0.7+0.9)/3 * 100) = 80
+   * The habit's configured preceding routine is not used: copying a setting
+   * into every log would always look perfectly stable without observing
+   * anything. Returns null with fewer than MIN_CONTEXT_SNAPSHOTS completions
+   * that have a known hour.
    */
   static computeContextStability(
     snapshots: Array<{
       completionHour: number | null;
       coarseLocation: string | null;
-      precedingRoutine: string | null;
     }>,
-  ): number {
-    if (snapshots.length === 0) return 0;
-    const n = snapshots.length;
+  ): number | null {
+    const observed = snapshots.filter((s) => s.completionHour !== null);
+    if (observed.length < MIN_CONTEXT_SNAPSHOTS) return null;
+    const n = observed.length;
 
-    const modalRate = (
-      values: Array<string | number | null>,
-    ): number | null => {
-      const valid = values.filter((v) => v !== null);
-      if (valid.length === 0) return null;
-      const freq = new Map<string | number, number>();
-      for (const v of valid) freq.set(v, (freq.get(v) ?? 0) + 1);
-      const maxCount = Math.max(...freq.values());
-      return maxCount / n; // relative to total, not just valid entries
+    const hourDistance = (a: number, b: number) => {
+      const diff = Math.abs(a - b) % 24;
+      return Math.min(diff, 24 - diff);
     };
+    let bestHourCount = 0;
+    for (let centre = 0; centre < 24; centre += 1) {
+      const count = observed.filter(
+        (s) => hourDistance(s.completionHour!, centre) <= 1,
+      ).length;
+      bestHourCount = Math.max(bestHourCount, count);
+    }
+    const rates = [bestHourCount / n];
 
-    const rates = [
-      modalRate(snapshots.map((s) => s.completionHour)),
-      modalRate(snapshots.map((s) => s.coarseLocation)),
-      modalRate(snapshots.map((s) => s.precedingRoutine)),
-    ].filter((r): r is number => r !== null);
+    const places = observed.map((s) => s.coarseLocation);
+    if (places.some((place) => place !== null)) {
+      const counts = new Map<string, number>();
+      for (const place of places) {
+        if (place !== null) counts.set(place, (counts.get(place) ?? 0) + 1);
+      }
+      rates.push(Math.max(...counts.values()) / n);
+    }
 
-    if (rates.length === 0) return 0;
     const avg = rates.reduce((a, b) => a + b, 0) / rates.length;
     return Math.round(avg * 100 * 100) / 100; // 2 decimal places, 0–100
+  }
+
+  /**
+   * Schedule adherence: share of scheduled days on which the habit was done,
+   * over the last ADHERENCE_WINDOW_DAYS days (Ulaanbaatar calendar days,
+   * not before the start date). Missed scheduled days count against it, which
+   * a done-logs-over-all-logs ratio cannot show. Today is included only once
+   * it is done, so an unfinished day is not counted as missed.
+   * `rate` is null with fewer than MIN_SCHEDULED_DAYS scheduled days.
+   */
+  static computeScheduleAdherence(input: {
+    doneDays: ReadonlySet<string>;
+    /** Empty means every day. */
+    scheduledWeekdays: Weekday[];
+    startDate: string;
+    today: string;
+    windowDays?: number;
+  }): {
+    scheduledDays: number;
+    completedScheduledDays: number;
+    rate: number | null;
+  } {
+    const windowDays = input.windowDays ?? ADHERENCE_WINDOW_DAYS;
+    const isScheduled = (ymd: string) =>
+      input.scheduledWeekdays.length === 0 ||
+      input.scheduledWeekdays.includes(
+        JS_DAY_TO_WEEKDAY[weekdayIndexOfYmd(ymd)],
+      );
+
+    const windowStart = addDaysToYmd(input.today, -windowDays);
+    let day = input.startDate > windowStart ? input.startDate : windowStart;
+    let scheduledDays = 0;
+    let completedScheduledDays = 0;
+
+    for (; day <= input.today; day = addDaysToYmd(day, 1)) {
+      if (!isScheduled(day)) continue;
+      const done = input.doneDays.has(day);
+      if (day === input.today && !done) continue;
+      scheduledDays += 1;
+      if (done) completedScheduledDays += 1;
+    }
+
+    return {
+      scheduledDays,
+      completedScheduledDays,
+      rate:
+        scheduledDays >= MIN_SCHEDULED_DAYS
+          ? completedScheduledDays / scheduledDays
+          : null,
+    };
+  }
+
+  /**
+   * The composite habit-strength estimate for one habit, from raw data.
+   * Both the dashboard and the analytics endpoint use this single function.
+   */
+  static evaluateComposite(input: {
+    logs: Array<{
+      status: HabitLogStatus;
+      triggerSource: CompletionTriggerSource;
+      completedAt: Date;
+    }>;
+    scheduledWeekdays: Weekday[];
+    startDate: string;
+    latestSrbaiScore: number | null;
+    contextSnapshots: Array<{
+      completionHour: number | null;
+      coarseLocation: string | null;
+    }>;
+    now: Date;
+  }): CompositeScoreResult {
+    const signals = HabitStrengthRules.compute({
+      habitId: '',
+      logs: input.logs,
+      scheduledWeekdayCount: input.scheduledWeekdays.length,
+      hasCueConfiguration: false,
+      hasMotivationProfile: false,
+    });
+
+    const doneDays = new Set(
+      input.logs
+        .filter((log) => log.status === HabitLogStatus.DONE)
+        .map((log) => appDateOf(new Date(log.completedAt))),
+    );
+    const adherence = HabitStrengthRules.computeScheduleAdherence({
+      doneDays,
+      scheduledWeekdays: input.scheduledWeekdays,
+      startDate: input.startDate,
+      today: appDateOf(input.now),
+    });
+
+    const composite = HabitStrengthRules.computeComposite({
+      srbaiScore: input.latestSrbaiScore,
+      consistencyScore:
+        adherence.rate === null
+          ? null
+          : Math.round(adherence.rate * 100 * 100) / 100,
+      contextStabilityScore: HabitStrengthRules.computeContextStability(
+        input.contextSnapshots,
+      ),
+      selfInitiatedRate: signals.selfInitiatedRate,
+    });
+
+    return {
+      ...composite,
+      evaluatedAt: input.now.toISOString(),
+      scheduledDays: adherence.scheduledDays,
+      completedScheduledDays: adherence.completedScheduledDays,
+    };
   }
 
   // ── Phase 4B: SRBAI scoring ───────────────────────────────────────────────
@@ -200,15 +344,40 @@ export class HabitStrengthRules {
    *   0–39  → weak
    *   40–69 → building
    *   70–100 → strong
+   *
+   * Missing evidence is never scored as 0:
+   *   - no SRBAI answer or too few scheduled days → finalScore null,
+   *     stage 'insufficient_data';
+   *   - no context data yet → the other two weights are rescaled
+   *     (0.6 and 0.25 out of 0.85).
+   * The result is a heuristic estimate, not a validated measure.
    */
   static computeComposite(input: CompositeScoreInput): CompositeScoreResult {
-    const finalScore =
-      Math.round(
-        (0.6 * input.srbaiScore +
-          0.25 * input.consistencyScore +
-          0.15 * input.contextStabilityScore) *
-          100,
-      ) / 100;
+    const base = {
+      srbaiScore: input.srbaiScore,
+      consistencyScore: input.consistencyScore,
+      contextStabilityScore: input.contextStabilityScore,
+      selfInitiatedRate: input.selfInitiatedRate,
+      evaluatedAt: new Date().toISOString(),
+    };
+
+    if (input.srbaiScore === null || input.consistencyScore === null) {
+      return { ...base, finalScore: null, stage: 'insufficient_data' };
+    }
+
+    const parts: Array<[weight: number, value: number]> = [
+      [0.6, input.srbaiScore],
+      [0.25, input.consistencyScore],
+    ];
+    if (input.contextStabilityScore !== null) {
+      parts.push([0.15, input.contextStabilityScore]);
+    }
+    const totalWeight = parts.reduce((sum, [weight]) => sum + weight, 0);
+    const weighted = parts.reduce(
+      (sum, [weight, value]) => sum + weight * value,
+      0,
+    );
+    const finalScore = Math.round((weighted / totalWeight) * 100) / 100;
 
     let stage: CompositeStage;
     if (finalScore >= 70) {
@@ -219,15 +388,7 @@ export class HabitStrengthRules {
       stage = 'weak';
     }
 
-    return {
-      srbaiScore: input.srbaiScore,
-      consistencyScore: input.consistencyScore,
-      contextStabilityScore: input.contextStabilityScore,
-      selfInitiatedRate: input.selfInitiatedRate,
-      finalScore,
-      stage,
-      evaluatedAt: new Date().toISOString(),
-    };
+    return { ...base, finalScore, stage };
   }
 
   // ── Phase 4B: Tapering recommendation ────────────────────────────────────

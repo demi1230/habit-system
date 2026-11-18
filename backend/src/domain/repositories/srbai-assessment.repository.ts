@@ -10,6 +10,8 @@ export interface CreateSrbaiAssessmentData {
   item2: number;
   item3: number;
   item4: number;
+  /** Item wording version (see CURRENT_SRBAI_INSTRUMENT_VERSION). */
+  instrumentVersion: number;
   rawAverage: number;
   normalizedScore100: number;
   assessedAt: Date;

@@ -12,7 +12,6 @@ import type {
 } from './types';
 import type { Reminder } from './reminders';
 import type { SrbaiAssessment, SrbaiCompositeScore } from './srbai';
-import type { AdaptationRecommendation } from './habits';
 
 export interface MockRecommendation {
   id: string;
@@ -435,48 +434,6 @@ export function computeCompositeScore(habitId: string): SrbaiCompositeScore {
     selfInitiatedRate: strength.selfInitiatedRate,
     finalScore: Math.round(finalScore * 100) / 100,
     stage,
-    evaluatedAt: new Date().toISOString(),
-  };
-}
-
-export function computeAdaptation(habitId: string): AdaptationRecommendation {
-  const strength = computeStrength(habitId);
-
-  if (strength.doneRate >= 0.8) {
-    return {
-      focus: 'celebrate_consistency',
-      summary: 'You are doing well. Keep the habit steady.',
-      suggestedPolicyMode: 'MINIMAL',
-      milestoneReached: true,
-      evaluatedAt: new Date().toISOString(),
-    };
-  }
-
-  if (strength.doneRate >= 0.6) {
-    return {
-      focus: 'maintain',
-      summary: 'The habit is progressing. Keep the same support level for now.',
-      suggestedPolicyMode: 'MODERATE_SUPPORT',
-      milestoneReached: false,
-      evaluatedAt: new Date().toISOString(),
-    };
-  }
-
-  if (strength.selfInitiatedRate < 0.3) {
-    return {
-      focus: 'increase_support',
-      summary: 'The habit still depends on external prompting.',
-      suggestedPolicyMode: 'FULL_SUPPORT',
-      milestoneReached: false,
-      evaluatedAt: new Date().toISOString(),
-    };
-  }
-
-  return {
-    focus: 'review_difficulty',
-    summary: 'The target may still feel heavy. Consider simplifying it.',
-    suggestedPolicyMode: 'FULL_SUPPORT',
-    milestoneReached: false,
     evaluatedAt: new Date().toISOString(),
   };
 }

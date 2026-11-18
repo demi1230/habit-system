@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   HabitStrengthRules,
   CompositeScoreResult,
+  CURRENT_SRBAI_INSTRUMENT_VERSION,
 } from '../domain/rules/habit-strength.rules';
 import type { ISrbaiAssessmentRepository } from '../domain/repositories/srbai-assessment.repository';
 import { SRBAI_ASSESSMENT_REPOSITORY } from '../domain/repositories/srbai-assessment.repository';
@@ -12,6 +13,7 @@ import { HABIT_LOG_REPOSITORY } from '../domain/repositories/habit-log.repositor
 import { HabitsService } from '../habits/habits.service';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { CreateSrbaiAssessmentDto } from '../habits/dto/create-srbai-assessment.dto';
+import { dateOnlyToYmd } from '../shared/time';
 
 /**
  * Application service — SRBAI & habit-strength composite
@@ -61,6 +63,7 @@ export class SrbaiService {
       item2: dto.item2,
       item3: dto.item3,
       item4: dto.item4,
+      instrumentVersion: CURRENT_SRBAI_INSTRUMENT_VERSION,
       rawAverage,
       normalizedScore100,
       assessedAt: dto.assessedAt ? new Date(dto.assessedAt) : new Date(),
@@ -102,35 +105,19 @@ export class SrbaiService {
       userId,
       habitId,
     );
-    const logs = await this.habitLogRepo.findSummaryByHabitId(habitId);
-    const contextSnapshots =
-      await this.habitLogRepo.findContextSnapshotsByHabitId(habitId, 20);
-    const latestSrbai = await this.srbaiRepo.findLatestByHabitId(habitId);
+    const [logs, contextSnapshots, latestSrbai] = await Promise.all([
+      this.habitLogRepo.findSummaryByHabitId(habitId),
+      this.habitLogRepo.findContextSnapshotsByHabitId(habitId, 20),
+      this.srbaiRepo.findLatestByHabitId(habitId),
+    ]);
 
-    const signals = HabitStrengthRules.compute({
-      habitId,
+    return HabitStrengthRules.evaluateComposite({
       logs,
-      scheduledWeekdayCount: habit.scheduleDays.length,
-      hasCueConfiguration: habit.cues.length > 0,
-      hasMotivationProfile: habit.motivationProfile !== null,
-    });
-
-    const srbaiScore = latestSrbai?.normalizedScore100 ?? 0;
-
-    // consistencyScore = doneRate * maturity * 100  (maturity ramps 0→1 over 21 logs)
-    const maturity = Math.min(signals.totalLogs / 21, 1);
-    const consistencyScore =
-      Math.round(signals.doneRate * maturity * 100 * 100) / 100;
-
-    // contextStabilityScore: derived from per-log context snapshots (hour, location, routine)
-    const contextStabilityScore =
-      HabitStrengthRules.computeContextStability(contextSnapshots);
-
-    return HabitStrengthRules.computeComposite({
-      srbaiScore,
-      consistencyScore,
-      contextStabilityScore,
-      selfInitiatedRate: signals.selfInitiatedRate,
+      scheduledWeekdays: habit.scheduleDays.map((d) => d.weekday),
+      startDate: dateOnlyToYmd(habit.startDate),
+      latestSrbaiScore: latestSrbai?.normalizedScore100 ?? null,
+      contextSnapshots,
+      now: new Date(),
     });
   }
 
@@ -138,6 +125,15 @@ export class SrbaiService {
 
   async computeAndApplyTaperingPolicy(userId: string, habitId: string) {
     const composite = await this.getCompositeScore(userId, habitId);
+
+    // Without enough evidence the current policy is kept unchanged.
+    if (composite.stage === 'insufficient_data') {
+      return {
+        composite,
+        recommendation: null,
+        policy: await this.policyRepo.findByHabitId(habitId),
+      };
+    }
 
     const recommendation = HabitStrengthRules.recommendTaperingPolicy(
       composite.stage,

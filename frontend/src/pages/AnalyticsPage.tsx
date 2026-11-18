@@ -28,6 +28,13 @@ import { HabitIconSlot } from '@/components/habit-icon-slot';
 import { MonthCalendar } from '@/components/month-calendar';
 import { computeScheduledStreakFromLogs, countCompletedDays, countScheduledDays } from '@/lib/habit-log-days';
 import { parseRoutineCue } from '@/lib/routine-cue';
+import { errorMessage } from '@/lib/error-message';
+import {
+  missingEvidenceHint,
+  strengthStageColor,
+  strengthStageLabel,
+  strengthStageOf,
+} from '@/lib/strength-display';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 function withAlpha(color: string, alpha: number) {
@@ -77,8 +84,9 @@ function SectionLabel({ icon, label }: { icon: React.ReactNode; label: string })
   );
 }
 
-function BarSegment({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
-  const pct = max > 0 ? Math.round((value / max) * 100) : 0;
+/** `value` null = not enough data yet (shown as "—", not as 0 %). */
+function BarSegment({ label, value, max, color }: { label: string; value: number | null; max: number; color: string }) {
+  const pct = value !== null && max > 0 ? Math.round((value / max) * 100) : 0;
   return (
     <div className="flex items-center gap-3">
       <span style={{ ...TYPOGRAPHY.micro, width: 60 }} className="text-muted-foreground shrink-0">{label}</span>
@@ -86,7 +94,7 @@ function BarSegment({ label, value, max, color }: { label: string; value: number
         <motion.div className="h-full rounded-full" style={{ backgroundColor: color }}
           initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.6, ease: 'easeOut' }} />
       </div>
-      <span style={{ ...TYPOGRAPHY.micro, fontWeight: 600, width: 32, textAlign: 'right' }} className="text-foreground">{pct}%</span>
+      <span style={{ ...TYPOGRAPHY.micro, fontWeight: 600, width: 32, textAlign: 'right' }} className="text-foreground">{value === null ? '—' : `${pct}%`}</span>
     </div>
   );
 }
@@ -105,18 +113,27 @@ function StatMini({ label, value, icon, color }: { label: string; value: string;
 
 // ── SRBAI Assessment Modal ──────────────────────────────────────────────────
 
+// Self-Report Behavioural Automaticity Index (Gardner et al., 2012): the four
+// items complete "Behaviour X is something…". Project translation, not a
+// validated Mongolian version. Item order must match the backend DTO.
 const SRBAI_QUESTIONS = [
-  'Би энэ дадлыг автоматаар хийдэг',
-  'Бодолгүйгээр хийдэг',
-  'Өөрийгөө хүчлэхгүйгээр хийдэг',
-  'Санаа зовохгүйгээр хийдэг',
+  'автоматаар хийдэг зүйл',
+  'санах гэж хичээлгүйгээр хийдэг зүйл',
+  'бодолгүйгээр хийдэг зүйл',
+  'хийж байгаагаа ухаарахаас өмнө эхэлчихсэн байдаг зүйл',
 ];
 
-function SrbaiModal({ onSubmit, onClose, accent }: {
-  onSubmit: (items: [number, number, number, number]) => void; onClose: () => void; accent: string;
+function SrbaiModal({ habitTitle, onSubmit, onClose, accent, submitting, error }: {
+  habitTitle: string;
+  onSubmit: (items: [number, number, number, number]) => void;
+  onClose: () => void;
+  accent: string;
+  submitting: boolean;
+  error: string;
 }) {
   const [answers, setAnswers] = useState<number[]>([0, 0, 0, 0]);
   const allAnswered = answers.every(a => a > 0);
+  const canSubmit = allAnswered && !submitting;
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -127,13 +144,16 @@ function SrbaiModal({ onSubmit, onClose, accent }: {
         className="w-full max-w-[430px] bg-card rounded-t-[24px] px-5 pt-5 pb-8"
         onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <p style={TYPOGRAPHY.cardTitle} className="text-foreground">SRBAI Үнэлгээ</p>
-          <button onClick={onClose} className={buttonStyles({ variant: 'nav', size: 'iconSm' })} style={{ backgroundColor: 'var(--surface-subtle)' }}>
+          <p style={TYPOGRAPHY.cardTitle} className="text-foreground">Автоматжилтын үнэлгээ (SRBAI)</p>
+          <button onClick={onClose} aria-label="Хаах" className={buttonStyles({ variant: 'nav', size: 'iconSm' })} style={{ backgroundColor: 'var(--surface-subtle)' }}>
             <X className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
+        <p style={{ ...TYPOGRAPHY.bodySm, fontWeight: 500, lineHeight: 1.5 }} className="text-foreground mb-1">
+          “{habitTitle}” бол миний…
+        </p>
         <p style={{ ...TYPOGRAPHY.caption, lineHeight: 1.5 }} className="text-muted-foreground mb-4">
-          1 (огт үгүй) — 7 (бүрэн зөвшөөрч байна) хооронд үнэлнэ үү
+          1 (огт санал нийлэхгүй) — 7 (бүрэн санал нийлнэ) хооронд үнэлнэ үү
         </p>
         <div className="flex flex-col gap-4">
           {SRBAI_QUESTIONS.map((q, qi) => (
@@ -156,15 +176,20 @@ function SrbaiModal({ onSubmit, onClose, accent }: {
             </div>
           ))}
         </div>
+        {error && (
+          <p role="alert" style={{ ...TYPOGRAPHY.caption, color: 'var(--destructive)', marginTop: 12 }}>{error}</p>
+        )}
         <motion.button whileTap={{ scale: 0.97 }}
-          onClick={() => allAnswered && onSubmit(answers as [number, number, number, number])}
-          className={`w-full mt-5 ${buttonStyles({ variant: allAnswered ? 'accent' : 'secondary', size: 'lg' })}`}
+          disabled={!canSubmit}
+          aria-busy={submitting}
+          onClick={() => canSubmit && onSubmit(answers as [number, number, number, number])}
+          className={`w-full mt-5 ${buttonStyles({ variant: canSubmit ? 'accent' : 'secondary', size: 'lg' })}`}
           style={{
-            backgroundColor: allAnswered ? accent : 'var(--surface-strong)',
-            color: allAnswered ? '#fff' : 'var(--text-placeholder)',
+            backgroundColor: canSubmit ? accent : 'var(--surface-strong)',
+            color: canSubmit ? '#fff' : 'var(--text-placeholder)',
             fontSize: 14, fontWeight: 550,
           }}>
-          Үнэлгээ өгөх
+          {submitting ? 'Хадгалж байна…' : 'Үнэлгээ өгөх'}
         </motion.button>
       </motion.div>
     </motion.div>
@@ -197,19 +222,21 @@ function AllHabitsOverview({ habits, logs, composites, loading }: {
     ? Math.round((totalCompleted / totalAttempted) * 100)
     : 0;
 
-  // Average composite score
-  const avgScore = composites.length > 0
-    ? Math.round(composites.reduce((s, c) => s + c.finalScore, 0) / composites.length)
-    : 0;
+  // Average over habits that have enough evidence for an estimate.
+  const scored = composites.filter((c): c is typeof c & { finalScore: number } => c.finalScore !== null);
+  const avgScore = scored.length > 0
+    ? Math.round(scored.reduce((s, c) => s + c.finalScore, 0) / scored.length)
+    : null;
 
-  const avgStage = avgScore >= 70 ? 'strong' : avgScore >= 40 ? 'building' : 'weak';
-  const stageLabel = avgStage === 'strong' ? 'Хүчтэй' : avgStage === 'building' ? 'Хөгжиж буй' : 'Сул';
-  const stageColor = avgStage === 'strong' ? '#18A68A' : avgStage === 'building' ? '#E8A87C' : '#D94F6E';
+  const avgStage = strengthStageOf(avgScore);
+  const stageLabel = strengthStageLabel(avgStage);
+  const stageColor = strengthStageColor(avgStage);
 
   // Per-habit strength for the breakdown list
   const habitScores = habits.map(h => {
     const comp = composites.find(c => c.habitId === h.id);
-    return { habit: h, score: Math.round(comp?.finalScore ?? 0), stage: comp?.stage ?? 'weak' };
+    const score = comp?.finalScore != null ? Math.round(comp.finalScore) : null;
+    return { habit: h, score, stage: comp?.stage ?? 'insufficient_data' };
   });
 
   if (loading) {
@@ -234,9 +261,9 @@ function AllHabitsOverview({ habits, logs, composites, loading }: {
       {/* Overall Strength Ring */}
       <SectionCard delay={0.03}>
         <div className="flex flex-col items-center gap-2 py-2">
-          <ProgressRing value={avgScore} size={120} strokeWidth={8} color={stageColor}>
+          <ProgressRing value={avgScore ?? 0} size={120} strokeWidth={8} color={stageColor}>
             <div className="flex flex-col items-center">
-              <span style={{ fontSize: 28, fontWeight: 600, color: stageColor }}>{avgScore}%</span>
+              <span style={{ fontSize: 28, fontWeight: 600, color: stageColor }}>{avgScore === null ? '—' : `${avgScore}%`}</span>
             </div>
           </ProgressRing>
           <p style={TYPOGRAPHY.bodySm} className="text-muted-foreground">дадлын хүч</p>
@@ -254,7 +281,7 @@ function AllHabitsOverview({ habits, logs, composites, loading }: {
         <SectionLabel icon={<Target className="w-4 h-4" style={{ color: 'var(--foreground)' }} />} label="Дадал тус бүрийн хүч" />
         <div className="flex flex-col gap-2.5">
           {habitScores.map(({ habit, score, stage }) => {
-            const sc = stage === 'strong' ? '#18A68A' : stage === 'building' ? '#E8A87C' : '#D94F6E';
+            const sc = strengthStageColor(stage);
             return (
               <div key={habit.id} className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
@@ -264,11 +291,11 @@ function AllHabitsOverview({ habits, logs, composites, loading }: {
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
                     <span style={{ ...TYPOGRAPHY.caption, fontWeight: 500 }} className="text-foreground truncate">{habit.title}</span>
-                    <span style={{ ...TYPOGRAPHY.caption, fontWeight: 600, color: sc }}>{score}</span>
+                    <span style={{ ...TYPOGRAPHY.caption, fontWeight: 600, color: sc }}>{score ?? '—'}</span>
                   </div>
                   <div className="h-2 rounded-full" style={{ backgroundColor: 'var(--surface-border-soft)' }}>
                     <motion.div className="h-full rounded-full" style={{ backgroundColor: sc }}
-                      initial={{ width: 0 }} animate={{ width: `${Math.min(score, 100)}%` }}
+                      initial={{ width: 0 }} animate={{ width: `${Math.min(score ?? 0, 100)}%` }}
                       transition={{ duration: 0.6, ease: 'easeOut' }} />
                   </div>
                 </div>
@@ -286,7 +313,7 @@ function AllHabitsOverview({ habits, logs, composites, loading }: {
         <StatMini icon={<Calendar className="w-4 h-4" style={{ color: '#3B8FD4' }} />}
           label="Нийт гүйцэтгэсэн" value={`${completedDays}`} color="#3B8FD4" />
         <StatMini icon={<svg width="20" height="20" viewBox="0 0 26 25.0006" fill="none"><path d={svgPaths.p2eaaee80} fill={stageColor} /></svg>}
-          label="Дундаж хүч" value={`${avgScore}`} color={stageColor} />
+          label="Дундаж хүч" value={avgScore === null ? '—' : `${avgScore}`} color={stageColor} />
         <StatMini icon={<BarChart3 className="w-4 h-4" style={{ color: 'var(--foreground)' }} />}
           label="Нийт дадал" value={`${habits.length}`} color="var(--foreground)" />
       </motion.div>
@@ -412,6 +439,8 @@ export function AnalyticsPage() {
   const [srbaiLatest, setSrbaiLatest] = useState<SrbaiAssessment | null>(null);
   const [loading, setLoading] = useState(true);
   const [showSrbai, setShowSrbai] = useState(false);
+  const [srbaiSubmitting, setSrbaiSubmitting] = useState(false);
+  const [srbaiError, setSrbaiError] = useState('');
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [showFormulaInfo, setShowFormulaInfo] = useState(false);
   const [difficulties, setDifficulties] = useState<DifficultyFeedback[]>([]);
@@ -513,18 +542,29 @@ export function AnalyticsPage() {
   const streak = computeScheduledStreakFromLogs(logs, selected?.scheduleDays);
   const completedDays = countCompletedDays(logs);
 
-  // Always use composite score (backend computes even without SRBAI)
-  const displayScore = Math.round(composite?.finalScore ?? 0);
-  const stage = composite?.stage ?? 'weak';
-  const stageLabel = stage === 'strong' ? 'Хүчтэй' : stage === 'building' ? 'Хөгжиж буй' : 'Сул';
-  const stageColor = stage === 'strong' ? '#18A68A' : stage === 'building' ? '#E8A87C' : '#D94F6E';
+  // The composite is an estimate; without enough evidence it is shown as
+  // "insufficient data", never as a weak 0 score.
+  const finalScore = composite?.finalScore ?? null;
+  const displayScore = finalScore === null ? null : Math.round(finalScore);
+  const stage = composite?.stage ?? 'insufficient_data';
+  const stageLabel = composite ? strengthStageLabel(stage) : 'Тооцоолж чадсангүй';
+  const stageColor = strengthStageColor(stage);
+  const evidenceHint = composite && finalScore === null ? missingEvidenceHint(composite) : '';
   const selfRate = progress ? Math.round(progress.selfInitiatedRate * 100) : 0;
 
   const handleSrbaiSubmit = async (items: [number, number, number, number]) => {
-    if (!userId || !selected) return;
-    await srbaiApi.submit(userId, selected.id, { item1: items[0], item2: items[1], item3: items[2], item4: items[3] });
-    setShowSrbai(false);
-    loadHabitData();
+    if (!userId || !selected || srbaiSubmitting) return;
+    setSrbaiSubmitting(true);
+    setSrbaiError('');
+    try {
+      await srbaiApi.submit(userId, selected.id, { item1: items[0], item2: items[1], item3: items[2], item4: items[3] });
+      setShowSrbai(false);
+      loadHabitData();
+    } catch (err) {
+      setSrbaiError(errorMessage(err, 'Үнэлгээг хадгалж чадсангүй. Дахин оролдоно уу.'));
+    } finally {
+      setSrbaiSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -669,7 +709,7 @@ export function AnalyticsPage() {
               </div>
               {/* ── Main: big ring with habit icon + motivation text ── */}
               <div className="flex items-center gap-4">
-                <ProgressRing value={displayScore} size={116} strokeWidth={8} color={color.accent}>
+                <ProgressRing value={displayScore ?? 0} size={116} strokeWidth={8} color={color.accent}>
                   {selected.iconValue ? (
                     <span style={{ fontSize: 38, lineHeight: 1 }}>{selected.iconValue}</span>
                   ) : (
@@ -678,13 +718,18 @@ export function AnalyticsPage() {
                 </ProgressRing>
                 <div className="flex-1 flex flex-col gap-1.5 min-w-0">
                   <div className="flex items-baseline gap-1">
-                    <span style={{ fontSize: 30, fontWeight: 700, lineHeight: 1, color: color.accent }}>{displayScore}</span>
+                    <span style={{ fontSize: 30, fontWeight: 700, lineHeight: 1, color: color.accent }}>{displayScore ?? '—'}</span>
                     <span style={{ ...TYPOGRAPHY.bodySm, fontWeight: 600, color: color.accent }}>/100</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: stageColor }} />
                     <span style={{ ...TYPOGRAPHY.caption, fontWeight: 600, color: stageColor }}>{stageLabel}</span>
                   </div>
+                  {evidenceHint && (
+                    <p style={{ ...TYPOGRAPHY.caption, lineHeight: 1.5 }} className="text-muted-foreground">
+                      {evidenceHint}
+                    </p>
+                  )}
                   {selected.motivationProfile?.reason && (
                     <p style={{ ...TYPOGRAPHY.caption, lineHeight: 1.5, marginTop: 2 }} className="text-muted-foreground">
                       <span style={{ fontWeight: 600 }} className="text-foreground">Энэ дадлыг хийснээр: </span>
@@ -710,15 +755,15 @@ export function AnalyticsPage() {
                     transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
                     style={{ overflow: 'hidden' }}>
                     <div className="mt-3 pt-3 flex flex-col gap-2.5" style={{ borderTop: '1px solid var(--surface-border-soft)' }}>
-                      <BarSegment label="SRBAI" value={composite?.srbaiScore ?? 0} max={100} color="var(--foreground)" />
-                      <BarSegment label="Тууштай" value={composite?.consistencyScore ?? 0} max={100} color="#18A68A" />
-                      <BarSegment label="Контекст" value={composite?.contextStabilityScore ?? 0} max={100} color="#3B8FD4" />
+                      <BarSegment label="SRBAI" value={composite?.srbaiScore ?? null} max={100} color="var(--foreground)" />
+                      <BarSegment label="Тууштай" value={composite?.consistencyScore ?? null} max={100} color="#18A68A" />
+                      <BarSegment label="Контекст" value={composite?.contextStabilityScore ?? null} max={100} color="#3B8FD4" />
                     </div>
                     <div className="rounded-2xl px-3.5 py-3 mt-3"
                       style={{ backgroundColor: 'var(--surface-muted)', border: '1px solid var(--surface-border-soft)' }}>
                       <p style={{ ...TYPOGRAPHY.caption, fontWeight: 600, marginBottom: 4 }} className="text-foreground">Дадлын хүч гэж юу вэ?</p>
                       <p style={{ ...TYPOGRAPHY.micro, lineHeight: 1.55, marginBottom: 10 }} className="text-muted-foreground">
-                        Дадлын хүч нь таны дадлын автоматжилт, тууштай байдал, контекст тогтворжилтыг нэгтгэсэн цогц оноо юм. Энэ оноо таны дадал хэр бэхжсэнийг харуулна.
+                        Дадлын хүч нь автоматжилт, тууштай байдал, контекстийн тогтвортой байдлыг нэгтгэсэн тооцоолол юм. Дадал хэр бэхжиж байгааг ойролцоогоор илэрхийлэх бөгөөд баталгаажсан хэмжүүр биш. SRBAI үнэлгээ болон дор хаяж 7 төлөвлөсөн өдөр байхгүй бол тооцоолохгүй.
                       </p>
                       <p style={{ ...TYPOGRAPHY.micro, fontWeight: 600, marginBottom: 6 }} className="text-foreground">Томъёо</p>
                       <div className="flex flex-col gap-1.5">
@@ -731,13 +776,13 @@ export function AnalyticsPage() {
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#18A68A' }} />
                           <p style={{ ...TYPOGRAPHY.micro, lineHeight: 1.4 }} className="text-muted-foreground">
-                            <span className="font-semibold text-foreground">Тууштай (25%)</span> — гүйцэтгэлийн хувь × дата бэлэн байдал
+                            <span className="font-semibold text-foreground">Тууштай (25%)</span> — сүүлийн 28 хоногийн төлөвлөсөн өдрүүдээс хийсэн хувь
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#3B8FD4' }} />
                           <p style={{ ...TYPOGRAPHY.micro, lineHeight: 1.4 }} className="text-muted-foreground">
-                            <span className="font-semibold text-foreground">Контекст (15%)</span> — ижил цаг, газар, дараалалд хийсэн байдал
+                            <span className="font-semibold text-foreground">Контекст (15%)</span> — ижил цагийн хүрээнд (±1 цаг) болон хадгалсан газартаа хийсэн хувь. Өгөгдөл хүрэлцээгүй үед бусад хоёрын жинг дахин хуваарилна
                           </p>
                         </div>
                       </div>
@@ -842,7 +887,9 @@ export function AnalyticsPage() {
               <StatMini icon={<Calendar className="w-[18px] h-[18px]" style={{ color: color.accent }} />}
                 label="Нийт гүйцэтгэсэн" value={`${completedDays}`} color={color.accent} />
               <StatMini icon={<MapPin className="w-[18px] h-[18px]" style={{ color: color.accent }} />}
-                label="Контекст тогтвортой" value={`${Math.round(composite?.contextStabilityScore ?? 0)}%`} color={color.accent} />
+                label="Контекст тогтвортой"
+                value={composite?.contextStabilityScore != null ? `${Math.round(composite.contextStabilityScore)}%` : '—'}
+                color={color.accent} />
               <StatMini icon={<Clock className="w-[18px] h-[18px]" style={{ color: color.accent }} />}
                 label="Бие даасан байдал" value={`${selfRate}%`} color={color.accent} />
             </motion.div>
@@ -891,7 +938,16 @@ export function AnalyticsPage() {
 
       {/* SRBAI Modal */}
       <AnimatePresence>
-        {showSrbai && <SrbaiModal accent={color.accent} onClose={() => setShowSrbai(false)} onSubmit={handleSrbaiSubmit} />}
+        {showSrbai && (
+          <SrbaiModal
+            habitTitle={selected.title}
+            accent={color.accent}
+            submitting={srbaiSubmitting}
+            error={srbaiError}
+            onClose={() => { setShowSrbai(false); setSrbaiError(''); }}
+            onSubmit={handleSrbaiSubmit}
+          />
+        )}
       </AnimatePresence>
 
       {!showSrbai && <BottomNav />}

@@ -15,6 +15,11 @@ import { SRBAI_ASSESSMENT_REPOSITORY } from '../domain/repositories/srbai-assess
 import { CueScheduleRules } from '../domain/rules/cue-schedule.rules';
 import { HabitStrengthRules } from '../domain/rules/habit-strength.rules';
 import {
+  ContextSnapshotRules,
+  type ContextSnapshot,
+} from '../domain/rules/context-snapshot.rules';
+import type { HabitEntity } from '../domain/entities/habit.entity';
+import {
   ReminderDecisionRules,
   ReminderDecisionResult,
 } from '../domain/rules/reminder-decision.rules';
@@ -263,35 +268,26 @@ export class HabitsService {
           cursor = addDaysToYmd(cursor, -1);
         }
 
-        // Composite strength score — same formula as /habit-strength/composite
+        // Composite strength estimate — same function as /habit-strength/composite.
         const [latestSrbai, contextSnapshots] = await Promise.all([
           this.srbaiRepo.findLatestByHabitId(habit.id),
           this.habitLogRepo.findContextSnapshotsByHabitId(habit.id, 20),
         ]);
 
-        const strength = HabitStrengthRules.compute({
-          habitId: habit.id,
+        const composite = HabitStrengthRules.evaluateComposite({
           logs,
-          scheduledWeekdayCount: habit.scheduleDays.length,
-          hasCueConfiguration: habit.cues.length > 0,
-          hasMotivationProfile: habit.motivationProfile !== null,
+          scheduledWeekdays: habit.scheduleDays.map((d) => d.weekday),
+          startDate: dateOnlyToYmd(habit.startDate),
+          latestSrbaiScore: latestSrbai?.normalizedScore100 ?? null,
+          contextSnapshots,
+          now,
         });
 
-        const srbaiScore = latestSrbai?.normalizedScore100 ?? 0;
-        const maturity = Math.min(strength.totalLogs / 21, 1);
-        const consistencyScore =
-          Math.round(strength.doneRate * maturity * 100 * 100) / 100;
-        const contextStabilityScore =
-          HabitStrengthRules.computeContextStability(contextSnapshots);
-
-        const composite = HabitStrengthRules.computeComposite({
-          srbaiScore,
-          consistencyScore,
-          contextStabilityScore,
-          selfInitiatedRate: strength.selfInitiatedRate,
-        });
-
-        const strengthScore = Math.round(composite.finalScore);
+        // null until there is enough evidence (see computeComposite).
+        const strengthScore =
+          composite.finalScore === null
+            ? null
+            : Math.round(composite.finalScore);
 
         return {
           ...habit,
@@ -304,6 +300,24 @@ export class HabitsService {
         };
       }),
     );
+  }
+
+  /**
+   * Context observed for a completion logged now: hour (app timezone) and
+   * the saved reminder place the user was at, if any (ContextSnapshotRules).
+   */
+  async captureContext(
+    userId: string,
+    habit: { cues: HabitEntity['cues'] },
+    completedAt: Date,
+  ): Promise<ContextSnapshot> {
+    const userLocation = await this.authService.getCurrentLocation(userId);
+    return ContextSnapshotRules.capture({
+      completedAt,
+      now: new Date(),
+      cues: habit.cues,
+      userLocation,
+    });
   }
 
   async getReminderDecision(

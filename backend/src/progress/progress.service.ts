@@ -78,6 +78,11 @@ export class ProgressService {
           habitId,
           ...logData,
           ...(await this.classifyTriggerSource(habitId, logData.completedAt)),
+          ...(await this.habitsService.captureContext(
+            userId,
+            habit,
+            logData.completedAt,
+          )),
         });
       } catch (error) {
         // A concurrent request created the day's log first.

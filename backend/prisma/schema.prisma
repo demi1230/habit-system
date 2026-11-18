@@ -348,6 +348,9 @@ model SrbaiAssessment {
   item2              Int
   item3              Int
   item4              Int
+  // Item wording shown to the user: 1 = earlier items, 2 = Gardner et al.
+  // (2012) SRBAI wording. Do not pool versions in analyses.
+  instrumentVersion  Int      @default(1) @map("instrument_version")
   rawAverage         Float    @map("raw_average")
   normalizedScore100 Float    @map("normalized_score_100")
   assessedAt         DateTime @map("assessed_at")

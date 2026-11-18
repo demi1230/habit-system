@@ -15,6 +15,8 @@ export interface SrbaiAssessmentEntity {
   item3: number;
   item4: number;
   /** Mean of items 1-4. */
+  /** Item wording version: 1 = earlier items, 2 = Gardner et al. (2012). */
+  instrumentVersion: number;
   rawAverage: number;
   /** ((rawAverage - 1) / 6) * 100, rounded to 2 dp. */
   normalizedScore100: number;

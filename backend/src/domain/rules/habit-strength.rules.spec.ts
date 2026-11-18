@@ -3,6 +3,7 @@ import {
   ReminderPolicyMode,
   HabitLogStatus,
   CompletionTriggerSource,
+  Weekday,
 } from '../enums/domain.enums';
 
 describe('HabitStrengthRules.scoreSrbai', () => {
@@ -102,6 +103,160 @@ describe('HabitStrengthRules.computeComposite', () => {
       selfInitiatedRate: 0,
     });
     expect(result.finalScore).toBe(60);
+  });
+
+  it('reports insufficient data instead of scoring a missing SRBAI as 0', () => {
+    const result = HabitStrengthRules.computeComposite({
+      srbaiScore: null,
+      consistencyScore: 100,
+      contextStabilityScore: 100,
+      selfInitiatedRate: 1,
+    });
+    expect(result.finalScore).toBeNull();
+    expect(result.stage).toBe('insufficient_data');
+  });
+
+  it('reports insufficient data without enough scheduled days', () => {
+    const result = HabitStrengthRules.computeComposite({
+      srbaiScore: 80,
+      consistencyScore: null,
+      contextStabilityScore: null,
+      selfInitiatedRate: 1,
+    });
+    expect(result.stage).toBe('insufficient_data');
+  });
+
+  it('rescales the weights when context data is not available yet', () => {
+    const result = HabitStrengthRules.computeComposite({
+      srbaiScore: 100,
+      consistencyScore: 0,
+      contextStabilityScore: null,
+      selfInitiatedRate: 0,
+    });
+    expect(result.finalScore).toBe(70.59); // 0.6 / 0.85
+  });
+});
+
+describe('HabitStrengthRules.computeScheduleAdherence', () => {
+  const today = '2026-03-30'; // Monday
+
+  it('counts missed scheduled days, not only logged ones', () => {
+    // Daily habit started 10 days ago, done on 4 of the 10 past days.
+    const result = HabitStrengthRules.computeScheduleAdherence({
+      doneDays: new Set([
+        '2026-03-20',
+        '2026-03-22',
+        '2026-03-25',
+        '2026-03-29',
+      ]),
+      scheduledWeekdays: [],
+      startDate: '2026-03-20',
+      today,
+    });
+    expect(result.scheduledDays).toBe(10);
+    expect(result.completedScheduledDays).toBe(4);
+    expect(result.rate).toBeCloseTo(0.4);
+  });
+
+  it('does not count today as missed before it is done', () => {
+    const notYet = HabitStrengthRules.computeScheduleAdherence({
+      doneDays: new Set<string>(),
+      scheduledWeekdays: [],
+      startDate: '2026-03-20',
+      today,
+    });
+    const doneToday = HabitStrengthRules.computeScheduleAdherence({
+      doneDays: new Set([today]),
+      scheduledWeekdays: [],
+      startDate: '2026-03-20',
+      today,
+    });
+    expect(notYet.scheduledDays).toBe(10);
+    expect(doneToday.scheduledDays).toBe(11);
+  });
+
+  it('only counts the scheduled weekdays within the 28-day window', () => {
+    const result = HabitStrengthRules.computeScheduleAdherence({
+      doneDays: new Set(['2026-03-23', '2026-03-16']),
+      scheduledWeekdays: [Weekday.MONDAY],
+      startDate: '2026-01-01',
+      today,
+    });
+    // Mondays 03-02, 03-09, 03-16, 03-23 (today, Monday, not done yet).
+    expect(result.scheduledDays).toBe(4);
+    expect(result.completedScheduledDays).toBe(2);
+    expect(result.rate).toBeNull(); // fewer than 7 scheduled days
+  });
+});
+
+describe('HabitStrengthRules.computeContextStability', () => {
+  const snap = (
+    completionHour: number,
+    coarseLocation: string | null = null,
+  ) => ({
+    completionHour,
+    coarseLocation,
+  });
+
+  it('returns null until there are enough completions with a known hour', () => {
+    expect(
+      HabitStrengthRules.computeContextStability([snap(7), snap(7), snap(7)]),
+    ).toBeNull();
+  });
+
+  it('treats completions within the same 3-hour band as stable', () => {
+    expect(
+      HabitStrengthRules.computeContextStability([
+        snap(7),
+        snap(8),
+        snap(6),
+        snap(7),
+        snap(19),
+      ]),
+    ).toBe(80);
+  });
+
+  it('adds the place dimension only when completions were seen at a saved place', () => {
+    expect(
+      HabitStrengthRules.computeContextStability([
+        snap(7, 'Гэр'),
+        snap(7, 'Гэр'),
+        snap(7, null),
+        snap(7, 'Гэр'),
+        snap(7, 'Гэр'),
+      ]),
+    ).toBe(90); // time 100 %, place 80 %
+  });
+});
+
+describe('HabitStrengthRules.evaluateComposite', () => {
+  it('no longer rates logging only completed days as perfect consistency', () => {
+    // A daily habit for 20 days, done (and logged) on 5 of them.
+    const logs = [
+      '2026-03-12',
+      '2026-03-15',
+      '2026-03-18',
+      '2026-03-24',
+      '2026-03-28',
+    ].map((day) => ({
+      status: HabitLogStatus.DONE,
+      triggerSource: CompletionTriggerSource.SELF_INITIATED,
+      completedAt: new Date(`${day}T01:00:00.000Z`),
+    }));
+
+    const result = HabitStrengthRules.evaluateComposite({
+      logs,
+      scheduledWeekdays: [],
+      startDate: '2026-03-10',
+      latestSrbaiScore: 50,
+      contextSnapshots: [],
+      now: new Date('2026-03-30T02:00:00.000Z'),
+    });
+
+    expect(result.scheduledDays).toBe(20);
+    expect(result.consistencyScore).toBe(25);
+    expect(result.contextStabilityScore).toBeNull();
+    expect(result.stage).not.toBe('insufficient_data');
   });
 });
 

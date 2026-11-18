@@ -24,6 +24,7 @@ export class SrbaiAssessmentPrismaRepository implements ISrbaiAssessmentReposito
         item2: data.item2,
         item3: data.item3,
         item4: data.item4,
+        instrumentVersion: data.instrumentVersion,
         rawAverage: data.rawAverage,
         normalizedScore100: data.normalizedScore100,
         assessedAt: data.assessedAt,

@@ -88,6 +88,21 @@ export class AuthService {
     await this.userRepo.updateLocation(userId, lat, lng);
   }
 
+  /** The user's last reported location, or null when none is saved. */
+  async getCurrentLocation(
+    userId: string,
+  ): Promise<{ lat: number; lng: number; updatedAt: Date | null } | null> {
+    const user = await this.userRepo.findById(userId);
+    if (!user || user.currentLat === null || user.currentLng === null) {
+      return null;
+    }
+    return {
+      lat: user.currentLat,
+      lng: user.currentLng,
+      updatedAt: user.currentLocationAt ?? null,
+    };
+  }
+
   async ensureUserExists(userId: string) {
     const user = await this.userRepo.findById(userId);
 

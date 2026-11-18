@@ -12,14 +12,23 @@ export interface SrbaiAssessment {
   assessedAt: string;
 }
 
+/**
+ * Heuristic habit-strength estimate. A component is null when there is not
+ * enough evidence for it; finalScore is null (stage 'insufficient_data')
+ * until there is an SRBAI answer and at least 7 scheduled days.
+ */
 export interface SrbaiCompositeScore {
-  srbaiScore: number;
-  consistencyScore: number;
-  contextStabilityScore: number;
+  srbaiScore: number | null;
+  /** Share of scheduled days done in the last 28 days (0–100). */
+  consistencyScore: number | null;
+  /** Same time band / saved place share (0–100). */
+  contextStabilityScore: number | null;
   selfInitiatedRate: number;
-  finalScore: number;
-  stage: 'weak' | 'building' | 'strong';
+  finalScore: number | null;
+  stage: 'weak' | 'building' | 'strong' | 'insufficient_data';
   evaluatedAt: string;
+  scheduledDays?: number;
+  completedScheduledDays?: number;
 }
 
 export const srbaiApi = {

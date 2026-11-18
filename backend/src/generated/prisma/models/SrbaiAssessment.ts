@@ -31,6 +31,7 @@ export type SrbaiAssessmentAvgAggregateOutputType = {
   item2: number | null
   item3: number | null
   item4: number | null
+  instrumentVersion: number | null
   rawAverage: number | null
   normalizedScore100: number | null
 }
@@ -40,6 +41,7 @@ export type SrbaiAssessmentSumAggregateOutputType = {
   item2: number | null
   item3: number | null
   item4: number | null
+  instrumentVersion: number | null
   rawAverage: number | null
   normalizedScore100: number | null
 }
@@ -52,6 +54,7 @@ export type SrbaiAssessmentMinAggregateOutputType = {
   item2: number | null
   item3: number | null
   item4: number | null
+  instrumentVersion: number | null
   rawAverage: number | null
   normalizedScore100: number | null
   assessedAt: Date | null
@@ -66,6 +69,7 @@ export type SrbaiAssessmentMaxAggregateOutputType = {
   item2: number | null
   item3: number | null
   item4: number | null
+  instrumentVersion: number | null
   rawAverage: number | null
   normalizedScore100: number | null
   assessedAt: Date | null
@@ -80,6 +84,7 @@ export type SrbaiAssessmentCountAggregateOutputType = {
   item2: number
   item3: number
   item4: number
+  instrumentVersion: number
   rawAverage: number
   normalizedScore100: number
   assessedAt: number
@@ -93,6 +98,7 @@ export type SrbaiAssessmentAvgAggregateInputType = {
   item2?: true
   item3?: true
   item4?: true
+  instrumentVersion?: true
   rawAverage?: true
   normalizedScore100?: true
 }
@@ -102,6 +108,7 @@ export type SrbaiAssessmentSumAggregateInputType = {
   item2?: true
   item3?: true
   item4?: true
+  instrumentVersion?: true
   rawAverage?: true
   normalizedScore100?: true
 }
@@ -114,6 +121,7 @@ export type SrbaiAssessmentMinAggregateInputType = {
   item2?: true
   item3?: true
   item4?: true
+  instrumentVersion?: true
   rawAverage?: true
   normalizedScore100?: true
   assessedAt?: true
@@ -128,6 +136,7 @@ export type SrbaiAssessmentMaxAggregateInputType = {
   item2?: true
   item3?: true
   item4?: true
+  instrumentVersion?: true
   rawAverage?: true
   normalizedScore100?: true
   assessedAt?: true
@@ -142,6 +151,7 @@ export type SrbaiAssessmentCountAggregateInputType = {
   item2?: true
   item3?: true
   item4?: true
+  instrumentVersion?: true
   rawAverage?: true
   normalizedScore100?: true
   assessedAt?: true
@@ -243,6 +253,7 @@ export type SrbaiAssessmentGroupByOutputType = {
   item2: number
   item3: number
   item4: number
+  instrumentVersion: number
   rawAverage: number
   normalizedScore100: number
   assessedAt: Date
@@ -280,6 +291,7 @@ export type SrbaiAssessmentWhereInput = {
   item2?: Prisma.IntFilter<"SrbaiAssessment"> | number
   item3?: Prisma.IntFilter<"SrbaiAssessment"> | number
   item4?: Prisma.IntFilter<"SrbaiAssessment"> | number
+  instrumentVersion?: Prisma.IntFilter<"SrbaiAssessment"> | number
   rawAverage?: Prisma.FloatFilter<"SrbaiAssessment"> | number
   normalizedScore100?: Prisma.FloatFilter<"SrbaiAssessment"> | number
   assessedAt?: Prisma.DateTimeFilter<"SrbaiAssessment"> | Date | string
@@ -295,6 +307,7 @@ export type SrbaiAssessmentOrderByWithRelationInput = {
   item2?: Prisma.SortOrder
   item3?: Prisma.SortOrder
   item4?: Prisma.SortOrder
+  instrumentVersion?: Prisma.SortOrder
   rawAverage?: Prisma.SortOrder
   normalizedScore100?: Prisma.SortOrder
   assessedAt?: Prisma.SortOrder
@@ -313,6 +326,7 @@ export type SrbaiAssessmentWhereUniqueInput = Prisma.AtLeast<{
   item2?: Prisma.IntFilter<"SrbaiAssessment"> | number
   item3?: Prisma.IntFilter<"SrbaiAssessment"> | number
   item4?: Prisma.IntFilter<"SrbaiAssessment"> | number
+  instrumentVersion?: Prisma.IntFilter<"SrbaiAssessment"> | number
   rawAverage?: Prisma.FloatFilter<"SrbaiAssessment"> | number
   normalizedScore100?: Prisma.FloatFilter<"SrbaiAssessment"> | number
   assessedAt?: Prisma.DateTimeFilter<"SrbaiAssessment"> | Date | string
@@ -328,6 +342,7 @@ export type SrbaiAssessmentOrderByWithAggregationInput = {
   item2?: Prisma.SortOrder
   item3?: Prisma.SortOrder
   item4?: Prisma.SortOrder
+  instrumentVersion?: Prisma.SortOrder
   rawAverage?: Prisma.SortOrder
   normalizedScore100?: Prisma.SortOrder
   assessedAt?: Prisma.SortOrder
@@ -350,6 +365,7 @@ export type SrbaiAssessmentScalarWhereWithAggregatesInput = {
   item2?: Prisma.IntWithAggregatesFilter<"SrbaiAssessment"> | number
   item3?: Prisma.IntWithAggregatesFilter<"SrbaiAssessment"> | number
   item4?: Prisma.IntWithAggregatesFilter<"SrbaiAssessment"> | number
+  instrumentVersion?: Prisma.IntWithAggregatesFilter<"SrbaiAssessment"> | number
   rawAverage?: Prisma.FloatWithAggregatesFilter<"SrbaiAssessment"> | number
   normalizedScore100?: Prisma.FloatWithAggregatesFilter<"SrbaiAssessment"> | number
   assessedAt?: Prisma.DateTimeWithAggregatesFilter<"SrbaiAssessment"> | Date | string
@@ -363,6 +379,7 @@ export type SrbaiAssessmentCreateInput = {
   item2: number
   item3: number
   item4: number
+  instrumentVersion?: number
   rawAverage: number
   normalizedScore100: number
   assessedAt: Date | string
@@ -378,6 +395,7 @@ export type SrbaiAssessmentUncheckedCreateInput = {
   item2: number
   item3: number
   item4: number
+  instrumentVersion?: number
   rawAverage: number
   normalizedScore100: number
   assessedAt: Date | string
@@ -391,6 +409,7 @@ export type SrbaiAssessmentUpdateInput = {
   item2?: Prisma.IntFieldUpdateOperationsInput | number
   item3?: Prisma.IntFieldUpdateOperationsInput | number
   item4?: Prisma.IntFieldUpdateOperationsInput | number
+  instrumentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   rawAverage?: Prisma.FloatFieldUpdateOperationsInput | number
   normalizedScore100?: Prisma.FloatFieldUpdateOperationsInput | number
   assessedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -406,6 +425,7 @@ export type SrbaiAssessmentUncheckedUpdateInput = {
   item2?: Prisma.IntFieldUpdateOperationsInput | number
   item3?: Prisma.IntFieldUpdateOperationsInput | number
   item4?: Prisma.IntFieldUpdateOperationsInput | number
+  instrumentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   rawAverage?: Prisma.FloatFieldUpdateOperationsInput | number
   normalizedScore100?: Prisma.FloatFieldUpdateOperationsInput | number
   assessedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -420,6 +440,7 @@ export type SrbaiAssessmentCreateManyInput = {
   item2: number
   item3: number
   item4: number
+  instrumentVersion?: number
   rawAverage: number
   normalizedScore100: number
   assessedAt: Date | string
@@ -433,6 +454,7 @@ export type SrbaiAssessmentUpdateManyMutationInput = {
   item2?: Prisma.IntFieldUpdateOperationsInput | number
   item3?: Prisma.IntFieldUpdateOperationsInput | number
   item4?: Prisma.IntFieldUpdateOperationsInput | number
+  instrumentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   rawAverage?: Prisma.FloatFieldUpdateOperationsInput | number
   normalizedScore100?: Prisma.FloatFieldUpdateOperationsInput | number
   assessedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -447,6 +469,7 @@ export type SrbaiAssessmentUncheckedUpdateManyInput = {
   item2?: Prisma.IntFieldUpdateOperationsInput | number
   item3?: Prisma.IntFieldUpdateOperationsInput | number
   item4?: Prisma.IntFieldUpdateOperationsInput | number
+  instrumentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   rawAverage?: Prisma.FloatFieldUpdateOperationsInput | number
   normalizedScore100?: Prisma.FloatFieldUpdateOperationsInput | number
   assessedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -471,6 +494,7 @@ export type SrbaiAssessmentCountOrderByAggregateInput = {
   item2?: Prisma.SortOrder
   item3?: Prisma.SortOrder
   item4?: Prisma.SortOrder
+  instrumentVersion?: Prisma.SortOrder
   rawAverage?: Prisma.SortOrder
   normalizedScore100?: Prisma.SortOrder
   assessedAt?: Prisma.SortOrder
@@ -482,6 +506,7 @@ export type SrbaiAssessmentAvgOrderByAggregateInput = {
   item2?: Prisma.SortOrder
   item3?: Prisma.SortOrder
   item4?: Prisma.SortOrder
+  instrumentVersion?: Prisma.SortOrder
   rawAverage?: Prisma.SortOrder
   normalizedScore100?: Prisma.SortOrder
 }
@@ -494,6 +519,7 @@ export type SrbaiAssessmentMaxOrderByAggregateInput = {
   item2?: Prisma.SortOrder
   item3?: Prisma.SortOrder
   item4?: Prisma.SortOrder
+  instrumentVersion?: Prisma.SortOrder
   rawAverage?: Prisma.SortOrder
   normalizedScore100?: Prisma.SortOrder
   assessedAt?: Prisma.SortOrder
@@ -508,6 +534,7 @@ export type SrbaiAssessmentMinOrderByAggregateInput = {
   item2?: Prisma.SortOrder
   item3?: Prisma.SortOrder
   item4?: Prisma.SortOrder
+  instrumentVersion?: Prisma.SortOrder
   rawAverage?: Prisma.SortOrder
   normalizedScore100?: Prisma.SortOrder
   assessedAt?: Prisma.SortOrder
@@ -519,6 +546,7 @@ export type SrbaiAssessmentSumOrderByAggregateInput = {
   item2?: Prisma.SortOrder
   item3?: Prisma.SortOrder
   item4?: Prisma.SortOrder
+  instrumentVersion?: Prisma.SortOrder
   rawAverage?: Prisma.SortOrder
   normalizedScore100?: Prisma.SortOrder
 }
@@ -572,6 +600,7 @@ export type SrbaiAssessmentCreateWithoutHabitInput = {
   item2: number
   item3: number
   item4: number
+  instrumentVersion?: number
   rawAverage: number
   normalizedScore100: number
   assessedAt: Date | string
@@ -585,6 +614,7 @@ export type SrbaiAssessmentUncheckedCreateWithoutHabitInput = {
   item2: number
   item3: number
   item4: number
+  instrumentVersion?: number
   rawAverage: number
   normalizedScore100: number
   assessedAt: Date | string
@@ -628,6 +658,7 @@ export type SrbaiAssessmentScalarWhereInput = {
   item2?: Prisma.IntFilter<"SrbaiAssessment"> | number
   item3?: Prisma.IntFilter<"SrbaiAssessment"> | number
   item4?: Prisma.IntFilter<"SrbaiAssessment"> | number
+  instrumentVersion?: Prisma.IntFilter<"SrbaiAssessment"> | number
   rawAverage?: Prisma.FloatFilter<"SrbaiAssessment"> | number
   normalizedScore100?: Prisma.FloatFilter<"SrbaiAssessment"> | number
   assessedAt?: Prisma.DateTimeFilter<"SrbaiAssessment"> | Date | string
@@ -641,6 +672,7 @@ export type SrbaiAssessmentCreateManyHabitInput = {
   item2: number
   item3: number
   item4: number
+  instrumentVersion?: number
   rawAverage: number
   normalizedScore100: number
   assessedAt: Date | string
@@ -654,6 +686,7 @@ export type SrbaiAssessmentUpdateWithoutHabitInput = {
   item2?: Prisma.IntFieldUpdateOperationsInput | number
   item3?: Prisma.IntFieldUpdateOperationsInput | number
   item4?: Prisma.IntFieldUpdateOperationsInput | number
+  instrumentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   rawAverage?: Prisma.FloatFieldUpdateOperationsInput | number
   normalizedScore100?: Prisma.FloatFieldUpdateOperationsInput | number
   assessedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -667,6 +700,7 @@ export type SrbaiAssessmentUncheckedUpdateWithoutHabitInput = {
   item2?: Prisma.IntFieldUpdateOperationsInput | number
   item3?: Prisma.IntFieldUpdateOperationsInput | number
   item4?: Prisma.IntFieldUpdateOperationsInput | number
+  instrumentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   rawAverage?: Prisma.FloatFieldUpdateOperationsInput | number
   normalizedScore100?: Prisma.FloatFieldUpdateOperationsInput | number
   assessedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -680,6 +714,7 @@ export type SrbaiAssessmentUncheckedUpdateManyWithoutHabitInput = {
   item2?: Prisma.IntFieldUpdateOperationsInput | number
   item3?: Prisma.IntFieldUpdateOperationsInput | number
   item4?: Prisma.IntFieldUpdateOperationsInput | number
+  instrumentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   rawAverage?: Prisma.FloatFieldUpdateOperationsInput | number
   normalizedScore100?: Prisma.FloatFieldUpdateOperationsInput | number
   assessedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -696,6 +731,7 @@ export type SrbaiAssessmentSelect<ExtArgs extends runtime.Types.Extensions.Inter
   item2?: boolean
   item3?: boolean
   item4?: boolean
+  instrumentVersion?: boolean
   rawAverage?: boolean
   normalizedScore100?: boolean
   assessedAt?: boolean
@@ -711,6 +747,7 @@ export type SrbaiAssessmentSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   item2?: boolean
   item3?: boolean
   item4?: boolean
+  instrumentVersion?: boolean
   rawAverage?: boolean
   normalizedScore100?: boolean
   assessedAt?: boolean
@@ -726,6 +763,7 @@ export type SrbaiAssessmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   item2?: boolean
   item3?: boolean
   item4?: boolean
+  instrumentVersion?: boolean
   rawAverage?: boolean
   normalizedScore100?: boolean
   assessedAt?: boolean
@@ -741,13 +779,14 @@ export type SrbaiAssessmentSelectScalar = {
   item2?: boolean
   item3?: boolean
   item4?: boolean
+  instrumentVersion?: boolean
   rawAverage?: boolean
   normalizedScore100?: boolean
   assessedAt?: boolean
   createdAt?: boolean
 }
 
-export type SrbaiAssessmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "habitId" | "item1" | "item2" | "item3" | "item4" | "rawAverage" | "normalizedScore100" | "assessedAt" | "createdAt", ExtArgs["result"]["srbaiAssessment"]>
+export type SrbaiAssessmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "habitId" | "item1" | "item2" | "item3" | "item4" | "instrumentVersion" | "rawAverage" | "normalizedScore100" | "assessedAt" | "createdAt", ExtArgs["result"]["srbaiAssessment"]>
 export type SrbaiAssessmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>
 }
@@ -771,6 +810,7 @@ export type $SrbaiAssessmentPayload<ExtArgs extends runtime.Types.Extensions.Int
     item2: number
     item3: number
     item4: number
+    instrumentVersion: number
     rawAverage: number
     normalizedScore100: number
     assessedAt: Date
@@ -1206,6 +1246,7 @@ export interface SrbaiAssessmentFieldRefs {
   readonly item2: Prisma.FieldRef<"SrbaiAssessment", 'Int'>
   readonly item3: Prisma.FieldRef<"SrbaiAssessment", 'Int'>
   readonly item4: Prisma.FieldRef<"SrbaiAssessment", 'Int'>
+  readonly instrumentVersion: Prisma.FieldRef<"SrbaiAssessment", 'Int'>
   readonly rawAverage: Prisma.FieldRef<"SrbaiAssessment", 'Float'>
   readonly normalizedScore100: Prisma.FieldRef<"SrbaiAssessment", 'Float'>
   readonly assessedAt: Prisma.FieldRef<"SrbaiAssessment", 'DateTime'>

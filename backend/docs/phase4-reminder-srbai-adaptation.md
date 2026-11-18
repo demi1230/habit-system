@@ -243,6 +243,9 @@ Body: `{ text: string (max 1000 chars), occurredAt?: ISO }`
 - Returns `{ id, logId, text, occurredAt }`.
 
 #### 3. Adaptation Recommendation (stateless)
+
+> **Removed (2026-11).** No client used this endpoint, and it disagreed with the recommendation engine users actually see. Recommendations now come from `RecommendationRules` via `POST /users/:userId/recommendations/refresh`; see `docs/BACKEND.md`. The text below is kept as history.
+
 `GET /users/:userId/habits/:habitId/adaptation-recommendation`
 
 Query params: `compositeScore?`, `selfInitiatedRate`, `reminderDependenceRate`, `doneCount`, `currentPolicyMode?`

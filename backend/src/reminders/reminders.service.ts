@@ -267,6 +267,11 @@ export class RemindersService {
         triggerSource: CompletionTriggerSource.REMINDER_TRIGGERED,
         linkedReminderId: reminder.id,
         sourceConfidence: 1.0,
+        ...(await this.habitsService.captureContext(
+          userId,
+          habit,
+          completedAt,
+        )),
       });
       return { habitLog: created, becameDone: true };
     } catch (error) {
