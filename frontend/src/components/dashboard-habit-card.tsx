@@ -7,6 +7,7 @@ import { HabitIconSlot } from './habit-icon-slot';
 import { getHabitColor } from '@/lib/habit-colors';
 import { TYPOGRAPHY, SHADOW, AppPlusIcon } from '@/shared/design';
 import { svgPaths } from '@/lib/svg-paths';
+import { isBinaryHabit, progressPercent as calcProgress } from '@/lib/habit-status';
 
 export type DashboardHabit = Pick<HabitWithCueContext, 'id' | 'title' | 'color' | 'iconValue' | 'currentStreak' | 'strengthScore' | 'targetValue' | 'measurementUnit'>;
 interface LogEntry { value: number; status: 'partial' | 'done'; logId?: string }
@@ -44,14 +45,6 @@ function HabitTag({ value, icon, onClick }: { value: string | number; icon: 'dum
   );
 }
 
-function isBinaryHabit(habit: DashboardHabit) {
-  return habit.targetValue === 1 && (habit.measurementUnit === 'удаа' || habit.measurementUnit === 'times' || habit.measurementUnit === 'boolean');
-}
-
-function calcProgress(habit: DashboardHabit, loggedValue: number): number {
-  if (isBinaryHabit(habit)) return loggedValue > 0 ? 100 : 0;
-  return Math.min((loggedValue / (habit.targetValue || 1)) * 100, 100);
-}
 
 function StatusBadge({ habit, entry, onTap, color, disabled }: {
   habit: DashboardHabit;

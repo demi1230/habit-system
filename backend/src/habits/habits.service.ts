@@ -158,7 +158,11 @@ export class HabitsService {
     const updatedHabit = await this.habitRepo.update(habitId, {
       title: updateHabitDto.title,
       description: updateHabitDto.description,
-      precedingRoutine: updateHabitDto.precedingRoutine,
+      // An empty string clears the routine cue (undefined leaves it unchanged).
+      precedingRoutine:
+        updateHabitDto.precedingRoutine === undefined
+          ? undefined
+          : updateHabitDto.precedingRoutine.trim() || null,
       color: updateHabitDto.color,
       iconType: updateHabitDto.iconType,
       iconValue: updateHabitDto.iconValue,
@@ -375,12 +379,24 @@ export class HabitsService {
     };
   }
 
-  /** Convert structured reminder settings → cue rows for internal storage. */
+  /**
+   * Convert structured reminder settings → cue rows for internal storage.
+   *
+   * Returns undefined ("keep the existing cues") when neither `timeWindows`
+   * nor `locations` was sent, e.g. when only `enabled` changes. When either
+   * list is sent, the result replaces all cues — an empty result clears them.
+   */
   private buildCuesFromReminder(reminder?: {
     timeWindows?: Array<{ startTime: string; endTime: string }>;
     locations?: Array<{ label?: string; lat: number; lng: number }>;
   }) {
     if (!reminder) return undefined;
+    if (
+      reminder.timeWindows === undefined &&
+      reminder.locations === undefined
+    ) {
+      return undefined;
+    }
     const cues: Array<{
       startTime: string | null;
       endTime: string | null;
@@ -414,18 +430,24 @@ export class HabitsService {
       });
     }
 
-    return cues.length > 0 ? cues : undefined;
+    return cues;
   }
 
-  /** Merge top-level reason into motivationProfile. */
+  /**
+   * Merge top-level reason into motivationProfile. An empty `reason` clears
+   * the stored reason; an omitted one falls back to the profile's value.
+   */
   private mergeMotivationProfile(
     profile?: CreateHabitMotivationProfileDto | null,
     reason?: string,
   ) {
-    if (!profile && !reason) return null;
+    if (!profile && reason === undefined) return null;
     return {
       goalTag: profile?.goalTag ?? null,
-      reason: reason ?? profile?.reason ?? null,
+      reason:
+        reason !== undefined
+          ? reason.trim() || null
+          : (profile?.reason ?? null),
     };
   }
 

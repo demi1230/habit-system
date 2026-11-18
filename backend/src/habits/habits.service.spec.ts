@@ -94,6 +94,85 @@ describe('HabitsService', () => {
     ).rejects.toBeInstanceOf(BadRequestException);
   });
 
+  describe('updateHabit: omitted fields stay, empty fields clear', () => {
+    const habitId = 'habit-1';
+
+    beforeEach(() => {
+      habitRepo.findByIdAndUserId.mockResolvedValue({
+        id: habitId,
+        userId,
+        minimumTarget: 1,
+        targetValue: 10,
+        scheduleDays: [],
+        steps: [],
+        archivedAt: null,
+      });
+      habitRepo.update.mockImplementation((_id: string, data: object) =>
+        Promise.resolve({ id: habitId, ...data }),
+      );
+    });
+
+    const lastUpdate = () => {
+      const calls = habitRepo.update.mock.calls as Array<[string, object]>;
+      return calls[calls.length - 1][1] as Record<string, unknown>;
+    };
+
+    it('keeps cues when only the reminder switch changes', async () => {
+      await habitsService.updateHabit(userId, habitId, {
+        reminder: { enabled: false },
+      });
+
+      expect(lastUpdate().cues).toBeUndefined();
+      expect(lastUpdate().reminderEnabled).toBe(false);
+    });
+
+    it('clears all cues when empty reminder lists are sent', async () => {
+      await habitsService.updateHabit(userId, habitId, {
+        reminder: { enabled: true, timeWindows: [], locations: [] },
+      });
+
+      expect(lastUpdate().cues).toEqual([]);
+    });
+
+    it('stores location cues with their coordinates', async () => {
+      await habitsService.updateHabit(userId, habitId, {
+        reminder: {
+          timeWindows: [{ startTime: '07:00', endTime: '08:00' }],
+          locations: [{ label: 'Гэр', lat: 47.9184, lng: 106.9177 }],
+        },
+      });
+
+      expect(lastUpdate().cues).toEqual([
+        expect.objectContaining({ startTime: '07:00', endTime: '08:00' }),
+        expect.objectContaining({
+          coarseLocation: 'Гэр',
+          locationLat: 47.9184,
+          locationLng: 106.9177,
+        }),
+      ]);
+    });
+
+    it('clears the reason and routine cue when empty strings are sent', async () => {
+      await habitsService.updateHabit(userId, habitId, {
+        reason: '',
+        precedingRoutine: '',
+      });
+
+      expect(lastUpdate().motivationProfile).toEqual({
+        goalTag: null,
+        reason: null,
+      });
+      expect(lastUpdate().precedingRoutine).toBeNull();
+    });
+
+    it('leaves the reason and routine cue unchanged when omitted', async () => {
+      await habitsService.updateHabit(userId, habitId, { title: 'Шинэ нэр' });
+
+      expect(lastUpdate().motivationProfile).toBeUndefined();
+      expect(lastUpdate().precedingRoutine).toBeUndefined();
+    });
+  });
+
   describe('getTodayHabits day boundaries (application timezone)', () => {
     const makeHabit = (id: string, weekdays: string[], startDate: string) => {
       const scheduleDays = weekdays.map((weekday) => ({ weekday }));

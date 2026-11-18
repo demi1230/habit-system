@@ -20,28 +20,18 @@ import { CelebrationSheet, CelebrationFullScreen, decideCelebration } from '@/fe
 import type { CelebrationContext } from '@/features/celebration';
 import { parseLocalYmd, toLocalDateStr } from '@/lib/dates';
 import { useLocalToday } from '@/lib/use-local-today';
+import {
+  isBinaryHabit,
+  logStatusFor,
+  progressPercent,
+  reachesFullTarget,
+  statusFromServerLog,
+} from '@/lib/habit-status';
 
 const MN_DAYS = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
 
 // ── Logged entry ────────────────────────────────────────────────
 interface LogEntry { value: number; status: 'partial' | 'done'; logId?: string }
-
-function isBinaryHabit(habit: HabitWithCueContext) {
-  return habit.targetValue === 1 && (habit.measurementUnit === 'удаа' || habit.measurementUnit === 'times' || habit.measurementUnit === 'boolean');
-}
-
-function calcProgress(habit: HabitWithCueContext, loggedValue: number): number {
-  if (isBinaryHabit(habit)) return loggedValue > 0 ? 100 : 0;
-  return Math.min((loggedValue / (habit.targetValue || 1)) * 100, 100);
-}
-
-function calcStatus(habit: HabitWithCueContext, value: number): 'none' | 'partial' | 'done' {
-  if (isBinaryHabit(habit)) return value > 0 ? 'done' : 'none';
-  const target = habit.targetValue || 1;
-  if (value >= target) return 'done';
-  if (value > 0) return 'partial';
-  return 'none';
-}
 
 // ── Quick Log Number Pad ───────────────────────────────────────
 function QuickLogSheet({ habit, onClose, onLog, currentValue: initialValue = 0, error, saving }: {
@@ -59,8 +49,8 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue: initialValue = 0, 
   const numValue = currentValue + addValue;
   const target   = habit.targetValue || 1;
   const min      = habit.minimumTarget ?? 1;
-  const status   = calcStatus(habit, numValue);
-  const pct      = calcProgress(habit, numValue);
+  const status   = logStatusFor(habit, numValue);
+  const pct      = progressPercent(habit, numValue);
 
   const handleKey = (key: string) => {
     if (key === 'AC') { setInput(''); return; }
@@ -73,8 +63,11 @@ function QuickLogSheet({ habit, onClose, onLog, currentValue: initialValue = 0, 
 
   const canConfirm = addValue > 0;
 
+  // "Done" starts at the minimum target (same rule as the server); the full
+  // target is acknowledged separately so the label never overstates progress.
   const statusLabel =
-    status === 'done'    ? '✓ Зорилт биелэв!' :
+    status === 'done' && reachesFullTarget(habit, numValue) ? '✓ Зорилт биелэв!' :
+    status === 'done' ? `✓ Доод хэмжээ биелэв · ${numValue}/${target} ${habit.measurementUnit || ''}` :
     numValue > 0 ? `${numValue}/${target} ${habit.measurementUnit || ''}` :
     `Зорилт: ${target} ${habit.measurementUnit || ''}`;
 
@@ -601,18 +594,12 @@ export function DashboardPage() {
         if (!log) continue;
         // Trust server status: DONE means done regardless of actualValue.
         // Reminder-created logs have status=DONE but actualValue=null.
-        if (log.status === 'DONE') {
+        const status = statusFromServerLog(log);
+        if (status === 'done') {
           const val = log.actualValue ?? habit.targetValue ?? 1;
           newLogMap.set(habit.id, { value: val, status: 'done', logId: log.id });
-          continue;
-        }
-        // Partial / in-progress
-        const val = log.actualValue ?? 0;
-        if (val > 0) {
-          const status = calcStatus(habit, val);
-          if (status !== 'none') {
-            newLogMap.set(habit.id, { value: val, status, logId: log.id });
-          }
+        } else if (status === 'partial') {
+          newLogMap.set(habit.id, { value: log.actualValue ?? 0, status: 'partial', logId: log.id });
         }
       }
       setLogMap(newLogMap);
@@ -643,44 +630,45 @@ export function DashboardPage() {
     }
   };
 
-  const recordLog = async (habit: HabitWithCueContext, addedValue: number) => {
+  /**
+   * Saves the habit's total value for the selected day. The card updates
+   * optimistically, then shows exactly what the server saved (the server
+   * decides DONE/NOT_DONE), and rolls back if the request fails.
+   */
+  const saveLogValue = async (habit: HabitWithCueContext, rawValue: number) => {
     if (!userId || pendingIds.current.has(habit.id)) return;
     const existing = logMap.get(habit.id);
     const wasDone = existing?.status === 'done';
-    const totalValue = Math.round(((existing?.value ?? 0) + addedValue) * 100) / 100;
-    const status = calcStatus(habit, totalValue);
-    if (status === 'none') return;
-    const entry: LogEntry = { value: totalValue, status, logId: existing?.logId };
-    setLogMap(prev => new Map(prev).set(habit.id, entry));
+    const value = Math.round(rawValue * 100) / 100;
+    const optimisticStatus = logStatusFor(habit, value);
+    if (optimisticStatus === 'none') return;
+    setLogMap(prev => new Map(prev).set(habit.id, { value, status: optimisticStatus, logId: existing?.logId }));
 
     pendingIds.current.add(habit.id);
     setSavingIds(new Set(pendingIds.current));
     setActionError('');
     try {
-      let logId = existing?.logId;
-      if (existing?.logId) {
-        // Update existing log instead of creating a duplicate
-        await habitsApi.updateLog(userId, habit.id, existing.logId, { actualValue: totalValue });
-      } else {
-        const logTime = isToday ? new Date() : new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 12, 0, 0);
-        const result = await habitsApi.createLog(userId, habit.id, {
-          actualValue: totalValue,
-          completedAt: logTime.toISOString(),
-          triggerSource: 'SELF_INITIATED',
-        });
-        logId = result.id;
-        // Store the logId for edit/undo
-        setLogMap(prev => {
-          const m = new Map(prev);
-          const e = m.get(habit.id);
-          if (e) m.set(habit.id, { ...e, logId: result.id });
-          return m;
-        });
-      }
-      // Show celebration when newly done
-      if (status === 'done' && !wasDone && logId) {
+      const saved = existing?.logId
+        // Update the day's log instead of creating a duplicate
+        ? await habitsApi.updateLog(userId, habit.id, existing.logId, { actualValue: value })
+        : await habitsApi.createLog(userId, habit.id, {
+            actualValue: value,
+            completedAt: (isToday
+              ? new Date()
+              : new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 12, 0, 0)
+            ).toISOString(),
+            triggerSource: 'SELF_INITIATED',
+          });
+      const savedStatus = statusFromServerLog(saved);
+      setLogMap(prev => new Map(prev).set(habit.id, {
+        value: saved.actualValue ?? value,
+        status: savedStatus === 'done' ? 'done' : 'partial',
+        logId: saved.id,
+      }));
+      // Celebrate only when the saved log is newly done
+      if (savedStatus === 'done' && !wasDone) {
         const ctx = decideCelebration(habit.currentStreak, 0, 'SELF_INITIATED');
-        setCelebrationTarget({ habit, logId, ctx });
+        setCelebrationTarget({ habit, logId: saved.id, ctx });
       }
       // Sync shared logs context so Reminders page reflects the change
       void refreshSharedLogs();
@@ -694,6 +682,14 @@ export function DashboardPage() {
       setSavingIds(new Set(pendingIds.current));
     }
   };
+
+  /** Adds to the value already logged for the day (number pad, binary tap). */
+  const recordLog = (habit: HabitWithCueContext, addedValue: number) =>
+    saveLogValue(habit, (logMap.get(habit.id)?.value ?? 0) + addedValue);
+
+  /** Replaces the day's value (edit mode). */
+  const replaceLog = (habit: HabitWithCueContext, newValue: number) =>
+    saveLogValue(habit, newValue);
 
   const handleEditLog = (habit: HabitWithCueContext) => {
     setActionError('');
@@ -734,55 +730,6 @@ export function DashboardPage() {
     }
   };
 
-  const replaceLog = async (habit: HabitWithCueContext, newValue: number) => {
-    if (!userId || pendingIds.current.has(habit.id)) return;
-    const existing = logMap.get(habit.id);
-    const wasDone = existing?.status === 'done';
-    const val = Math.round(newValue * 100) / 100;
-    const status = calcStatus(habit, val);
-    if (status === 'none') return;
-    const entry: LogEntry = { value: val, status, logId: existing?.logId };
-    setLogMap(prev => new Map(prev).set(habit.id, entry));
-
-    pendingIds.current.add(habit.id);
-    setSavingIds(new Set(pendingIds.current));
-    setActionError('');
-    try {
-      let logId = existing?.logId;
-      if (existing?.logId) {
-        await habitsApi.updateLog(userId, habit.id, existing.logId, { actualValue: val });
-      } else {
-        const logTime = isToday ? new Date() : new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 12, 0, 0);
-        const result = await habitsApi.createLog(userId, habit.id, {
-          actualValue: val,
-          completedAt: logTime.toISOString(),
-          triggerSource: 'SELF_INITIATED',
-        });
-        logId = result.id;
-        setLogMap(prev => {
-          const m = new Map(prev);
-          const e = m.get(habit.id);
-          if (e) m.set(habit.id, { ...e, logId: result.id });
-          return m;
-        });
-      }
-      // Show celebration when newly done
-      if (status === 'done' && !wasDone && logId) {
-        const ctx = decideCelebration(habit.currentStreak, 0, 'SELF_INITIATED');
-        setCelebrationTarget({ habit, logId, ctx });
-      }
-      // Sync shared logs context so Reminders page reflects the change
-      void refreshSharedLogs();
-      return true;
-    } catch (err) {
-      setActionError(errorMessage(err));
-      setLogMap(prev => { const next = new Map(prev); if (existing) next.set(habit.id, existing); else next.delete(habit.id); return next; });
-      return false;
-    } finally {
-      pendingIds.current.delete(habit.id);
-      setSavingIds(new Set(pendingIds.current));
-    }
-  };
 
   const today    = new Date();
   const hour     = today.getHours();

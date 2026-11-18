@@ -1,4 +1,4 @@
-import type { HabitFormInitialValues } from '@/pages/HabitFormPage';
+import type { HabitFormInitialValues } from './habit-form-payload';
 import type { HabitColorKey } from '@/lib/habit-colors';
 import type { Weekday } from '@/api/types';
 

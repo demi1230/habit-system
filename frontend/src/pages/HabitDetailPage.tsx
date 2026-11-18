@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowLeft, Archive, Clock, MapPin,
   Bell, BellOff, Check, ChevronRight,
-  Delete, Pencil, Heart, Calendar, Target, Search, FileText,
+  Pencil, Heart, Calendar, Target, Search, FileText,
 } from 'lucide-react';
 import { getHabitColor, CTA_DARK } from '@/lib/habit-colors';
 import { TYPOGRAPHY, SHADOW, buttonStyles } from '@/shared/design';
@@ -14,15 +14,11 @@ import type { Habit, HabitLog } from '@/api/types';
 import { MonthCalendar } from '@/components/month-calendar';
 import { WeekdayStrip } from '@/components/weekday-strip';
 import { HabitIconSlot } from '@/components/habit-icon-slot';
-import { toLocalDateStr } from '@/lib/dates';
 import { countCompletedDays, getLatestLogsByDay } from '@/lib/habit-log-days';
 import { parseRoutineCue } from '@/lib/routine-cue';
+import { isBinaryHabit } from '@/lib/habit-status';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-
-function isBinaryHabit(h: Habit) {
-  return h.targetValue === 1 && ['удаа', 'times', 'boolean'].includes(h.measurementUnit);
-}
 
 function formatDate(iso: string) {
   const d = new Date(iso);
@@ -67,157 +63,6 @@ function Row({ left, right, divider = true }: { left: React.ReactNode; right: Re
   );
 }
 
-// ── Dashboard-style Quick Log Sheet ──────────────────────────────────────────
-
-function calcProgress(habit: Habit, loggedValue: number): number {
-  if (isBinaryHabit(habit)) return loggedValue > 0 ? 100 : 0;
-  return Math.min((loggedValue / (habit.targetValue || 1)) * 100, 100);
-}
-
-function calcStatus(habit: Habit, value: number): 'none' | 'partial' | 'done' {
-  if (isBinaryHabit(habit)) return value > 0 ? 'done' : 'none';
-  const target = habit.targetValue || 1;
-  if (value >= target) return 'done';
-  if (value > 0) return 'partial';
-  return 'none';
-}
-
-function QuickLogSheet({ habit, onClose, onLog, currentValue = 0, color }: {
-  habit: Habit;
-  onClose: () => void;
-  onLog: (value: number) => void;
-  currentValue?: number;
-  color: ReturnType<typeof getHabitColor>;
-}) {
-  const [input, setInput] = useState('');
-  const addValue = parseFloat(input) || 0;
-  const numValue = currentValue + addValue;
-  const target = habit.targetValue || 1;
-  const min = habit.minimumTarget ?? 1;
-  const status = calcStatus(habit, numValue);
-  const pct = calcProgress(habit, numValue);
-
-  const handleKey = (key: string) => {
-    if (key === 'AC') { setInput(''); return; }
-    if (key === '⌫') { setInput(p => p.slice(0, -1)); return; }
-    if (key === '.' && input.includes('.')) return;
-    if (key === '.' && input === '') { setInput('0.'); return; }
-    if (input.length >= 6) return;
-    setInput(p => p === '0' && key !== '.' ? key : p + key);
-  };
-
-  const canConfirm = addValue > 0;
-  const statusLabel =
-    status === 'done' ? '✓ Зорилт биелэв!' :
-    numValue > 0 ? `${numValue}/${target} ${habit.measurementUnit || ''}` :
-    `Зорилт: ${target} ${habit.measurementUnit || ''}`;
-  const statusColor =
-    status === 'done' ? color.accent : status === 'partial' ? color.ring : 'var(--text-placeholder)';
-
-  const keys = [
-    ['1', '2', '3', 'AC'],
-    ['4', '5', '6', '⌫'],
-    ['7', '8', '9', ''],
-    ['', '0', '.', '✓'],
-  ];
-
-  return (
-    <>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/25 z-40 backdrop-blur-[2px]" onClick={onClose} />
-      <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
-        transition={{ type: 'spring', stiffness: 360, damping: 36 }}
-        className="fixed bottom-0 left-0 right-0 z-50 flex justify-center">
-        <div className="w-full max-w-[430px] rounded-t-[28px] overflow-hidden bg-card"
-          style={{ boxShadow: '0 -6px 32px rgba(0,0,0,0.12)' }}>
-          <div className="flex justify-center pt-3 pb-2">
-            <div className="w-9 h-[3px] rounded-full" style={{ backgroundColor: 'rgba(0,0,0,0.12)' }} />
-          </div>
-          <div className="flex items-center gap-3 px-5 pb-4">
-            <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
-              style={{ backgroundColor: color.btn }}>
-              <HabitIconSlot iconValue={habit.iconValue} emojiSizePx={18} circlePx={18} />
-            </div>
-            <div>
-              <p style={TYPOGRAPHY.cardTitle} className="text-foreground">{habit.title}</p>
-              <p style={TYPOGRAPHY.micro} className="text-muted-foreground">
-                {currentValue > 0 ? `Одоогийн: ${currentValue} ${habit.measurementUnit || ''} · Нэмэх` : 'Хурдан бүртгэл'}
-              </p>
-            </div>
-          </div>
-          <div className="px-6 pb-2 text-center">
-            <div className="flex items-end justify-center gap-2">
-              <span style={{
-                fontSize: 56, fontWeight: 600, letterSpacing: '-2px', lineHeight: 1,
-                color: status === 'done' ? color.accent : status === 'partial' ? color.ring : undefined,
-                transition: 'color 0.2s',
-              }} className="text-foreground">
-                {currentValue > 0 && addValue > 0 ? numValue : (input || '0')}
-              </span>
-              {habit.measurementUnit && (
-                <span style={{ fontSize: 18, paddingBottom: 10, fontWeight: 500 }} className="text-muted-foreground">
-                  {habit.measurementUnit}
-                </span>
-              )}
-            </div>
-            {currentValue > 0 && addValue > 0 && (
-              <p style={{ ...TYPOGRAPHY.caption, marginTop: 4 }} className="text-muted-foreground">
-                {currentValue} + {addValue}
-              </p>
-            )}
-            <div className="mt-3 mx-6">
-              <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(0,0,0,0.07)' }}>
-                <motion.div animate={{ width: `${pct}%` }} transition={{ duration: 0.15 }}
-                  className="h-full rounded-full"
-                  style={{ backgroundColor: status === 'done' ? color.accent : color.ring }} />
-              </div>
-              <div className="flex justify-between mt-1.5">
-                {min > 0 && min < target && (
-                  <span style={{ fontSize: 11, color: 'var(--text-placeholder)' }}>min {min}</span>
-                )}
-                <span style={{ fontSize: 11, color: statusColor, fontWeight: 600, marginLeft: 'auto' }}>
-                  {statusLabel}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="px-4 pt-1 pb-2">
-            {keys.map((row, ri) => (
-              <div key={ri} className="flex gap-2.5 mb-2.5">
-                {row.map((key, ki) => {
-                  if (key === '') return <div key={ki} className="flex-1" />;
-                  const isConfirm = key === '✓';
-                  const isAC = key === 'AC';
-                  const active = isConfirm && canConfirm;
-                  return (
-                    <motion.button key={ki} whileTap={{ scale: 0.88 }}
-                      onClick={() => isConfirm ? (canConfirm && (onLog(numValue), onClose())) : handleKey(key)}
-                      disabled={isConfirm && !canConfirm}
-                      className={`${buttonStyles({ variant: 'plain', size: 'bare' })} flex-1 h-[54px] rounded-[18px] flex items-center justify-center bg-card`}
-                      style={{
-                        backgroundColor: isConfirm
-                          ? (active ? color.btn : 'var(--surface-subtle)')
-                          : isAC ? 'var(--surface-subtle)' : undefined,
-                        boxShadow: isConfirm || isAC || key === '⌫' ? 'none' : '0 1px 6px rgba(0,0,0,0.06)',
-                        fontSize: isConfirm ? 22 : 19, fontWeight: 600,
-                        color: isConfirm
-                          ? (active ? color.accent : 'var(--text-disabled)')
-                          : isAC ? '#D94F6E' : undefined,
-                      }}>
-                      {key === '⌫' ? <Delete className="w-5 h-5 text-muted-foreground" /> : key}
-                    </motion.button>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-          <div style={{ height: 'max(20px, env(safe-area-inset-bottom))' }} />
-        </div>
-      </motion.div>
-    </>
-  );
-}
-
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
 export function HabitDetailPage() {
@@ -231,8 +76,6 @@ export function HabitDetailPage() {
   const [logs, setLogs] = useState<HabitLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
-  const [showLogSheet, setShowLogSheet] = useState(false);
-  const [saving, setSaving] = useState(false);
 
   const fetchAll = useCallback(async () => {
     if (!userId || !id) return;
@@ -291,9 +134,6 @@ export function HabitDetailPage() {
     scheduledDays.length === 5 && !scheduledDays.includes('SATURDAY') && !scheduledDays.includes('SUNDAY')
       ? 'Ажлын өдрүүд' : `Долоо хоногт ${scheduledDays.length} өдөр`;
 
-  const todayStr = toLocalDateStr(new Date());
-  const todayLog = latestLogsByDay.get(todayStr);
-  const todayVal = todayLog?.actualValue ?? 0;
 
   const timeCues = habit.cues.filter(c => c.isActive && (c.startTime || c.endTime));
   const locationCue = habit.cues.find(c => c.isActive && c.coarseLocation);
@@ -305,26 +145,6 @@ export function HabitDetailPage() {
       await habitsApi.updateHabit(userId, id, { status: 'ARCHIVED' });
       navigate('/dashboard');
     } catch (err) { console.error('Archive failed:', err); }
-  };
-
-  const handleNumericLog = async (value: number) => {
-    if (!userId || saving) return;
-    setSaving(true);
-    try {
-      if (todayLog) {
-        await habitsApi.updateLog(userId, habit.id, todayLog.id, {
-          actualValue: value,
-        });
-      } else {
-        await habitsApi.createLog(userId, habit.id, {
-          actualValue: value,
-          completedAt: new Date().toISOString(),
-          triggerSource: 'SELF_INITIATED',
-        });
-      }
-      await fetchAll();
-    } catch (err) { console.error('Log failed:', err); }
-    finally { setSaving(false); }
   };
 
   return (
@@ -656,19 +476,6 @@ export function HabitDetailPage() {
               </div>
             </motion.div>
           </>
-        )}
-      </AnimatePresence>
-
-      {/* QUICK LOG SHEET (numeric) */}
-      <AnimatePresence>
-        {showLogSheet && !binary && (
-          <QuickLogSheet
-            habit={habit}
-            color={color}
-            currentValue={todayVal}
-            onClose={() => setShowLogSheet(false)}
-            onLog={handleNumericLog}
-          />
         )}
       </AnimatePresence>
     </div>

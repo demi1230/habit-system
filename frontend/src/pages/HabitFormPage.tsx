@@ -19,6 +19,13 @@ import { TYPOGRAPHY, SHADOW, buttonStyles, AppPlusIcon } from '@/shared/design';
 import type { CreateHabitPayload } from '@/api/habits';
 import type { Weekday } from '@/api/types';
 import { type RoutineTiming, TIMING_OPTIONS, encodeRoutineCue, parseRoutineCue } from '@/lib/routine-cue';
+import { toLocalDateStr } from '@/lib/dates';
+import {
+  buildHabitPayload,
+  validateHabitTargets,
+  type HabitFormInitialValues,
+  type HabitFormValues,
+} from '@/features/habits/habit-form-payload';
 
 const UNITS = ['удаа', 'мин', 'хуудас', 'литр', 'км', 'шил', 'хэсэг', 'цаг', 'г'];
 const EMOJIS = ['🧘', '💪', '❤️', '📚', '🎨', '⚡', '🤝', '💰', '🏃', '🎵', '🌿', '🍎', '💧', '✍️', '🧠', '😴', '🦷', '🚿', '🥗', '☕', '🌅', '🛏️', '📖', '🧹'];
@@ -492,24 +499,7 @@ function Toggle({ value, onChange, accentColor }: {
 
 // â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-export interface HabitFormInitialValues {
-  title?: string;
-  precedingRoutine?: string;
-  routineTiming?: RoutineTiming;
-  reason?: string;
-  colorId?: string;
-  selectedEmoji?: string;
-  benefits?: string[];
-  selectedDays?: Weekday[];
-  steps?: string[];
-  reminderEnabled?: boolean;
-  timeWindows?: Array<{ start: string; end: string }>;
-  selectedLocations?: Array<{ lat: number; lng: number; label: string }>;
-  habitType?: 'binary' | 'measurable';
-  targetNum?: string;
-  minNum?: string;
-  targetUnit?: string;
-}
+export type { HabitFormInitialValues };
 
 interface HabitFormPageProps {
   /** Header title, e.g. "Дадал нэмэх" or "Дадал засах" */
@@ -681,44 +671,25 @@ export function HabitFormPage({
       return;
     }
 
+    const values: HabitFormValues = {
+      title, precedingRoutine, routineTiming, reason, colorId, selectedEmoji,
+      benefits, steps, selectedDays, reminderEnabled, timeWindows,
+      selectedLocations, habitType, targetNum, minNum, targetUnit,
+    };
+
+    // Catch mistakes the user can fix here instead of a generic save error.
+    const targetError = validateHabitTargets(values);
+    if (targetError) {
+      setErrorMsg(targetError);
+      return;
+    }
+
     setSaving(true);
 
-    const twPayload = timeWindows
-      .filter(tw => tw.start && tw.end)
-      .map(tw => ({ startTime: tw.start, endTime: tw.end }));
-
-    const today = (() => {
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    })();
-
-    const payload: Partial<CreateHabitPayload> = {
-      title: title.trim(),
-      precedingRoutine: precedingRoutine
-        ? encodeRoutineCue(precedingRoutine, routineTiming)
-        : undefined,
-      reason: reason || undefined,
-      color: colorId,
-      iconType: 'EMOJI',
-      iconValue: selectedEmoji,
-      benefits: benefits.length > 0 ? benefits : undefined,
-      measurementUnit: habitType === 'binary' ? 'удаа' : targetUnit,
-      targetValue: habitType === 'binary' ? 1 : (parseFloat(targetNum) || 1),
-      minimumTarget: (habitType === 'measurable' && minNum) ? parseFloat(minNum) : 1,
-      // startDate only needed for create; edit will just ignore/override if not provided
-      ...(isCreate ? { startDate: today } : {}),
-      scheduleDays: selectedDays.map(weekday => ({ weekday })),
-      steps: steps
-        .map((step, orderIndex) => ({ title: step.trim(), orderIndex }))
-        .filter((step) => step.title.length > 0),
-      reminder: {
-        enabled: reminderEnabled,
-        timeWindows: twPayload.length > 0 ? twPayload : undefined,
-        locations: selectedLocations.length > 0
-          ? selectedLocations.map(l => ({ lat: l.lat, lng: l.lng, label: l.label }))
-          : undefined,
-      },
-    };
+    const payload: Partial<CreateHabitPayload> = buildHabitPayload(values, {
+      mode,
+      today: toLocalDateStr(new Date()),
+    });
 
     try {
       await onSubmit(payload);
