@@ -14,11 +14,13 @@
   \item \textbf{Хөгжүүлэлтийн хэл:} TypeScript --- статик төрлийн шалгалтаар кодын найдвартай байдлыг нэмэгдүүлсэн.
   \item \textbf{ORM ба миграц:} Prisma v7 --- схемд суурилсан өгөгдлийн загварчлал, миграцийн удирдлагыг хялбаршуулсан.
   \item \textbf{Өгөгдлийн сан:} PostgreSQL --- харилцаат өгөгдлийн бүтэцтэй системд найдвартай, өргөтгөх боломжтой.
-  \item \textbf{Хэрэглэгчийн талын хүрээ:} React 18 + Vite --- бүрэлдэхүүнд суурилсан интерфэйсийн хөгжүүлэлт болон хурдан бүтээлт.
-  \item \textbf{Чиглүүлэлт:} React Router --- нэг хуудсын програмын дотоод чиглүүлэлтийг хэрэгжүүлсэн.
-  \item \textbf{Интерфэйс:} Tailwind CSS + shadcn/ui --- тогтвортой, дахин ашиглагдах интерфэйсийн хэв маяг.
-  \item \textbf{Анимаци:} Framer Motion --- төлөвийн өөрчлөлтийг илүү ойлгомжтой харуулахад ашигласан.
-  \item \textbf{Баталгаажуулалт:} JWT --- сервер талд хэрэглэгчийн төлөв хадгалахгүй хандалтын хяналт хэрэгжүүлсэн.
+  \item \textbf{Хэрэглэгчийн талын хүрээ:} React 19 + Vite 8 --- бүрэлдэхүүнд суурилсан интерфэйсийн хөгжүүлэлт болон хурдан бүтээлт.
+  \item \textbf{Чиглүүлэлт ба өгөгдлийн төлөв:} React Router, React Query --- нэг хуудсын програмын чиглүүлэлт, серверийн өгөгдлийн кэш.
+  \item \textbf{Интерфэйс:} Tailwind CSS 4, Radix UI, өөрийн дизайны бүрэлдэхүүнүүд --- тогтвортой, дахин ашиглагдах интерфэйсийн хэв маяг.
+  \item \textbf{Анимаци ба газрын зураг:} Motion --- төлөвийн өөрчлөлтийг харуулах; Leaflet --- сануулгын байршлыг газрын зураг дээр сонгох.
+  \item \textbf{Баталгаажуулалт:} JWT --- сервер талд хэрэглэгчийн төлөв хадгалахгүй хандалтын хяналт; нэвтрэх үйлдэлд хүсэлтийн тооны хязгаар.
+  \item \textbf{Мэдэгдэл ба хуваарьт ажил:} Web Push (VAPID), \texttt{@nestjs/schedule} --- сануулгыг минут тутам шалгаж хүргэх.
+  \item \textbf{Баримтжуулалт ба тест:} Swagger (OpenAPI), Jest --- API-ийн тайлбар болон дүрмүүдийн нэгжийн тест.
 \end{itemize}
 
 Сервер болон хэрэглэгчийн тал TypeScript хэл дээр хэрэгжсэн тул өгөгдлийн бүтэц, сонголтын төрөл, интерфэйсийн тодорхойлолтыг хоёр талд нийцтэй байлгах боломж бүрдсэн. Ингэснээр API-ийн гэрээний зөрчил, төрлийн алдааг хөгжүүлэлтийн шатанд илрүүлэхэд дөхөм болсон.
@@ -34,17 +36,23 @@
 \begin{lstlisting}[language=bash, caption={Сервер талын директорийн бүтэц}]
 backend/src/
   auth/           -- бүртгэл, нэвтрэлт, JWT баталгаажуулалт
-  habits/         -- дадал үүсгэх, засах, архивлах, хуваарь
-  progress/       -- гүйцэтгэл бүртгэх, ахицын тооцоолол
-  reminders/      -- сануулгын үнэлгээ, үүсгэлт, үйлдэл
-  analytics/      -- хэрэглээний идэвх, шинжилгээний өгөгдөл
+  habits/         -- дадал, хуваарь, SRBAI, дадлын хүч
+  progress/       -- гүйцэтгэл, ахиц, санал сэтгэгдэл, зөвлөмж үүсгэх
+  reminders/      -- сануулгын шийдвэр, хуваарьт ажил, үйлдэл
+  push/           -- вэб мэдэгдлийн бүртгэл ба хүргэлт
+  engagement/     -- XP ба амжилтын тэмдэг
+  learning/       -- зөвлөмж ба суралцах агуулгын харилцан үйлчлэл
+  feedback/       -- аппын санал хүсэлт
+  analytics/      -- хэрэглээний идэвхийн бүртгэл
+  shared/         -- цагийн бүс (Asia/Ulaanbaatar) ба өдрийн тооцоолол
   domain/
     entities/     -- үндсэн объектууд
     enums/        -- сонголтын төрлүүд
     repositories/ -- хадгалалтын интерфэйсүүд
-    rules/        -- төлөв хадгалахгүй бизнесийн дүрмүүд
+    rules/        -- төлөв хадгалахгүй зан үйлийн дүрмүүд
   infrastructure/
-    prisma/       -- Prisma-д суурилсан хэрэгжүүлэлт
+    prisma/       -- өгөгдлийн сангийн холболт
+    persistence/  -- хадгалалтын интерфэйсүүдийн Prisma хэрэгжүүлэлт
 \end{lstlisting}
 
 \subsection{Хэрэглэгчийн талын бүтэц}
@@ -55,9 +63,11 @@ backend/src/
 frontend/src/
   pages/          -- үндсэн дэлгэцүүд
   components/     -- дахин ашиглагдах интерфэйсийн бүрэлдэхүүнүүд
+  features/       -- суралцах хэсэг, баяр хүргэлт, заавар, дадлын маягт
   api/            -- HTTP холбогч ба үйлчилгээний хаягууд
-  lib/            -- өнгөний горим, мэдэгдэл, туслах функцууд
+  lib/            -- огноо, төлөв, мэдэгдэл зэрэг туслах функцууд
   context/        -- нэвтрэлт болон ерөнхий төлвийн орчин
+  shared/design/  -- өнгө, бичвэр, товчлуурын дизайны тодорхойлолт
 \end{lstlisting}
 
 Ийм бүтэц нь хөгжүүлэлтийн явцад хэсгүүдийн хариуцлагыг тодорхой байлгах, цаашид өргөтгөх болон засварлах ажлыг хөнгөвчлөхөд чиглэсэн.
@@ -88,59 +98,63 @@ model Habit {
 }
 \end{lstlisting}
 
-Дадлын гүйцэтгэлийн бүртгэлийг хадгалах \texttt{HabitLog} загварт зөвхөн ``хийсэн'' эсэх төдийгүй тухайн үйлдэл ямар нөхцөлд хийгдсэнийг илэрхийлэх \texttt{completionHour}, \texttt{coarseLocation}, \texttt{precedingRoutine} зэрэг талбаруудыг тодорхойлсон. Мөн гүйцэтгэлийн эх үүсвэрийг \texttt{CompletionTriggerSource} сонголтын төрлөөр ангилан хадгалдаг.
+Дадлын гүйцэтгэлийн бүртгэлийг хадгалах \texttt{HabitLog} загварт зөвхөн ``хийсэн'' эсэх төдийгүй тухайн үйлдэл ямар нөхцөлд хийгдсэнийг илэрхийлэх \texttt{completionHour} (Улаанбаатарын цагаар гүйцэтгэсэн цаг), \texttt{coarseLocation} (тухайн үед байсан хадгалсан газар) талбаруудыг тодорхойлсон. Мөн гүйцэтгэлийн эх үүсвэрийг \texttt{CompletionTriggerSource} сонголтын төрлөөр ангилан хадгалдаг. \texttt{logDate} нь гүйцэтгэлийн Улаанбаатарын цагийн бүсийн огноо бөгөөд \texttt{(habitId, logDate)} давтагдашгүй түлхүүрээр нэг дадалд өдөрт нэгээс илүү бүртгэл үүсэхээс өгөгдлийн сангийн түвшинд сэргийлдэг.
 
 \begin{lstlisting}[language=SQL, caption={Гүйцэтгэлийн бүртгэлийн загвар}]
 model HabitLog {
-  status           HabitLogStatus
+  status           HabitLogStatus      // DONE: доод зорилтод хүрсэн
   actualValue      Float?
   completedAt      DateTime
+  logDate          DateTime @db.Date   // Улаанбаатарын өдөр
   triggerSource    CompletionTriggerSource @default(UNKNOWN)
   linkedReminderId String?
   completionHour   Int?
   coarseLocation   String?
-  precedingRoutine String?
+
+  @@unique([habitId, logDate])
 }
 \end{lstlisting}
 
-Нийт 20 орчим үндсэн хүснэгт болон холбоос хүснэгтийг хэрэгжүүлсэн бөгөөд тэдгээрийн гол төлөөллийг Хүснэгт~\ref{tab:db-tables}-д нэгтгэн үзүүлэв.
+Нийт 20 хүснэгтийг хэрэгжүүлсэн бөгөөд тэдгээрийг Хүснэгт~\ref{tab:db-tables}-д нэгтгэн үзүүлэв.
 
-\begin{table}[htbp]
-\centering
-\small
+{\small
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{|p{5.8cm}|p{7.2cm}|}
+\begin{longtable}{|p{5.8cm}|p{7.2cm}|}
+\caption{Өгөгдлийн сангийн үндсэн хүснэгтүүд}\label{tab:db-tables} \\
 \hline
 \textbf{Хүснэгтийн нэр} & \textbf{Зорилго} \\ \hline
-\texttt{users} & Хэрэглэгчийн бүртгэл, нэвтрэлтийн мэдээлэл \\ \hline
+\endfirsthead
+\hline
+\textbf{Хүснэгтийн нэр} & \textbf{Зорилго} \\ \hline
+\endhead
+\texttt{users} & Хэрэглэгчийн бүртгэл, нэвтрэлтийн мэдээлэл, хэрэглэгч зөвшөөрсөн бол хамгийн сүүлийн байршил ба түүний цаг \\ \hline
 \texttt{habits} & Дадлын үндсэн мэдээлэл, хэмжилтийн тохиргоо \\ \hline
 \texttt{habit\_steps} & Олон алхамтай дадлын жижиг алхмууд \\ \hline
 \texttt{habit\_schedule\_days} & Дадлын идэвхтэй өдрүүдийн хуваарь \\ \hline
-\texttt{habit\_cues} & Өдөөгч нөхцөлүүд: цаг, байршил, өмнөх үйлдэл \\ \hline
+\texttt{habit\_cues} & Өдөөгч нөхцөлүүд: цагийн хүрээ, газрын нэр ба координат \\ \hline
 \texttt{habit\_motivation\_profiles} & Хувийн шалтгаан, зорилготой холбоотой мэдээлэл \\ \hline
-\texttt{habit\_logs} & Гүйцэтгэлийн бүртгэл, нөхцөл байдлын агшин \\ \hline
+\texttt{habit\_logs} & Өдрийн гүйцэтгэлийн бүртгэл, эх үүсвэр, ажигласан цаг ба газар \\ \hline
 \texttt{difficulty\_feedbacks} & Гүйцэтгэлийн дараах төвөгшлийн үнэлгээ \\ \hline
 \texttt{reflections} & Эргэцүүлсэн санал, ашиг тусын тэмдэглэл \\ \hline
 \texttt{reminders} & Илгээгдсэн сануулгын бүртгэл \\ \hline
 \texttt{reminder\_actions} & Сануулгад өгсөн хэрэглэгчийн үйлдэл \\ \hline
-\texttt{reminder\_policies} & Сануулгыг аажмаар бууруулах бодлогын төлөв \\ \hline
-\texttt{srbai\_assessments} & SRBAI үнэлгээний асуулгын хариулт, оноо \\ \hline
+\texttt{reminder\_policies} & Сануулгын түвшин: хүлээлгийн хугацаа, өдрийн дээд тоо \\ \hline
+\texttt{srbai\_assessments} & SRBAI үнэлгээний асуулгын хариулт, оноо, асуултын хувилбар \\ \hline
 \texttt{user\_activity\_logs} & Аппын ерөнхий хэрэглээний идэвхийн бүртгэл \\ \hline
 \texttt{adaptation\_recommendations} & Ахиц болон дадлын хүчнээс үүссэн зөвлөмжүүд \\ \hline
+\texttt{recommendation\_interactions} & Зөвлөмжид өгсөн хэрэглэгчийн үйлдэл (үзсэн, дарсан, татгалзсан) \\ \hline
 \texttt{article\_interactions} & Суралцах агуулгатай хийсэн хэрэглэгчийн харилцан үйлчлэл \\ \hline
 \texttt{push\_subscriptions} & Төхөөрөмжийн мэдэгдэл илгээх бүртгэлийн мэдээлэл \\ \hline
 \texttt{user\_badges} & Хэрэглэгчийн нээсэн амжилтын мэдээлэл \\ \hline
 \texttt{user\_feedbacks} & Аппын түвшний санал хүсэлт, алдааны мэдэгдэл \\ \hline
-\end{tabular}
-\caption{Өгөгдлийн сангийн үндсэн хүснэгтүүд}
-\label{tab:db-tables}
-\end{table}
+\end{longtable}
+}
 
 Ийнхүү өгөгдлийн сангийн бүтэц нь хэрэглэгчийн дадлыг зөвхөн бүртгэх бус, харин сануулга, нөхцөл байдал, автоматжилт, ахицын шинжилгээ зэрэг зан үйлийн талаарх мэдээллийг хадгалах боломжтой болсон.
 
 \section{Зан үйлийн дүрмийн хэрэгжүүлэлт}
 
-Энэхүү системийн онцлог нь зан үйлийн дэмжлэгийн логикийг энгийн үүсгэх, унших, засах, устгах үйлдлээс ялган тусдаа дүрмийн түвшинд хэрэгжүүлсэнд оршино. Сануулга өгөх эсэхийг шийдэх, дадлын хүчийг тооцоолох, дасан зохицох зөвлөмж гаргах зэрэг нь төлөв хадгалахгүй дүрмийн хэлбэрээр боловсруулагдсан.
+Энэхүү системийн онцлог нь зан үйлийн дэмжлэгийн логикийг энгийн үүсгэх, унших, засах, устгах үйлдлээс ялган тусдаа дүрмийн түвшинд (\texttt{src/domain/rules}) хэрэгжүүлсэнд оршино. Сануулга өгөх эсэхийг шийдэх, гүйцэтгэлийн эх үүсвэрийг ангилах, дадлын хүчийг тооцоолох, дасан зохицох зөвлөмж гаргах зэрэг нь өгөгдлийн сантай шууд харьцахгүй, төлөв хадгалахгүй дүрмийн хэлбэрээр боловсруулагдсан бөгөөд дүрэм бүр нэгжийн тесттэй. Өдрийн хил, гарагийг серверийн байршлаас үл хамааран Улаанбаатарын цагийн бүсээр тооцдог.
 
 \subsection{Сануулгын шийдвэрийн дүрэм}
 
@@ -156,9 +170,12 @@ model HabitLog {
 
 \begin{lstlisting}[language=JavaScript, caption={Сануулгын шийдвэрийн дүрэм}]
 export class ReminderDecisionRules {
-  static decide(input: ReminderDecisionInput): ReminderDecisionResult {
+  static decide(
+    input: ReminderDecisionInput,
+    now: Date = new Date(),
+  ): ReminderDecisionResult {
     const isScheduledToday =
-      CueScheduleRules.isScheduledToday(input.scheduleDays);
+      CueScheduleRules.isScheduledToday(input.scheduleDays, now);
     const activeCues = CueScheduleRules.getActiveCues(input.cues);
     const activeCueCount = activeCues.length;
 
@@ -179,28 +196,32 @@ export class ReminderDecisionRules {
       reason,
       isScheduledToday,
       activeCueCount,
-      evaluatedAt: new Date().toISOString(),
+      evaluatedAt: now.toISOString(),
     };
   }
 }
 \end{lstlisting}
 
-Сануулга үүсгэх үед давхардлаас сэргийлэхийн тулд \texttt{ReminderExecutionService}-д нэг цагийн хугацааны бүлэг бүхий хүлээлгийн механизм ашигласан. Ингэснээр ижил дадалд нэг цагийн хүрээнд олон ижил сануулга үүсэхээс хамгаална.
+Хуваарьт ажил минут бүр идэвхтэй дадлуудыг шалгахдаа эхлээд \texttt{CueWindowRules} дүрмээр ``цаг ба газар'' нөхцөлийг шалгана. Одоогийн Улаанбаатарын цаг дадлын идэвхтэй цагийн хүрээнүүдийн аль нэгэнд багтах ёстой (шөнө дундыг дамнасан хүрээг дэмжинэ); цагийн хүрээгүй дадалд хуваарьт сануулга илгээхгүй. Дадалд байршлын нөхцөл тохируулсан бол хэрэглэгчийн хамгийн сүүлийн байршил 30 минутаас хуучираагүй, тухайн газраас 100 метрийн дотор байх ёстой. Байршлыг хэрэглэгч зөвшөөрсөн үед л апп мэдээлдэг.
+
+Нөхцөл бүрдсэн үед \texttt{ReminderExecutionService} дараах шалгалтуудыг хийнэ: тухайн өдөр дадал аль хэдийн хийгдсэн эсэх, сануулгын бодлогын өдрийн дээд тоонд хүрсэн эсэх (зөвхөн төхөөрөмжид хүргэгдсэн сануулгыг тоолно), өмнөх сануулгын хүлээлгийн хугацаа (\texttt{cooldownMinutes}) дуусаагүй эсэх. Сануулгыг хадгалж, вэб мэдэгдлээр илгээсний дараа хүргэгдсэн эсэхийг тусад нь бүртгэнэ. Өмнөх өдрүүдийн хариулаагүй сануулгыг хугацаа дууссан (\texttt{EXPIRED}) төлөвт шилжүүлдэг.
 
 \subsection{Дадлын хүчний тооцоолол}
 
 \texttt{HabitStrengthRules} нь дадлын хүчийг илэрхийлэх хэд хэдэн зан үйлийн үзүүлэлтийг тооцоолдог. Үүнд:
 
 \begin{itemize}
-    \item гүйцэтгэлийн хувь;
-    \item өөрийн санаачилгатай гүйцэтгэлийн хувь;
-    \item гүйцэтгэлийн тогтвортой байдал;
-    \item нөхцөл байдлын тогтвортой байдал.
+    \item SRBAI-ийн нормчлогдсон оноо;
+    \item хуваарийн биелэлт буюу сүүлийн 28 хоногийн төлөвлөсөн өдрүүдээс хийсэн хувь;
+    \item нөхцөл байдлын тогтвортой байдал;
+    \item өөрийн санаачилгатай гүйцэтгэлийн хувь (сануулгын бодлогыг тодорхойлоход ашиглана).
 \end{itemize}
+
+Үндсэн дэлгэц болон ахицын шинжилгээ хоёулаа ижил \texttt{evaluateComposite} функцээр тооцдог тул нэг дадалд хоёр өөр оноо гарахгүй.
 
 \subsubsection*{SRBAI-ийн оноо}
 
-SRBAI-ийн 4 асуултын хариултаас дундаж түүхий оноог гаргаж, үүнийг 0--100 хооронд нормчилсон.
+SRBAI-ийн 4 асуултын хариултаас дундаж түүхий оноог гаргаж, үүнийг 0--100 хооронд нормчилсон. Асуултууд нь Gardner нарын SRBAI-ийн дөрвөн асуултын монгол орчуулга бөгөөд хариулт бүрийг асуултын хувилбарын дугаартай хадгалдаг. Ингэснээр өмнөх хувилбарын асуултаар авсан хариултыг шинэ хариулттай хольж шинжлэхээс сэргийлнэ.
 
 \begin{lstlisting}[language=JavaScript, caption={SRBAI-ийн оноо тооцоолох дүрэм}]
 static scoreSrbai(input: SrbaiScoreInput): SrbaiScoreResult {
@@ -216,83 +237,98 @@ static scoreSrbai(input: SrbaiScoreInput): SrbaiScoreResult {
 
 \subsubsection*{Нөхцөл байдлын тогтвортой байдал}
 
-Сүүлийн гүйцэтгэлийн бүртгэлүүдэд тулгуурлан гүйцэтгэлийн цаг, ерөнхий байршил, өмнөх үйлдлийн давтамжийн хэв маягийг шинжилж, хамгийн олон давтагдсан утгын хувиар нөхцөл байдлын тогтвортой байдлыг тооцоолно.
+Гүйцэтгэлийг тухайн өдөр нь бүртгэх үед \texttt{ContextSnapshotRules} нь Улаанбаатарын цагаар гүйцэтгэсэн цагийг, мөн хэрэглэгчийн сүүлийн 30 минутын байршил дадлын хадгалсан газраас 100 метрийн дотор байсан бол тэр газрын нэрийг хадгална. Өмнөх өдрийг нөхөж бүртгэхэд аль алийг нь хадгалахгүй. Тогтвортой байдлыг сүүлийн гүйцэтгэлүүдээс тооцно: цагийн хувьд хамгийн олон гүйцэтгэлийг агуулах гурван цагийн хүрээний ($\pm 1$ цаг) эзлэх хувь, газрын хувьд хамгийн түгээмэл газарт хийсэн хувь (хадгалсан газарт хийсэн гүйцэтгэл байгаа үед л). Цаг нь мэдэгдэх гүйцэтгэл 5-аас цөөн бол утгыг тооцохгүй (\texttt{null}).
 
-\begin{lstlisting}[language=JavaScript, caption={Нөхцөл байдлын тогтвортой байдлын тооцоолол}]
+\begin{lstlisting}[language=JavaScript, caption={Нөхцөл байдлын тогтвортой байдлын тооцоолол (товчилсон)}]
 static computeContextStability(snapshots: Array<{
   completionHour: number | null;
   coarseLocation: string | null;
-  precedingRoutine: string | null;
-}>): number {
-  const n = snapshots.length;
-  if (n === 0) return 0;
+}>): number | null {
+  const observed = snapshots.filter(s => s.completionHour !== null);
+  if (observed.length < MIN_CONTEXT_SNAPSHOTS) return null;   // 5
+  const n = observed.length;
 
-  const modalRate = (values: Array<string | number | null>): number | null => {
-    const valid = values.filter(v => v !== null);
-    if (valid.length === 0) return null;
-    const freq = new Map<string | number, number>();
-    for (const v of valid) freq.set(v, (freq.get(v) ?? 0) + 1);
-    const maxCount = Math.max(...freq.values());
-    return maxCount / n;
-  };
+  // Time: best 3-hour band (centre hour +-1, wrapping at midnight)
+  let bestHourCount = 0;
+  for (let centre = 0; centre < 24; centre += 1) {
+    const count = observed.filter(
+      s => hourDistance(s.completionHour!, centre) <= 1).length;
+    bestHourCount = Math.max(bestHourCount, count);
+  }
+  const rates = [bestHourCount / n];
 
-  const rates = [
-    modalRate(snapshots.map(s => s.completionHour)),
-    modalRate(snapshots.map(s => s.coarseLocation)),
-    modalRate(snapshots.map(s => s.precedingRoutine)),
-  ].filter((r): r is number => r !== null);
-
-  if (rates.length === 0) return 0;
+  // Place: only when a completion was observed at a saved place
+  const places = observed.map(s => s.coarseLocation);
+  if (places.some(p => p !== null)) {
+    rates.push(modalCount(places) / n);
+  }
   const avg = rates.reduce((a, b) => a + b, 0) / rates.length;
   return Math.round(avg * 100 * 100) / 100;
 }
 \end{lstlisting}
 
+\subsubsection*{Хуваарийн биелэлт}
+
+\texttt{computeScheduleAdherence} нь сүүлийн 28 хоногийн (дадал эхэлснээс хойш) Улаанбаатарын өдрүүдээс тухайн дадлын хуваарьт өдрүүдийг тоолж, тэдгээрийн хэдэд нь доод зорилтод хүрсэн бүртгэл байгааг тооцно. Өнөөдрийг хийсэн бол л тооцдог. Хуваарьт өдөр 7-оос цөөн бол утга \texttt{null} байна. Өмнөх хувилбарт энэ үзүүлэлтийг ``хийсэн бүртгэл / нийт бүртгэл'' гэж тооцдог байсан нь алгассан өдрийг тусгадаггүй тул зөвхөн хийсэн өдрөө бүртгэдэг хэрэглэгчид бараг 100 хувь гарч байсан.
+
 \subsubsection*{Нийлмэл дадлын хүчний оноо}
 
-Судалгааны хүрээнд дадлын хүчийг дараах нийлмэл томьёогоор үнэлсэн.
+Нийлмэл оноог 3-р бүлэгт тодорхойлсон томьёогоор тооцно. SRBAI эсвэл хуваарийн биелэлт байхгүй бол оноо тооцохгүй, ``өгөгдөл хангалтгүй'' төлөв буцаана; контекстийн тогтвортой байдал байхгүй бол үлдсэн хоёр жинг 0.85-д хуваан дахин нормчилно. Эцсийн оноог 0--39 сул, 40--69 хөгжиж буй, 70--100 хүчтэй гэж ангилна.
 
-\[
-HS = 0.60 \times SRBAI_{100} + 0.25 \times Consistency_{100} + 0.15 \times ContextStability_{100}
-\]
+\begin{lstlisting}[language=JavaScript, caption={Нийлмэл дадлын хүчний онооны дүрэм (товчилсон)}]
+static computeComposite(input: CompositeScoreInput): CompositeScoreResult {
+  if (input.srbaiScore === null || input.consistencyScore === null) {
+    return { ...base, finalScore: null, stage: 'insufficient_data' };
+  }
+  const parts: Array<[number, number]> = [
+    [0.6, input.srbaiScore],
+    [0.25, input.consistencyScore],
+  ];
+  if (input.contextStabilityScore !== null) {
+    parts.push([0.15, input.contextStabilityScore]);
+  }
+  const totalWeight = parts.reduce((s, [w]) => s + w, 0);
+  const weighted = parts.reduce((s, [w, v]) => s + w * v, 0);
+  const finalScore = Math.round((weighted / totalWeight) * 100) / 100;
 
-Эцсийн оноог дараах түвшинд ангилна.
-
-\begin{itemize}
-    \item 0--39: сул;
-    \item 40--69: хөгжиж буй;
-    \item 70--100: хүчтэй.
-\end{itemize}
-
-\begin{lstlisting}[language=JavaScript, caption={Нийлмэл дадлын хүчний онооны дүрэм}]
-static computeCompositeScore(input: CompositeScoreInput): CompositeScoreResult {
-  const finalScore = Math.round(
-    (0.60 * input.srbaiScore
-    + 0.25 * input.consistencyScore
-    + 0.15 * input.contextStabilityScore) * 100) / 100;
-
-  let stage: CompositeStage;
-  if (finalScore < 40)      stage = CompositeStage.WEAK;
-  else if (finalScore < 70) stage = CompositeStage.BUILDING;
-  else                      stage = CompositeStage.STRONG;
-
-  return { ...input, finalScore, stage, evaluatedAt: new Date().toISOString() };
+  const stage = finalScore >= 70 ? 'strong'
+              : finalScore >= 40 ? 'building' : 'weak';
+  return { ...base, finalScore, stage };
 }
 \end{lstlisting}
 
+\subsubsection*{Гүйцэтгэлийн эх үүсвэрийн ангилал ба сануулгын бодлого}
+
+\texttt{TriggerSourceRules} нь шинэ гүйцэтгэлийг сервер талд ангилна: тухайн дадлын сануулга төхөөрөмжид хүргэгдсэнээс хойш 60 минутын дотор бүртгэсэн бол сануулгад тулгуурласан (тухайн сануулгатай холбоно), өмнөх өдрийг нөхөж бүртгэсэн бол тодорхойгүй, бусад тохиолдолд өөрийн санаачилгатай. Хэрэглэгчийн талаас илгээсэн ангиллыг ашиглахгүй.
+
+\texttt{HabitStrengthRules.recommendTaperingPolicy} нь дадлын хүчний түвшин болон өөрийн санаачилгатай гүйцэтгэлийн хувиас сануулгын бодлогыг тодорхойлно (Хүснэгт~\ref{tab:tapering}). Бодлогыг SRBAI үнэлгээ өгөх бүрт автоматаар дахин тооцох бөгөөд дадлын хүч ``өгөгдөл хангалтгүй'' үед одоогийн бодлогыг хэвээр үлдээнэ.
+
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{|L{3.0cm}|L{3.4cm}|L{2.6cm}|L{1.8cm}|L{1.6cm}|}
+\hline
+\textbf{Дадлын хүч} & \textbf{Өөрийн санаачилга} & \textbf{Бодлого} & \textbf{Хүлээлэг} & \textbf{Өдөрт} \\
+\hline
+Сул & --- & \texttt{FULL\_SUPPORT} & 30 мин & 4 \\
+\hline
+Хөгжиж буй & --- & \texttt{MODERATE\_SUPPORT} & 60 мин & 3 \\
+\hline
+Хүчтэй & $< 0.4$ & \texttt{MODERATE\_SUPPORT} & 60 мин & 3 \\
+\hline
+Хүчтэй & 0.4--0.69 & \texttt{FADE\_OUT} & 120 мин & 2 \\
+\hline
+Хүчтэй & $\geq$ 0.7 & \texttt{MINIMAL} & 240 мин & 1 \\
+\hline
+\end{tabular}
+\caption{Сануулгыг аажмаар бууруулах бодлого}
+\label{tab:tapering}
+\end{table}
+
 \subsection{Дасан зохицох зөвлөмжийн дүрэм}
 
-\texttt{AdaptationRules} нь гүйцэтгэлийн хувь, сануулгаас хамааралтай байдал, өөрийн санаачилгатай гүйцэтгэл, дадлын хүчний оноо, сүүлийн төвөгшлийн үнэлгээ зэрэг үзүүлэлтэд үндэслэн зөвлөмж гаргана. Эцсийн хэрэгжүүлэлтэд дараах үндсэн чиглэлүүдийг тодорхойлсон.
-
-\begin{itemize}
-    \item \textit{reduce\_reminders};
-    \item \textit{maintain};
-    \item \textit{increase\_support};
-    \item \textit{review\_difficulty};
-    \item \textit{celebrate\_consistency}.
-\end{itemize}
-
-Мөн 7, 21, 66 удаагийн гүйцэтгэлийн үе шаттай уялдуулан ахицын баяр тэмдэглэлийн мессеж үүсгэх логикийг оруулсан.
+\texttt{RecommendationRules} нь тухайн дадлын дохионуудаас эрэмбэлэгдсэн дүрмээр нэг үндсэн зөвлөмж сонгоно. Дүрмүүдийн эрэмбэ: зорилтыг бууруулах (\texttt{REDUCE\_TARGET}; сүүлд ``хэцүү'' гэж үнэлж, доод зорилтод хүрэх боловч үндсэн зорилтод хүрэхгүй байх), дадлыг хялбаршуулах (\texttt{SIMPLIFY\_HABIT}), сануулгаас хамаарлыг бууруулах (\texttt{REVIEW\_REMINDER\_DEPENDENCE}; гүйцэтгэлийн 70\% нь сануулгад тулгуурласан), цаг ба газрыг тогтворжуулах (\texttt{ADJUST\_CUE}; контекстийн тогтвортой байдал 40-өөс бага), дэмжлэг нэмэх (\texttt{INCREASE\_SUPPORT}), тогтвортой байдлыг бий болгох (\texttt{BUILD\_CONSISTENCY}), амжилтыг тэмдэглэх (\texttt{CELEBRATE\_CONSISTENCY}; 7, 21, 66 дахь гүйцэтгэл). Мэдээлэл дутуу (\texttt{null}) үзүүлэлт аль ч дүрмийг идэвхжүүлэхгүй. Зөвлөмж бүр тайлбар болон холбогдох суралцах нийтлэлтэй хадгалагдана. Хэрэглэгч татгалзсан зөвлөмжийг 7 хоног дахин санал болгохгүй, дараагийн тохирох дүрмийг сонгоно. Зөвлөмжийг өдөрт нэгээс илүү дахин үүсгэхгүй.
 
 \section{Сервер талын хэсгүүдийн хэрэгжүүлэлт}
 
@@ -308,7 +344,7 @@ static computeCompositeScore(input: CompositeScoreInput): CompositeScoreResult {
 
 \subsection{Ахицын модуль}
 
-Ахицын модуль нь гүйцэтгэл бүртгэх, бодит утгыг доод зорилт болон үндсэн зорилттой харьцуулан үнэлэх, ахицын тойм гаргах үүрэгтэй. Гүйцэтгэлийг бүртгэх үед \texttt{metMinimum}, \texttt{metTarget} зэрэг үзүүлэлтийг автоматаар тооцоолж хадгална.
+Ахицын модуль нь гүйцэтгэл бүртгэх, бодит утгыг доод зорилт болон үндсэн зорилттой харьцуулан үнэлэх, ахицын тойм гаргах үүрэгтэй. Гүйцэтгэлийн төлөвийг сервер тооцдог: бодит утга доод зорилтод хүрвэл \texttt{DONE}, эс бөгөөс \texttt{NOT\_DONE}. Үндсэн зорилтод хүрсэн эсэхийг хадгалахгүй, интерфэйс бодит утгаас тооцож харуулна. Нэг дадалд өдөрт нэг бүртгэл байх тул тухайн өдөр бүртгэл аль хэдийн байвал шинэ бүртгэл үүсгэхгүй, хоёр утгын ихийг нь үлдээнэ. Ингэснээр давтан илгээсэн хүсэлт эсвэл хоёр төхөөрөмж бүртгэлийг давхардуулах, утгыг багасгах боломжгүй. XP болон амжилтын тэмдэг олгох алхам бүтэлгүйтсэн ч хадгалагдсан гүйцэтгэлийг алдаа гэж буцаахгүй.
 
 Мөн ахицын тоймд дараах мэдээллийг нэгтгэн гаргадаг.
 
@@ -327,10 +363,10 @@ static computeCompositeScore(input: CompositeScoreInput): CompositeScoreResult {
 \begin{enumerate}
     \item \textbf{Шийдвэрийн түвшин} --- \texttt{ReminderDecisionRules} ашиглан сануулах эсэхийг тодорхойлох;
     \item \textbf{Гүйцэтгэлийн түвшин} --- \texttt{ReminderExecutionService} ашиглан сануулгыг бүртгэх, давхардлаас хамгаалах, хэрэглэгч рүү хүргэх;
-    \item \textbf{Бодлогын түвшин} --- \texttt{ReminderPolicy} ашиглан дадлын хүч нэмэгдэхийн хэрээр сануулгын эрчмийг бууруулах.
+    \item \textbf{Бодлогын түвшин} --- \texttt{ReminderPolicy} ашиглан дадлын хүч нэмэгдэхийн хэрээр сануулгын хүлээлгийн хугацааг уртасгаж, өдрийн дээд тоог багасгах (Хүснэгт~\ref{tab:tapering}).
 \end{enumerate}
 
-Сануулгад хэрэглэгч \texttt{DONE} буюу ``хийсэн'', эсвэл \texttt{SNOOZE} буюу ``хойшлуулах'' үйлдэл өгнө. Хийсэн тохиолдолд гүйцэтгэлийн бүртгэл автоматаар үүсэж, эх үүсвэр нь сануулгад тулгуурласан гэж тэмдэглэгдэнэ. Хойшлуулсан тохиолдолд дахин сануулах хугацааг бүртгэнэ. Төхөөрөмжийн мэдэгдлийг Web Push болон VAPID түлхүүрт суурилан илгээж, хэрэглэгчийн төхөөрөмжийн бүртгэлийг сервер талд хадгалсан. Мөн нийт хэрэглэгчдэд мэдэгдэл хүргэхэд зориулж \texttt{ADMIN\_SECRET}-ээр хамгаалагдсан нийтэд илгээх үйлчилгээний хаягийг нэмсэн.
+Сануулгад хэрэглэгч \texttt{DONE} буюу ``хийсэн'', эсвэл \texttt{SNOOZE} буюу ``хойшлуулах'' үйлдэл өгнө. Хийсэн тохиолдолд эхлээд тухайн өдрийн гүйцэтгэлийг хадгална: өдөрт бүртгэл байхгүй бол сануулгад тулгуурласан шинэ бүртгэл үүсгэж, доод зорилтод хүрээгүй бүртгэл байвал ``хийсэн'' болгоно. Үүний дараа сануулгыг гүйцэтгэгдсэн гэж тэмдэглэх тул дахин оролдоход бүртгэл давхардахгүй. Өмнөх өдрийн сануулгад ``хийсэн'' дарахыг хүлээн авахгүй. Хойшлуулсан тохиолдолд дахин сануулах хугацааг бүртгэнэ. Төхөөрөмжийн мэдэгдлийг Web Push болон VAPID түлхүүрт суурилан илгээж, хэрэглэгчийн төхөөрөмжийн бүртгэлийг сервер талд хадгалсан. Мөн нийт хэрэглэгчдэд мэдэгдэл хүргэхэд зориулж \texttt{ADMIN\_SECRET}-ээр хамгаалагдсан, хүсэлтийн тоо хязгаарлагдсан нийтэд илгээх үйлчилгээний хаягийг нэмсэн. Мэдэгдлийн бүртгэлд зөвхөн хөтчийн мэдэгдлийн үйлчилгээний HTTPS хаягийг хүлээн авдаг тул сервер дурын хаяг руу хүсэлт илгээхгүй. Хэрэглэгч системээс гарахад тухайн төхөөрөмжийн мэдэгдлийн бүртгэлийг цуцална.
 
 \subsection{Оролцоо ба урамшууллын хэсэг}
 
@@ -378,7 +414,7 @@ static computeCompositeScore(input: CompositeScoreInput): CompositeScoreResult {
   \hfill
   \begin{minipage}[b]{0.42\textwidth}
     \centering
-    \includegraphics[width=\textwidth,height=0.46\textheight,keepaspectratio]{images/frontend/habitButgesenDashboard.png}
+    \includegraphics[width=\textwidth,height=0.46\textheight,keepaspectratio]{images/frontend/habitbutgesenDashboard.png}
     \\[4pt]\small (б) Зарим дадлуудыг гүйцэтгэсний дараа
   \end{minipage}
   \caption{Үндсэн дэлгэц}
@@ -431,7 +467,7 @@ static computeCompositeScore(input: CompositeScoreInput): CompositeScoreResult {
 
 \subsection{Хурдан бүртгэлийн дэлгэц}
 
-Үндсэн дэлгэцийн дадлын картан дээрх `\texttt{+}' товчийг дарахад доороос гарч ирэх хурдан бүртгэлийн цонх нээгдэнэ. Хэрэглэгч тоон товчлуураар бодит гүйцэтгэлийн утгаа оруулахад систем зорилтын хязгаарыг шалгаж, зорилт биелсэн тохиолдолд баталгааны төлөв харуулна (Зураг~\ref{fig:quicklog}).
+Үндсэн дэлгэцийн дадлын картан дээрх `\texttt{+}' товчийг дарахад доороос гарч ирэх хурдан бүртгэлийн цонх нээгдэнэ. Хэрэглэгч тоон товчлуураар бодит гүйцэтгэлийн утгаа оруулахад систем доод зорилт болон үндсэн зорилтыг шалгаж, ``доод хэмжээ биелэв'' эсвэл ``зорилт биелэв'' гэсэн төлөвийг ялган харуулна (Зураг~\ref{fig:quicklog}). Хадгалсны дараа интерфэйс серверийн тооцсон төлөвийг харуулах бөгөөд хүсэлт бүтэлгүйтвэл өмнөх төлөвт буцаана.
 
 \begin{figure}[htbp]
   \centering
@@ -479,7 +515,7 @@ static computeCompositeScore(input: CompositeScoreInput): CompositeScoreResult {
 
 \subsection{Суралцах агуулгын дэлгэц}
 
-Суралцах дэлгэц нь хэрэглэгчид дадал хэвшүүлэлтийн онолын үндэслэлийг уншиж судлах боломж олгодог. Нийтлэлүүд ``Танд зориулсан'', ``Бүтээлч байдал'', ``Эрүүл мэнд'', ``Сэтгэлгээ'' гэсэн 4 ангилалд хуваагдаж, богино уншлагаар тухайн сэдвийг тайлбарладаг (Зураг~\ref{fig:learn}).
+Суралцах дэлгэц нь хэрэглэгчид дадал хэвшүүлэлтийн онолын үндэслэлийг уншиж судлах боломж олгодог. Нийтлэлүүд ``Дадал эхлүүлэх'', ``Өдөөгч ба орчин'', ``Тогтвортой байдал'', ``Урам ба эсэргүүцэл'', ``Онол ба систем'' гэсэн 5 сэдэвт хуваагдаж, богино уншлагаар тухайн сэдвийг тайлбарладаг бөгөөд зөвлөмж бүр холбогдох нийтлэл рүү чиглүүлнэ (Зураг~\ref{fig:learn}).
 
 \begin{figure}[htbp]
   \centering
@@ -515,7 +551,7 @@ static computeCompositeScore(input: CompositeScoreInput): CompositeScoreResult {
 
 \subsection{API холбогч}
 
-Хэрэглэгчийн талын \texttt{api/client.ts} нь суурь HTTP холбогчийг агуулж, хэрэглэгчийн JWT токеныг хандалтын толгойд автоматаар хавсаргана. Хэрэв 401 алдаа ирвэл хэрэглэгчийг дахин нэвтрэх урсгал руу шилжүүлдэг. API функцуудыг \texttt{auth}, \texttt{habits}, \texttt{progress}, \texttt{reminders}, \texttt{push}, \texttt{engagement}, \texttt{learning} зэрэг тусдаа файлуудад хувааснаар дэлгэцүүд серверийн үйлчилгээний хаягуудтай нэг мөрийн интерфэйсээр харилцах боломжтой болсон.
+Хэрэглэгчийн талын \texttt{api/client.ts} нь суурь HTTP холбогчийг агуулж, хэрэглэгчийн JWT токеныг хандалтын толгойд автоматаар хавсаргана. Хэрэв 401 алдаа ирвэл хэрэглэгчийг дахин нэвтрэх урсгал руу шилжүүлдэг. API функцуудыг \texttt{auth}, \texttt{habits}, \texttt{srbai}, \texttt{reminders}, \texttt{push}, \texttt{engagement}, \texttt{feedback}, \texttt{analytics} зэрэг тусдаа файлуудад, зөвлөмжийн хүсэлтүүдийг \texttt{features/learning} хэсэгт хувааснаар дэлгэцүүд серверийн үйлчилгээний хаягуудтай нэг мөрийн интерфэйсээр харилцах боломжтой болсон. Огноог серверт илгээхдээ цагийн бүсийн шилжилттэй бодит агшин (\texttt{toISOString}) болон хэрэглэгчийн харж буй өдрийг (\texttt{YYYY-MM-DD}) ялгаж дамжуулдаг.
 
 {
 \renewcommand{\arraystretch}{1.08}
@@ -553,10 +589,10 @@ PATCH & \apiendpoint{/users/:userId/habits/:habitId} & Дадал засах, а
 POST  & \apiendpoint{/users/:userId/habits/:habitId/logs} & Гүйцэтгэл бүртгэх \\
 GET   & \apiendpoint{/users/:userId/habits/:habitId/logs} & Гүйцэтгэлийн бүртгэлийн түүх авах \\
 PATCH & \apiendpoint{/users/:userId/habits/:habitId/logs/:logId} & Гүйцэтгэлийн утгыг засах \\
+DELETE & \apiendpoint{/users/:userId/habits/:habitId/logs/:logId} & Гүйцэтгэлийн бүртгэлийг буцаах \\
 GET   & \apiendpoint{/users/:userId/habits/:habitId/progress-summary} & Ахицын нэгдсэн тойм авах \\
 POST  & \apiendpoint{/users/:userId/habits/:habitId/logs/:logId/difficulty} & Төвөгшлийн үнэлгээ оруулах \\
 POST  & \apiendpoint{/users/:userId/habits/:habitId/logs/:logId/reflection} & Эргэцүүллийн тэмдэглэл оруулах \\
-GET   & \apiendpoint{/users/:userId/habits/:habitId/adaptation-recommendation} & Дасан зохицох зөвлөмж авах \\
 POST  & \apiendpoint{/users/:userId/habits/:habitId/srbai-assessments} & SRBAI үнэлгээ оруулах \\
 GET   & \apiendpoint{/users/:userId/habits/:habitId/habit-strength/composite} & Нийлмэл дадлын хүчний оноо авах \\
 \bottomrule
@@ -574,7 +610,8 @@ GET   & \apiendpoint{/users/:userId/habits/:habitId/habit-strength/composite} & 
 POST  & \apiendpoint{/users/:userId/habits/:habitId/reminders/evaluate-and-create} & Сануулгыг үнэлж үүсгэх \\
 GET   & \apiendpoint{/users/:userId/reminders} & Хэрэглэгчийн сануулгын жагсаалт авах \\
 POST  & \apiendpoint{/users/:userId/reminders/:reminderId/actions} & Сануулгад өгсөн үйлдлийг бүртгэх \\
-POST  & \apiendpoint{/users/:userId/habits/:habitId/reminder-policy/apply-tapering} & Сануулгын бодлогын шинэчлэл хэрэглэх \\
+GET   & \apiendpoint{/users/:userId/habits/:habitId/reminder-policy} & Сануулгын одоогийн бодлого авах \\
+POST  & \apiendpoint{/users/:userId/habits/:habitId/reminder-policy/apply-tapering} & Сануулгын бодлогыг дахин тооцох \\
 GET   & \apiendpoint{/users/:userId/push-subscriptions} & Төхөөрөмжийн мэдэгдлийн бүртгэлийн жагсаалт авах \\
 POST  & \apiendpoint{/users/:userId/push-subscriptions} & Төхөөрөмжийн мэдэгдлийн бүртгэл үүсгэх \\
 DELETE & \apiendpoint{/users/:userId/push-subscriptions/:subscriptionId} & Төхөөрөмжийн мэдэгдлийн бүртгэл устгах \\
@@ -593,8 +630,10 @@ POST  & \apiendpoint{/admin/push/broadcast} & Нийт хэрэглэгчдэд 
 \midrule
 GET   & \apiendpoint{/users/:userId/engagement/summary} & XP, амжилтын тэмдэг, амжилтын нэгдсэн мэдээлэл авах \\
 POST  & \apiendpoint{/users/:userId/feedback} & Аппын санал хүсэлт илгээх \\
-GET   & \apiendpoint{/users/:userId/recommendations} & Дасан зохицох зөвлөмжийн жагсаалт авах \\
-GET   & \apiendpoint{/users/:userId/articles} & Суралцах нийтлэлүүд авах \\
+GET   & \apiendpoint{/users/:userId/recommendations} & Идэвхтэй зөвлөмжийн жагсаалт авах \\
+POST  & \apiendpoint{/users/:userId/recommendations/refresh} & Дадлын зөвлөмжийг дахин үүсгэх \\
+POST  & \apiendpoint{/users/:userId/recommendations/:recommendationId/dismiss} & Зөвлөмжөөс татгалзах \\
+POST  & \apiendpoint{/users/:userId/articles/:articleId/interactions} & Нийтлэлтэй харилцсан үйлдлийг бүртгэх \\
 POST  & \apiendpoint{/users/:userId/activity-logs} & Ерөнхий хэрэглээний идэвхийн лог бүртгэх \\
 \bottomrule
 \end{tabular}
@@ -603,7 +642,7 @@ POST  & \apiendpoint{/users/:userId/activity-logs} & Ерөнхий хэрэгл
 
 \section{Бүлгийн дүгнэлт}
 
-Энэ бүлэгт зан үйлд суурилсан дадал хэвшүүлэх системийн эцсийн хэрэгжүүлэлтийг тайлбарлав. Үүнд технологийн багц, кодын сангийн бүтэц, өгөгдлийн сан, сануулгын шийдвэрийн дүрэм, дадлын хүчний тооцоолол, дасан зохицох зөвлөмж, төхөөрөмжийн мэдэгдэл, урамшууллын хэсэг, сервер болон хэрэглэгчийн талын үндсэн дэлгэцүүд, API-ийн зохион байгуулалт зэргийг авч үзлээ.
+Энэ бүлэгт зан үйлд суурилсан дадал хэвшүүлэх системийн хэрэгжүүлэлтийг тайлбарлав. Үүнд технологийн багц, кодын сангийн бүтэц, өгөгдлийн сан, сануулгын шийдвэр ба бодлогын дүрэм, гүйцэтгэлийн эх үүсвэрийн ангилал, дадлын хүчний тооцоолол, дасан зохицох зөвлөмж, төхөөрөмжийн мэдэгдэл, урамшууллын хэсэг, сервер болон хэрэглэгчийн талын үндсэн дэлгэцүүд, API-ийн зохион байгуулалт зэргийг авч үзлээ.
 
-Хэрэгжүүлэлтийн үр дүнд бүртгэл, дадал үүсгэх/засах, цагийн хүрээ болон өдөөгч нөхцөл тохируулах, гүйцэтгэл бүртгэх, сануулга илгээх, SRBAI үнэлгээ авах, дадлын хүч тооцоолох, ахицын мэдээлэл боловсруулах, зөвлөмж гаргах, XP болон амжилтын тэмдэг олгох, санал хүсэлт авах зэрэг боломжууд ажиллах түвшинд хүрсэн. Мөн \texttt{ReminderDecisionRules}, \texttt{HabitStrengthRules}, \texttt{AdaptationRules} зэрэг зан үйлийн дэмжлэгийн дүрмүүдийг бодит кодын түвшинд хэрэгжүүлснээр өмнөх бүлгүүдэд боловсруулсан онолын загварыг турших боломжтой програм хангамжийн шийдэл болгон буулгасан.
+Хэрэгжүүлэлтийн үр дүнд бүртгэл, дадал үүсгэх/засах, цагийн хүрээ болон байршлын өдөөгч нөхцөл тохируулах, гүйцэтгэл бүртгэх, сануулга илгээх ба аажмаар бууруулах, SRBAI үнэлгээ авах, дадлын хүч тооцоолох, ахицын мэдээлэл боловсруулах, зөвлөмж гаргах, XP болон амжилтын тэмдэг олгох, санал хүсэлт авах зэрэг боломжууд ажиллах түвшинд хүрсэн. Мөн \texttt{ReminderDecisionRules}, \texttt{CueWindowRules}, \texttt{TriggerSourceRules}, \texttt{HabitStrengthRules}, \texttt{RecommendationRules} зэрэг зан үйлийн дэмжлэгийн дүрмүүдийг нэгжийн тесттэйгээр бодит кодын түвшинд хэрэгжүүлснээр өмнөх бүлгүүдэд боловсруулсан онолын загварыг турших боломжтой програм хангамжийн шийдэл болгон буулгасан.
 
